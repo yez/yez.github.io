@@ -4,13 +4,109 @@
  <title>A Year of Commits</title>
  <link href="/atom.xml" rel="self"/>
  <link href="/"/>
- <updated>2015-05-03T14:48:43-07:00</updated>
+ <updated>2015-05-10T18:51:50-07:00</updated>
  <id></id>
  <author>
    <name>Jake Yesbeck</name>
    <email></email>
  </author>
 
+ 
+ <entry>
+   <title>validates_type</title>
+   <link href="/2015/05/10/validates_type/"/>
+   <updated>2015-05-10T05:00:00-07:00</updated>
+   <id>/2015/05/10/validates_type</id>
+   <content type="html">&lt;p&gt;In keeping with my apparent obsession of type checking, I created another &lt;em&gt;helpful&lt;/em&gt; library: &lt;a href=&quot;https://github.com/yez/validates_type&quot;&gt;validates_type&lt;/a&gt;. I wanted a nice, lightweight way to assert that the types of my attributes are exactly what I need them to be. I&amp;#39;m not talking about type coercion, type casting or any other munging of types that might happen on a typical read/write from your handy dandy ORM of choice. No no, this is the real deal, the bees knees, the elbows of a gazelle: &lt;strong&gt;actual type checking&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;p&gt;Data quality is important to me, and should be important to you too. This library is an attempt at injecting some structure into your typical Rails/Sinatra app in order to keep your data clean and your system happy.&lt;/p&gt;
+
+&lt;h4&gt;Alright so when would this kind of thing be necessary? Let&amp;#39;s see an example of how automagic type coercion can bite us.&lt;/h4&gt;
+
+&lt;p&gt;Let&amp;#39;s say you&amp;#39;re using Rails, and let&amp;#39;s pretend for a moment that for some reason, you have some code that looks like this:&lt;/p&gt;
+
+&lt;p&gt;A very important class:&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;ImportantResource&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;ActiveRecord&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Base&lt;/span&gt;
+  &lt;span class=&quot;c1&quot;&gt;# Attribute named :settings with what we want to be an array&lt;/span&gt;
+  &lt;span class=&quot;c1&quot;&gt;# of important things encoded and stored in either&lt;/span&gt;
+  &lt;span class=&quot;c1&quot;&gt;# a nice postres json column or a text column&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;store_accessor&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:settings&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:array_of_things&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;And a matching very important controller:&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;ImportantResourceController&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;ApplicaionController&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;create&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;resource&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;ImportantResource&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;new&lt;/span&gt;
+    &lt;span class=&quot;c1&quot;&gt;# let&amp;#39;s set the array_of_things to a parameter that is passed in&lt;/span&gt;
+    &lt;span class=&quot;c1&quot;&gt;#  via a form or something&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;resource&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;array_of_things&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;params&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:array_of_things&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt;
+    &lt;span class=&quot;c1&quot;&gt;# great, lets save that resource&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;resource&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;save!&lt;/span&gt;
+    &lt;span class=&quot;c1&quot;&gt;# cool everything worked, this could not have gone better&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h4&gt;Oh no, george! What about if something other than array is passed to that parameter??&lt;/h4&gt;
+
+&lt;p&gt;Well let&amp;#39;s see what might happen. If &lt;code&gt;params[:array_of_things] = &amp;#39;a random string&amp;#39;&lt;/code&gt;, any other method or object that needs to interact with &lt;code&gt;ImportantResource&lt;/code&gt; would have a bad time unless they explictly validated &lt;code&gt;array_of_things&lt;/code&gt; is an array.&lt;/p&gt;
+
+&lt;p&gt;Wouldn&amp;#39;t it be nicer to have &lt;code&gt;ImportantResource&lt;/code&gt; validate itself so no other object needs to care about &lt;code&gt;array_of_things&lt;/code&gt;&amp;#39;s array-ness?&lt;/p&gt;
+
+&lt;p&gt;This sounds awesome to me, and I agree. Let&amp;#39;s check it out and how you can harness the power for yourself. What if instead of just letting &lt;code&gt;ImportantResource&lt;/code&gt; behave in any which way, we locked that thing down? It might look something like this:&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;ImportantResource&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;ActiveRecord&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Base&lt;/span&gt;
+  &lt;span class=&quot;c1&quot;&gt;# Attribute named :settings with what we want to be an array&lt;/span&gt;
+  &lt;span class=&quot;c1&quot;&gt;# of important things encoded and stored in either&lt;/span&gt;
+  &lt;span class=&quot;c1&quot;&gt;# a nice postres json column or a text column&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;store_accessor&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:settings&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:array_of_things&lt;/span&gt;
+
+  &lt;span class=&quot;n&quot;&gt;validates_type&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:array_of_things&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:array&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Now if we try to save any other value to &lt;code&gt;array_of_things&lt;/code&gt; that isn&amp;#39;t an array, we receive validation errors added to &lt;code&gt;important_resource.errors&lt;/code&gt; in the same way other ActiveRecord models behave! This will keep us honest with what we set our data to.&lt;/p&gt;
+
+&lt;h4&gt;So what&amp;#39;s the big deal? Some of my data might be the wrong type but who cares?&lt;/h4&gt;
+
+&lt;p&gt;I think you should be the one who cares. What if the software you&amp;#39;re writing is an API that people will use? Wouldn&amp;#39;t you rather them be confident that since your documentation (that you painstakingly wrote for hours) was correct?&lt;/p&gt;
+
+&lt;p&gt;For example, lets say you build the API: &lt;code&gt;SuperImportantMedicalAPI&lt;/code&gt;. And in that super important response, a boolean value is returned for &lt;code&gt;patient_is_allergic_to_nuts&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;It becomes imperative for the people that consume your &lt;code&gt;SuperImportantMedicalAPI&lt;/code&gt; that types be locked down. If people are depending on your awesome API to save them from nut allergies, don&amp;#39;t let a string like &lt;code&gt;&amp;#39;t&amp;#39;&lt;/code&gt; be your downfall.&lt;/p&gt;
+
+&lt;h4&gt;Great? Great! Here&amp;#39;s some FAQs:&lt;/h4&gt;
+
+&lt;p&gt;&lt;strong&gt;Q:&lt;/strong&gt; Do the validations behave exactly the same as &lt;code&gt;ActiveModel::Validations&lt;/code&gt;?&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;A:&lt;/strong&gt; Exactly the same.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Q:&lt;/strong&gt; So does that mean I can chain other validations on?&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;A:&lt;/strong&gt; Heck yes, check it out:&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;  &lt;span class=&quot;c1&quot;&gt;# custom messaging for errors&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;validates_type&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:array_of_things&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+                 &lt;span class=&quot;ss&quot;&gt;:array&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+                 &lt;span class=&quot;ss&quot;&gt;message&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;This needs to be an array!!!&amp;#39;&lt;/span&gt;
+
+  &lt;span class=&quot;c1&quot;&gt;# chaining on other validation like numericality&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;validates&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:other_thing&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+            &lt;span class=&quot;ss&quot;&gt;type&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;type&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:integer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+                    &lt;span class=&quot;ss&quot;&gt;numericality&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;greater_than&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+  &lt;span class=&quot;c1&quot;&gt;# making sure object is a string and included in a specific list&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;validates&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:yet_another_attribute&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+            &lt;span class=&quot;ss&quot;&gt;type&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;type&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:string&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+                    &lt;span class=&quot;ss&quot;&gt;inclusion&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;in&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;foo&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;bar&amp;#39;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;strong&gt;Q:&lt;/strong&gt; Can I use this with &lt;code&gt;ActiveRecord&lt;/code&gt; &lt;strong&gt;or&lt;/strong&gt; &lt;code&gt;ActiveModel&lt;/code&gt;?&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;A:&lt;/strong&gt; Y to the es! Yes! Isn&amp;#39;t that cool? Any ruby code that uses either &lt;code&gt;ActiveModel&lt;/code&gt; or &lt;code&gt;ActiveRecord&lt;/code&gt; can use all the power of this gem on day&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Q:&lt;/strong&gt; Does this cost at least $1,000 every time I need to use it? &lt;strong&gt;A:&lt;/strong&gt; Close, you can use this library right now for the low low price of $0. I tried to make it lower but just couldn&amp;#39;t do it.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Q:&lt;/strong&gt; Where can I read more?&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;A:&lt;/strong&gt; &lt;a href=&quot;https://github.com/yez/validates_type&quot;&gt;Right freakin&amp;#39; here&lt;/a&gt;&lt;/p&gt;
+</content>
+ </entry>
  
  <entry>
    <title>Ruby Boolean</title>
