@@ -98,7 +98,7 @@
 
     <span class="post-date">10 May 2015</span>
 
-    <p>In keeping with my apparent obsession of type checking, I created another <em>helpful</em> library: <a href="https://github.com/yez/validates_type">validates_type</a>. I wanted a nice, lightweight way to assert that the types of my attributes are exactly what I need them to be. I&#39;m not talking about type coercion, type casting or any other munging of types that might happen on a typical read/write from your handy dandy ORM of choice. No no, this is the real deal, the bees knees, the elbows of a gazelle: <strong>actual type checking</strong>.</p>
+    <p>In keeping with my apparent obsession with types, I created another <em>helpful</em> library: <a href="https://github.com/yez/validates_type">validates_type</a>. I wanted a nice, lightweight way to assert that the types of my attributes are exactly what I need them to be once I save them to the database. In order to avoid having many parts of my application use <code>try</code> or <code>is_a?</code>, I need confidence that my data from my database is what I expect. I&#39;m not talking about type coercion, type casting or any other munging of types that might happen on a typical read/write from your handy dandy ORM of choice. No no, this is the real deal, the bees knees, the elbows of a gazelle: <strong>actual type checking</strong>.</p>
 
 <p>Data quality is important to me, and should be important to you too. This library is an attempt at injecting some structure into your typical Rails/Sinatra app in order to keep your data clean and your system happy.</p>
 
