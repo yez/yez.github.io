@@ -4,13 +4,32 @@
  <title>A Year of Commits</title>
  <link href="/atom.xml" rel="self"/>
  <link href="/"/>
- <updated>2015-05-17T21:44:48-07:00</updated>
+ <updated>2015-05-24T23:09:14-07:00</updated>
  <id></id>
  <author>
    <name>Jake Yesbeck</name>
    <email></email>
  </author>
 
+ 
+ <entry>
+   <title>Contributing</title>
+   <link href="/2015/05/24/finding_projects/"/>
+   <updated>2015-05-24T05:00:00-07:00</updated>
+   <id>/2015/05/24/finding_projects</id>
+   <content type="html">&lt;p&gt;Since starting this 365 day adventure, I have done a mixture of contributing to my own projects and to others. At the on-set, I made an assumption that it would be an even distribution of commits between my own projects and existing ones. However, this proved much harder than I originally thought. After a sizable amount of effort, I did find a few projects to contribute to. 28 days into this endeavor and seems like I might actually be able to accomplish my goal.&lt;/p&gt;
+
+&lt;p&gt;One of the existing projects, &lt;a href=&quot;https://github.com/girishso/pluck_to_hash&quot;&gt;pluck to hash&lt;/a&gt;, was a very young project when I found it. The project was released without any test coverage so I attempted to &lt;a href=&quot;https://github.com/girishso/pluck_to_hash/pull/6&quot;&gt;rectify that&lt;/a&gt;. Thankfully my pull request was accepted! It felt great to finally contribute to a project that wasn&amp;#39;t my own. I also learned a few things by doing so.&lt;/p&gt;
+
+&lt;p&gt;The first important learning from making a contribution was understanding that the caliber of contributors to open source software was not vastly superior to &amp;quot;normal&amp;quot; software engineers. I had previously thought of people who wrote open source libraries to be some sort of battle-tested, hardened, bug-resistant demi-gods sent here from Krypton in order to write code for us mortals. This was a very debilitating thought. For years it was a wall between me and open source software development. I didn&amp;#39;t even entertain the idea of surpassing that wall and inevitably gave up on making meaningful contributions. Alright, that is probably a little dramatic but I think it makes my point for me. It was intimidating to contribute! Then, like a breath of fresh air, my pull request was accepted and these preconceptions vanished. It was awesome. It was super awesome (and objectively I didn&amp;#39;t even do that much).&lt;/p&gt;
+
+&lt;p&gt;A second learning from finding projects to contribute to was how to find them. It seems like an important thing to know, right? There are a few tools one can use to find projects that are ripe for the commit-in. Using the &lt;a href=&quot;https://github.com/trending&quot;&gt;explore function on Github&lt;/a&gt;, you can find the top trending projects on a per language basis. This process is how I found the puck to hash gem and decided to contribute. A big difference between the pluck to hash repository and others is the fact that pluck to hash did not have any open issues. Contributing to a repository with no open issues could be considered risky. After all, if a project has open issues then at least some work is welcome and expected. A project with no open issues can not be assumed to want, need, or accept contributions. Luckily for me, the pluck to hash maintainer was open to my additions.&lt;/p&gt;
+
+&lt;p&gt;A great resource for finding projects ordered by issue count is &lt;a href=&quot;http://www.codetriage.com/&quot;&gt;CodeTriage&lt;/a&gt;. CodeTriage does a great job of indexing projects hosted on Github in descending order of their open issues. Finding the right projects to contribute to is hard, but with CodeTriage and the built in issue trackers in Github, contributing to repositories that matter to you and to others is achievable.&lt;/p&gt;
+
+&lt;p&gt;Use these resources and start making some contributions of your own.&lt;/p&gt;
+</content>
+ </entry>
  
  <entry>
    <title>Just learn Rails</title>
@@ -29,7 +48,7 @@
 
 &lt;p&gt;In the same way that a chisel is not enough for the carpenter, a framework is not enough for our software artisan. The beauty of frameworks like Ruby on Rails is that they can get you into making a product quickly. But, as soon as you hit any kind of interesting problems, you&amp;#39;ll have to rely on something else. It might even be something that your framework has abstracted from you and discouraged you from learning for yourself.&lt;/p&gt;
 
-&lt;p&gt;For instance, Rails ships with a custom ORM: &lt;code&gt;ActiveRecord&lt;/code&gt;. This reasonably straight forward library makes interacting with your database simple enough to start persisting objects. Great! What happens when you start persisting large amount of objects? What happens when the relationships that you have created between these objects start to cause performance losses? Your users get mad. Not great. They get so mad they don&amp;#39;t even know why they are using your product and they bounce. To remedy this problem, you would have to tweak your database indexes in a way that speeds up your queries for you. You&amp;#39;d have to know how a relational database works, how indexes work and when to use the proper ones. It would be imperative that you understand what &lt;code&gt;explain&lt;/code&gt; can tell you. As you traverse down this path of improving your product you will be outside of the framework and thus without your only tool.&lt;/p&gt;
+&lt;p&gt;For instance, Rails ships with a custom ORM: &lt;code&gt;ActiveRecord&lt;/code&gt;. This reasonably straight forward library makes interacting with your database simple enough to start persisting objects. Great! What happens when you start persisting large amount of objects? What happens when the relationships that you have created between these objects start to cause performance losses? Your users get mad. Not great. They get so mad they don&amp;#39;t even know why they are using your product and they bounce. To remedy this problem, you would have to tweak your database indexes in a way that speeds up your queries for you. You&amp;#39;d have to know how a relational database works, how indexes work and when to use the proper ones. If you would be using postgres, it would be imperative that you understand what &lt;code&gt;explain analyze&lt;/code&gt; can tell you. As you traverse down this path of improving your product you will be outside of the framework and thus without your only tool.&lt;/p&gt;
 
 &lt;p&gt;While this is just one example, I think it makes my point relatively well. We could spend page after page of other examples not given to you by your framework: JavaScript, Redis, Memcache, CSS, Git, a variety of Linux commands dealing with debugging and server maintenance, etc. And even after all of that, after you learn everything about those technologies and can make web software that scales, there are other aspects of software development. Like being on a team that either does agile, waterfall or quick stream methodology. Or how to deal with merge conflicts on a complex system, architectural design decisions, 2 spaces vs 4 &lt;em&gt;(spoiler: its always 2)&lt;/em&gt;.&lt;/p&gt;
 
