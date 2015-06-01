@@ -4,13 +4,164 @@
  <title>A Year of Commits</title>
  <link href="/atom.xml" rel="self"/>
  <link href="/"/>
- <updated>2015-05-24T23:09:14-07:00</updated>
+ <updated>2015-05-31T21:12:33-07:00</updated>
  <id></id>
  <author>
    <name>Jake Yesbeck</name>
    <email></email>
  </author>
 
+ 
+ <entry>
+   <title>Writing good API wrappers</title>
+   <link href="/2015/05/31/wrapping_apis/"/>
+   <updated>2015-05-31T05:00:00-07:00</updated>
+   <id>/2015/05/31/wrapping_apis</id>
+   <content type="html">&lt;p&gt;Both in my day job and in my &lt;a href=&quot;http://jakeyesbeck.com/2015/04/23/a_year_of_commits/&quot;&gt;year of commits&lt;/a&gt;, I spend a lot of time thinking about APIs.&lt;/p&gt;
+
+&lt;p&gt;For the uninitiated, an &lt;strong&gt;A&lt;/strong&gt;pplication &lt;strong&gt;P&lt;/strong&gt;rogram &lt;strong&gt;I&lt;/strong&gt;nterface (&lt;strong&gt;API&lt;/strong&gt;), is an avenue for one piece of software to speak to another. This could be a remote, web-based, HTTP API. Or the API might be an internal interface for one portion of a software system to talk to another. Designing an API that is simple and maintainable is crucial if its intended to be used and quickly adopted by colleagues or 3rd party developers.&lt;/p&gt;
+
+&lt;p&gt;Being one of those 3rd party developers, I find myself using and writing wrappers to these APIs. Here, in my opinion, is what makes a good API wrapper. Let&amp;#39;s postulate about some example wrapper designs.&lt;/p&gt;
+
+&lt;h2&gt;The Barely Abstractor&lt;/h2&gt;
+
+&lt;p&gt;The mantra of this design is: &amp;quot;I will take away that annoying HTTP element and you do literally all the rest.&amp;quot;&lt;/p&gt;
+
+&lt;p&gt;We can assume that a library called &lt;code&gt;api_requester&lt;/code&gt; exists to wrap our very important 3rd party remote API (Which we will also assume is a &lt;a href=&quot;http://en.wikipedia.org/wiki/Representational_state_transfer&quot;&gt;RESTful API&lt;/a&gt;).&lt;/p&gt;
+
+&lt;p&gt;If we wanted to retrieve an object our code might look something like:&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;nb&quot;&gt;require&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;api_requester&amp;#39;&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;params&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;object_id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;headers&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;Content-Type&amp;#39;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;application/json&amp;#39;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;object_wanted&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;APIWrapper&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;get&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
+                  &lt;span class=&quot;s1&quot;&gt;&amp;#39;relative/path/to/object/&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+                  &lt;span class=&quot;n&quot;&gt;params&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+                  &lt;span class=&quot;n&quot;&gt;headers&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;# =&amp;gt; { big: :hash, of: :attributes}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;To post an object via this wrapper:&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;nb&quot;&gt;require&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;api_requester&amp;#39;&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;params&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;nb&quot;&gt;object_id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+  &lt;span class=&quot;ss&quot;&gt;object_name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:foo&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+  &lt;span class=&quot;ss&quot;&gt;object_type&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:bar&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+  &lt;span class=&quot;ss&quot;&gt;object_description&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;I am an object&amp;#39;&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;headers&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;Content-Type&amp;#39;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;application/json&amp;#39;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+&lt;span class=&quot;no&quot;&gt;APIWrapper&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;post&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
+  &lt;span class=&quot;s1&quot;&gt;&amp;#39;relative/path/to/object/&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;params&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;headers&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# =&amp;gt; { big: :hash, of: :attributes}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;So, you get the idea. That idea is verbosity. However, this approach is not all negative.&lt;/p&gt;
+
+&lt;h3&gt;Pros:&lt;/h3&gt;
+
+&lt;ol&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;Resilient to API changes&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;A big problem with wrapping APIs outside of your own control is endpoint churn, change, and deprecation. With such a verbose wrapper, the consumer is in complete control of the request. From URL changes to parameter addition and deletion, a consumer of &lt;code&gt;api_requester&lt;/code&gt; is able to adapt without updating their library (just their own source code).&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;Transparent&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;Since &lt;code&gt;api_requester&lt;/code&gt; does attempt to abstract out the intricacies of our 3rd party API, the consumer of &lt;code&gt;api_requester&lt;/code&gt; knows exactly how the the underlying API works. Understanding the nuances of the API being &amp;quot;wrapped&amp;quot; might influence the consumer&amp;#39;s system architecture positively.&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h3&gt;Cons:&lt;/h3&gt;
+
+&lt;ol&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;No abstraction&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;Without abstraction, a consumer of &lt;code&gt;api_requester&lt;/code&gt; must be one with the 3rd party API&amp;#39;s documentation. To ensure competent use, the consumer must become familiar all possible endpoints and usage patterns. This nearly completely defeats the purpose of providing a wrapper.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;Does not minimize 3rd party surface area&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;One of the main purposes of wrapping a 3rd party API is to minimize its overall surface area. Making small, distinct interaction points is important for the consumer of &lt;code&gt;api_requester&lt;/code&gt;. Fewer moving pieces means fewer points of failure. It is probably not necessary for every single end point and function to be exposed by &lt;code&gt;api_requester&lt;/code&gt;.&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h2&gt;The Over-abstraction contraption&lt;/h2&gt;
+
+&lt;p&gt;Unlike our &lt;code&gt;api_requester&lt;/code&gt;, the mindset behind this pattern is: &amp;quot;Make sure no one can actually understand what is going on behind the scenes&amp;quot;.&lt;/p&gt;
+
+&lt;p&gt;Wrapping the same RESTful 3rd party API, &lt;code&gt;api_contraption&lt;/code&gt;, is be our next library. Its code might be used in the following way:&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;nb&quot;&gt;require&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;api_contraption&amp;#39;&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;object_wanted&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;APIWrapper&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;fetch_an_object&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# =&amp;gt; &amp;lt;Object @variable=:thing, @other_variable=:other_thing&amp;gt;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;To post an object via this wrapper:&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;nb&quot;&gt;require&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;api_contraption&amp;#39;&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;object_wanted&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;APIWrapper&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;fetch_an_object&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;object_wanted&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;update_object_attribute!&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# =&amp;gt; &amp;lt;Object @variable=:updated, @other_variable=:also_magically_updated&amp;gt;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;As demonstrated, this library is nearly 100% magic. &lt;code&gt;APIWrapper&lt;/code&gt; in this case exposes arbitrary methods like &lt;code&gt;fetch_an_object&lt;/code&gt; and returns a magical object with instance variables set.&lt;/p&gt;
+
+&lt;h3&gt;Pros:&lt;/h3&gt;
+
+&lt;ol&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;Actual abstraction&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;Consumers of &lt;code&gt;api_contraption&lt;/code&gt; do not need to understand the underlying API&amp;#39;s full functionality. The wrapper in this case has provided (hopefully) a small handful of useful methods and classes to expose the heart of the API it wraps.&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h3&gt;Cons:&lt;/h3&gt;
+
+&lt;ol&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;Inflexible&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;Whenever the underlying API needs to change a response or request contract, the &lt;code&gt;api_contraption&lt;/code&gt; has to change. This can be a very tiring exercise for its consumers. However, if a wrapper is built around a very stable and slowly iterating API, this inflexibility might not be noticed as greatly.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;Makes the underlying API a black box&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;While the &lt;code&gt;api_requester&lt;/code&gt; above did not do enough abstraction, this &lt;code&gt;api_contraption&lt;/code&gt; does too much. It prevents developers from discovering useful features of the 3rd party API that might be helpful to them. Granted, a consumer could refer to the service&amp;#39;s own documentation for feature discovery but who says that they should be forced to?&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h2&gt;So which is better?&lt;/h2&gt;
+
+&lt;p&gt;The answer is neither. A desirable solution exists somewhere between these two examples. An API wrapper should be terse yet flexible, simple yet sophisticated. Making a consumer of your wrapper upgrade with every API change is not scalable and will drive people away from it. At the same time, if a consumer can not see the value your library gives them, why would they bother to use it?&lt;/p&gt;
+
+&lt;p&gt;A good abstraction, a positive value add piece of software can be defined by a few key features:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Flexibility&lt;/li&gt;
+&lt;li&gt;Usefulness&lt;/li&gt;
+&lt;li&gt;Readability&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Each of our example libraries had one or two of these features but not all three. To make up for what was lacking let&amp;#39;s try and make a hybrid of the two: an &lt;code&gt;api_wrapper&lt;/code&gt;.&lt;/p&gt;
+
+&lt;h2&gt;The middle ground&lt;/h2&gt;
+
+&lt;p&gt;Requesting an Object&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;nb&quot;&gt;require&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;api_wrapper&amp;#39;&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;object_wanted&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;APIWrapper&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;DesiredObject&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;find&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;123&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;#=&amp;gt; &amp;lt;DesiredObject @id=123, @name=&amp;#39;The One&amp;#39;, @author=&amp;#39;The Architect&amp;#39;&amp;gt;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Updating an object&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;nb&quot;&gt;require&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;api_wrapper&amp;#39;&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;object_wanted&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;APIWrapper&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;DesiredObject&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;find&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;123&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;object_watned&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;update!&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;author&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;Mr. Smith&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;#=&amp;gt; &amp;lt;DesiredObject @id=123, @name=&amp;#39;The One&amp;#39;, @author=&amp;#39;Mr. Smith&amp;#39;&amp;gt;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;At first glance it might not seem like all too much is different between this solution and the previous two. However, a few key differences are present.&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;&lt;p&gt;We no longer have a generic superclass &lt;code&gt;APIWrapper&lt;/code&gt; to interact with, it has become a namespace. With this namespace clients can freely inherit their own objects from our &lt;code&gt;DesiredObject&lt;/code&gt; class and make modifications as they see fit.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Abstraction is still very much in play. URL structures, HTTP payloads and other small minutia about the request is abstracted away from our consumers and they are given very logical methods &lt;code&gt;find&lt;/code&gt; and &lt;code&gt;update&lt;/code&gt;. These methods enable our consumer to interact with their resources in a familiar and pleasant way.&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;I am not saying this solution is perfect, but it is objectively better than the other two. A lot of factors go into making a great API wrapper. Adhering to the three ideal attributes: &lt;strong&gt;Flexibility&lt;/strong&gt;, &lt;strong&gt;Usefulness&lt;/strong&gt; and &lt;strong&gt;Readability&lt;/strong&gt; will at least point your projects in the right direction.&lt;/p&gt;
+</content>
+ </entry>
  
  <entry>
    <title>Contributing</title>
