@@ -162,7 +162,7 @@
 <ol>
 <li><p><strong>No abstraction</strong></p>
 
-<p>Without abstraction, a consumer of <code>api_requester</code> must be one with the 3rd party API&#39;s documentation. To ensure competent use, the consumer must become familiar all possible endpoints and usage patterns. This nearly completely defeats the purpose of providing a wrapper.</p></li>
+<p>Without abstraction, a consumer of <code>api_requester</code> must be one with the 3rd party API&#39;s documentation. To ensure competent use, the consumer must become familiar with all possible endpoints and usage patterns. This nearly completely defeats the purpose of providing a wrapper.</p></li>
 <li><p><strong>Does not minimize 3rd party surface area</strong></p>
 
 <p>One of the main purposes of wrapping a 3rd party API is to minimize its overall surface area. Making small, distinct interaction points is important for the consumer of <code>api_requester</code>. Fewer moving pieces means fewer points of failure. It is probably not necessary for every single end point and function to be exposed by <code>api_requester</code>.</p></li>
@@ -172,7 +172,7 @@
 
 <p>Unlike our <code>api_requester</code>, the mindset behind this pattern is: &quot;Make sure no one can actually understand what is going on behind the scenes&quot;.</p>
 
-<p>Wrapping the same RESTful 3rd party API, <code>api_contraption</code>, is be our next library. Its code might be used in the following way:</p>
+<p>Wrapping the same RESTful 3rd party API, <code>api_contraption</code>, will be our next library. Its code might be used in the following way:</p>
 <div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="nb">require</span> <span class="s1">&#39;api_contraption&#39;</span>
 
 <span class="n">object_wanted</span> <span class="o">=</span> <span class="no">APIWrapper</span><span class="o">.</span><span class="n">fetch_an_object</span>
@@ -186,14 +186,14 @@
 <span class="n">object_wanted</span><span class="o">.</span><span class="n">update_object_attribute!</span>
 <span class="c1"># =&gt; &lt;Object @variable=:updated, @other_variable=:also_magically_updated&gt;</span>
 </code></pre></div>
-<p>As demonstrated, this library is nearly 100% magic. <code>APIWrapper</code> in this case exposes arbitrary methods like <code>fetch_an_object</code> and returns a magical object with instance variables set.</p>
+<p>As demonstrated, this library is nearly 100% magic. <code>APIWrapper</code> exposes arbitrary methods like <code>fetch_an_object</code> and returns a magical object with instance variables set.</p>
 
 <h3>Pros:</h3>
 
 <ol>
 <li><p><strong>Actual abstraction</strong></p>
 
-<p>Consumers of <code>api_contraption</code> do not need to understand the underlying API&#39;s full functionality. The wrapper in this case has provided (hopefully) a small handful of useful methods and classes to expose the heart of the API it wraps.</p></li>
+<p>Consumers of <code>api_contraption</code> do not need to understand the underlying API&#39;s full functionality. The wrapper has provided (hopefully) a small handful of useful methods and classes to expose the heart of the API it wraps.</p></li>
 </ol>
 
 <h3>Cons:</h3>
@@ -201,7 +201,7 @@
 <ol>
 <li><p><strong>Inflexible</strong></p>
 
-<p>Whenever the underlying API needs to change a response or request contract, the <code>api_contraption</code> has to change. This can be a very tiring exercise for its consumers. However, if a wrapper is built around a very stable and slowly iterating API, this inflexibility might not be noticed as greatly.</p></li>
+<p>Whenever the underlying API needs to change a response or request contract, the <code>api_contraption</code> has to change. This can be a very tiring exercise for its consumers. However, if the API being wrapped is very stable, this inflexibility might not be noticed as greatly.</p></li>
 <li><p><strong>Makes the underlying API a black box</strong></p>
 
 <p>While the <code>api_requester</code> above did not do enough abstraction, this <code>api_contraption</code> does too much. It prevents developers from discovering useful features of the 3rd party API that might be helpful to them. Granted, a consumer could refer to the service&#39;s own documentation for feature discovery but who says that they should be forced to?</p></li>
@@ -240,7 +240,7 @@
 <p>At first glance it might not seem like all too much is different between this solution and the previous two. However, a few key differences are present.</p>
 
 <ol>
-<li><p>We no longer have a generic superclass <code>APIWrapper</code> to interact with, it has become a namespace. With this namespace clients can freely inherit their own objects from our <code>DesiredObject</code> class and make modifications as they see fit.</p></li>
+<li><p>We no longer have a generic superclass <code>APIWrapper</code> to interact with, it has become a namespace. With this namespace, clients can freely inherit their own objects from our <code>DesiredObject</code> class and make modifications as they see fit.</p></li>
 <li><p>Abstraction is still very much in play. URL structures, HTTP payloads and other small minutia about the request is abstracted away from our consumers and they are given very logical methods <code>find</code> and <code>update</code>. These methods enable our consumer to interact with their resources in a familiar and pleasant way.</p></li>
 </ol>
 
