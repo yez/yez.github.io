@@ -69,7 +69,7 @@
 &lt;p&gt;A big problem with wrapping APIs outside of your own control is endpoint churn, change, and deprecation. With such a verbose wrapper, the consumer is in complete control of the request. From URL changes to parameter addition and deletion, a consumer of &lt;code&gt;api_requester&lt;/code&gt; is able to adapt without updating their library (just their own source code).&lt;/p&gt;&lt;/li&gt;
 &lt;li&gt;&lt;p&gt;&lt;strong&gt;Transparent&lt;/strong&gt;&lt;/p&gt;
 
-&lt;p&gt;Since &lt;code&gt;api_requester&lt;/code&gt; does attempt to abstract out the intricacies of our 3rd party API, the consumer of &lt;code&gt;api_requester&lt;/code&gt; knows exactly how the the underlying API works. Understanding the nuances of the API being &amp;quot;wrapped&amp;quot; might influence the consumer&amp;#39;s system architecture positively.&lt;/p&gt;&lt;/li&gt;
+&lt;p&gt;Since &lt;code&gt;api_requester&lt;/code&gt; does attempt to abstract out the intricacies of our 3rd party API, the consumer of &lt;code&gt;api_requester&lt;/code&gt; knows exactly how the underlying API works. Understanding the nuances of the API being &amp;quot;wrapped&amp;quot; might influence the consumer&amp;#39;s system architecture positively.&lt;/p&gt;&lt;/li&gt;
 &lt;/ol&gt;
 
 &lt;h3&gt;Cons:&lt;/h3&gt;
