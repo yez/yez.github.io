@@ -4,13 +4,52 @@
  <title>A Year of Commits</title>
  <link href="/atom.xml" rel="self"/>
  <link href="/"/>
- <updated>2015-05-31T21:12:33-07:00</updated>
+ <updated>2015-06-07T23:22:02-07:00</updated>
  <id></id>
  <author>
    <name>Jake Yesbeck</name>
    <email></email>
  </author>
 
+ 
+ <entry>
+   <title>Short Feedback Cycles</title>
+   <link href="/2015/06/07/short_feedback_cycles/"/>
+   <updated>2015-06-07T05:00:00-07:00</updated>
+   <id>/2015/06/07/short_feedback_cycles</id>
+   <content type="html">&lt;p&gt;Forty-two days into my &lt;a href=&quot;http://jakeyesbeck.com/2015/04/23/a_year_of_commits/&quot;&gt;year of commits&lt;/a&gt; initiative has come and gone. With it, I have found some great processes for making my contributions efficient and effective. Feedback is extremely important when writing software. After all, the code you write is probably designed to work, right? Right. A good way to verify correctness in your software is through automated tests. These can either be unit tests for specific methods and functions or integration tests; those that make sure a complete code path behaves as expected. Regardless, we write these tests to ensure our code works now and in the future. &amp;quot;In the future&amp;quot; is where I have started to contribute to projects.&lt;/p&gt;
+
+&lt;p&gt;Good projects have test files that the original author(s) provide. Great projects have &lt;em&gt;fast&lt;/em&gt; test files that the original author(s) provide. Fast tests provide short feedback cycles. Short feedback cycles prevent bugs and help make new feature development and refactoring much more painless. Feedback governs our behaviors in and outside the development world. Without it, we would not be as efficient or effective at the tasks that are important to us. From writing software to training for a half marathon, feedback matters a great deal.&lt;/p&gt;
+
+&lt;p&gt;In a recent &lt;a href=&quot;https://github.com/ariejan/imdb/pull/71&quot;&gt;contribution of mine&lt;/a&gt;, I relied heavily on automated testing and short feedback cycles. It was important to me that I was able to identify how the specs were changing as I upgraded them to RSpec 3. I used &lt;a href=&quot;https://github.com/guard/guard&quot;&gt;Guard&lt;/a&gt; to help run my tests automatically when any of the code changed. Guard is a tool to automatically run your automated test files as you are making changes to the code.&lt;/p&gt;
+
+&lt;p&gt;Guard has been around for a long time. I chose to use it due to how simple it is to set up. All you need to do is include the &lt;code&gt;guard-rspec&lt;/code&gt; gem in your repository create a &lt;code&gt;Guardfile&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;An example &lt;code&gt;Guardfile&lt;/code&gt; (which exists in the root of your repository) would look something like this:&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;n&quot;&gt;guard&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:rspec&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;cmd&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;rspec&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;notification&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kp&quot;&gt;false&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;watch&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;sr&quot;&gt;%r{^spec/.+_spec\.rb$}&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;watch&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;sr&quot;&gt;%r{^lib/(.+)\.rb$}&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;    &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;m&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;spec/lib/&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;#{&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;m&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;_spec.rb&amp;quot;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;watch&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;sr&quot;&gt;%r{^models/(.+)\.rb$}&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;m&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;spec/models/&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;#{&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;m&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;_spec.rb&amp;quot;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;watch&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;spec/spec_helper.rb&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;spec&amp;quot;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Let&amp;#39;s break this file down and see exactly what is going on.&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;n&quot;&gt;watch&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;sr&quot;&gt;%r{^spec/.+_spec\.rb$}&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;This line tells Guard to watch each spec file and run the contained tests if the file has been saved. The file does not need to be changed, only saved for guard to run the specs.&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;n&quot;&gt;watch&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;sr&quot;&gt;%r{^lib/(.+)\.rb$}&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;    &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;m&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;spec/lib/&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;#{&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;m&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;_spec.rb&amp;quot;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;watch&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;sr&quot;&gt;%r{^models/(.+)\.rb$}&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;m&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;spec/models/&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;#{&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;m&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;_spec.rb&amp;quot;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;These two lines do the same thing in different directories. The first looks in the &lt;code&gt;lib&lt;/code&gt; directory for anything ending in &lt;code&gt;.rb&lt;/code&gt; and runs the associated spec files in &lt;code&gt;spec/lib/&lt;/code&gt;. For example, if we have changed a file, &lt;code&gt;lib/foo.rb&lt;/code&gt;, then the spec, &lt;code&gt;spec/lib/foo_spec.rb&lt;/code&gt;, is run. The second line does the exact same thing for the &lt;code&gt;models&lt;/code&gt; directory.&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;n&quot;&gt;watch&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;spec/spec_helper.rb&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;spec&amp;quot;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;This last line tells guard to run a specific directory (in this case, &lt;code&gt;spec&lt;/code&gt;) whenever our &lt;code&gt;spec/spec_helper.rb&lt;/code&gt; file is saved.&lt;/p&gt;
+
+&lt;p&gt;With our &lt;code&gt;Guardfile&lt;/code&gt; set up, seeing the successes and failures of our test suite while we do development is as easy as running &lt;code&gt;guard&lt;/code&gt; in the root of our directory structure. Personally, I use &lt;code&gt;guard --clear&lt;/code&gt; to make the terminal clean up after itself between runs. This creates a nice blank slate to run each spec on and requires no additional scrolling.&lt;/p&gt;
+
+&lt;p&gt;Guard has been a very valuable asset to me during my Year of Commits and it, or technologies in the same space, would be worth looking into for anyone searching for short feedback development. Go out there, keep your Guard up and make some great contributions to other people&amp;#39;s code!&lt;/p&gt;
+</content>
+ </entry>
  
  <entry>
    <title>Writing good API wrappers</title>
