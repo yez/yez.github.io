@@ -4,13 +4,34 @@
  <title>A Year of Commits</title>
  <link href="/atom.xml" rel="self"/>
  <link href="/"/>
- <updated>2015-06-07T23:22:02-07:00</updated>
+ <updated>2015-06-14T22:35:50-07:00</updated>
  <id></id>
  <author>
    <name>Jake Yesbeck</name>
    <email></email>
  </author>
 
+ 
+ <entry>
+   <title>You are not your code</title>
+   <link href="/2015/06/07/you_are_not_your_code/"/>
+   <updated>2015-06-07T05:00:00-07:00</updated>
+   <id>/2015/06/07/you_are_not_your_code</id>
+   <content type="html">&lt;p&gt;It may have been a mentor, a colleague, or even a random vagrant on your way to work. One of these people has been wise enough in to let you in on the well known fact that: &lt;em&gt;&amp;quot;You are not your code&amp;quot;&lt;/em&gt;. The words themselves seem so simple, so obvious and straightforward. But simple as it may be, this concept is paramount if you are to survive as a &lt;a href=&quot;http://jakeyesbeck.com/2015/05/17/just_learn_rails/&quot;&gt;Software Artisan&lt;/a&gt; and as a functioning member of society.&lt;/p&gt;
+
+&lt;p&gt;When writing software, having a sizable ego is not always appropriate. In fact, it could become a hindrance that will prevent you from being productive and happy. Software contribution is about coordinating with others to make the best possible software. It is very hard to coordinate if a person is unable to relinquish control of their projects because they feel defined by them.&lt;/p&gt;
+
+&lt;p&gt;The first time someone said that I was not my code, I took offense. I didn&amp;#39;t understand what they really meant. All I could think was: &lt;em&gt;&amp;quot;What do you mean? &lt;strong&gt;I&lt;/strong&gt; wrote the code. &lt;strong&gt;I&lt;/strong&gt; put my heart, soul, blood, sweat, and tears into the code. It is the epitome of &lt;strong&gt;me&lt;/strong&gt;. The code &lt;strong&gt;I&lt;/strong&gt; write defines &lt;strong&gt;me!&lt;/strong&gt; &amp;quot;&lt;/em&gt;. It was that last statement that demonstrated how naive I really was. Your code was crafted by you, maintained by you, and evolved with you. But, like a carpenter is not a chair, &lt;strong&gt;you are not your code&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;p&gt;During my &lt;a href=&quot;http://jakeyesbeck.com/2015/04/23/a_year_of_commits/&quot;&gt;Year of Commits&lt;/a&gt;, it has been very important to internalize the difference between my code and myself. If I have too much ownership and pride dealing with the code I write, it makes it impossible for me to contribute as part of a community. The difference between writing software and other creative forms of work lies in the longevity of what is created. For a more traditional artisan, a painting or a house will last much longer than the average piece of code.&lt;/p&gt;
+
+&lt;p&gt;You, me, even that guy at work who seems to be the fabled &amp;quot;10x engineer&amp;quot;, write transient code. Our code will not outlive us. Heck, the average lifespan of code written is between 6 months and 2 years. That is &lt;em&gt;nothing&lt;/em&gt; compared to other professions. What if civil engineers only had to make a bridge that lasted for 6 months? That would be one poorly built bridge that no one would want to drive over. But when writing software, that is often the expected life of the code. With that, it becomes quite clear that code written to not last a century should never be used to define a person&amp;#39;s life. If you had the desire to really define yourself by your code, you would probably spend 10 years writing and perfecting every single component. This is not feasible nor realistic. We are not building bridges to last decades upon decades, neither are we creating pieces of art to hang in museums for generations. We are building software to last &amp;quot;long enough&amp;quot;. We build it because we love to and because someone is most likely paying us to do it &lt;em&gt;(I still smile sometimes when I realize I get &lt;strong&gt;paid&lt;/strong&gt; to write code)&lt;/em&gt;.&lt;/p&gt;
+
+&lt;p&gt;At the end of the day, everyone wants to be proud of the job they have done and the things they have achieved. People who write software are very lucky. We get to go home every day having created something new or made something better. However, we must remain humble. Humility will be our saving grace. It will be the thing that prevents us from going gray at the age of 35. Letting go of the code that we write will help us keep that bottle of Glenlivet from diminishing at an expeditious pace. Our families will not have to wonder when we will return home because we let our code go. We can rest easy knowing &amp;quot;that new guy who uses tabs instead of spaces&amp;quot; will be taking over the code we wrote a month ago, and that is &lt;strong&gt;ok&lt;/strong&gt;. Because in the end, the code we write will most likely be deleted within a year of its conception.&lt;/p&gt;
+
+&lt;p&gt;You are not your code. You love to write code but are not defined by it. The code we write enriches our lives. We learn a great deal from the problems that we solve, but we are not defined by the solutions. I am a Software Artisan who&amp;#39;s code will be forgotten along with everyone else&amp;#39;s. I am happy I got to write it at all.&lt;/p&gt;
+</content>
+ </entry>
  
  <entry>
    <title>Short Feedback Cycles</title>

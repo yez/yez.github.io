@@ -91,6 +91,10 @@
           
         
       
+        
+          
+        
+      
 
       <a class="sidebar-nav-item" href="https://github.com/yez">GitHub</a>
       <a class="sidebar-nav-item" href="https://twitter.com/jakeyesbeck">Twitter</a>
@@ -107,156 +111,44 @@
   
   <div class="post">
     <h1 class="post-title">
-      <a href="/2015/05/31/wrapping_apis/">
-        Writing good API wrappers
+      <a href="/2015/06/07/short_feedback_cycles/">
+        Short Feedback Cycles
       </a>
     </h1>
 
-    <span class="post-date">31 May 2015</span>
+    <span class="post-date">07 Jun 2015</span>
 
-    <p>Both in my day job and in my <a href="http://jakeyesbeck.com/2015/04/23/a_year_of_commits/">year of commits</a>, I spend a lot of time thinking about APIs.</p>
+    <p>Forty-two days into my <a href="http://jakeyesbeck.com/2015/04/23/a_year_of_commits/">year of commits</a> initiative has come and gone. With it, I have found some great processes for making my contributions efficient and effective. Feedback is extremely important when writing software. After all, the code you write is probably designed to work, right? Right. A good way to verify correctness in your software is through automated tests. These can either be unit tests for specific methods and functions or integration tests; those that make sure a complete code path behaves as expected. Regardless, we write these tests to ensure our code works now and in the future. &quot;In the future&quot; is where I have started to contribute to projects.</p>
 
-<p>For the uninitiated, an <strong>A</strong>pplication <strong>P</strong>rogram <strong>I</strong>nterface (<strong>API</strong>), is an avenue for one piece of software to speak to another. This could be a remote, web-based, HTTP API. Or the API might be an internal interface for one portion of a software system to talk to another. Designing an API that is simple and maintainable is crucial if its intended to be used and quickly adopted by colleagues or 3rd party developers.</p>
+<p>Good projects have test files that the original author(s) provide. Great projects have <em>fast</em> test files that the original author(s) provide. Fast tests provide short feedback cycles. Short feedback cycles prevent bugs and help make new feature development and refactoring much more painless. Feedback governs our behaviors in and outside the development world. Without it, we would not be as efficient or effective at the tasks that are important to us. From writing software to training for a half marathon, feedback matters a great deal.</p>
 
-<p>Being one of those 3rd party developers, I find myself using and writing wrappers to these APIs. Here, in my opinion, is what makes a good API wrapper. Let&#39;s postulate about some example wrapper designs.</p>
+<p>In a recent <a href="https://github.com/ariejan/imdb/pull/71">contribution of mine</a>, I relied heavily on automated testing and short feedback cycles. It was important to me that I was able to identify how the specs were changing as I upgraded them to RSpec 3. I used <a href="https://github.com/guard/guard">Guard</a> to help run my tests automatically when any of the code changed. Guard is a tool to automatically run your automated test files as you are making changes to the code.</p>
 
-<h2>The Barely Abstractor</h2>
+<p>Guard has been around for a long time. I chose to use it due to how simple it is to set up. All you need to do is include the <code>guard-rspec</code> gem in your repository create a <code>Guardfile</code>.</p>
 
-<p>The mantra of this design is: &quot;I will take away that annoying HTTP element and you do literally all the rest.&quot;</p>
-
-<p>We can assume that a library called <code>api_requester</code> exists to wrap our very important 3rd party remote API (Which we will also assume is a <a href="http://en.wikipedia.org/wiki/Representational_state_transfer">RESTful API</a>).</p>
-
-<p>If we wanted to retrieve an object our code might look something like:</p>
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="nb">require</span> <span class="s1">&#39;api_requester&#39;</span>
-
-<span class="n">params</span> <span class="o">=</span> <span class="p">{</span> <span class="nb">object_id</span><span class="p">:</span> <span class="mi">1</span> <span class="p">}</span>
-<span class="n">headers</span> <span class="o">=</span> <span class="p">{</span> <span class="s1">&#39;Content-Type&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;application/json&#39;</span> <span class="p">}</span>
-
-<span class="n">object_wanted</span> <span class="o">=</span> <span class="no">APIWrapper</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
-                  <span class="s1">&#39;relative/path/to/object/&#39;</span><span class="p">,</span>
-                  <span class="n">params</span><span class="p">,</span>
-                  <span class="n">headers</span><span class="p">)</span>
-
-<span class="c1"># =&gt; { big: :hash, of: :attributes}</span>
+<p>An example <code>Guardfile</code> (which exists in the root of your repository) would look something like this:</p>
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">guard</span> <span class="ss">:rspec</span><span class="p">,</span> <span class="ss">cmd</span><span class="p">:</span> <span class="s1">&#39;rspec&#39;</span><span class="p">,</span> <span class="ss">notification</span><span class="p">:</span> <span class="kp">false</span> <span class="k">do</span>
+  <span class="n">watch</span><span class="p">(</span><span class="sr">%r{^spec/.+_spec\.rb$}</span><span class="p">)</span>
+  <span class="n">watch</span><span class="p">(</span><span class="sr">%r{^lib/(.+)\.rb$}</span><span class="p">)</span>    <span class="p">{</span> <span class="o">|</span><span class="n">m</span><span class="o">|</span> <span class="s2">&quot;spec/lib/</span><span class="si">#{</span><span class="n">m</span><span class="o">[</span><span class="mi">1</span><span class="o">]</span><span class="si">}</span><span class="s2">_spec.rb&quot;</span> <span class="p">}</span>
+  <span class="n">watch</span><span class="p">(</span><span class="sr">%r{^models/(.+)\.rb$}</span><span class="p">)</span> <span class="p">{</span> <span class="o">|</span><span class="n">m</span><span class="o">|</span> <span class="s2">&quot;spec/models/</span><span class="si">#{</span><span class="n">m</span><span class="o">[</span><span class="mi">1</span><span class="o">]</span><span class="si">}</span><span class="s2">_spec.rb&quot;</span> <span class="p">}</span>
+  <span class="n">watch</span><span class="p">(</span><span class="s1">&#39;spec/spec_helper.rb&#39;</span><span class="p">)</span> <span class="p">{</span> <span class="s2">&quot;spec&quot;</span> <span class="p">}</span>
+<span class="k">end</span>
 </code></pre></div>
-<p>To post an object via this wrapper:</p>
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="nb">require</span> <span class="s1">&#39;api_requester&#39;</span>
-
-<span class="n">params</span> <span class="o">=</span> <span class="p">{</span>
-  <span class="nb">object_id</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
-  <span class="ss">object_name</span><span class="p">:</span> <span class="ss">:foo</span><span class="p">,</span>
-  <span class="ss">object_type</span><span class="p">:</span> <span class="ss">:bar</span><span class="p">,</span>
-  <span class="ss">object_description</span><span class="p">:</span> <span class="s1">&#39;I am an object&#39;</span>
-<span class="p">}</span>
-<span class="n">headers</span> <span class="o">=</span> <span class="p">{</span> <span class="s1">&#39;Content-Type&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;application/json&#39;</span> <span class="p">}</span>
-
-<span class="no">APIWrapper</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
-  <span class="s1">&#39;relative/path/to/object/&#39;</span><span class="p">,</span>
-  <span class="n">params</span><span class="p">,</span>
-  <span class="n">headers</span><span class="p">)</span>
-<span class="c1"># =&gt; { big: :hash, of: :attributes}</span>
+<p>Let&#39;s break this file down and see exactly what is going on.</p>
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">watch</span><span class="p">(</span><span class="sr">%r{^spec/.+_spec\.rb$}</span><span class="p">)</span>
 </code></pre></div>
-<p>So, you get the idea. That idea is verbosity. However, this approach is not all negative.</p>
-
-<h3>Pros:</h3>
-
-<ol>
-<li><p><strong>Resilient to API changes</strong></p>
-
-<p>A big problem with wrapping APIs outside of your own control is endpoint churn, change, and deprecation. With such a verbose wrapper, the consumer is in complete control of the request. From URL changes to parameter addition and deletion, a consumer of <code>api_requester</code> is able to adapt without updating their library (just their own source code).</p></li>
-<li><p><strong>Transparent</strong></p>
-
-<p>Since <code>api_requester</code> does attempt to abstract out the intricacies of our 3rd party API, the consumer of <code>api_requester</code> knows exactly how the underlying API works. Understanding the nuances of the API being &quot;wrapped&quot; might influence the consumer&#39;s system architecture positively.</p></li>
-</ol>
-
-<h3>Cons:</h3>
-
-<ol>
-<li><p><strong>No abstraction</strong></p>
-
-<p>Without abstraction, a consumer of <code>api_requester</code> must be one with the 3rd party API&#39;s documentation. To ensure competent use, the consumer must become familiar with all possible endpoints and usage patterns. This nearly completely defeats the purpose of providing a wrapper.</p></li>
-<li><p><strong>Does not minimize 3rd party surface area</strong></p>
-
-<p>One of the main purposes of wrapping a 3rd party API is to minimize its overall surface area. Making small, distinct interaction points is important for the consumer of <code>api_requester</code>. Fewer moving pieces means fewer points of failure. It is probably not necessary for every single end point and function to be exposed by <code>api_requester</code>.</p></li>
-</ol>
-
-<h2>The Over-abstraction contraption</h2>
-
-<p>Unlike our <code>api_requester</code>, the mindset behind this pattern is: &quot;Make sure no one can actually understand what is going on behind the scenes&quot;.</p>
-
-<p>Wrapping the same RESTful 3rd party API, <code>api_contraption</code>, will be our next library. Its code might be used in the following way:</p>
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="nb">require</span> <span class="s1">&#39;api_contraption&#39;</span>
-
-<span class="n">object_wanted</span> <span class="o">=</span> <span class="no">APIWrapper</span><span class="o">.</span><span class="n">fetch_an_object</span>
-<span class="c1"># =&gt; &lt;Object @variable=:thing, @other_variable=:other_thing&gt;</span>
+<p>This line tells Guard to watch each spec file and run the contained tests if the file has been saved. The file does not need to be changed, only saved for guard to run the specs.</p>
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">watch</span><span class="p">(</span><span class="sr">%r{^lib/(.+)\.rb$}</span><span class="p">)</span>    <span class="p">{</span> <span class="o">|</span><span class="n">m</span><span class="o">|</span> <span class="s2">&quot;spec/lib/</span><span class="si">#{</span><span class="n">m</span><span class="o">[</span><span class="mi">1</span><span class="o">]</span><span class="si">}</span><span class="s2">_spec.rb&quot;</span> <span class="p">}</span>
+<span class="n">watch</span><span class="p">(</span><span class="sr">%r{^models/(.+)\.rb$}</span><span class="p">)</span> <span class="p">{</span> <span class="o">|</span><span class="n">m</span><span class="o">|</span> <span class="s2">&quot;spec/models/</span><span class="si">#{</span><span class="n">m</span><span class="o">[</span><span class="mi">1</span><span class="o">]</span><span class="si">}</span><span class="s2">_spec.rb&quot;</span> <span class="p">}</span>
 </code></pre></div>
-<p>To post an object via this wrapper:</p>
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="nb">require</span> <span class="s1">&#39;api_contraption&#39;</span>
-
-<span class="n">object_wanted</span> <span class="o">=</span> <span class="no">APIWrapper</span><span class="o">.</span><span class="n">fetch_an_object</span>
-
-<span class="n">object_wanted</span><span class="o">.</span><span class="n">update_object_attribute!</span>
-<span class="c1"># =&gt; &lt;Object @variable=:updated, @other_variable=:also_magically_updated&gt;</span>
+<p>These two lines do the same thing in different directories. The first looks in the <code>lib</code> directory for anything ending in <code>.rb</code> and runs the associated spec files in <code>spec/lib/</code>. For example, if we have changed a file, <code>lib/foo.rb</code>, then the spec, <code>spec/lib/foo_spec.rb</code>, is run. The second line does the exact same thing for the <code>models</code> directory.</p>
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">watch</span><span class="p">(</span><span class="s1">&#39;spec/spec_helper.rb&#39;</span><span class="p">)</span> <span class="p">{</span> <span class="s2">&quot;spec&quot;</span> <span class="p">}</span>
 </code></pre></div>
-<p>As demonstrated, this library is nearly 100% magic. <code>APIWrapper</code> exposes arbitrary methods like <code>fetch_an_object</code> and returns a magical object with instance variables set.</p>
+<p>This last line tells guard to run a specific directory (in this case, <code>spec</code>) whenever our <code>spec/spec_helper.rb</code> file is saved.</p>
 
-<h3>Pros:</h3>
+<p>With our <code>Guardfile</code> set up, seeing the successes and failures of our test suite while we do development is as easy as running <code>guard</code> in the root of our directory structure. Personally, I use <code>guard --clear</code> to make the terminal clean up after itself between runs. This creates a nice blank slate to run each spec on and requires no additional scrolling.</p>
 
-<ol>
-<li><p><strong>Actual abstraction</strong></p>
-
-<p>Consumers of <code>api_contraption</code> do not need to understand the underlying API&#39;s full functionality. The wrapper has provided (hopefully) a small handful of useful methods and classes to expose the heart of the API it wraps.</p></li>
-</ol>
-
-<h3>Cons:</h3>
-
-<ol>
-<li><p><strong>Inflexible</strong></p>
-
-<p>Whenever the underlying API needs to change a response or request contract, the <code>api_contraption</code> has to change. This can be a very tiring exercise for its consumers. However, if the API being wrapped is very stable, this inflexibility might not be noticed as greatly.</p></li>
-<li><p><strong>Makes the underlying API a black box</strong></p>
-
-<p>While the <code>api_requester</code> above did not do enough abstraction, this <code>api_contraption</code> does too much. It prevents developers from discovering useful features of the 3rd party API that might be helpful to them. Granted, a consumer could refer to the service&#39;s own documentation for feature discovery but who says that they should be forced to?</p></li>
-</ol>
-
-<h2>So which is better?</h2>
-
-<p>The answer is neither. A desirable solution exists somewhere between these two examples. An API wrapper should be terse yet flexible, simple yet sophisticated. Making a consumer of your wrapper upgrade with every API change is not scalable and will drive people away from it. At the same time, if a consumer can not see the value your library gives them, why would they bother to use it?</p>
-
-<p>A good abstraction, a positive value add piece of software can be defined by a few key features:</p>
-
-<ul>
-<li>Flexibility</li>
-<li>Usefulness</li>
-<li>Readability</li>
-</ul>
-
-<p>Each of our example libraries had one or two of these features but not all three. To make up for what was lacking let&#39;s try and make a hybrid of the two: an <code>api_wrapper</code>.</p>
-
-<h2>The middle ground</h2>
-
-<p>Requesting an Object</p>
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="nb">require</span> <span class="s1">&#39;api_wrapper&#39;</span>
-
-<span class="n">object_wanted</span> <span class="o">=</span> <span class="no">APIWrapper</span><span class="o">::</span><span class="no">DesiredObject</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="mi">123</span><span class="p">)</span>
-<span class="c1">#=&gt; &lt;DesiredObject @id=123, @name=&#39;The One&#39;, @author=&#39;The Architect&#39;&gt;</span>
-</code></pre></div>
-<p>Updating an object</p>
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="nb">require</span> <span class="s1">&#39;api_wrapper&#39;</span>
-
-<span class="n">object_wanted</span> <span class="o">=</span> <span class="no">APIWrapper</span><span class="o">::</span><span class="no">DesiredObject</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="mi">123</span><span class="p">)</span>
-
-<span class="n">object_watned</span><span class="o">.</span><span class="n">update!</span><span class="p">(</span><span class="ss">author</span><span class="p">:</span> <span class="s1">&#39;Mr. Smith&#39;</span><span class="p">)</span>
-<span class="c1">#=&gt; &lt;DesiredObject @id=123, @name=&#39;The One&#39;, @author=&#39;Mr. Smith&#39;&gt;</span>
-</code></pre></div>
-<p>At first glance it might not seem like all too much is different between this solution and the previous two. However, a few key differences are present.</p>
-
-<ol>
-<li><p>We no longer have a generic superclass <code>APIWrapper</code> to interact with, it has become a namespace. With this namespace, clients can freely inherit their own objects from our <code>DesiredObject</code> class and make modifications as they see fit.</p></li>
-<li><p>Abstraction is still very much in play. URL structures, HTTP payloads and other small minutia about the request is abstracted away from our consumers and they are given very logical methods <code>find</code> and <code>update</code>. These methods enable our consumer to interact with their resources in a familiar and pleasant way.</p></li>
-</ol>
-
-<p>I am not saying this solution is perfect, but it is objectively better than the other two. A lot of factors go into making a great API wrapper. Adhering to the three ideal attributes: <strong>Flexibility</strong>, <strong>Usefulness</strong> and <strong>Readability</strong> will at least point your projects in the right direction.</p>
+<p>Guard has been a very valuable asset to me during my Year of Commits and it, or technologies in the same space, would be worth looking into for anyone searching for short feedback development. Go out there, keep your Guard up and make some great contributions to other people&#39;s code!</p>
 
   </div>
   
