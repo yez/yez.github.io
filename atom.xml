@@ -4,7 +4,7 @@
  <title>A Year of Commits</title>
  <link href="/atom.xml" rel="self"/>
  <link href="/"/>
- <updated>2015-06-21T23:31:29-07:00</updated>
+ <updated>2015-06-22T16:50:31-07:00</updated>
  <id></id>
  <author>
    <name>Jake Yesbeck</name>
@@ -90,9 +90,9 @@
  
  <entry>
    <title>You are not your code</title>
-   <link href="/2015/06/07/you_are_not_your_code/"/>
-   <updated>2015-06-07T05:00:00-07:00</updated>
-   <id>/2015/06/07/you_are_not_your_code</id>
+   <link href="/2015/06/14/you_are_not_your_code/"/>
+   <updated>2015-06-14T05:00:00-07:00</updated>
+   <id>/2015/06/14/you_are_not_your_code</id>
    <content type="html">&lt;p&gt;It may have been a mentor, a colleague, or even a random vagrant on your way to work. One of these people has been wise enough in to let you in on the well known fact that: &lt;em&gt;&amp;quot;You are not your code&amp;quot;&lt;/em&gt;. The words themselves seem so simple, so obvious and straightforward. But simple as it may be, this concept is paramount if you are to survive as a &lt;a href=&quot;http://jakeyesbeck.com/2015/05/17/just_learn_rails/&quot;&gt;Software Artisan&lt;/a&gt; and as a functioning member of society.&lt;/p&gt;
 
 &lt;p&gt;When writing software, having a sizable ego is not always appropriate. In fact, it could become a hindrance that will prevent you from being productive and happy. Software contribution is about coordinating with others to make the best possible software. It is very hard to coordinate if a person is unable to relinquish control of their projects because they feel defined by them.&lt;/p&gt;
