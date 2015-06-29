@@ -4,13 +4,36 @@
  <title>A Year of Commits</title>
  <link href="/atom.xml" rel="self"/>
  <link href="/"/>
- <updated>2015-06-22T16:50:31-07:00</updated>
+ <updated>2015-06-28T21:33:33-07:00</updated>
  <id></id>
  <author>
    <name>Jake Yesbeck</name>
    <email></email>
  </author>
 
+ 
+ <entry>
+   <title>Staying Motivated</title>
+   <link href="/2015/06/28/staying_motivated/"/>
+   <updated>2015-06-28T05:00:00-07:00</updated>
+   <id>/2015/06/28/staying_motivated</id>
+   <content type="html">&lt;p&gt;Motivation is the most important thing that you can control. Only with the proper motivation can one reach their full potential. A Year of Commits is a project that requires a decent amount of motivation. I, like probably every human ever, am not always the most driven every single day. It takes a large amount of effort to persevere through low points and come out the other side with something to show for it. It has been &lt;strong&gt;63&lt;/strong&gt; days of my Year of Commits initiative and I have found a few helpful ways to keep my motivation up and morale high.&lt;/p&gt;
+
+&lt;h2&gt;1. Make small deliverables for yourself&lt;/h2&gt;
+
+&lt;p&gt;If you embark on grandiose endeavors frequently, consider breaking pieces of them apart into small, digestible morsels of motivation goodness. Every project does not need to go at break neck speed instantly. This is especially applicable in software development. You know that project that you&amp;#39;ve been planning? The revolutionary one that you&amp;#39;re so excited about? That project has a greater chance of actually going somewhere if you don&amp;#39;t expect to complete the whole thing in an afternoon. Setting yourself up with unreasonable expectations can deflate even the most cocksure individual. If you take some time to prioritize small deliverable pieces, you will be much more likely to achieve something. Speaking from experience, there comes a time when you have to sit back and wonder: &lt;em&gt;&amp;quot;Why do I have 10-15 projects around 30% completion?&amp;quot;.&lt;/em&gt; It might just be that you were biting off a bit more than you can chew. Take smaller bites, you will get there if you just keep going.&lt;/p&gt;
+
+&lt;h2&gt;2. Keep moving&lt;/h2&gt;
+
+&lt;p&gt;A complementary behavior to breaking things into smaller pieces is to make every day count. As the person committed to working every single day for year, I might be a &lt;em&gt;tad&lt;/em&gt; biased. However, I whole heartedly believe that maintaining at least some kind of constant pace of effort will keep motivation from dropping off a cliff. Procrastination is the greatest enemy of motivation. If you let yourself delay your tasks once, it becomes increasingly easy to delay them again. Subsequent delays will mostly likely be in the not so distant future. If you make your tasks into your routine, it can have the opposite effect. I bet you don&amp;#39;t even think about all the time you spend doing things that are just &amp;quot;part of your routine&amp;quot;. Imagine if the tasks you wanted to accomplish, the world changing, earth shattering, unbelievable awesome project that you have queued up was as easy to fit in your schedule as brushing your teeth. There exists no magic that some of the greatest achievers have found and harnessed. They simply kept working until the job was done. To them, working on what they wanted to accomplish was as routine as brushing their teeth.&lt;/p&gt;
+
+&lt;h2&gt;3. Believe that you are good at what you do&lt;/h2&gt;
+
+&lt;p&gt;As it so happens, your kindergarten teacher was right about a thing or two. Attitude is important in order to help you stay motivated. A self debilitating mindset can vacuum the motivation out of nearly anything. Having the right attitude will help you soar, help keep that fire of motivation stoked and ready. Impostor syndrome, doubts, or anything of that general mindset will be nothing but a hindrance. Understanding your skill sets, knowing where you want to improve and where you have strengths will help keep you motivated to achieve your goals. This might be the most obvious piece of advice but that does not mean it is the easiest to achieve. In software development, our confidence in our abilities is constantly tested. I try and combat this by remaining calm, remembering &lt;a href=&quot;http://jakeyesbeck.com/2015/06/14/you_are_not_your_code/&quot;&gt;&amp;quot;I am not my code&amp;quot;&lt;/a&gt; and taking a deep breath now and again. Confidence takes time to build. If you are among the lucky few that simply have it in abundance, great news, you just need to keep it strong!&lt;/p&gt;
+
+&lt;p&gt;Are you good? Yeah you are good. You are better than good, you&amp;#39;re motivated! Keep moving, keep building, keep creating and you will get to where you want to go. You are the one at the helm, the one in control of your journey. Motivation is the fuel.&lt;/p&gt;
+</content>
+ </entry>
  
  <entry>
    <title>Rails style subset validation</title>
