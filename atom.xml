@@ -4,7 +4,7 @@
  <title>A Year of Commits</title>
  <link href="/atom.xml" rel="self"/>
  <link href="/"/>
- <updated>2015-07-05T23:13:27-07:00</updated>
+ <updated>2015-07-06T16:00:48-07:00</updated>
  <id></id>
  <author>
    <name>Jake Yesbeck</name>
@@ -13,11 +13,11 @@
 
  
  <entry>
-   <title>Composition in Ruby</title>
+   <title>Modules in Ruby</title>
    <link href="/2015/07/05/composition_in_ruby/"/>
    <updated>2015-07-05T05:00:00-07:00</updated>
    <id>/2015/07/05/composition_in_ruby</id>
-   <content type="html">&lt;p&gt;Currently, one hundred percent of &lt;a href=&quot;http://jakeyesbeck.com/2015/04/23/a_year_of_commits/&quot;&gt;Year of Commits&lt;/a&gt;&amp;#39; commits have been to Ruby repositories. Ruby has many strengths and is a very malleable language. Ruby can be written functionally or object oriented. I tend to lean toward the latter and find myself using a few different patterns regularly. One extremely common pattern that I and many other Ruby developers use is composition. Composition&amp;#39;s purpose is to be share code between objects. Ruby has powerful tools to make composition intuitive and straight forward; however, a few idiomatic design patterns have emerged that the newer Rubyist might not be privy to.&lt;/p&gt;
+   <content type="html">&lt;p&gt;Currently, one hundred percent of &lt;a href=&quot;http://jakeyesbeck.com/2015/04/23/a_year_of_commits/&quot;&gt;Year of Commits&lt;/a&gt;&amp;#39; commits have been to Ruby repositories. Ruby has many strengths and is a very malleable language. Ruby can be written functionally or object oriented. I tend to lean toward the latter and find myself using a few different patterns regularly. One powerful tool Ruby provides is the use of Modules.&lt;/p&gt;
 
 &lt;h2&gt;Modules&lt;/h2&gt;
 
@@ -107,7 +107,7 @@
 &lt;span class=&quot;n&quot;&gt;banana&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;color&lt;/span&gt;
 &lt;span class=&quot;c1&quot;&gt;# =&amp;gt; yellow&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;Boom, boom, pow, we have some nice composition going with well organized code. We are now able to easily define instance and class methods for our various important fruit related modules.&lt;/p&gt;
+&lt;p&gt;Boom, boom, pow, we have some nicely organized shared code. We are now able to easily define instance and class methods for our various important fruit related modules.&lt;/p&gt;
 </content>
  </entry>
  
