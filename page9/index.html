@@ -63,45 +63,105 @@
   
   <div class="post">
     <h1 class="post-title">
-      <a href="/2015/05/03/ruby_boolean/">
-        Ruby Boolean
+      <a href="/2015/05/10/validates_type/">
+        validates_type
       </a>
     </h1>
 
-    <span class="post-date">03 May 2015</span>
+    <span class="post-date">10 May 2015</span>
 
-    <p>Week one of my <a href="/2015/04/23/a_year_of_commits/">Year of Commits</a> initiative is complete, 51 more to go. I did not plan on telling people about this until a few weeks into the task (in case history repeated itself and I gave up 20% in). But that didn&#39;t happen; people found out about it almost immediately, demonstrating yet again just how easy it is to find anything on the Internet. Thanks, Obama.</p>
+    <p>In keeping with my apparent obsession with types, I created another <em>helpful</em> library: <a href="https://github.com/yez/validates_type">validates_type</a>. I wanted a nice, lightweight way to assert that the types of my attributes are exactly what I need them to be once I save them to the database.</p>
 
-<p>So what happened in the first week? Did I change the world of open source forever? Did I contribute a monumental change to one of the most well renown ruby libraries out there? Nope, I made a gem that at its core is 3 lines long. I made a <a href="https://github.com/yez/ruby-boolean">boolean gem</a>. </p>
+<p>No one is particularly fond of littering their code with <code>try</code>s and <code>is_a?</code>s. To remedy this, I make my models assert confidence that the data in my database is what I expect. I&#39;m not talking about type coercion, type casting or any other munging of types that might happen on a typical read/write from your handy dandy ORM of choice. No no, this is the real deal, the bees knees, the elbows of a gazelle: <strong>actual type validation</strong>.</p>
 
-<p>I can see that most people would wonder: &quot;Why?&quot;, &quot;Why did he make this useless thing? Doesn&#39;t he know that ruby does not have the boolean type <a href="http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-talk/96356">by design</a>?&quot;. The answer is simple. I found myself over and over again typing some kind of nonsense like this:</p>
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="c1"># For some reason we need to know if this value</span>
-<span class="c1"># is a boolean or not</span>
-<span class="c1">#</span>
-<span class="c1"># @boolean?</span>
-<span class="c1">#   param: value - what we want to know is a boolean or not</span>
-<span class="c1">#   return: true/false</span>
-<span class="k">def</span> <span class="nf">boolean?</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
-  <span class="n">value</span><span class="o">.</span><span class="n">is_a?</span><span class="p">(</span><span class="no">TrueClass</span><span class="p">)</span> <span class="o">||</span> <span class="n">value</span><span class="o">.</span><span class="n">is_a?</span><span class="p">(</span><span class="no">FalseClass</span><span class="p">)</span>
+<p>Data quality is important to me, and should be important to you too. This library is an attempt at injecting some structure into your typical Rails/Sinatra app in order to keep your data clean and your system happy.</p>
+
+<h4>Alright so when would this kind of thing be necessary? Let&#39;s see an example of how automagic type coercion can bite us.</h4>
+
+<p>Let&#39;s say you&#39;re using Rails, and let&#39;s pretend for a moment that for some reason, you have some code that looks like this:</p>
+
+<p>A very important class:</p>
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">class</span> <span class="nc">ImportantResource</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
+  <span class="c1"># Attribute named :settings with what we want to be an array</span>
+  <span class="c1"># of important things encoded and stored in either</span>
+  <span class="c1"># a nice postres json column or a text column</span>
+  <span class="n">store_accessor</span> <span class="ss">:settings</span><span class="p">,</span> <span class="ss">:array_of_things</span>
 <span class="k">end</span>
 </code></pre></div>
-<p>This, however, could also be questioned. &quot;Who cares if something is a boolean or not? This is ruby, duck-type that shiz&quot;. Sure, that makes sense, I can do that. But do I want to do that? No. Why not? Because sometimes knowing the type of something can be important. You might not always have a background process like ActiveRecord&#39;s type coercion to clean up your types for you. Or maybe you actually want something to be a boolean, not <code>&#39;t&#39;</code> or <code>&#39;f&#39;</code>. </p>
-
-<p>This gem is not alone. Other gems that do similar and much more functionality exist as well (i.e. <a href="https://rubygems.org/gems/bool/versions/1.0.20">bool</a> and <a href="https://github.com/RISCfuture/boolean">boolean</a>)</p>
-
-<p>With the <a href="https://github.com/yez/ruby-boolean">ruby-boolean gem</a>, the same kind of code can be re-written:</p>
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="c1"># Super important business logic method</span>
-<span class="k">def</span> <span class="nf">some_method_where_booleans_matter</span>
-  <span class="k">if</span> <span class="n">thing</span><span class="o">.</span><span class="n">is_a?</span><span class="p">(</span><span class="no">Boolean</span><span class="p">)</span>
-    <span class="c1"># Do boolean related stuff</span>
-  <span class="k">else</span>
-    <span class="c1"># Throw a fit about it not being a boolean</span>
+<p>And a matching very important controller:</p>
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">class</span> <span class="nc">ImportantResourceController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
+  <span class="k">def</span> <span class="nf">create</span>
+    <span class="n">resource</span> <span class="o">=</span> <span class="no">ImportantResource</span><span class="o">.</span><span class="n">new</span>
+    <span class="c1"># let&#39;s set the array_of_things to a parameter that is passed in</span>
+    <span class="c1">#  via a form or something</span>
+    <span class="n">resource</span><span class="o">.</span><span class="n">array_of_things</span> <span class="o">=</span> <span class="n">params</span><span class="o">[</span><span class="ss">:array_of_things</span><span class="o">]</span>
+    <span class="c1"># great, lets save that resource</span>
+    <span class="n">resource</span><span class="o">.</span><span class="n">save!</span>
+    <span class="c1"># cool everything worked, this could not have gone better</span>
   <span class="k">end</span>
-<span class="k">end</span> 
+<span class="k">end</span>
 </code></pre></div>
-<p>Great! Now I only have to check one class instead of two. My life is now perfect, what could possibly make this any better? Nothing.</p>
+<h4>Oh no, george! What about if something other than array is passed to that parameter??</h4>
 
-<p>This project was a fun introduction to the 365 commit-a-thon I am embarking on. Maybe someone will even use it.</p>
+<p>Well let&#39;s see what might happen. If <code>params[:array_of_things] = &#39;a random string&#39;</code>, any other method or object that needs to interact with <code>ImportantResource</code> would have a bad time unless they explictly validated <code>array_of_things</code> is an array. We don&#39;t have any ORM coercion to fall back on here since this is a <code>store_accessor</code>.</p>
+
+<p>Wouldn&#39;t it be nicer to have <code>ImportantResource</code> validate itself so no other object needs to care about <code>array_of_things</code>&#39;s array-ness?</p>
+
+<p>This sounds awesome to me, and I agree. Let&#39;s check it out and how you can harness the power for yourself. What if instead of letting <code>ImportantResource</code> behave in any which way, we locked that thing down? It might look something like this:</p>
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">class</span> <span class="nc">ImportantResource</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
+  <span class="c1"># Attribute named :settings with what we want to be an array</span>
+  <span class="c1"># of important things encoded and stored in either</span>
+  <span class="c1"># a nice postres json column or a text column</span>
+  <span class="n">store_accessor</span> <span class="ss">:settings</span><span class="p">,</span> <span class="ss">:array_of_things</span>
+
+  <span class="n">validates_type</span> <span class="ss">:array_of_things</span><span class="p">,</span> <span class="ss">:array</span>
+<span class="k">end</span>
+</code></pre></div>
+<p>Now if we try to save any other value to <code>array_of_things</code> that isn&#39;t an array, we receive validation errors added to <code>important_resource.errors</code> in the same way other ActiveRecord/ActiveModel classes behave! This will keep us honest with what we set our data to.</p>
+
+<h4>So why use this pattern at all? Some of my data might be the wrong type but who cares?</h4>
+
+<p>I think you should care, I sure as heck do. For instance, what if the software we&#39;re writing is an API that people <strong>need</strong> to use? Wouldn&#39;t you rather them be confident that your documentation (that you painstakingly wrote for hours) is correct?</p>
+
+<p>For example, lets say you build a medical API: <code>SuperImportantMedicalAPI</code>. And in a super important response about a patient, a boolean value is returned for <code>patient_is_allergic_to_nuts</code>.</p>
+
+<p>This totally legitimate example shows how imperative it is that <code>SuperImportantMedicalAPI</code>&#39;s types be locked down. If people are depending on your awesome API to save them from nut allergies, don&#39;t let a string like <code>&#39;t&#39;</code> be your downfall. The people need <code>true</code> and can handle <code>true</code>, give them what they want.</p>
+
+<h4>Great? Great! Here&#39;s some FAQs:</h4>
+
+<p><strong>Q:</strong> Do the validations behave exactly the same as <code>ActiveModel::Validations</code>?</p>
+
+<p><strong>A:</strong> Exactly the same.</p>
+
+<p><strong>Q:</strong> So does that mean I can chain other validations on?</p>
+
+<p><strong>A:</strong> Heck yes, check it out:</p>
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby">  <span class="c1"># custom messaging for errors</span>
+  <span class="n">validates_type</span> <span class="ss">:array_of_things</span><span class="p">,</span>
+                 <span class="ss">:array</span><span class="p">,</span>
+                 <span class="ss">message</span><span class="p">:</span> <span class="s1">&#39;This needs to be an array!!!&#39;</span>
+
+  <span class="c1"># chaining on other validation like numericality</span>
+  <span class="n">validates</span> <span class="ss">:other_thing</span><span class="p">,</span>
+            <span class="ss">type</span><span class="p">:</span> <span class="p">{</span> <span class="ss">type</span><span class="p">:</span> <span class="ss">:integer</span><span class="p">,</span>
+                    <span class="ss">numericality</span><span class="p">:</span> <span class="p">{</span> <span class="ss">greater_than</span><span class="p">:</span> <span class="mi">1</span> <span class="p">}</span> <span class="p">}</span>
+
+  <span class="c1"># making sure object is a string and included in a specific list</span>
+  <span class="n">validates</span> <span class="ss">:yet_another_attribute</span><span class="p">,</span>
+            <span class="ss">type</span><span class="p">:</span> <span class="p">{</span> <span class="ss">type</span><span class="p">:</span> <span class="ss">:string</span><span class="p">,</span>
+                    <span class="ss">inclusion</span><span class="p">:</span> <span class="p">{</span> <span class="k">in</span><span class="p">:</span> <span class="o">[</span><span class="s1">&#39;foo&#39;</span><span class="p">,</span> <span class="s1">&#39;bar&#39;</span><span class="o">]</span> <span class="p">}</span> <span class="p">}</span>
+</code></pre></div>
+<p><strong>Q:</strong> Can I use this with <code>ActiveRecord</code> <strong>or</strong> <code>ActiveModel</code>?</p>
+
+<p><strong>A:</strong> Y to the es! Yes! Isn&#39;t that cool? Any ruby code that uses either <code>ActiveModel</code> or <code>ActiveRecord</code> can use all the power of this gem on day</p>
+
+<p><strong>Q:</strong> Does this cost at least $1,000 every time I need to use it?</p>
+
+<p><strong>A:</strong> Close, you can use this library right now for the low low price of $0. I tried to make it lower but just couldn&#39;t do it.</p>
+
+<p><strong>Q:</strong> Where can I read more?</p>
+
+<p><strong>A:</strong> <a href="https://github.com/yez/validates_type">Right freakin&#39; here</a></p>
 
   </div>
   
