@@ -277,9 +277,9 @@
    <id>/2015/05/31/wrapping-apis</id>
    <content type="html">&lt;p&gt;Both in my day job and in my &lt;a href=&quot;http://jakeyesbeck.com/2015/04/23/a_year_of_commits/&quot;&gt;year of commits&lt;/a&gt;, I spend a lot of time thinking about APIs.&lt;/p&gt;
 
-&lt;p&gt;For the uninitiated, an &lt;strong&gt;A&lt;/strong&gt;pplication &lt;strong&gt;P&lt;/strong&gt;rogram &lt;strong&gt;I&lt;/strong&gt;nterface (&lt;strong&gt;API&lt;/strong&gt;), is an avenue for one piece of software to speak to another. This could be a remote, web-based, HTTP API. Or the API might be an internal interface for one portion of a software system to talk to another. Designing an API that is simple and maintainable is crucial if its intended to be used and quickly adopted by colleagues or 3rd party developers.&lt;/p&gt;
+&lt;p&gt;For the uninitiated, an &lt;strong&gt;A&lt;/strong&gt;pplication &lt;strong&gt;P&lt;/strong&gt;rogram &lt;strong&gt;I&lt;/strong&gt;nterface (&lt;strong&gt;API&lt;/strong&gt;) is an avenue for one piece of software to speak to another. This could be a remote, web-based, HTTP API. Or, the API might be an internal interface for one portion of a software system to talk to another. Designing an API that is simple and maintainable is crucial if its intended to be used and quickly adopted by colleagues or 3rd party developers.&lt;/p&gt;
 
-&lt;p&gt;Being one of those 3rd party developers, I find myself using and writing wrappers to these APIs. Here, in my opinion, is what makes a good API wrapper. Let&amp;#39;s postulate about some example wrapper designs.&lt;/p&gt;
+&lt;p&gt;Being one of those 3rd party developers, I find myself using and writing wrappers to these APIs. Here, I will explain what makes a good API wrapper. Let&amp;#39;s postulate about some example wrapper designs.&lt;/p&gt;
 
 &lt;h2&gt;The Barely Abstractor&lt;/h2&gt;
 
