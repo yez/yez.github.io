@@ -64,7 +64,7 @@
   <span class="post-date">31 May 2015</span>
   <p>Both in my day job and in my <a href="http://jakeyesbeck.com/2015/04/23/a_year_of_commits/">year of commits</a>, I spend a lot of time thinking about APIs.</p>
 
-<p>For the uninitiated, an <strong>A</strong>pplication <strong>P</strong>rogram <strong>I</strong>nterface (<strong>API</strong>) is an avenue for one piece of software to speak to another. This could be a remote, web-based, HTTP API. Or, the API might be an internal interface for one portion of a software system to talk to another. Designing an API that is simple and maintainable is crucial if its intended to be used and quickly adopted by colleagues or 3rd party developers.</p>
+<p>For the uninitiated, an <strong>A</strong>pplication <strong>P</strong>rogram <strong>I</strong>nterface (<strong>API</strong>) is an avenue for one piece of software to speak to another. This could be a remote, web-based, HTTP API. Or, the API might be an internal interface for one portion of a software system to talk to another. Designing an API that is simple and maintainable is crucial if it is intended to be used and quickly adopted by colleagues or 3rd party developers.</p>
 
 <p>Being one of those 3rd party developers, I find myself using and writing wrappers to these APIs. Here, I will explain what makes a good API wrapper. Let&#39;s postulate about some example wrapper designs.</p>
 
@@ -169,7 +169,7 @@
 
 <h2>So which is better?</h2>
 
-<p>The answer is neither. A desirable solution exists somewhere between these two examples. An API wrapper should be terse yet flexible, simple yet sophisticated. Making a consumer of your wrapper upgrade with every API change is not scalable and will drive people away from it. At the same time, if a consumer can not see the value your library gives them, why would they bother to use it?</p>
+<p>The answer is neither. A desirable solution exists somewhere between these two examples. An API wrapper should be terse yet flexible, simple yet sophisticated. Making a consumer of your wrapper upgrade with every API change is not scalable and will drive people away from it. At the same time, if a consumer cannot see the value your library gives them, why would they bother to use it?</p>
 
 <p>A good abstraction, a positive value add piece of software can be defined by a few key features:</p>
 
@@ -194,7 +194,7 @@
 
 <span class="n">object_wanted</span> <span class="o">=</span> <span class="no">APIWrapper</span><span class="o">::</span><span class="no">DesiredObject</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="mi">123</span><span class="p">)</span>
 
-<span class="n">object_watned</span><span class="o">.</span><span class="n">update!</span><span class="p">(</span><span class="ss">author</span><span class="p">:</span> <span class="s1">&#39;Mr. Smith&#39;</span><span class="p">)</span>
+<span class="n">object_wanted</span><span class="o">.</span><span class="n">update!</span><span class="p">(</span><span class="ss">author</span><span class="p">:</span> <span class="s1">&#39;Mr. Smith&#39;</span><span class="p">)</span>
 <span class="c1">#=&gt; &lt;DesiredObject @id=123, @name=&#39;The One&#39;, @author=&#39;Mr. Smith&#39;&gt;</span>
 </code></pre></div>
 <p>At first glance it might not seem like all too much is different between this solution and the previous two. However, a few key differences are present.</p>

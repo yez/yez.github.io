@@ -277,7 +277,7 @@
    <id>/2015/05/31/wrapping-apis</id>
    <content type="html">&lt;p&gt;Both in my day job and in my &lt;a href=&quot;http://jakeyesbeck.com/2015/04/23/a_year_of_commits/&quot;&gt;year of commits&lt;/a&gt;, I spend a lot of time thinking about APIs.&lt;/p&gt;
 
-&lt;p&gt;For the uninitiated, an &lt;strong&gt;A&lt;/strong&gt;pplication &lt;strong&gt;P&lt;/strong&gt;rogram &lt;strong&gt;I&lt;/strong&gt;nterface (&lt;strong&gt;API&lt;/strong&gt;) is an avenue for one piece of software to speak to another. This could be a remote, web-based, HTTP API. Or, the API might be an internal interface for one portion of a software system to talk to another. Designing an API that is simple and maintainable is crucial if its intended to be used and quickly adopted by colleagues or 3rd party developers.&lt;/p&gt;
+&lt;p&gt;For the uninitiated, an &lt;strong&gt;A&lt;/strong&gt;pplication &lt;strong&gt;P&lt;/strong&gt;rogram &lt;strong&gt;I&lt;/strong&gt;nterface (&lt;strong&gt;API&lt;/strong&gt;) is an avenue for one piece of software to speak to another. This could be a remote, web-based, HTTP API. Or, the API might be an internal interface for one portion of a software system to talk to another. Designing an API that is simple and maintainable is crucial if it is intended to be used and quickly adopted by colleagues or 3rd party developers.&lt;/p&gt;
 
 &lt;p&gt;Being one of those 3rd party developers, I find myself using and writing wrappers to these APIs. Here, I will explain what makes a good API wrapper. Let&amp;#39;s postulate about some example wrapper designs.&lt;/p&gt;
 
@@ -382,7 +382,7 @@
 
 &lt;h2&gt;So which is better?&lt;/h2&gt;
 
-&lt;p&gt;The answer is neither. A desirable solution exists somewhere between these two examples. An API wrapper should be terse yet flexible, simple yet sophisticated. Making a consumer of your wrapper upgrade with every API change is not scalable and will drive people away from it. At the same time, if a consumer can not see the value your library gives them, why would they bother to use it?&lt;/p&gt;
+&lt;p&gt;The answer is neither. A desirable solution exists somewhere between these two examples. An API wrapper should be terse yet flexible, simple yet sophisticated. Making a consumer of your wrapper upgrade with every API change is not scalable and will drive people away from it. At the same time, if a consumer cannot see the value your library gives them, why would they bother to use it?&lt;/p&gt;
 
 &lt;p&gt;A good abstraction, a positive value add piece of software can be defined by a few key features:&lt;/p&gt;
 
@@ -407,7 +407,7 @@
 
 &lt;span class=&quot;n&quot;&gt;object_wanted&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;APIWrapper&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;DesiredObject&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;find&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;123&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
 
-&lt;span class=&quot;n&quot;&gt;object_watned&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;update!&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;author&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;Mr. Smith&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;object_wanted&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;update!&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;author&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;Mr. Smith&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
 &lt;span class=&quot;c1&quot;&gt;#=&amp;gt; &amp;lt;DesiredObject @id=123, @name=&amp;#39;The One&amp;#39;, @author=&amp;#39;Mr. Smith&amp;#39;&amp;gt;&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;At first glance it might not seem like all too much is different between this solution and the previous two. However, a few key differences are present.&lt;/p&gt;
