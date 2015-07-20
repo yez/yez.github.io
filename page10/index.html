@@ -63,105 +63,32 @@
   
   <div class="post">
     <h1 class="post-title">
-      <a href="/2015/05/10/validates-type/">
-        validates_type
+      <a href="/2015/05/17/just-learn-rails/">
+        Just learn Rails
       </a>
     </h1>
 
-    <span class="post-date">10 May 2015</span>
+    <span class="post-date">17 May 2015</span>
 
-    <p>In keeping with my apparent obsession with types, I created another <em>helpful</em> library: <a href="https://github.com/yez/validates_type">validates_type</a>. I wanted a nice, lightweight way to assert that the types of my attributes are exactly what I need them to be once I save them to the database.</p>
+    <p><strong>Obligatory YoC update: Still going strong, 21 days in a row!</strong></p>
 
-<p>No one is particularly fond of littering their code with <code>try</code>s and <code>is_a?</code>s. To remedy this, I make my models assert confidence that the data in my database is what I expect. I&#39;m not talking about type coercion, type casting or any other munging of types that might happen on a typical read/write from your handy dandy ORM of choice. No no, this is the real deal, the bees knees, the elbows of a gazelle: <strong>actual type validation</strong>.</p>
+<p>The only real city I have lived in is San Francisco. I assume that in other cities, like New York and Los Angeles, people bring up topics relevant to industries popular there. So I would imagine that in New York, a person could overhear something about: banking, stock trading, fashion, and expensive brunches. While in Los Angeles, you might wander by people having conversations pertaining to: making movies and working at the Cheesecake Factory. I have come to this conclusion because everyone in San Francisco talks about writing software.</p>
 
-<p>Data quality is important to me, and should be important to you too. This library is an attempt at injecting some structure into your typical Rails/Sinatra app in order to keep your data clean and your system happy.</p>
+<p>I personally love hearing conversations about software as often as I do <em>(I did move to San Francisco for the purpose of writing it)</em>. One theme that seems to pop up often is how people can get into writing software for themselves. This is great, more people in the space means more ideas and more innovation. However, some people seem to be under the impression that breaking into software development (specifically web development) is as simple as &quot;just learning Rails&quot;. I hope to explain why that mentality is a little naive.</p>
 
-<h4>Alright so when would this kind of thing be necessary? Let&#39;s see an example of how automagic type coercion can bite us.</h4>
+<p>So what&#39;s the problem with just learning Ruby on Rails? You <strong>might</strong> be able to pick up software development through learning a framework and even get a job that will pay you real money. However, I sincerely doubt that it will be a pleasant experience for long. Frameworks are a single tool a person can use to correctly and efficiently do their job.</p>
 
-<p>Let&#39;s say you&#39;re using Rails, and let&#39;s pretend for a moment that for some reason, you have some code that looks like this:</p>
+<p>I would wager that everyone is familiar with the type of work that a carpenter might do, but just for laughs, I&#39;ll give you an example. A carpenter could be contracted to build a wooden table and chairs for a client. He would shape the wood, sand, treat, stain and polish it until the dining set was made. I highly doubt he would be able to do all that with just a single tool. Can you imagine the quality of his product if he only used a chisel? This is a bit of a stretch but I feel it portrays the point I am trying to make. Artisans need multiple tools to do their jobs effectively and efficiently (<em>fyi: if you don&#39;t call yourself a software artisan then you are missing a great branding opportunity</em>).</p>
 
-<p>A very important class:</p>
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">class</span> <span class="nc">ImportantResource</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
-  <span class="c1"># Attribute named :settings with what we want to be an array</span>
-  <span class="c1"># of important things encoded and stored in either</span>
-  <span class="c1"># a nice postres json column or a text column</span>
-  <span class="n">store_accessor</span> <span class="ss">:settings</span><span class="p">,</span> <span class="ss">:array_of_things</span>
-<span class="k">end</span>
-</code></pre></div>
-<p>And a matching very important controller:</p>
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">class</span> <span class="nc">ImportantResourceController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
-  <span class="k">def</span> <span class="nf">create</span>
-    <span class="n">resource</span> <span class="o">=</span> <span class="no">ImportantResource</span><span class="o">.</span><span class="n">new</span>
-    <span class="c1"># let&#39;s set the array_of_things to a parameter that is passed in</span>
-    <span class="c1">#  via a form or something</span>
-    <span class="n">resource</span><span class="o">.</span><span class="n">array_of_things</span> <span class="o">=</span> <span class="n">params</span><span class="o">[</span><span class="ss">:array_of_things</span><span class="o">]</span>
-    <span class="c1"># great, lets save that resource</span>
-    <span class="n">resource</span><span class="o">.</span><span class="n">save!</span>
-    <span class="c1"># cool everything worked, this could not have gone better</span>
-  <span class="k">end</span>
-<span class="k">end</span>
-</code></pre></div>
-<h4>Oh no, george! What about if something other than array is passed to that parameter??</h4>
+<p>In the same way that a chisel is not enough for the carpenter, a framework is not enough for our software artisan. The beauty of frameworks like Ruby on Rails is that they can get you into making a product quickly. But, as soon as you hit any kind of interesting problems, you&#39;ll have to rely on something else. It might even be something that your framework has abstracted from you and discouraged you from learning for yourself.</p>
 
-<p>Well let&#39;s see what might happen. If <code>params[:array_of_things] = &#39;a random string&#39;</code>, any other method or object that needs to interact with <code>ImportantResource</code> would have a bad time unless they explictly validated <code>array_of_things</code> is an array. We don&#39;t have any ORM coercion to fall back on here since this is a <code>store_accessor</code>.</p>
+<p>For instance, Rails ships with a custom ORM: <code>ActiveRecord</code>. This reasonably straight forward library makes interacting with your database simple enough to start persisting objects. Great! What happens when you start persisting large amount of objects? What happens when the relationships that you have created between these objects start to cause performance losses? Your users get mad. Not great. They get so mad they don&#39;t even know why they are using your product and they bounce. To remedy this problem, you would have to tweak your database indexes in a way that speeds up your queries for you. You&#39;d have to know how a relational database works, how indexes work and when to use the proper ones. If you would be using postgres, it would be imperative that you understand what <code>explain analyze</code> can tell you. As you traverse down this path of improving your product you will be outside of the framework and thus without your only tool.</p>
 
-<p>Wouldn&#39;t it be nicer to have <code>ImportantResource</code> validate itself so no other object needs to care about <code>array_of_things</code>&#39;s array-ness?</p>
+<p>While this is just one example, I think it makes my point relatively well. We could spend page after page of other examples not given to you by your framework: JavaScript, Redis, Memcache, CSS, Git, a variety of Linux commands dealing with debugging and server maintenance, etc. And even after all of that, after you learn everything about those technologies and can make web software that scales, there are other aspects of software development. Like being on a team that either does agile, waterfall or quick stream methodology. Or how to deal with merge conflicts on a complex system, architectural design decisions, 2 spaces vs 4 <em>(spoiler: its always 2)</em>.</p>
 
-<p>This sounds awesome to me, and I agree. Let&#39;s check it out and how you can harness the power for yourself. What if instead of letting <code>ImportantResource</code> behave in any which way, we locked that thing down? It might look something like this:</p>
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">class</span> <span class="nc">ImportantResource</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
-  <span class="c1"># Attribute named :settings with what we want to be an array</span>
-  <span class="c1"># of important things encoded and stored in either</span>
-  <span class="c1"># a nice postres json column or a text column</span>
-  <span class="n">store_accessor</span> <span class="ss">:settings</span><span class="p">,</span> <span class="ss">:array_of_things</span>
+<p>The point of this post is not to discourage, I want to simply educate. Learning new tools and technologies is important and a ton of a fun! Just make sure that when you have to get our your toolbox you have more than just a chisel in there. Challenge yourselves to look outside the framework. Figure out what your frameworks are doing for you and learn why someone built it to do those things. Understanding the underlying technologies a framework utilizes is key to your success and to the community&#39;s.</p>
 
-  <span class="n">validates_type</span> <span class="ss">:array_of_things</span><span class="p">,</span> <span class="ss">:array</span>
-<span class="k">end</span>
-</code></pre></div>
-<p>Now if we try to save any other value to <code>array_of_things</code> that isn&#39;t an array, we receive validation errors added to <code>important_resource.errors</code> in the same way other ActiveRecord/ActiveModel classes behave! This will keep us honest with what we set our data to.</p>
-
-<h4>So why use this pattern at all? Some of my data might be the wrong type but who cares?</h4>
-
-<p>I think you should care, I sure as heck do. For instance, what if the software we&#39;re writing is an API that people <strong>need</strong> to use? Wouldn&#39;t you rather them be confident that your documentation (that you painstakingly wrote for hours) is correct?</p>
-
-<p>For example, lets say you build a medical API: <code>SuperImportantMedicalAPI</code>. And in a super important response about a patient, a boolean value is returned for <code>patient_is_allergic_to_nuts</code>.</p>
-
-<p>This totally legitimate example shows how imperative it is that <code>SuperImportantMedicalAPI</code>&#39;s types be locked down. If people are depending on your awesome API to save them from nut allergies, don&#39;t let a string like <code>&#39;t&#39;</code> be your downfall. The people need <code>true</code> and can handle <code>true</code>, give them what they want.</p>
-
-<h4>Great? Great! Here&#39;s some FAQs:</h4>
-
-<p><strong>Q:</strong> Do the validations behave exactly the same as <code>ActiveModel::Validations</code>?</p>
-
-<p><strong>A:</strong> Exactly the same.</p>
-
-<p><strong>Q:</strong> So does that mean I can chain other validations on?</p>
-
-<p><strong>A:</strong> Heck yes, check it out:</p>
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby">  <span class="c1"># custom messaging for errors</span>
-  <span class="n">validates_type</span> <span class="ss">:array_of_things</span><span class="p">,</span>
-                 <span class="ss">:array</span><span class="p">,</span>
-                 <span class="ss">message</span><span class="p">:</span> <span class="s1">&#39;This needs to be an array!!!&#39;</span>
-
-  <span class="c1"># chaining on other validation like numericality</span>
-  <span class="n">validates</span> <span class="ss">:other_thing</span><span class="p">,</span>
-            <span class="ss">type</span><span class="p">:</span> <span class="p">{</span> <span class="ss">type</span><span class="p">:</span> <span class="ss">:integer</span><span class="p">,</span>
-                    <span class="ss">numericality</span><span class="p">:</span> <span class="p">{</span> <span class="ss">greater_than</span><span class="p">:</span> <span class="mi">1</span> <span class="p">}</span> <span class="p">}</span>
-
-  <span class="c1"># making sure object is a string and included in a specific list</span>
-  <span class="n">validates</span> <span class="ss">:yet_another_attribute</span><span class="p">,</span>
-            <span class="ss">type</span><span class="p">:</span> <span class="p">{</span> <span class="ss">type</span><span class="p">:</span> <span class="ss">:string</span><span class="p">,</span>
-                    <span class="ss">inclusion</span><span class="p">:</span> <span class="p">{</span> <span class="k">in</span><span class="p">:</span> <span class="o">[</span><span class="s1">&#39;foo&#39;</span><span class="p">,</span> <span class="s1">&#39;bar&#39;</span><span class="o">]</span> <span class="p">}</span> <span class="p">}</span>
-</code></pre></div>
-<p><strong>Q:</strong> Can I use this with <code>ActiveRecord</code> <strong>or</strong> <code>ActiveModel</code>?</p>
-
-<p><strong>A:</strong> Y to the es! Yes! Isn&#39;t that cool? Any ruby code that uses either <code>ActiveModel</code> or <code>ActiveRecord</code> can use all the power of this gem on day</p>
-
-<p><strong>Q:</strong> Does this cost at least $1,000 every time I need to use it?</p>
-
-<p><strong>A:</strong> Close, you can use this library right now for the low low price of $0. I tried to make it lower but just couldn&#39;t do it.</p>
-
-<p><strong>Q:</strong> Where can I read more?</p>
-
-<p><strong>A:</strong> <a href="https://github.com/yez/validates_type">Right freakin&#39; here</a></p>
+<p>I look forward to seeing what all you software artisans build.</p>
 
   </div>
   
