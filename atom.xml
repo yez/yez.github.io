@@ -66,7 +66,7 @@
 &lt;span class=&quot;x&quot;&gt;# Never replicate the above code or you will be very sad&lt;/span&gt;
 &lt;span class=&quot;x&quot;&gt;#&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;Notice how deep in the presentation layer (the view) we have direct database calls. This completely violates the encapsulations that an MVC should provide. Since all the models exist everywhere, nothing stops a programmer from writing it in this way. The code above should make every ruby programmer cringe.&lt;/p&gt;
+&lt;p&gt;Notice how deep in the presentation layer (the view) we have direct database calls. This completely violates the encapsulations that an MVC framework should provide. Since all the models exist everywhere, nothing stops a programmer from writing it in this way. The code above should make every ruby programmer cringe.&lt;/p&gt;
 
 &lt;p&gt;Separating concerns and responsibilities helps prevent repetition and boosts comprehension. The above code should be a composition of multiple objects with entirely different responsibilities. That concept is not always intuitive for some developers, especially those just starting out. One might ask: &lt;em&gt;&amp;quot;Why would I make a whole mess of objects to do the same thing that these 14 lines can do?&amp;quot;&lt;/em&gt;. The simple answer is because these problems are not new. Ruby on Rails did not expose these abstraction and encapsulation issues for the first time in the history of software engineering. They have been around for &lt;a href=&quot;https://en.wikipedia.org/wiki/Encapsulation_(computer_programming)&quot;&gt;a very long time&lt;/a&gt;. Smarter software artisans than I saw these problems and created guidelines to solve them. Following their lead will save all of us in the long run.&lt;/p&gt;
 
@@ -77,7 +77,7 @@
 &lt;span class=&quot;c1&quot;&gt;# ActiveRecord takes care of that detail for us, adding a scope&lt;/span&gt;
 &lt;span class=&quot;c1&quot;&gt;#   is a supplementary addition to that logic.&lt;/span&gt;
 &lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;User&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;ActiveRecord&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Base&lt;/span&gt;
-  &lt;span class=&quot;n&quot;&gt;scope&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:with_pictures&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;joins&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:pictures&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;scope&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:with_pictures&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;includes&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:pictures&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
 &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
 
 &lt;span class=&quot;c1&quot;&gt;# We can create a PORO (Plain Old Ruby Object) to house the user&lt;/span&gt;

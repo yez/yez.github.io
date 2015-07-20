@@ -119,7 +119,7 @@
 <span class="x"># Never replicate the above code or you will be very sad</span>
 <span class="x">#</span>
 </code></pre></div>
-<p>Notice how deep in the presentation layer (the view) we have direct database calls. This completely violates the encapsulations that an MVC should provide. Since all the models exist everywhere, nothing stops a programmer from writing it in this way. The code above should make every ruby programmer cringe.</p>
+<p>Notice how deep in the presentation layer (the view) we have direct database calls. This completely violates the encapsulations that an MVC framework should provide. Since all the models exist everywhere, nothing stops a programmer from writing it in this way. The code above should make every ruby programmer cringe.</p>
 
 <p>Separating concerns and responsibilities helps prevent repetition and boosts comprehension. The above code should be a composition of multiple objects with entirely different responsibilities. That concept is not always intuitive for some developers, especially those just starting out. One might ask: <em>&quot;Why would I make a whole mess of objects to do the same thing that these 14 lines can do?&quot;</em>. The simple answer is because these problems are not new. Ruby on Rails did not expose these abstraction and encapsulation issues for the first time in the history of software engineering. They have been around for <a href="https://en.wikipedia.org/wiki/Encapsulation_(computer_programming)">a very long time</a>. Smarter software artisans than I saw these problems and created guidelines to solve them. Following their lead will save all of us in the long run.</p>
 
@@ -130,7 +130,7 @@
 <span class="c1"># ActiveRecord takes care of that detail for us, adding a scope</span>
 <span class="c1">#   is a supplementary addition to that logic.</span>
 <span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
-  <span class="n">scope</span> <span class="ss">:with_pictures</span><span class="p">,</span> <span class="o">-&gt;</span><span class="p">{</span> <span class="n">joins</span><span class="p">(</span><span class="ss">:pictures</span><span class="p">)</span> <span class="p">}</span>
+  <span class="n">scope</span> <span class="ss">:with_pictures</span><span class="p">,</span> <span class="o">-&gt;</span><span class="p">{</span> <span class="n">includes</span><span class="p">(</span><span class="ss">:pictures</span><span class="p">)</span> <span class="p">}</span>
 <span class="k">end</span>
 
 <span class="c1"># We can create a PORO (Plain Old Ruby Object) to house the user</span>
