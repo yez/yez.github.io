@@ -5,6 +5,9 @@
   <link href="http://gmpg.org/xfn/11" rel="profile">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  
+    <meta name="description" content="Simple helpful boolean gem for Ruby. Allow the testing of True and False in Ruby with ease.">
+  
 
   <!-- Enable responsiveness on mobile devices-->
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
@@ -35,11 +38,11 @@
     <div class="sidebar">
   <div class="container">
     <div class="sidebar-about">
-      <h1>
+      <h2 class='h1'>
         <a href="/">
           A Year of Commits
         </a>
-      </h1>
+      </h2>
       <p class="lead">The rantings of a man looking for inspriation. Embarking on a 365 day adventure of writing code. It might be funny or it might be sad, only time will tell.
 </p>
     </div>
@@ -64,7 +67,7 @@
   <span class="post-date">03 May 2015</span>
   <p>Week one of my <a href="/2015/04/23/a_year_of_commits/">Year of Commits</a> initiative is complete, 51 more to go. I did not plan on telling people about this until a few weeks into the task (in case history repeated itself and I gave up 20% in). But that didn&#39;t happen; people found out about it almost immediately, demonstrating yet again just how easy it is to find anything on the Internet. Thanks, Obama.</p>
 
-<p>So what happened in the first week? Did I change the world of open source forever? Did I contribute a monumental change to one of the most well renown ruby libraries out there? Nope, I made a gem that at its core is 3 lines long. I made a <a href="https://github.com/yez/ruby-boolean">boolean gem</a>. </p>
+<p>So what happened in the first week? Did I change the world of open source forever? Did I contribute a monumental change to one of the most well renown ruby libraries out there? Nope, I made a gem that at its core is 3 lines long. I made a <a href="https://github.com/yez/ruby-boolean">boolean gem</a>.</p>
 
 <p>I can see that most people would wonder: &quot;Why?&quot;, &quot;Why did he make this useless thing? Doesn&#39;t he know that ruby does not have the boolean type <a href="http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-talk/96356">by design</a>?&quot;. The answer is simple. I found myself over and over again typing some kind of nonsense like this:</p>
 <div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="c1"># For some reason we need to know if this value</span>
@@ -77,7 +80,7 @@
   <span class="n">value</span><span class="o">.</span><span class="n">is_a?</span><span class="p">(</span><span class="no">TrueClass</span><span class="p">)</span> <span class="o">||</span> <span class="n">value</span><span class="o">.</span><span class="n">is_a?</span><span class="p">(</span><span class="no">FalseClass</span><span class="p">)</span>
 <span class="k">end</span>
 </code></pre></div>
-<p>This, however, could also be questioned. &quot;Who cares if something is a boolean or not? This is ruby, duck-type that shiz&quot;. Sure, that makes sense, I can do that. But do I want to do that? No. Why not? Because sometimes knowing the type of something can be important. You might not always have a background process like ActiveRecord&#39;s type coercion to clean up your types for you. Or maybe you actually want something to be a boolean, not <code>&#39;t&#39;</code> or <code>&#39;f&#39;</code>. </p>
+<p>This, however, could also be questioned. &quot;Who cares if something is a boolean or not? This is ruby, duck-type that shiz&quot;. Sure, that makes sense, I can do that. But do I want to do that? No. Why not? Because sometimes knowing the type of something can be important. You might not always have a background process like ActiveRecord&#39;s type coercion to clean up your types for you. Or maybe you actually want something to be a boolean, not <code>&#39;t&#39;</code> or <code>&#39;f&#39;</code>.</p>
 
 <p>This gem is not alone. Other gems that do similar and much more functionality exist as well (i.e. <a href="https://rubygems.org/gems/bool/versions/1.0.20">bool</a> and <a href="https://github.com/RISCfuture/boolean">boolean</a>)</p>
 
@@ -89,7 +92,7 @@
   <span class="k">else</span>
     <span class="c1"># Throw a fit about it not being a boolean</span>
   <span class="k">end</span>
-<span class="k">end</span> 
+<span class="k">end</span>
 </code></pre></div>
 <p>Great! Now I only have to check one class instead of two. My life is now perfect, what could possibly make this any better? Nothing.</p>
 

@@ -4,7 +4,7 @@
  <title>A Year of Commits</title>
  <link href="/atom.xml" rel="self"/>
  <link href="/"/>
- <updated>2015-07-19T21:48:42-07:00</updated>
+ <updated>2015-07-20T22:20:57-07:00</updated>
  <id></id>
  <author>
    <name>Jake Yesbeck</name>
@@ -756,7 +756,7 @@ $: git push origin HEAD
    <id>/2015/05/03/ruby-boolean</id>
    <content type="html">&lt;p&gt;Week one of my &lt;a href=&quot;/2015/04/23/a_year_of_commits/&quot;&gt;Year of Commits&lt;/a&gt; initiative is complete, 51 more to go. I did not plan on telling people about this until a few weeks into the task (in case history repeated itself and I gave up 20% in). But that didn&amp;#39;t happen; people found out about it almost immediately, demonstrating yet again just how easy it is to find anything on the Internet. Thanks, Obama.&lt;/p&gt;
 
-&lt;p&gt;So what happened in the first week? Did I change the world of open source forever? Did I contribute a monumental change to one of the most well renown ruby libraries out there? Nope, I made a gem that at its core is 3 lines long. I made a &lt;a href=&quot;https://github.com/yez/ruby-boolean&quot;&gt;boolean gem&lt;/a&gt;. &lt;/p&gt;
+&lt;p&gt;So what happened in the first week? Did I change the world of open source forever? Did I contribute a monumental change to one of the most well renown ruby libraries out there? Nope, I made a gem that at its core is 3 lines long. I made a &lt;a href=&quot;https://github.com/yez/ruby-boolean&quot;&gt;boolean gem&lt;/a&gt;.&lt;/p&gt;
 
 &lt;p&gt;I can see that most people would wonder: &amp;quot;Why?&amp;quot;, &amp;quot;Why did he make this useless thing? Doesn&amp;#39;t he know that ruby does not have the boolean type &lt;a href=&quot;http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-talk/96356&quot;&gt;by design&lt;/a&gt;?&amp;quot;. The answer is simple. I found myself over and over again typing some kind of nonsense like this:&lt;/p&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;c1&quot;&gt;# For some reason we need to know if this value&lt;/span&gt;
@@ -769,7 +769,7 @@ $: git push origin HEAD
   &lt;span class=&quot;n&quot;&gt;value&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;is_a?&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;TrueClass&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;value&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;is_a?&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;FalseClass&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
 &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;This, however, could also be questioned. &amp;quot;Who cares if something is a boolean or not? This is ruby, duck-type that shiz&amp;quot;. Sure, that makes sense, I can do that. But do I want to do that? No. Why not? Because sometimes knowing the type of something can be important. You might not always have a background process like ActiveRecord&amp;#39;s type coercion to clean up your types for you. Or maybe you actually want something to be a boolean, not &lt;code&gt;&amp;#39;t&amp;#39;&lt;/code&gt; or &lt;code&gt;&amp;#39;f&amp;#39;&lt;/code&gt;. &lt;/p&gt;
+&lt;p&gt;This, however, could also be questioned. &amp;quot;Who cares if something is a boolean or not? This is ruby, duck-type that shiz&amp;quot;. Sure, that makes sense, I can do that. But do I want to do that? No. Why not? Because sometimes knowing the type of something can be important. You might not always have a background process like ActiveRecord&amp;#39;s type coercion to clean up your types for you. Or maybe you actually want something to be a boolean, not &lt;code&gt;&amp;#39;t&amp;#39;&lt;/code&gt; or &lt;code&gt;&amp;#39;f&amp;#39;&lt;/code&gt;.&lt;/p&gt;
 
 &lt;p&gt;This gem is not alone. Other gems that do similar and much more functionality exist as well (i.e. &lt;a href=&quot;https://rubygems.org/gems/bool/versions/1.0.20&quot;&gt;bool&lt;/a&gt; and &lt;a href=&quot;https://github.com/RISCfuture/boolean&quot;&gt;boolean&lt;/a&gt;)&lt;/p&gt;
 
@@ -781,7 +781,7 @@ $: git push origin HEAD
   &lt;span class=&quot;k&quot;&gt;else&lt;/span&gt;
     &lt;span class=&quot;c1&quot;&gt;# Throw a fit about it not being a boolean&lt;/span&gt;
   &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt; 
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;Great! Now I only have to check one class instead of two. My life is now perfect, what could possibly make this any better? Nothing.&lt;/p&gt;
 
