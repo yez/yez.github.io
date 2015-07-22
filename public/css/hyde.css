@@ -55,7 +55,7 @@ html {
 
 .sidebar {
   text-align: center;
-  padding: 2rem 1rem;
+  padding: 0px 0px 30px;
   color: rgba(255,255,255,.5);
   background-color: #202020;
 }
@@ -64,8 +64,42 @@ html {
   display: none;
 }
 
+/* Sidebar links */
+.sidebar a {
+  color: #fff;
+}
+
+/* About section */
+.sidebar-about h2 {
+  color: #fff;
+  margin-top: 0;
+}
+
+.sidebar .copyright {
+  display: none;
+}
+
+/* Sidebar nav */
+.sidebar-nav {
+  min-height: 35px;
+  margin-bottom: 1rem;
+}
+.sidebar-nav-item {
+  float: left;
+  margin-left: 30px;
+  padding: 0 10px;
+}
+a.sidebar-nav-item:hover,
+a.sidebar-nav-item:focus {
+  text-decoration: underline;
+}
+.sidebar-nav-item.active {
+  font-weight: bold;
+}
+
 @media (min-width: 48em) {
   .sidebar {
+    padding: 2rem 1rem;
     position: fixed;
     top: 0;
     left: 0;
@@ -76,35 +110,18 @@ html {
   .sidebar-about .lead {
     display: block;
   }
-}
-
-/* Sidebar links */
-.sidebar a {
-  color: #fff;
-}
-
-/* About section */
-.sidebar-about h1 {
-  color: #fff;
-  margin-top: 0;
-  font-family: "Abril Fatface", serif;
-  font-size: 3.25rem;
-}
-
-/* Sidebar nav */
-.sidebar-nav {
-  margin-bottom: 1rem;
-}
-.sidebar-nav-item {
-  display: block;
-  line-height: 1.75;
-}
-a.sidebar-nav-item:hover,
-a.sidebar-nav-item:focus {
-  text-decoration: underline;
-}
-.sidebar-nav-item.active {
-  font-weight: bold;
+  .sidebar-nav-item {
+    display: block;
+    float: none;
+    margin: auto;
+    line-height: 1.75;
+  }
+  .sidebar .copyright {
+    display: block;
+  }
+  .sidebar-nav {
+    height: auto;
+  }
 }
 
 /* Sticky sidebar
@@ -130,12 +147,13 @@ a.sidebar-nav-item:focus {
  */
 
 .content {
-  padding-top:    4rem;
+  padding-top:    2rem;
   padding-bottom: 4rem;
 }
 
 @media (min-width: 48em) {
   .content {
+    padding-top: 4rem;
     max-width: 38rem;
     margin-left: 20rem;
     margin-right: 2rem;
