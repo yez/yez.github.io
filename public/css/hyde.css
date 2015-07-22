@@ -115,6 +115,7 @@ a.sidebar-nav-item:focus {
     float: none;
     margin: auto;
     line-height: 1.75;
+    padding: 0px;
   }
   .sidebar .copyright {
     display: block;
