@@ -66,28 +66,104 @@
   
   <div class="post">
     <h1 class="post-title">
-      <a href="/2015/06/28/staying-motivated/">
-        Staying Motivated
+      <a href="/2015/07/05/composition-in-ruby/">
+        Modules in Ruby
       </a>
     </h1>
 
-    <span class="post-date">28 Jun 2015</span>
+    <span class="post-date">05 Jul 2015</span>
 
-    <p>Motivation is the most important thing you can control. Only with proper motivation can one reach their full potential. <a href="http://jakeyesbeck.com/2015/04/23/a_year_of_commits/">A Year of Commits</a> is a project that requires a decent amount of motivation. I, like nearly every human ever, am not always the defintion of a &quot;driven individual&quot;. It takes a large amount of effort to persevere through low points and come out the other side with something to show for it. It has been <strong>63</strong> days of my Year of Commits initiative and I have found a few helpful ways to keep my motivation up and morale high.</p>
+    <p>Currently, one hundred percent of <a href="http://jakeyesbeck.com/2015/04/23/a_year_of_commits/">Year of Commits</a>&#39; commits have been to Ruby repositories. Ruby has many strengths and is a very malleable language. Ruby can be written functionally or object oriented. I tend to lean toward the latter and find myself using a few different patterns regularly. One powerful tool Ruby provides is the use of Modules.</p>
 
-<h2>1. Make small deliverables for yourself</h2>
+<h2>Modules</h2>
 
-<p>If you embark on grandiose endeavors frequently, consider breaking pieces of them apart into small, digestible morsels of motivation goodness. Every project does not need to go at break neck speed instantly. This is especially applicable in software development. You know that project that you&#39;ve been planning? The revolutionary one that you&#39;re so excited about? That project has a greater chance of completion if you don&#39;t expect finish the whole thing in an afternoon. Setting yourself up with unreasonable expectations can deflate even the most cocksure individuals. If you take some time to prioritize small deliverable pieces, you will be much more likely to achieve something. Speaking from experience, there comes a time when you have to sit back and wonder: <em>&quot;Why do I have 10-15 projects around 30% completion?&quot;.</em> It might just be that you were biting off a bit more than you can chew. Take smaller bites, you will get there if you just keep going.</p>
+<p>When code is to be shared between classes, a <code>Module</code> is created to encapsulate the shared functionality. A very simple module looks something like this:</p>
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">module</span> <span class="nn">Ripe</span>
+  <span class="k">def</span> <span class="nf">ripe?</span>
+    <span class="nb">puts</span> <span class="s2">&quot;this is ripe!&quot;</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div>
+<h3><code>extend</code></h3>
 
-<h2>2. Keep moving</h2>
+<p>With the <code>Ripe</code> module, there are two ways to include its methods in a class. We can <code>extend</code> the module, which makes the method <code>ripe?</code> a class method on the <code>Banana</code> class:</p>
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">class</span> <span class="nc">Banana</span>
+  <span class="kp">extend</span> <span class="no">Ripe</span>
+<span class="k">end</span>
 
-<p>A complementary behavior to breaking things into smaller pieces is to make every day count. As the person committed to working every single day for year, I might be a <em>tad</em> biased. However, I believe that maintaining at least some kind of constant pace of effort will keep motivation from dropping off a cliff. Procrastination is the greatest enemy of motivation. If you let yourself delay your tasks once, it becomes increasingly easy to delay them again. Subsequent delays will mostly likely be in the not so distant future. If you make your tasks part of your routine, it can have the opposite effect. I bet you don&#39;t even think about all the time you spend doing things that are just &quot;part of your routine&quot;. Imagine if the task you want to accomplish, the world changing, earth shattering, unbelievable awesome project that you have queued up was as easy to fit into your schedule as brushing your teeth. There exists no magic that some of the greatest achievers have found and harnessed. They simply kept working until the job was done. To them, working on what mattered to them was as routine as brushing their teeth or putting on their shoes.</p>
+<span class="no">Banana</span><span class="o">.</span><span class="n">ripe?</span>
+<span class="c1"># =&gt; this is ripe!</span>
+</code></pre></div>
+<h3><code>include</code></h3>
 
-<h2>3. Believe that you are good at what you do</h2>
+<p>Alternatively, we can <code>include</code> the module, making <code>ripe?</code> an instance method:</p>
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">class</span> <span class="nc">Banana</span>
+  <span class="kp">include</span> <span class="no">Ripe</span>
+<span class="k">end</span>
 
-<p>As it so happens, your kindergarten teacher was right about a thing or two. Attitude is important in order to help you stay motivated. A self debilitating mindset can vacuum the motivation out of nearly anything. Having the right attitude will help you soar, help keep that fire of motivation stoked and ready. Impostor syndrome, doubts, or anything in that general mindset will be nothing but a hindrance. Understanding your skill sets, knowing where you want to improve and where you have strengths, will help keep you motivated to achieve your goals. This might be the most obvious piece of advice but that does not mean it is the easiest to achieve. In software development, our confidence in our abilities is constantly tested. I try and combat this by remaining calm, remembering <a href="http://jakeyesbeck.com/2015/06/14/you_are_not_your_code/">&quot;I am not my code&quot;</a>, and taking a few deep breaths now and again. Confidence takes time to build. If you are among the lucky few that simply have it in abundance, great news, you just need to keep it strong!</p>
+<span class="n">banana</span> <span class="o">=</span> <span class="no">Banana</span><span class="o">.</span><span class="n">new</span>
+<span class="n">banana</span><span class="o">.</span><span class="n">ripe?</span>
+<span class="c1"># =&gt; this is ripe!</span>
+</code></pre></div>
+<p>That&#39;s great right? Right! We have methods on methods on methods. As long as we can make modules for our instance and class methods separately, we will be golden. But, what about all the times that we need to define both class and instance methods in one module? Surely it would be crazy to have <code>RipeClassMethods</code> and <code>RipeInstanceMethods</code> right? That looks like amateur hour. There must be a better way.</p>
 
-<p>So now with all this new information, ask yourself: Are <em>you</em> good? Yeah you are good. You are better than good, you&#39;re motivated! Keep moving, keep building, keep creating and you will get to where you want to go. You are the one at the helm, the one in control of your journey. Motivation is the fuel.</p>
+<h3><code>def self.included</code></h3>
+
+<p>A very helpful method for dealing with included modules is the <code>included</code> class method. This method is built in Ruby and any class has access to it. By using the <code>included</code> method, it is possible to mix class and instance methods within a single module.</p>
+
+<p>When using <code>self.included</code>, we are able to determine which methods are accessible on the instance and on the class. We will use a new inner module named <code>ClassMethods</code> to encapsulate our desired class methods. In our example below, the single parameter <code>base</code> is the class in which the <code>Ripe</code> module is included.</p>
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">module</span> <span class="nn">Ripe</span>
+  <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">included</span><span class="p">(</span><span class="n">base</span><span class="p">)</span>
+    <span class="c1"># Just like in normal module extension,</span>
+    <span class="c1">#  the extend method is used to make all methods in</span>
+    <span class="c1">#  ClassMethods into proper class methods on base</span>
+    <span class="n">base</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="no">ClassMethods</span><span class="p">)</span>
+  <span class="k">end</span>
+
+  <span class="k">module</span> <span class="nn">ClassMethods</span>
+    <span class="k">def</span> <span class="nf">ripe?</span>
+      <span class="nb">puts</span> <span class="s1">&#39;this is ripe!&#39;</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div>
+<p>Now, including the functionality from <code>Ripe</code> is the same as the <code>include</code> example above:</p>
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">class</span> <span class="nc">Banana</span>
+  <span class="kp">include</span> <span class="no">Ripe</span>
+<span class="k">end</span>
+
+<span class="no">Banana</span><span class="o">.</span><span class="n">ripe?</span>
+<span class="c1"># =&gt; this is ripe!</span>
+</code></pre></div>
+<p>With this new structure, adding instance methods is as simple as adding them outside of the <code>ClassMethods</code> module.</p>
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">module</span> <span class="nn">Ripe</span>
+  <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">included</span><span class="p">(</span><span class="n">base</span><span class="p">)</span>
+    <span class="n">base</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="no">ClassMethods</span><span class="p">)</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">color</span>
+    <span class="s1">&#39;yellow&#39;</span>
+  <span class="k">end</span>
+
+  <span class="k">module</span> <span class="nn">ClassMethods</span>
+    <span class="k">def</span> <span class="nf">ripe?</span>
+      <span class="nb">puts</span> <span class="s1">&#39;this is ripe!&#39;</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="k">class</span> <span class="nc">Banana</span>
+  <span class="kp">include</span> <span class="no">Ripe</span>
+<span class="k">end</span>
+
+<span class="no">Banana</span><span class="o">.</span><span class="n">ripe?</span>
+<span class="c1"># =&gt; this is ripe!</span>
+
+<span class="n">banana</span> <span class="o">=</span> <span class="no">Banana</span><span class="o">.</span><span class="n">new</span>
+<span class="n">banana</span><span class="o">.</span><span class="n">color</span>
+<span class="c1"># =&gt; yellow</span>
+</code></pre></div>
+<p>Boom, boom, pow, we have some nicely organized shared code. We are now able to easily define instance and class methods for our various important fruit related modules.</p>
 
   </div>
   

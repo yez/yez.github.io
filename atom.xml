@@ -4,13 +4,46 @@
  <title>A Year of Commits</title>
  <link href="/atom.xml" rel="self"/>
  <link href="/"/>
- <updated>2015-07-21T22:42:34-07:00</updated>
+ <updated>2015-07-26T21:33:57-07:00</updated>
  <id></id>
  <author>
    <name>Jake Yesbeck</name>
    <email></email>
  </author>
 
+ 
+ <entry>
+   <title>Ninety Days of Commits</title>
+   <link href="/2015/07/26/ninety-days-of-commits/"/>
+   <updated>2015-07-26T05:00:00-07:00</updated>
+   <id>/2015/07/26/ninety-days-of-commits</id>
+   <content type="html">&lt;p&gt;&lt;img src=&quot;/assets/images/90_day_streak.png&quot; alt=&quot;90 Days of Commits&quot;&gt;&lt;/p&gt;
+
+&lt;p&gt;It has been ninety days since I started the &lt;a href=&quot;http://jakeyesbeck.com/2015/04/23/a-year-of-commits/&quot;&gt;Year of Commits&lt;/a&gt; initiative. The criteria behind this challenge was to make a commit to a public Github repository every day. Technically, a commit like the following satisfies that criteria:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/example_small_commit.png&quot; alt=&quot;Small daily commit&quot;&gt;&lt;/p&gt;
+
+&lt;p&gt;However, if I allowed this commit to be my sole contribution for a day, I would be cheating no one except myself. In reality, I have been averaging 3 to 4 decent size commits a day. Spending around an hour or two total per night. Github is an awesome piece of software that tells a visual tale of when I am most productive:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/time_of_commits.png&quot; alt=&quot;Times of Commits&quot;&gt;&lt;/p&gt;
+
+&lt;p&gt;Over this quarter of a year, I have accrued some interesting learnings about developing open source software.&lt;/p&gt;
+
+&lt;h2&gt;1. Writing software every day just feels good.&lt;/h2&gt;
+
+&lt;p&gt;Not missing a single day of writing software has made a significant improvement in my confidence and attitude. In the same way exercising daily makes your body feel more sturdy, developing software daily keeps my mind focused and clear. Like warming up a car before a drive, writing software every day makes it very easy for me to jump into a new project or build a new feature. I think most of my fellow software artisans have been in this situation: You go on vacation or maybe just a very relaxing weekend, then the next day at work or when you open that side project again, you end up spending a lot of time getting familiar with the software. Even if you just wrote it a few days ago, the break has made some tiny details less sharp. Writing software every single day helps eliminate this.&lt;/p&gt;
+
+&lt;h2&gt;2. Immature software is expected&lt;/h2&gt;
+
+&lt;p&gt;While writing software, there are a total of 0 people that look at what they just wrote and say: &amp;quot;This software is already bad and I have only just written it&amp;quot;. However, this statement can be more true than we would like. The potential in a new project is always the best part, right? Developers around the world usually jump at a change to do green field development. After all, with no legacy software around we can make what ever our heart desires. It can be clean, DRY, clever software with all the best design patterns. But, at least in my experience, all software starts off painfully immature. This is just fine. The shape and structure of good software grows over time. This is particularly true for my Year of Commits projects. Since I must write software every single day, I revisit my software extremely frequently. This re-visitation greatly increases the iterations my software goes through and I end up with much more polished work.&lt;/p&gt;
+
+&lt;h2&gt;3. Software development is not just making it work&lt;/h2&gt;
+
+&lt;p&gt;If you take away business requirements, deadlines, conversion rates, etc., you are left with something pure: software development. Year of Commits has enabled me to experience developing software at a slower pace without these extra degrees of &amp;quot;purpose&amp;quot;. Because of this, I have learned the difference between software that just works and carefully architect-ed software. I am not boasting that the software I write is now amazingly designed and executed, I simply believe that given extra time to really deliberate over software design will yield nothing but great results. We, as Software Aristans need time to stop and smell the ones and zeros. Given a decent amount of time and attention, all software can mature to something really extraordinary.&lt;/p&gt;
+
+&lt;p&gt;I am optimistic about completing my goal of a Year of Commits. With 3/4 the distance ahead of me, let&amp;#39;s hope I can keep that graph solid green.&lt;/p&gt;
+</content>
+ </entry>
  
  <entry>
    <title>Just learn Rails (Part 2)</title>
