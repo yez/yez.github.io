@@ -1,0 +1,12 @@
+ul.share-buttons{
+  list-style: none;
+  padding: 0;
+}
+
+ul.share-buttons li a img, ul.share-buttons li{
+  display: inline;
+}
+
+ul.share-buttons li a:hover {
+  text-decoration: none;
+}
