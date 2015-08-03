@@ -4,13 +4,107 @@
  <title>A Year of Commits</title>
  <link href="/atom.xml" rel="self"/>
  <link href="/"/>
- <updated>2015-07-26T22:54:07-07:00</updated>
+ <updated>2015-08-02T21:41:39-07:00</updated>
  <id></id>
  <author>
    <name>Jake Yesbeck</name>
    <email></email>
  </author>
 
+ 
+ <entry>
+   <title>Faster Ruby Testing: Only Test What Matters</title>
+   <link href="/2015/08/02/test-only-what-matters/"/>
+   <updated>2015-08-02T05:00:00-07:00</updated>
+   <id>/2015/08/02/test-only-what-matters</id>
+   <content type="html">&lt;p&gt;Automated testing is important. Fast, exhaustive automated testing is even more important. Tests are responsible for ensuring the code you spend hours creating actually works. A great test suite can be a safeguard against bugs, a directional guide towards extending the code, and an accurate measurement of the codebase&amp;#39;s health. The key to writing good tests is understanding where pieces of responsibility begin and end. Maintaining small concise automated tests can make all the difference.&lt;/p&gt;
+
+&lt;h2&gt;Speed is King&lt;/h2&gt;
+
+&lt;p&gt;Aside from the general importance of &lt;a href=&quot;http://jakeyesbeck.com/2015/06/07/short-feedback-cycles/&quot;&gt;short feedback cycles&lt;/a&gt;, a fast test suite will greatly improve your work-flow and mood. Conversely, a slow test suite can make your development cycle a living nightmare. How many unfortunate software artisans have dealt with something like:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/slow_tests.png&quot; alt=&quot;slow test suite screenshot&quot;&gt;&lt;/p&gt;
+
+&lt;p&gt;Bleh! What a horrible thing to deal with. What, am I supposed to just wait 5 whole minutes every time I want to test my system? A test suite this slow is simply unacceptable.&lt;/p&gt;
+
+&lt;p&gt;So what could be causing this slowness? More than likely, a number of tests in this application are doing too much. To try and replicate and solve this problem, let&amp;#39;s assume we have a Ruby on Rails application we test using RSpec.&lt;/p&gt;
+
+&lt;h2&gt;Testing Database Models is Slow&lt;/h2&gt;
+
+&lt;p&gt;We can assume that there exists a very important class called &lt;code&gt;MyAwesomeClass&lt;/code&gt;:&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;MyAwesomeClass&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;ActiveRecord&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Base&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;assign_and_save!&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;saved_on_the_weekend&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;weekend?&lt;/span&gt;
+    &lt;span class=&quot;nb&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;save!&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;weekend?&lt;/span&gt;
+    &lt;span class=&quot;no&quot;&gt;Time&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;now&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;saturday?&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Time&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;now&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;sunday?&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;If we wanted to test that the &lt;code&gt;assign_and_save!&lt;/code&gt; method works correctly, we might write a test like:&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;n&quot;&gt;describe&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;#assign_and_save!&amp;#39;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;it&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;assigns and saves&amp;#39;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;awesome_test&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;MyAwesomeClass&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;new&lt;/span&gt;
+
+    &lt;span class=&quot;n&quot;&gt;expect&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
+      &lt;span class=&quot;n&quot;&gt;awesome_test&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;assign_and_save!&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;to&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;change&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;MyAwesomeClass&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:count&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;by&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+    &lt;span class=&quot;n&quot;&gt;expect&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;awesome_test&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;saved_on_the_weekend&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;to_not&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;be_nil&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;These tests make sure that the model is saved correctly to the database and a value is assigned to &lt;code&gt;saved_on_the_weekend&lt;/code&gt;. However, the test code is overstepping the boundaries of the method it is testing. The &lt;code&gt;assign_and_save!&lt;/code&gt; method&amp;#39;s job is to simply assign a value to an object and then save it. It does not care about how the actual saving works, that is the job of other validations on the model and &lt;code&gt;ActiveRecord&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;To avoid this, we can assert that the &lt;code&gt;save!&lt;/code&gt; method is called, which will not actually write to our database:&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;n&quot;&gt;describe&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;#assign_and_save!&amp;#39;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;it&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;assigns and saves&amp;#39;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;awesome_test&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;MyAwesomeClass&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;new&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;expect&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;awesome_test&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;to&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;receive&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:save!&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;awesome_test&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;assign_and_save!&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;expect&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;awesome_test&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;saved_on_the_weekend&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;to_not&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;be_nil&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Voila! We have made the same assertions about our code and did not do any slow input/output operations.&lt;/p&gt;
+
+&lt;p&gt;Now I know what some of the more detail oriented Software Artisans reading this will initially think: &lt;em&gt;&amp;quot;What about validation concerns with the model?&amp;quot;&lt;/em&gt; and &lt;em&gt;&amp;quot;If you stub out &lt;code&gt;save!&lt;/code&gt; like that you can&amp;#39;t be sure it worked&amp;quot;&lt;/em&gt;. While these are totally valid points, there exists a simple solution for dealing with the uncertainty of the save:&lt;/p&gt;
+
+&lt;h2&gt;The &lt;code&gt;valid?&lt;/code&gt; method&lt;/h2&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;n&quot;&gt;describe&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;#assign_and_save!&amp;#39;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;it&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;assigns and saves&amp;#39;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;awesome_test&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;MyAwesomeClass&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;new&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;expect&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;awesome_test&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;to&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;receive&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:save!&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;awesome_test&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;assign_and_save!&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;expect&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;awesome_test&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;saved_on_the_weekend&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;to_not&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;be_nil&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+  &lt;span class=&quot;n&quot;&gt;it&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;is save-able&amp;#39;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;awesome_test&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;MyAwesomeClass&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;new&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;allow&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;awesome_test&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;to&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;receive&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:save!&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+    &lt;span class=&quot;n&quot;&gt;awesome_test&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;assign_and_save!&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;expect&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;awesome_test&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;to&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;be_valid&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;With the new test assertion, we make sure that the model&amp;#39;s &lt;code&gt;valid?&lt;/code&gt; method returns true, ensuring the model will be saved properly.&lt;/p&gt;
+
+&lt;p&gt;The &lt;code&gt;valid?&lt;/code&gt; method is what &lt;code&gt;ActiveRecord&lt;/code&gt; uses before saving the model to the database. This method returns either &lt;code&gt;true&lt;/code&gt; or &lt;code&gt;false&lt;/code&gt; and writes the data to the database if &lt;code&gt;true&lt;/code&gt; was returned. Now the code is tested and &lt;code&gt;ActiveRecord&lt;/code&gt;&amp;#39;s&amp;#39; validation errors are considered.&lt;/p&gt;
+
+&lt;h2&gt;Not Perfect, but Good Enough&lt;/h2&gt;
+
+&lt;p&gt;However, there is one more thing that this test will not catch: database specific uniqueness constraints. If your application uses a database to enforce uniqueness and not in &lt;code&gt;ActiveRecord&lt;/code&gt; validations, this testing method will fail. For that you will need a more robust integration tests which guard against duplicate data.&lt;/p&gt;
+
+&lt;p&gt;All that aside, not actually saving data will be fine for the 90% case which is most codebases.&lt;/p&gt;
+
+&lt;h2&gt;Only Test What Matters&lt;/h2&gt;
+
+&lt;p&gt;In this example, removing the testing of &lt;code&gt;save!&lt;/code&gt; resulted in a speed increase. However, the idea of only testing the crucial parts of a method is not only about speed, &lt;strong&gt;it is about encapsulation&lt;/strong&gt;. If a method&amp;#39;s only responsibility is to call helper methods, that is the only thing that should be tested. The test should simply assert that the helper methods are called, not the logic within them. Following this pattern will help keep test code small, concise, readable, and input/output operations to a minimum.&lt;/p&gt;
+</content>
+ </entry>
  
  <entry>
    <title>Ninety Days of Commits</title>

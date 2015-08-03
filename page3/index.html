@@ -67,20 +67,20 @@
   
   <div class="post">
     <h1 class="post-title">
-      <a href="/2015/07/12/create-a-free-tech-blog/">
-        Create a Free Tech Blog
+      <a href="/2015/07/19/just-learn-rails-part-2/">
+        Just learn Rails (Part 2)
       </a>
     </h1>
 
-    <span class="post-date">12 Jul 2015</span>
+    <span class="post-date">19 Jul 2015</span>
     <span class='share-container'><ul class="share-buttons">
   <li>
-    <a href="https://www.facebook.com/sharer/sharer.php?u=http%3A%2F%2Fjakeyesbeck.com&t=Create a Free Tech Blog" title="Share on Facebook" target="_blank">
+    <a href="https://www.facebook.com/sharer/sharer.php?u=http%3A%2F%2Fjakeyesbeck.com&t=Just learn Rails (Part 2)" title="Share on Facebook" target="_blank">
       <img src="/assets/images/Facebook.png">
     </a>
   </li>
   <li>
-    <a href="https://twitter.com/intent/tweet?source=http%3A%2F%2Fjakeyesbeck.com&text=Create a Free Tech Blog:%20http%3A%2F%2Fjakeyesbeck.com&via=yez" target="_blank" title="Tweet">
+    <a href="https://twitter.com/intent/tweet?source=http%3A%2F%2Fjakeyesbeck.com&text=Just learn Rails (Part 2):%20http%3A%2F%2Fjakeyesbeck.com&via=yez" target="_blank" title="Tweet">
       <img src="/assets/images/Twitter.png">
     </a>
   </li>
@@ -90,75 +90,137 @@
     </a>
   </li>
   <li>
-    <a href="http://www.tumblr.com/share?v=3&u=http%3A%2F%2Fjakeyesbeck.com&t=Create a Free Tech Blog" target="_blank" title="Post to Tumblr">
+    <a href="http://www.tumblr.com/share?v=3&u=http%3A%2F%2Fjakeyesbeck.com&t=Just learn Rails (Part 2)" target="_blank" title="Post to Tumblr">
       <img src="/assets/images/Tumblr.png">
     </a>
   </li>
   <li>
-    <a href="https://getpocket.com/save?url=http%3A%2F%2Fjakeyesbeck.com&title=Create a Free Tech Blog" target="_blank" title="Add to Pocket">
+    <a href="https://getpocket.com/save?url=http%3A%2F%2Fjakeyesbeck.com&title=Just learn Rails (Part 2)" target="_blank" title="Add to Pocket">
       <img src="/assets/images/Pocket.png">
     </a>
   </li>
   <li>
-    <a href="http://www.reddit.com/submit?url=http%3A%2F%2Fjakeyesbeck.com&title=Create a Free Tech Blog" target="_blank" title="Submit to Reddit">
+    <a href="http://www.reddit.com/submit?url=http%3A%2F%2Fjakeyesbeck.com&title=Just learn Rails (Part 2)" target="_blank" title="Submit to Reddit">
       <img src="/assets/images/Reddit.png">
     </a>
   </li>
 </ul>
 </span>
 
-    <p>The Internet is wondrous technology. If anyone remembers Geocities and Personal Home Pages, you can appreciate just how much the Internet has evolved. This evolution has recently enabled creating a tech blog completely for free. When I say free, do I mean completely free? Yes, completely free! Even this very blog, my Year of Commits, is hosted for free using the same technologies outlined in this post. You too can have a free tech blog after following these <strong>2 simple steps</strong>.</p>
+    <p>In a <a href="http://jakeyesbeck.com/2015/05/17/just-learn-rails/">previous post</a> I explained how <em>&quot;just learning Rails&quot;</em> is not as straight forward as the phrase portrays. Even the novice programmer who learns Ruby on Rails in a methodical progression may still run into hardship. However, this is not entirely the fault of young programmer, he or she was simply enabled into bad habits. <strong>Ruby on Rails enables the complete disregard of encapsulation.</strong> Notice how I did not say that Ruby on Rails prescribes less encapsulation, it simply enables it.</p>
 
-<h2>Step 1. Use Jekyll</h2>
+<p>This idea, much like any idea posted to the Internet, is not new. Many intelligent people have come to this same realization. One such example is the <a href="https://github.com/apotonick/trailblazer">Trailblazer framework</a>, which aims to help inject some encapsulation and abstraction mechanisms Rails is lacking. (For those interested, <a href="https://leanpub.com/trailblazer">a book has been written</a> to more fully explain this framework).</p>
 
-<p><a href="http://jekyllrb.com/">Jekyll</a> is a free open source static site generator. The Jekyll documentation page has some great <a href="http://jekyllrb.com/docs/quickstart/">tutorials</a> that make getting started extremely painless. Jekyll is also a ruby tool. To contribute to Jekyll, check out their <a href="https://github.com/jekyll/jekyll">github page</a>.</p>
+<p>Alright, so what am I really talking about? Ruby on Rails has certain features that make it easy to forget about encapsulation.</p>
 
-<p>Jekyll makes it easy to start creating content without worrying about CSS, page templates, or link architecture. It even generates an RSS feed of your content. All pages can be written in Markdown and automatically converted to HTML upon building or serving the site. The <code>jekyll build</code> command is what this post will focus on, but <code>jekyll serve</code> is worth checking out too.</p>
+<h3>The Autoloader</h3>
 
-<p>To get started with Jekyll:</p>
-<div class="highlight"><pre><code class="language-text" data-lang="text">$: gem install jekyll
-$: jekyll new mytechblog
-$: cd mytechblog/
-$: touch _posts/2015-07-12-my-first-post.markdown
+<p>A keyword that most Ruby on Rails developers rarely see on a daily basis is <code>require</code>. A piece of Ruby on Rails magic called <a href="http://guides.rubyonrails.org/autoloading_and_reloading_constants.html">autoloading</a> greatly decreased the frequency of the <code>require</code> keyword in Ruby on Rails applications. This has many positive aspects for new and seasoned developers alike. But, it is not without drawbacks. One such drawback is that it makes <code>ActiveRecord</code> objects ubiquitous. Whenever a developer has the urge to reach into the database, regardless of the context, they are able to do so.</p>
+
+<p><strong>This enables horrific code.</strong></p>
+
+<p>Imagine we have a view template that we want to display a user&#39;s username and their pictures. Without any guidance, this following code could come into existence:</p>
+<div class="highlight"><pre><code class="language-ERB" data-lang="ERB"><span class="x">#</span>
+<span class="x"># Reminder, this is terrible code. Never do this.</span>
+<span class="x">#</span>
+
+<span class="x">&lt;div&gt;</span>
+<span class="x">  </span><span class="cp">&lt;%#</span><span class="c"></span>
+<span class="c">    Let&#39;s just go through all the users in the database.</span>
+<span class="c">    This is a new application so we don&#39;t have that many users,</span>
+<span class="c">     it will never run into scalability issues.</span>
+<span class="c">  </span><span class="cp">%&gt;</span><span class="x"></span>
+<span class="x">  </span><span class="cp">&lt;%</span> <span class="no">User</span><span class="o">.</span><span class="n">all</span><span class="o">.</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">user</span><span class="o">|</span> <span class="cp">%&gt;</span><span class="x"></span>
+<span class="x">    &lt;div class = &#39;username&#39;&gt;</span>
+<span class="x">      </span><span class="cp">&lt;%=</span> <span class="n">user</span><span class="o">.</span><span class="n">username</span> <span class="cp">%&gt;</span><span class="x"></span>
+<span class="x">    &lt;/div&gt;</span>
+
+<span class="x">    &lt;div class = &#39;pictures&#39;&gt;</span>
+<span class="x">      </span><span class="cp">&lt;%#</span><span class="c"></span>
+<span class="c">       Make sure we have the only the picture url, just go ahead</span>
+<span class="c">        directly to the database and let it handle</span>
+<span class="c">        the downcasing that we, for some reason, need.</span>
+<span class="c">       Also, Jim in Business Ops thinks it will be</span>
+<span class="c">        super great to order the pictures randomly each time!</span>
+<span class="c">      </span><span class="cp">%&gt;</span><span class="x"></span>
+<span class="x">      </span><span class="cp">&lt;%</span> <span class="no">Pictures</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="s1">&#39;downcase(url)&#39;</span><span class="p">)</span>
+                <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="ss">user_id</span><span class="p">:</span> <span class="n">user</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+                <span class="o">.</span><span class="n">order</span><span class="p">(</span><span class="s1">&#39;random()&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">url</span><span class="o">|</span> <span class="cp">%&gt;</span><span class="x"></span>
+<span class="x">        &lt;img src = &quot;</span><span class="cp">&lt;%=</span> <span class="n">url</span> <span class="cp">%&gt;</span><span class="x">&quot;/&gt;</span>
+<span class="x">      </span><span class="cp">&lt;%</span> <span class="k">end</span> <span class="cp">%&gt;</span><span class="x"></span>
+<span class="x">    &lt;/div&gt;</span>
+<span class="x">  </span><span class="cp">&lt;%</span> <span class="k">end</span> <span class="cp">%&gt;</span><span class="x"></span>
+<span class="x">&lt;/div&gt;</span>
+
+<span class="x">#</span>
+<span class="x"># Never replicate the above code or you will be very sad</span>
+<span class="x">#</span>
 </code></pre></div>
-<p>This will create a new directory with some default configuration files and subdirectories. Inside this new directory, the example created a <code>2015-07-12-my-first-post.markdown</code> file within the <code>_posts/</code> subdirectory. This file will contain the content for the first blog post.</p>
+<p>Notice how deep in the presentation layer (the view) we have direct database calls. This completely violates the encapsulations that an MVC framework should provide. Since all the models exist everywhere, nothing stops a programmer from writing it in this way. The code above should make every ruby programmer cringe.</p>
 
-<p>Jekyll Markdown pages require a specific format at the top of the file. This format is called <a href="http://jekyllrb.com/docs/frontmatter/">front matter</a>. It is imperative that all Jekyll posts have proper front matter in order to be converted to HTML.</p>
+<p>Separating concerns and responsibilities helps prevent repetition and boosts comprehension. The above code should be a composition of multiple objects with entirely different responsibilities. That concept is not always intuitive for some developers, especially those just starting out. One might ask: <em>&quot;Why would I make a whole mess of objects to do the same thing that these 14 lines can do?&quot;</em>. The simple answer is because these problems are not new. Ruby on Rails did not expose these abstraction and encapsulation issues for the first time in the history of software engineering. They have been around for <a href="https://en.wikipedia.org/wiki/Encapsulation_(computer_programming)">a very long time</a>. Smarter software artisans than I saw these problems and created guidelines to solve them. Following their lead will save all of us in the long run.</p>
 
-<h2>Step 2. Use Github Pages</h2>
+<p>So what can we do about our misguided code above? Let us try moving some responsibilities around and see how it changes.</p>
 
-<p>Github has been a great tool for managing version controlled software for years. Now, Github has released an equally awesome tool called <a href="https://pages.github.com/">Github Pages</a>. To get started with Github Pages, simply create a <strong>public</strong> repository with the pattern: <code>&lt;yourusername&gt;.github.io</code> (Remember to replace the <code>&lt;yourusename&gt;</code> with your actual username). Now, every time a commit is pushed to this repository&#39;s master branch, the blog will be automatically updated. Since this repository is required to be public, make sure that no sensitive information is accidentally committed within posts.</p>
+<h3>Add a dash of encapsulation</h3>
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="c1"># The user class just needs to know about the database connection.</span>
+<span class="c1"># ActiveRecord takes care of that detail for us, adding a scope</span>
+<span class="c1">#   is a supplementary addition to that logic.</span>
+<span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
+  <span class="n">scope</span> <span class="ss">:with_pictures</span><span class="p">,</span> <span class="o">-&gt;</span><span class="p">{</span> <span class="n">includes</span><span class="p">(</span><span class="ss">:pictures</span><span class="p">)</span> <span class="p">}</span>
+<span class="k">end</span>
 
-<p>To set up a directory and point it to the github.io repository:</p>
-<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$:</span> mkdir username.github.io
-<span class="nv">$:</span> <span class="nb">cd </span>username.github.io/
-<span class="nv">$:</span> git init .
-<span class="nv">$:</span> git remote add origin git@github.com:username/username.github.io.git
+<span class="c1"># We can create a PORO (Plain Old Ruby Object) to house the user</span>
+<span class="c1">#  object and extract, downcase, and randomize its picture urls.</span>
+<span class="k">class</span> <span class="nc">UserPresenter</span>
+  <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
+    <span class="vi">@user</span> <span class="o">=</span> <span class="n">user</span>
+    <span class="vi">@pictures</span> <span class="o">=</span> <span class="n">user</span><span class="o">.</span><span class="n">pictures</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">username</span>
+    <span class="vi">@user</span><span class="o">.</span><span class="n">username</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">picture_urls</span>
+    <span class="vi">@pictures</span><span class="o">.</span><span class="n">map</span> <span class="k">do</span> <span class="o">|</span><span class="n">photo</span><span class="o">|</span>
+      <span class="n">photo</span><span class="o">.</span><span class="n">url</span><span class="o">.</span><span class="n">downcase</span>
+    <span class="k">end</span><span class="o">.</span><span class="n">shuffle</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="c1"># The controller handles linking up each User with a UserPresenter</span>
+<span class="c1">#  then saves the list to a variable to be used by the view.</span>
+<span class="k">class</span> <span class="nc">UsersController</span> <span class="o">&lt;</span> <span class="no">ActionController</span>
+  <span class="k">def</span> <span class="nf">show</span>
+    <span class="vi">@user_presenters</span> <span class="o">=</span> <span class="o">[]</span>
+
+    <span class="no">User</span><span class="o">.</span><span class="n">all</span><span class="o">.</span><span class="n">with_pictures</span><span class="o">.</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">user</span><span class="o">|</span>
+      <span class="vi">@user_presenters</span> <span class="o">&lt;&lt;</span> <span class="no">UserPresenter</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div><div class="highlight"><pre><code class="language-ERB" data-lang="ERB"><span class="x"># Finally, the view logic only knows about a presenter for each user.</span>
+<span class="x"># From the views perspective, the presenter object only has</span>
+<span class="x">    two methods: username and picture_urls.</span>
+<span class="x"># It does not need to know about database structure, schema, syntax or</span>
+<span class="x">#  business logic. It has one job, to display data.</span>
+<span class="x">&lt;div&gt;</span>
+<span class="x">  </span><span class="cp">&lt;%</span> <span class="vi">@user_presenters</span><span class="o">.</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">presenter</span><span class="o">|</span> <span class="cp">%&gt;</span><span class="x"></span>
+<span class="x">    &lt;div class = &#39;username&#39;&gt;</span>
+<span class="x">      </span><span class="cp">&lt;%=</span> <span class="n">presenter</span><span class="o">.</span><span class="n">username</span> <span class="cp">%&gt;</span><span class="x"></span>
+<span class="x">    &lt;/div&gt;</span>
+<span class="x">    &lt;div class = &#39;pictures&#39;&gt;</span>
+<span class="x">      </span><span class="cp">&lt;%</span> <span class="n">presenter</span><span class="o">.</span><span class="n">picture_urls</span><span class="o">.</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">url</span><span class="o">|</span> <span class="cp">%&gt;</span><span class="x"></span>
+<span class="x">        &lt;img src=&quot;</span><span class="cp">&lt;%=</span> <span class="n">url</span> <span class="cp">%&gt;</span><span class="x">&quot;/&gt;</span>
+<span class="x">      </span><span class="cp">&lt;%</span> <span class="k">end</span> <span class="cp">%&gt;</span><span class="x"></span>
+<span class="x">    &lt;/div&gt;</span>
+<span class="x">  </span><span class="cp">&lt;%</span> <span class="k">end</span> <span class="cp">%&gt;</span><span class="x"></span>
+<span class="x">&lt;/div&gt;</span>
 </code></pre></div>
-<p>The files uploaded to the Github Pages repository should be static HTML. This is where <strong>Step 1</strong> comes in. Since this blog will use <code>jekyll build</code>, the <code>&lt;yourusername&gt;.github.io</code> repository should consist of HTML files generated by Jekyll.</p>
+<h3>Conclusion</h3>
 
-<p>To generate the HTML files:</p>
-<div class="highlight"><pre><code class="language-text" data-lang="text">$: cd mytechblog
-$: jekyll build --destination=~/username.github.io
-$: cd ~/username.github.io
-$: git add .
-$: git commit -m &quot;First blog post&quot;
-$: git push origin HEAD
-</code></pre></div>
-<p>And there you have it! A successful blog created entirely for free. Now, the example blog is accessible at http://username.github.io.</p>
-
-<h2>(Optional) Step 3. Use a custom URL</h2>
-
-<p>To serve a blog at a custom URL, simply add a single file to the root of the <code>&lt;yourusername&gt;.github.io</code> repository. The filename must be <code>CNAME</code> and it should include a single line: the custom URL.</p>
-
-<p>An example <code>CNAME</code> file:</p>
-<div class="highlight"><pre><code class="language-text" data-lang="text">mytechblog.com
-</code></pre></div>
-<p>Additionally, the DNS provider that <code>mytechblog.com</code>&#39;s DNS is served from must include an <code>ALIAS</code>, <code>ANAME</code>, or <code>A</code> record to the Github IP. More information on setting a custom domain can be found at the <a href="https://help.github.com/articles/tips-for-configuring-an-a-record-with-your-dns-provider/">Github help page</a></p>
-
-<h2>Final Step: Blog for free about cool technology</h2>
-
-<p>Now that a completely free blog is newly created, you have the ability to update it as frequently as you choose. Share your knowledge at expeditious paces by simply making commits to a public repository. Never worry about hosting costs, server configuration or deployment again. Simply write Markdown, build static HTML, and commit!</p>
+<p>The code that was rewritten is far from perfect. However, it is a noticeable improvement over its original version. I am in no way claiming to be the creator of these design patters, simply a spokesperson for good encapsulation and object oriented design. When respected and correctly utilized, Ruby on Rails is a fantastic tool for web development. When learning Ruby on Rails, it is imperative to stand by software engineering paradigms. Just because a framework allows it, doesn&#39;t mean that it is necessarily a good thing to do.</p>
 
   </div>
   

@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta http-equiv="content-type" content="text/html; charset=utf-8">
   
-    <meta name="description" content="A technology blog about a Year of Commits to Open Source projects.">
+    <meta name="description" content="Only test what matters in Ruby. Keep automated Ruby tests fast and feedback cycles short.">
   
 
   <!-- Enable responsiveness on mobile devices-->
@@ -14,7 +14,7 @@
 
   <title>
     
-      A Year of Commits &middot; 
+      Faster Ruby Testing: Only Test What Matters &middot; A Year of Commits
     
   </title>
 
@@ -49,7 +49,7 @@
     </div>
 
     <nav class="sidebar-nav">
-      <a class="sidebar-nav-item active" href="/">Home</a>
+      <a class="sidebar-nav-item" href="/">Home</a>
       <a class="sidebar-nav-item" href="/archives">Archives</a>
       <a class="sidebar-nav-item" href="/about">About</a>
       <a class="sidebar-nav-item" href="https://github.com/yez">GitHub</a>
@@ -63,17 +63,10 @@
 
 
     <div class="content container">
-      <div class="posts">
-  
-  <div class="post">
-    <h1 class="post-title">
-      <a href="/2015/08/02/test-only-what-matters/">
-        Faster Ruby Testing: Only Test What Matters
-      </a>
-    </h1>
-
-    <span class="post-date">02 Aug 2015</span>
-    <span class='share-container'><ul class="share-buttons">
+      <div class="post">
+  <h1 class="post-title">Faster Ruby Testing: Only Test What Matters</h1>
+  <span class="post-date">02 Aug 2015</span>
+  <span class='share-container'><ul class="share-buttons">
   <li>
     <a href="https://www.facebook.com/sharer/sharer.php?u=http%3A%2F%2Fjakeyesbeck.com&t=Faster Ruby Testing: Only Test What Matters" title="Share on Facebook" target="_blank">
       <img src="/assets/images/Facebook.png">
@@ -106,8 +99,7 @@
   </li>
 </ul>
 </span>
-
-    <p>Automated testing is important. Fast, exhaustive automated testing is even more important. Tests are responsible for ensuring the code you spend hours creating actually works. A great test suite can be a safeguard against bugs, a directional guide towards extending the code, and an accurate measurement of the codebase&#39;s health. The key to writing good tests is understanding where pieces of responsibility begin and end. Maintaining small concise automated tests can make all the difference.</p>
+  <p>Automated testing is important. Fast, exhaustive automated testing is even more important. Tests are responsible for ensuring the code you spend hours creating actually works. A great test suite can be a safeguard against bugs, a directional guide towards extending the code, and an accurate measurement of the codebase&#39;s health. The key to writing good tests is understanding where pieces of responsibility begin and end. Maintaining small concise automated tests can make all the difference.</p>
 
 <h2>Speed is King</h2>
 
@@ -194,17 +186,40 @@
 
 <p>In this example, removing the testing of <code>save!</code> resulted in a speed increase. However, the idea of only testing the crucial parts of a method is not only about speed, <strong>it is about encapsulation</strong>. If a method&#39;s only responsibility is to call helper methods, that is the only thing that should be tested. The test should simply assert that the helper methods are called, not the logic within them. Following this pattern will help keep test code small, concise, readable, and input/output operations to a minimum.</p>
 
-  </div>
-  
 </div>
 
-<div class="pagination">
-  
-    <a class="pagination-item older" href="/page2">Older</a>
-  
-  
-    <span class="pagination-item newer">Newer</span>
-  
+<div class="related">
+  <h2>Related Posts</h2>
+  <ul class="related-posts">
+    
+      <li>
+        <h3>
+          <a href="/2015/07/26/ninety-days-of-commits/">
+            Ninety Days of Commits
+            <small>26 Jul 2015</small>
+          </a>
+        </h3>
+      </li>
+    
+      <li>
+        <h3>
+          <a href="/2015/07/19/just-learn-rails-part-2/">
+            Just learn Rails (Part 2)
+            <small>19 Jul 2015</small>
+          </a>
+        </h3>
+      </li>
+    
+      <li>
+        <h3>
+          <a href="/2015/07/12/create-a-free-tech-blog/">
+            Create a Free Tech Blog
+            <small>12 Jul 2015</small>
+          </a>
+        </h3>
+      </li>
+    
+  </ul>
 </div>
 
     </div>
