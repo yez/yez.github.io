@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta http-equiv="content-type" content="text/html; charset=utf-8">
   
-    <meta name="description" content="A technology blog about a Year of Commits to Open Source projects.">
+    <meta name="description" content="Processing large data sets with Ruby in a fast, efficient way. Use Resque and Parallel processing to speed things up.">
   
 
   <!-- Enable responsiveness on mobile devices-->
@@ -14,7 +14,7 @@
 
   <title>
     
-      A Year of Commits &middot; 
+      How to Process Large Data Sets with Ruby &middot; A Year of Commits
     
   </title>
 
@@ -49,7 +49,7 @@
     </div>
 
     <nav class="sidebar-nav">
-      <a class="sidebar-nav-item active" href="/">Home</a>
+      <a class="sidebar-nav-item" href="/">Home</a>
       <a class="sidebar-nav-item" href="/archives">Archives</a>
       <a class="sidebar-nav-item" href="/about">About</a>
       <a class="sidebar-nav-item" href="https://github.com/yez">GitHub</a>
@@ -63,17 +63,10 @@
 
 
     <div class="content container">
-      <div class="posts">
-  
-  <div class="post">
-    <h1 class="post-title">
-      <a href="/2015/08/09/how-to-process-large-data-sets-with-ruby/">
-        How to Process Large Data Sets with Ruby
-      </a>
-    </h1>
-
-    <span class="post-date">09 Aug 2015</span>
-    <span class='share-container'><ul class="share-buttons">
+      <div class="post">
+  <h1 class="post-title">How to Process Large Data Sets with Ruby</h1>
+  <span class="post-date">09 Aug 2015</span>
+  <span class='share-container'><ul class="share-buttons">
   <li>
     <a href="https://www.facebook.com/sharer/sharer.php?u=http%3A%2F%2Fjakeyesbeck.com&t=How to Process Large Data Sets with Ruby" title="Share on Facebook" target="_blank">
       <img src="/assets/images/Facebook.png">
@@ -106,8 +99,7 @@
   </li>
 </ul>
 </span>
-
-    <p>The need for data migrations in mature systems is real. At times, requests for these migrations can appear at random. One minute, a system is behaving as specified, happily fulfilling requests, and then bam! All the user objects suddenly need an extremely crucial attribute. Well that seems relatively simple, right? All that is needed is a simple ruby script to iterate over all users and update every user with this essential piece of data.</p>
+  <p>The need for data migrations in mature systems is real. At times, requests for these migrations can appear at random. One minute, a system is behaving as specified, happily fulfilling requests, and then bam! All the user objects suddenly need an extremely crucial attribute. Well that seems relatively simple, right? All that is needed is a simple ruby script to iterate over all users and update every user with this essential piece of data.</p>
 
 <p>To demonstrate such a problem, we can assume the following:</p>
 
@@ -224,17 +216,40 @@
 
 <p>Although the parallel solution is not as simple as its serial counterpart, the benefits are extremely apparent. The parallel solution is not without its weaknesses, but they do not make it invalid. It iterates over the entire user set twice, but parallelizing the slow <code>phone_number</code> update queries makes up for that inefficiency ten-fold.</p>
 
-  </div>
-  
 </div>
 
-<div class="pagination">
-  
-    <a class="pagination-item older" href="/page2">Older</a>
-  
-  
-    <span class="pagination-item newer">Newer</span>
-  
+<div class="related">
+  <h2>Related Posts</h2>
+  <ul class="related-posts">
+    
+      <li>
+        <h3>
+          <a href="/2015/08/02/test-only-what-matters/">
+            Faster Ruby Testing: Only Test What Matters
+            <small>02 Aug 2015</small>
+          </a>
+        </h3>
+      </li>
+    
+      <li>
+        <h3>
+          <a href="/2015/07/26/ninety-days-of-commits/">
+            Ninety Days of Commits
+            <small>26 Jul 2015</small>
+          </a>
+        </h3>
+      </li>
+    
+      <li>
+        <h3>
+          <a href="/2015/07/19/just-learn-rails-part-2/">
+            Just learn Rails (Part 2)
+            <small>19 Jul 2015</small>
+          </a>
+        </h3>
+      </li>
+    
+  </ul>
 </div>
 
     </div>
