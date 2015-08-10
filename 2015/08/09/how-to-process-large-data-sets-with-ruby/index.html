@@ -103,17 +103,13 @@
 
 <p>To demonstrate such a problem, we can assume the following:</p>
 
-<p>A Ruby on Rails application exists with a <code>User</code> class:</p>
+<p>A Ruby on Rails application exists with a <code>User</code> class, each with a <code>phone_number</code> attribute.</p>
 <div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
-  <span class="n">has_many</span> <span class="ss">:phone_numbers</span>
+
+  <span class="n">validates_presence_of</span> <span class="ss">:phone_number</span>
 <span class="k">end</span>
 </code></pre></div>
-<p>A corresponding <code>PhoneNumber</code> class that exists as a one to many relationship with our <code>User</code>:</p>
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">class</span> <span class="nc">PhoneNumber</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
-  <span class="n">belongs_to</span> <span class="ss">:user</span>
-<span class="k">end</span>
-</code></pre></div>
-<p>Also the application is relatively popular, which results in 2,000,000 <code>users</code>:</p>
+<p>The application is relatively popular, which results in 2,000,000 <code>users</code>:</p>
 <div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="no">User</span><span class="o">.</span><span class="n">count</span>
 <span class="c1">#=&gt; 2000000</span>
 </code></pre></div>
@@ -127,16 +123,14 @@
 
 <p>Without giving it too much thought, an approach to solve this problem might look something like:</p>
 <div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="no">User</span><span class="o">.</span><span class="n">find_each</span> <span class="k">do</span> <span class="o">|</span><span class="n">user</span><span class="o">|</span>
-  <span class="n">user</span><span class="o">.</span><span class="n">phone_numbers</span><span class="o">.</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">phone</span><span class="o">|</span>
-    <span class="n">phone</span><span class="o">.</span><span class="n">number</span> <span class="o">=</span> <span class="s2">&quot;+1</span><span class="si">#{</span> <span class="n">phone</span><span class="o">.</span><span class="n">number</span> <span class="si">}</span><span class="s2">&quot;</span>
+  <span class="n">user</span><span class="o">.</span><span class="n">phone_number</span> <span class="o">=</span> <span class="s2">&quot;+1</span><span class="si">#{</span> <span class="n">user</span><span class="o">.</span><span class="n">phone_number</span> <span class="si">}</span><span class="s2">&quot;</span>
 
-    <span class="n">phone</span><span class="o">.</span><span class="n">save!</span>
-  <span class="k">end</span>
+  <span class="n">user</span><span class="o">.</span><span class="n">save!</span>
 <span class="k">end</span>
 </code></pre></div>
 <p>This approach will work. The <a href="http://guides.rubyonrails.org/active_record_querying.html#find-each">find_each</a> method will make sure the memory footprint of the script stays low (it will not load every user into memory at once) and the phone numbers will be updated.</p>
 
-<p>However, this will be painfully slow. Even if every user only has one phone number, and the system is able to update 20 users per second, it will still take approximately <strong>27 hours</strong> to complete.</p>
+<p>However, this will be painfully slow. Even if the system is able to update 20 users per second, it will take approximately <strong>27 hours</strong> to complete.</p>
 <div class="highlight"><pre><code class="language-text" data-lang="text">2,000,000 users / 20 users per second
 = 100,000 seconds to process all users
 </code></pre></div><div class="highlight"><pre><code class="language-text" data-lang="text">100,000 seconds / 60 seconds
@@ -160,13 +154,10 @@
     <span class="vi">@user</span> <span class="o">=</span> <span class="n">user</span>
   <span class="k">end</span>
 
-  <span class="k">def</span> <span class="nf">update_phones!</span>
-    <span class="vi">@user</span><span class="o">.</span><span class="n">phone_numbers</span><span class="o">.</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">phone</span><span class="o">|</span>
-      <span class="n">phone</span><span class="o">.</span><span class="n">number</span> <span class="o">=</span>
-        <span class="s2">&quot;+1</span><span class="si">#{</span> <span class="n">phone</span><span class="o">.</span><span class="n">number</span> <span class="si">}</span><span class="s2">&quot;</span>
+  <span class="k">def</span> <span class="nf">update_phone!</span>
+    <span class="vi">@user</span><span class="o">.</span><span class="n">phone_number</span> <span class="o">=</span> <span class="s2">&quot;+1</span><span class="si">#{</span> <span class="vi">@user</span><span class="o">.</span><span class="n">phone_number</span> <span class="si">}</span><span class="s2">&quot;</span>
 
-      <span class="n">phone</span><span class="o">.</span><span class="n">save!</span>
-    <span class="k">end</span>
+    <span class="vi">@user</span><span class="o">.</span><span class="n">save!</span>
   <span class="k">end</span>
 <span class="k">end</span>
 </code></pre></div>
@@ -179,7 +170,7 @@
   <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">perform</span><span class="p">(</span><span class="n">user_id</span><span class="p">)</span>
     <span class="n">user</span> <span class="o">=</span> <span class="no">User</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">user_id</span><span class="p">)</span>
     <span class="n">updater</span> <span class="o">=</span> <span class="no">PhoneUpdater</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
-    <span class="n">updater</span><span class="o">.</span><span class="n">update_phones!</span>
+    <span class="n">updater</span><span class="o">.</span><span class="n">update_phone!</span>
   <span class="k">end</span>
 <span class="k">end</span>
 </code></pre></div>
@@ -195,15 +186,13 @@
 <h3>4. Run many parallel Resque workers</h3>
 
 <p>This is where the fun happens. By initializing many different Resque worker processes, they all will read from the <code>phone_updates</code> queue and process users in parallel. The <code>QUEUE</code> specified matches what was defined in <code>PhoneUpdaterJob</code>.</p>
-
-<p><em>Note: <code>FORK_PER_JOB=false</code> is to help mitigate memory issues, depending on the system it may or may not be necessary.</em></p>
 <div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="c"># Open a terminal in the root of your project...</span>
-<span class="nv">QUEUE</span><span class="o">=</span>phone_updates <span class="nv">FORK_PER_JOB</span><span class="o">=</span><span class="nb">false </span>rake resque:work
+<span class="nv">QUEUE</span><span class="o">=</span>phone_updates rake resque:work
 
 <span class="c"># Open another terminal in the root of your project...</span>
-<span class="nv">QUEUE</span><span class="o">=</span>phone_updates <span class="nv">FORK_PER_JOB</span><span class="o">=</span><span class="nb">false </span>rake resque:work
+<span class="nv">QUEUE</span><span class="o">=</span>phone_updates rake resque:work
 
-<span class="nv">QUEUE</span><span class="o">=</span>phone_updates <span class="nv">FORK_PER_JOB</span><span class="o">=</span><span class="nb">false </span>rake resque:work
+<span class="nv">QUEUE</span><span class="o">=</span>phone_updates rake resque:work
 <span class="c"># Open another terminal in the root of your project...</span>
 
 <span class="c"># etc.</span>
