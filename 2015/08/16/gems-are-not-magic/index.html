@@ -125,7 +125,9 @@
 <span class="n">gem</span> <span class="s1">&#39;these-are-too-many-gems&#39;</span>
 <span class="n">gem</span> <span class="s1">&#39;really&#39;</span>
 </code></pre></div>
-<p>It is very possible that all these gems do not have any adverse side effects. They might not even have any horrible monkey patches to <code>String</code> or <code>Object</code>. However, without being able to see inside of them, intrusive gems might be mixed into this mass and we would have no idea. At a glance, it is not immediately obvious how to differentiate between benign and malignant gems. It becomes infinitely easier to understand how gems interact if we remember that gems are not magic.</p>
+<p>It is very possible that all these gems do not have any adverse side effects. They might not even have any horrible monkey patches to <code>String</code> or <code>Object</code>. <a href="http://www.nateberkopec.com/2015/07/22/secrets-to-speedy-ruby-apps-on-heroku.html">This post</a> has more information on <em>&quot;Why do most Rails apps use so much memory per process?&quot;</em>.</p>
+
+<p>Without being able to see inside of them, intrusive gems might be mixed into this mass and we would have no idea. At a glance, it is not immediately obvious how to differentiate between benign and malignant gems. It becomes infinitely easier to understand how gems interact if we remember that gems are not magic.</p>
 
 <h2>Gems are just Libraries</h2>
 

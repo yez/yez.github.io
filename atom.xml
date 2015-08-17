@@ -40,7 +40,9 @@
 &lt;span class=&quot;n&quot;&gt;gem&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;these-are-too-many-gems&amp;#39;&lt;/span&gt;
 &lt;span class=&quot;n&quot;&gt;gem&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;really&amp;#39;&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;It is very possible that all these gems do not have any adverse side effects. They might not even have any horrible monkey patches to &lt;code&gt;String&lt;/code&gt; or &lt;code&gt;Object&lt;/code&gt;. However, without being able to see inside of them, intrusive gems might be mixed into this mass and we would have no idea. At a glance, it is not immediately obvious how to differentiate between benign and malignant gems. It becomes infinitely easier to understand how gems interact if we remember that gems are not magic.&lt;/p&gt;
+&lt;p&gt;It is very possible that all these gems do not have any adverse side effects. They might not even have any horrible monkey patches to &lt;code&gt;String&lt;/code&gt; or &lt;code&gt;Object&lt;/code&gt;. &lt;a href=&quot;http://www.nateberkopec.com/2015/07/22/secrets-to-speedy-ruby-apps-on-heroku.html&quot;&gt;This post&lt;/a&gt; has more information on &lt;em&gt;&amp;quot;Why do most Rails apps use so much memory per process?&amp;quot;&lt;/em&gt;.&lt;/p&gt;
+
+&lt;p&gt;Without being able to see inside of them, intrusive gems might be mixed into this mass and we would have no idea. At a glance, it is not immediately obvious how to differentiate between benign and malignant gems. It becomes infinitely easier to understand how gems interact if we remember that gems are not magic.&lt;/p&gt;
 
 &lt;h2&gt;Gems are just Libraries&lt;/h2&gt;
 
