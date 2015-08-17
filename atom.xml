@@ -4,13 +4,65 @@
  <title>A Year of Commits</title>
  <link href="/atom.xml" rel="self"/>
  <link href="/"/>
- <updated>2015-08-09T21:55:14-07:00</updated>
+ <updated>2015-08-17T08:07:07-07:00</updated>
  <id></id>
  <author>
    <name>Jake Yesbeck</name>
    <email></email>
  </author>
 
+ 
+ <entry>
+   <title>Gems != Magic</title>
+   <link href="/2015/08/16/gems-are-not-magic/"/>
+   <updated>2015-08-16T05:00:00-07:00</updated>
+   <id>/2015/08/16/gems-are-not-magic</id>
+   <content type="html">&lt;p&gt;Ruby gems can seem magical. Usually, one (or more accurately: thirty) solution to a problem exists in the form of a gem. Using gems is easy and intuitive. Simply add a line in the project root&amp;#39;s &lt;code&gt;Gemfile&lt;/code&gt; and run &lt;code&gt;bundle install&lt;/code&gt;. Then, either &lt;code&gt;require&lt;/code&gt; the name of the gem or, if using Ruby on Rails, start using the gem&amp;#39;s code immediately anywhere in the project. What could possibly go wrong?&lt;/p&gt;
+
+&lt;h2&gt;Gems on gems on gems&lt;/h2&gt;
+
+&lt;p&gt;Unchecked and unmanaged, a project&amp;#39;s &lt;code&gt;Gemfile&lt;/code&gt; might turn into something that looks like:&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;n&quot;&gt;source&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;http://rubygems.org&amp;#39;&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;gem&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;linkbuilder&amp;#39;&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;gem&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;http_helper&amp;#39;&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;gem&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;the-color-red&amp;#39;&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;gem&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;devise&amp;#39;&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;gem&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;cancancancancan&amp;#39;&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;gem&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;nokogiri&amp;#39;&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;gem&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;crack&amp;#39;&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# ...&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# ....&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# .....&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;gem&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;cucumber&amp;#39;&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;gem&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;avacado&amp;#39;&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;gem&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;you-get-the-idea&amp;#39;&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;gem&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;these-are-too-many-gems&amp;#39;&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;gem&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;really&amp;#39;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;It is very possible that all these gems do not have any adverse side effects. They might not even have any horrible monkey patches to &lt;code&gt;String&lt;/code&gt; or &lt;code&gt;Object&lt;/code&gt;. However, without being able to see inside of them, intrusive gems might be mixed into this mass and we would have no idea. At a glance, it is not immediately obvious how to differentiate between benign and malignant gems. It becomes infinitely easier to understand how gems interact if we remember that gems are not magic.&lt;/p&gt;
+
+&lt;h2&gt;Gems are just Libraries&lt;/h2&gt;
+
+&lt;p&gt;There it is! The rabbit is out of the hat. Somewhere, some amount of cats have been released from their respective bags. Gems are not magic silver bullets injected into a codebase. Instead &lt;strong&gt;they are nothing more than libraries of code&lt;/strong&gt;. Gems are &lt;em&gt;(hopefully)&lt;/em&gt; well encapsulated groups of files that amount to a &lt;em&gt;(again hopefully)&lt;/em&gt; few pieces of helpful functionality. With this new understanding of what gems really are, it means that parsing, modifying, and creating gems is within reach. All that is left is to figure out how to pry them open.&lt;/p&gt;
+
+&lt;h2&gt;Opening gems&lt;/h2&gt;
+
+&lt;p&gt;Understanding gems is a great way to learn different design patterns and idiomatic Ruby conventions. Good gems have &lt;a href=&quot;https://github.com/jnunemaker/httparty/blob/master/lib/httparty.rb#L29&quot;&gt;in-line documentation&lt;/a&gt;, great gems have &lt;a href=&quot;https://github.com/apotonick/trailblazer#trailblazer&quot;&gt;comprehensive Github documentation&lt;/a&gt;. Github is the most common place to find the source code for gems and a large number of them have really great method and API documentation. This level of detail might be all that is required; however, for the more opaque gems, the &lt;code&gt;bundle open&lt;/code&gt; command is extremely helpful.&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;bundle open &amp;lt;gemname&amp;gt;&lt;/code&gt; will use the system default text editor to open the contents of a gem. Since all gems are installed locally on the system, they should be available to open from a project&amp;#39;s root. If a default editor is not set, or the default is not desired, one can be added to the beginning of the command: &lt;code&gt;EDITOR=vim bundle open &amp;lt;gemname&amp;gt;&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;A common starting place for a gem&amp;#39;s logic is in a file with the same name as the gem. Since most gems need to encapsulate their logic, a namespace or wrapper class is usually created with the same name as the gem. In this file it is equally common to find a list of required files or the entry point for the underlying logic. This file is usually in the root of the gem&amp;#39;s source or in a &lt;code&gt;lib&lt;/code&gt; directory.&lt;/p&gt;
+
+&lt;p&gt;In the &lt;a href=&quot;http://jakeyesbeck.com/2015/05/10/validates-type/&quot;&gt;validates_type&lt;/a&gt; root file:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/validates_type_dir_list.png&quot; alt=&quot;validates_type dir list&quot;&gt;&lt;/p&gt;
+
+&lt;h2&gt;Great! Now what?&lt;/h2&gt;
+
+&lt;p&gt;Now, go out there and open up all the gems in the entire world! Read them, understand them, be one with the gems. Get a flavor for the different types of Ruby code that can exist. Then, after complete code nirvana has been achieved, submit a pull request to the gem&amp;#39;s source with some great additions. Or, place a few bindings in a few obscure methods to see how the code flows in and out of the gem. A master craftsman understands all of the tools in his toolbox, the same should be true for software.&lt;/p&gt;
+</content>
+ </entry>
  
  <entry>
    <title>How to Process Large Data Sets with Ruby</title>
