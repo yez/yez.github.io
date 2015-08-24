@@ -181,7 +181,7 @@ pre code {
 }
 
 pre code.language-text {
-  font-size: 14px;
+  font-size: 7px;
 }
 
 /* Pygments via Jekyll */
@@ -229,6 +229,22 @@ blockquote p:last-child {
   blockquote {
     padding-right: 5rem;
     padding-left: 1.25rem;
+  }
+
+  pre code.language-text {
+    font-size: 9px;
+  }
+}
+
+@media (min-width: 50em) {
+  pre code.language-text {
+    font-size: 9px;
+  }
+}
+
+@media (min-width: 80em) {
+  pre code.language-text {
+    font-size: 14px;
   }
 }
 
