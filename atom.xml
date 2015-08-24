@@ -89,16 +89,18 @@ duck ~~~~&amp;gt; | #&amp;lt;Class:Duck&amp;gt; |   other_duck ~~~~&amp;gt; | #&
 
 &lt;p&gt;When you &lt;code&gt;class Duck&lt;/code&gt;, there&amp;#39;s an implicit &lt;code&gt;class Duck &amp;lt; Object&lt;/code&gt; so your class can inherit everything &lt;code&gt;Object&lt;/code&gt; has and be a good citizen. The &lt;code&gt;false&lt;/code&gt;s we were using earlier to look at &lt;code&gt;instance_methods&lt;/code&gt; lets us look only at the methods that class is defining, rather than everything it has inherited, but in reality:&lt;/p&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;n&quot;&gt;duck&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;public_methods&lt;/span&gt;
-&lt;span class=&quot;c1&quot;&gt;#=&amp;gt; [:quack, :nil?, :===, :=~, :!~, :eql?, :hash, :&amp;lt;=&amp;gt;, :class,&lt;/span&gt;
-&lt;span class=&quot;c1&quot;&gt;#    :singleton_class, :clone, :dup, :itself, :taint, :tainted?, :untaint,&lt;/span&gt;
-&lt;span class=&quot;c1&quot;&gt;#    :untrust, :untrusted?, :trust, :freeze, :frozen?, :to_s, :inspect,&lt;/span&gt;
-&lt;span class=&quot;c1&quot;&gt;#    :methods, :singleton_methods, :protected_methods, :private_methods,&lt;/span&gt;
-&lt;span class=&quot;c1&quot;&gt;#    :public_methods, :instance_variables, :instance_variable_get,&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;#=&amp;gt; [:quack, :nil?, :===, :=~, :!~, :eql?, :hash, :&amp;lt;=&amp;gt;,&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;#    :class, :singleton_class, :clone, :dup, :itself, :taint,&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;#    :tainted?, :untaint, :untrust, :untrusted?, :trust, :freeze,&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;#    :frozen?, :to_s, :inspect, :methods, :singleton_methods,&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;#    :protected_methods, :private_methods, :public_methods,&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;#    :instance_variables, :instance_variable_get,&lt;/span&gt;
 &lt;span class=&quot;c1&quot;&gt;#    :instance_variable_set, :instance_variable_defined?,&lt;/span&gt;
-&lt;span class=&quot;c1&quot;&gt;#    :remove_instance_variable, :instance_of?, :kind_of?, :is_a?, :tap, :send,&lt;/span&gt;
-&lt;span class=&quot;c1&quot;&gt;#    :public_send, :respond_to?, :extend, :display, :method, :public_method,&lt;/span&gt;
-&lt;span class=&quot;c1&quot;&gt;#    :singleton_method, :define_singleton_method, :object_id, :to_enum,&lt;/span&gt;
-&lt;span class=&quot;c1&quot;&gt;#    :enum_for, :==, :equal?, :!, :!=, :instance_eval, :instance_exec,&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;#    :remove_instance_variable, :instance_of?, :kind_of?, :is_a?,&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;#    :tap, :send, :public_send, :respond_to?, :extend, :display,&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;#    :method, :public_method, :singleton_method,&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;#    :define_singleton_method, :object_id, :to_enum, :enum_for,&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;#    :==, :equal?, :!, :!=, :instance_eval, :instance_exec,&lt;/span&gt;
 &lt;span class=&quot;c1&quot;&gt;#    :__send__, :__id__]&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;And actually, &lt;code&gt;Object&lt;/code&gt; didn&amp;#39;t really define any of those itself. It inherited some from &lt;code&gt;BasicObject&lt;/code&gt; and then included &lt;code&gt;Kernel&lt;/code&gt; to get the rest. When you include a module, it&amp;#39;s inserted into the list immediately after the singleton class, which explains the end of the &lt;code&gt;#ancestors&lt;/code&gt; list. Our whole object setup looks like this:&lt;/p&gt;
