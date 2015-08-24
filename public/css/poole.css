@@ -180,6 +180,10 @@ pre code {
   background-color: transparent;
 }
 
+pre code.language-text {
+  font-size: 14px;
+}
+
 /* Pygments via Jekyll */
 .highlight {
   margin-bottom: 1rem;

@@ -4,13 +4,244 @@
  <title>A Year of Commits</title>
  <link href="/atom.xml" rel="self"/>
  <link href="/"/>
- <updated>2015-08-17T08:07:07-07:00</updated>
+ <updated>2015-08-23T19:07:45-07:00</updated>
  <id></id>
  <author>
    <name>Jake Yesbeck</name>
    <email></email>
  </author>
 
+ 
+ <entry>
+   <title>I, Object!</title>
+   <link href="/2015/08/23/ruby-objects/"/>
+   <updated>2015-08-23T05:00:00-07:00</updated>
+   <id>/2015/08/23/ruby-objects</id>
+   <content type="html">&lt;p&gt;&lt;strong&gt;I am lucky enough to work with wonderfully talented people every single day. This is a guest post by one of my magnificent coworkers, &lt;a href=&quot;https://github.com/kristjan&quot;&gt;Kristján Pétursson&lt;/a&gt;. Thank you for allowing me to share this knowledge with everyone!&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;This post is adapted from my answer to &lt;a href=&quot;http://stackoverflow.com/q/31775576/802618&quot;&gt;this Stack Overflow question&lt;/a&gt;. If you want to start from the beginning of the universe and build out, go read that one. If you prefer to start with something you can touch and work backwards, here we go.&lt;/p&gt;
+
+&lt;p&gt;Ruby likes ducks. Which is to say that when we&amp;#39;re coding, and we have an object, we don&amp;#39;t particularly care what kind of object it is, so long as it responds to the messages we send it. It might be a &lt;code&gt;Duck&lt;/code&gt; or a &lt;code&gt;Child&lt;/code&gt; or a &lt;code&gt;Doctor&lt;/code&gt;, and as long as when we call &lt;code&gt;#quack&lt;/code&gt; we hear a noise, all is well. That&amp;#39;s called &lt;a href=&quot;https://en.wikipedia.org/wiki/Duck_typing&quot;&gt;Duck Typing&lt;/a&gt;, and Ruby digs it.&lt;/p&gt;
+
+&lt;p&gt;So if we have some arbitrary object and we ask it to &lt;code&gt;#quack&lt;/code&gt;, the Ruby interpreter needs to figure out where the object&amp;#39;s &lt;code&gt;#quack&lt;/code&gt; method is. Nothing&amp;#39;s been compiled, and Ruby lets you define methods pretty much any place or time you like, so &lt;code&gt;#quack&lt;/code&gt; needs to be looked up at runtime. That&amp;#39;s called &lt;a href=&quot;https://en.wikipedia.org/wiki/Dynamic_dispatch&quot;&gt;Dynamic dispatch&lt;/a&gt;, and it&amp;#39;s how Ruby handles ducks.&lt;/p&gt;
+
+&lt;h3&gt;Now for the thing we can touch; let&amp;#39;s make a &lt;code&gt;Duck&lt;/code&gt;&lt;/h3&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Duck&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;quack&lt;/span&gt;
+    &lt;span class=&quot;nb&quot;&gt;puts&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;Quack, I say!&amp;quot;&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;duck&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Duck&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;new&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;duck&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;quack&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;#=&amp;gt; Quack, I say!&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Surely, this is no surprise. You&amp;#39;ve done this in the past, or quieter things like it, and you understand just fine that a method called on &lt;code&gt;duck&lt;/code&gt; will be found in &lt;code&gt;Duck&lt;/code&gt;. But we less frequently do things like:&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;duck&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;quack&lt;/span&gt;
+  &lt;span class=&quot;nb&quot;&gt;puts&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;I&amp;#39;m tired of quacking.&amp;quot;&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;duck&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;quack&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;#=&amp;gt; I&amp;#39;m tired of quacking.&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;other_duck&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Duck&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;new&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;other_duck&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;quack&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;#=&amp;gt; Quack, I say!&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Hm, so if we can just redefine &lt;code&gt;duck.quack&lt;/code&gt; without messing up &lt;code&gt;other_duck&lt;/code&gt;, where is the second &lt;code&gt;#quack&lt;/code&gt; method? It turns out every object has a Singleton Class where it can stash all its personal possessions. Other words for singleton class include metaclass, eigenclass, and virtual class, but Ruby implements a method called &lt;code&gt;#singleton_class&lt;/code&gt;, so we&amp;#39;ll use that one. You can see &lt;code&gt;#quack&lt;/code&gt; on &lt;code&gt;duck.singleton_class&lt;/code&gt;, but not on &lt;code&gt;other_duck.singleton_class&lt;/code&gt;:&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;nb&quot;&gt;puts&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;duck&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;singleton_class&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;instance_methods&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kp&quot;&gt;false&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;inspect&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;#=&amp;gt; [:quack]&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;puts&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;other_duck&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;singleton_class&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;instance_methods&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kp&quot;&gt;false&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;inspect&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;#=&amp;gt; []&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;And then you can see the original &lt;code&gt;#quack&lt;/code&gt; on &lt;code&gt;Duck&lt;/code&gt; where we left it:&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;nb&quot;&gt;puts&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Duck&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;instance_methods&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kp&quot;&gt;false&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;inspect&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;#=&amp;gt; [:quack]&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h3&gt;Drawing it out&lt;/h3&gt;
+
+&lt;p&gt;Now we can start drawing diagrams, which is great, because people like diagrams almost as much as Ruby likes ducks. When we ask &lt;code&gt;duck&lt;/code&gt; to &lt;code&gt;#quack&lt;/code&gt;, it starts looking for the method on &lt;code&gt;duck.singleton_class&lt;/code&gt; and then works its way up until it finds it.&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;             +----------+
+             | Duck     |
+             |   #quack |
+             +----------+
+                  ^
+                  |
+                  +-------------------------------------+
+                  |                                     |
+           +---------------+                    +---------------+
+duck ~~~~&amp;gt; | #&amp;lt;Class:Duck&amp;gt; |   other_duck ~~~~&amp;gt; | #&amp;lt;Class:Duck&amp;gt; |
+           |   #quack      |                    +---------------+
+           +---------------+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;I&amp;#39;m using &lt;code&gt;~~~&amp;gt;&lt;/code&gt; to move from objects to their singleton class, and then &lt;code&gt;---&amp;gt;&lt;/code&gt;  to move from classes to their superclass.&lt;/p&gt;
+
+&lt;p&gt;And indeed, &lt;code&gt;duck.singleton_class.superclass == Duck&lt;/code&gt;. The &lt;code&gt;#&amp;lt;Class:Duck&amp;gt;&lt;/code&gt; singleton class is an anonymous class brought into existence just for &lt;code&gt;duck&lt;/code&gt;. &lt;code&gt;other_duck&lt;/code&gt; has its own singleton class that doesn&amp;#39;t have &lt;code&gt;#quack&lt;/code&gt; defined on it, so it traverses upwards and finds &lt;code&gt;#quack&lt;/code&gt; on &lt;code&gt;Duck&lt;/code&gt; instead.&lt;/p&gt;
+
+&lt;p&gt;We can see the whole lookup path with &lt;code&gt;#ancestors&lt;/code&gt;, and can check exactly where a method is defined with &lt;code&gt;#method&lt;/code&gt;. &lt;code&gt;#ancestors&lt;/code&gt; includes the singleton class as its first entry because that&amp;#39;s the first place we look for a method.&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;nb&quot;&gt;puts&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;duck&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;singleton_class&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ancestors&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;inspect&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;#=&amp;gt; [#&amp;lt;Class:#&amp;lt;Duck:0x007fe793031dd0&amp;gt;&amp;gt;, Duck, Object, Kernel, BasicObject]&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;puts&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;duck&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;method&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:quack&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;#=&amp;gt; #&amp;lt;Method: #&amp;lt;Duck:0x007fe793031dd0&amp;gt;.quack&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;puts&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;other_duck&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;method&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:quack&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;#=&amp;gt; #&amp;lt;Method: Duck#quack&amp;gt;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;There are more things in &lt;code&gt;#ancestors&lt;/code&gt; than we&amp;#39;ve drawn yet, though I bet you saw them coming. Moving up from &lt;code&gt;Duck&lt;/code&gt;, we get to &lt;code&gt;Object&lt;/code&gt;. Everything in Ruby is an &lt;code&gt;Object&lt;/code&gt;. No, everything. Yes, everything, even &lt;code&gt;BasicObject&lt;/code&gt;, which is an ancestor of &lt;code&gt;Object&lt;/code&gt; - just go with that for a second. Maybe pretend there was time travel involved.&lt;/p&gt;
+
+&lt;p&gt;When you &lt;code&gt;class Duck&lt;/code&gt;, there&amp;#39;s an implicit &lt;code&gt;class Duck &amp;lt; Object&lt;/code&gt; so your class can inherit everything &lt;code&gt;Object&lt;/code&gt; has and be a good citizen. The &lt;code&gt;false&lt;/code&gt;s we were using earlier to look at &lt;code&gt;instance_methods&lt;/code&gt; lets us look only at the methods that class is defining, rather than everything it has inherited, but in reality:&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;n&quot;&gt;duck&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;public_methods&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;#=&amp;gt; [:quack, :nil?, :===, :=~, :!~, :eql?, :hash, :&amp;lt;=&amp;gt;, :class,&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;#    :singleton_class, :clone, :dup, :itself, :taint, :tainted?, :untaint,&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;#    :untrust, :untrusted?, :trust, :freeze, :frozen?, :to_s, :inspect,&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;#    :methods, :singleton_methods, :protected_methods, :private_methods,&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;#    :public_methods, :instance_variables, :instance_variable_get,&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;#    :instance_variable_set, :instance_variable_defined?,&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;#    :remove_instance_variable, :instance_of?, :kind_of?, :is_a?, :tap, :send,&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;#    :public_send, :respond_to?, :extend, :display, :method, :public_method,&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;#    :singleton_method, :define_singleton_method, :object_id, :to_enum,&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;#    :enum_for, :==, :equal?, :!, :!=, :instance_eval, :instance_exec,&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;#    :__send__, :__id__]&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;And actually, &lt;code&gt;Object&lt;/code&gt; didn&amp;#39;t really define any of those itself. It inherited some from &lt;code&gt;BasicObject&lt;/code&gt; and then included &lt;code&gt;Kernel&lt;/code&gt; to get the rest. When you include a module, it&amp;#39;s inserted into the list immediately after the singleton class, which explains the end of the &lt;code&gt;#ancestors&lt;/code&gt; list. Our whole object setup looks like this:&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;       +-------------+
+       | BasicObject |
+       |   #==       |
+       |   #!        |
+       |   ...       |
+       +-------------+
+            ^
+            |
+            |      +----------+
+            |      | Kernel   |
+            |      |   #nil?  |
+            |      |   #===   |
+            |      |   ...    |
+            |      +----------+
+            |           ^
+            |           |
+            +-----+-----+
+                  |
+             +----------+
+             | Object   |
+             +----------+
+                  ^
+                  |
+                  |
+                  |
+             +----------+
+             | Duck     |
+             |   #quack |
+             +----------+
+                  ^
+                  |
+                  |
+                  |
+           +---------------+
+duck ~~~~&amp;gt; | #&amp;lt;Class:Duck&amp;gt; |
+           |   #quack      |
+           +---------------+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;This is now everything we can look at to decide how &lt;code&gt;duck&lt;/code&gt; responds to a message. But what about class methods on &lt;code&gt;Duck&lt;/code&gt;? Well, remember I said everything in Ruby is an &lt;code&gt;Object&lt;/code&gt; - that means everything in our diagram is like &lt;code&gt;duck&lt;/code&gt;, and has a singleton class and ancestry chain. In fact, everything here except for &lt;code&gt;duck&lt;/code&gt; and &lt;code&gt;Kernel&lt;/code&gt; are instances of &lt;code&gt;Class&lt;/code&gt;, so we can build them out the same way we built &lt;code&gt;duck&lt;/code&gt;. &lt;code&gt;Kernel&lt;/code&gt; is an instance of &lt;code&gt;Module&lt;/code&gt;, and has the appropriate singleton class with &lt;code&gt;Module&lt;/code&gt; as its superclass, but drawing that makes the diagram pretty messy.&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;                                      +--------+
+                                      | Module |
+                                      +--------+
+                                          ^
+                                          |
+                                      +-------+
+                                      | Class |
+                                      +-------+
+                                          ^
+                                          |
+       +-------------+         +----------------------+
+       | BasicObject | ~~~~~~&amp;gt; | #&amp;lt;Class:BasicObject&amp;gt; |
+       +-------------+         +----------------------+
+            ^                             ^
+            |                             |
+            |      +----------+           |
+            |      | Kernel   |           |
+            |      +----------+           |
+            |           ^                 |
+            |           |                 |
+            +-----+-----+                 |
+                  |                       |
+             +----------+        +-----------------+
+             | Object   | ~~~~~&amp;gt; | #&amp;lt;Class:Object&amp;gt; |
+             +----------+        +-----------------+
+                  ^                       |
+                  |                       |
+                  |                       |
+                  |                       |
+               +------+           +---------------+
+               | Duck | ~~~~~~~~&amp;gt; | #&amp;lt;Class:Duck&amp;gt; |
+               +------+           +---------------+
+                  ^
+                  |
+                  |
+                  |
+           +---------------+
+duck ~~~~&amp;gt; | #&amp;lt;Class:Duck&amp;gt; |
+           +---------------+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;When you define a class method on &lt;code&gt;Duck&lt;/code&gt;, you&amp;#39;ve probably noticed, but maybe sort of glossed over, that you declare it on &lt;code&gt;self&lt;/code&gt;.&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Duck&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;in&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;lake&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;c1&quot;&gt;# Return all the Ducks in lake&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;This is no different than when we &lt;code&gt;def duck.quack&lt;/code&gt;ed to put a new method on &lt;code&gt;duck&lt;/code&gt; (but not &lt;code&gt;other_duck&lt;/code&gt;). In this context, &lt;code&gt;self&lt;/code&gt; is &lt;code&gt;Duck&lt;/code&gt;, so we&amp;#39;re stashing &lt;code&gt;.in&lt;/code&gt; on &lt;code&gt;Duck.singleton_class&lt;/code&gt; in exactly the same way.&lt;/p&gt;
+
+&lt;h3&gt;All together now&lt;/h3&gt;
+
+&lt;p&gt;Ok, one more iteration. Once again, everything is an &lt;code&gt;Object&lt;/code&gt; - even &lt;code&gt;Module&lt;/code&gt;. You can discard that time traveling ancestry paradox from before, and we&amp;#39;ll just add lines for the actual paradox.&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-text&quot; data-lang=&quot;text&quot;&gt;                                                                +----------+
+                                                                |          |
+                                      +--------+       +-----------------+ |
+   +----------------------------------| Module | ~~~~&amp;gt; | #&amp;lt;Class:Module&amp;gt; | |
+   |                                  +--------+       +-----------------+ |
+   |                                      ^                     ^          |
+   |                                      |                     |          |
+   |                                  +-------+         +----------------+ |
+   |                                  | Class | ~~~~~~&amp;gt; | #&amp;lt;Class:Class&amp;gt; | |
+   |                                  +-------+         +----------------+ |
+   |                                      ^                                |
+   |                                      |                                |
+   |   +-------------+         +----------------------+                    |
+   |   | BasicObject | ~~~~~~&amp;gt; | #&amp;lt;Class:BasicObject&amp;gt; |                    |
+   |   +-------------+         +----------------------+                    |
+   |        ^                             ^                                |
+   |        |                             |                                |
+   |        |      +----------+           |                                |
+   |        |      | Kernel   |           |                                |
+   |        |      +----------+           |                                |
+   |        |           ^                 |                                |
+   |        |           |                 |                                |
+   |        +-----+-----+                 |                                |
+   |              |                       |                                |
+   |         +----------+        +-----------------+                       |
+   +-------&amp;gt; | Object   | ~~~~~&amp;gt; | #&amp;lt;Class:Object&amp;gt; |                       |
+             +----------+        +-----------------+                       |
+                  ^                       |   ^                            |
+                  |                       |   |                            |
+                  |                       |   +----------------------------+
+                  |                       |
+               +------+           +---------------+
+               | Duck | ~~~~~~~~&amp;gt; | #&amp;lt;Class:Duck&amp;gt; |
+               +------+           +---------------+
+                  ^
+                  |
+                  |
+                  |
+           +---------------+
+duck ~~~~&amp;gt; | #&amp;lt;Class:Duck&amp;gt; |
+           +---------------+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;code&gt;Module&lt;/code&gt; is an &lt;code&gt;Object&lt;/code&gt;, which inherits from &lt;code&gt;BasicObject&lt;/code&gt;, which is a &lt;code&gt;Class&lt;/code&gt;, which inherits from &lt;code&gt;Module&lt;/code&gt;, which is an &lt;code&gt;Object&lt;/code&gt;, and so on until you hit the turtles. &lt;code&gt;#ancestors&lt;/code&gt; and other methods that would have trouble with this loop have special cases in the Ruby source for when they find &lt;code&gt;BasicObject&lt;/code&gt;, and just pretend that&amp;#39;s the end of the line.&lt;/p&gt;
+
+&lt;p&gt;If you start from any of these objects and traverse up, right-to-left, depth-first, you can build the ancestry chain showing in what order methods will be found. Everything has a singleton class to handle the things we declare on it, and there&amp;#39;s only a little bit of cheating to make the whole thing work. But what did you expect from a system filled with ducks?&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Author: Kristján Pétursson&lt;/strong&gt;&lt;/p&gt;
+</content>
+ </entry>
  
  <entry>
    <title>Gems != Magic</title>
