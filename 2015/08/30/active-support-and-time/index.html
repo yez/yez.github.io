@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta http-equiv="content-type" content="text/html; charset=utf-8">
   
-    <meta name="description" content="A technology blog about a Year of Commits to Open Source projects.">
+    <meta name="description" content="Active Support enables nice time caluclation but even it falls down some of the time. Ruby time calculation is not the best thing to spend time on.">
   
 
   <!-- Enable responsiveness on mobile devices-->
@@ -14,7 +14,7 @@
 
   <title>
     
-      A Year of Commits &middot; 
+      Active Support and Time &middot; A Year of Commits
     
   </title>
 
@@ -63,19 +63,11 @@
 
 
     <div class="content container">
-      <div class="posts">
+      <div class="post">
+  <h1 class="post-title">Active Support and Time</h1>
+  <span class="post-date">30 Aug 2015</span>
   
-  <div class="post">
-    <h1 class="post-title">
-      <a href="/2015/08/30/active-support-and-time/">
-        Active Support and Time
-      </a>
-    </h1>
-
-    
-
-    <span class="post-date">30 Aug 2015</span>
-    <span class='share-container'><ul class="share-buttons">
+  <span class='share-container'><ul class="share-buttons">
   <li>
     <a href="https://www.facebook.com/sharer/sharer.php?u=http://jakeyesbeck.com/2015/08/30/active-support-and-time/&t=Active Support and Time" title="Share on Facebook" target="_blank">
       <img src="http://jakeyesbeck.com/assets/images/facebook.svg">
@@ -110,8 +102,7 @@
   </li>
 </ul>
 </span>
-
-    <p>If a list was compiled of useful Ruby libraries, Active Support would be close to the top. Based on the <a href="http://api.rubyonrails.org/classes/ActiveSupport.html">documentation alone</a>, it is apparent that a very large amount of time went into thinking about the roles Active Support should play and the functionality it should support. From string manipulation to internationalization, Active Support seems to simply do it all. However, even a profoundly useful library like Active Support still has a few inconsistencies with everyone&#39;s favorite subject: <strong>Time Calculation</strong>.</p>
+  <p>If a list was compiled of useful Ruby libraries, Active Support would be close to the top. Based on the <a href="http://api.rubyonrails.org/classes/ActiveSupport.html">documentation alone</a>, it is apparent that a very large amount of time went into thinking about the roles Active Support should play and the functionality it should support. From string manipulation to internationalization, Active Support seems to simply do it all. However, even a profoundly useful library like Active Support still has a few inconsistencies with everyone&#39;s favorite subject: <strong>Time Calculation</strong>.</p>
 
 <h2>Time wounds all heals</h2>
 
@@ -171,17 +162,40 @@
 
 <p>So why does this happen? Why does <code>1.month</code> return the same integer regardless of which month it is. Because, how could it know? A month is not meant to exist as an abstract concept, there is no canonical &quot;month&quot;, they are either 30 days, 31 days, 28 days, or 29 days long <em>(I didn&#39;t forget about you, leap year!)</em>. This is just a small demonstration of why time calculation is never as simple as it may seem. There is no silver bullet to avoid it all. Even Epoch time conversions can lead to some real bad times.</p>
 
-  </div>
-  
 </div>
 
-<div class="pagination">
-  
-    <a class="pagination-item older" href="http://jakeyesbeck.com/page2">Older</a>
-  
-  
-    <span class="pagination-item newer">Newer</span>
-  
+<div class="related">
+  <h2>Related Posts</h2>
+  <ul class="related-posts">
+    
+      <li>
+        <h3>
+          <a href="/2015/08/23/ruby-objects/">
+            I, Object!
+            <small>23 Aug 2015</small>
+          </a>
+        </h3>
+      </li>
+    
+      <li>
+        <h3>
+          <a href="/2015/08/16/gems-are-not-magic/">
+            Gems != Magic
+            <small>16 Aug 2015</small>
+          </a>
+        </h3>
+      </li>
+    
+      <li>
+        <h3>
+          <a href="/2015/08/09/how-to-process-large-data-sets-with-ruby/">
+            How to Process Large Data Sets with Ruby
+            <small>09 Aug 2015</small>
+          </a>
+        </h3>
+      </li>
+    
+  </ul>
 </div>
 
     </div>
