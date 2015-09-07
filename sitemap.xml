@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>/2015/09/06/stop-and-take-a-moment/</loc>
+    <lastmod>2015-09-06T05:00:00-07:00</lastmod>
+  </url>
+  <url>
     <loc>/2015/08/30/active-support-and-time/</loc>
     <lastmod>2015-08-30T05:00:00-07:00</lastmod>
   </url>
@@ -87,56 +91,5 @@
   </url>
   <url>
     <loc>/</loc>
-  </url>
-  <url>
-    <loc>/page2/</loc>
-  </url>
-  <url>
-    <loc>/page3/</loc>
-  </url>
-  <url>
-    <loc>/page4/</loc>
-  </url>
-  <url>
-    <loc>/page5/</loc>
-  </url>
-  <url>
-    <loc>/page6/</loc>
-  </url>
-  <url>
-    <loc>/page7/</loc>
-  </url>
-  <url>
-    <loc>/page8/</loc>
-  </url>
-  <url>
-    <loc>/page9/</loc>
-  </url>
-  <url>
-    <loc>/page10/</loc>
-  </url>
-  <url>
-    <loc>/page11/</loc>
-  </url>
-  <url>
-    <loc>/page12/</loc>
-  </url>
-  <url>
-    <loc>/page13/</loc>
-  </url>
-  <url>
-    <loc>/page14/</loc>
-  </url>
-  <url>
-    <loc>/page15/</loc>
-  </url>
-  <url>
-    <loc>/page16/</loc>
-  </url>
-  <url>
-    <loc>/page17/</loc>
-  </url>
-  <url>
-    <loc>/page18/</loc>
   </url>
 </urlset>
