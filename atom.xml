@@ -4,13 +4,87 @@
  <title>A Year of Commits</title>
  <link href="/atom.xml" rel="self"/>
  <link href="/"/>
- <updated>2015-09-06T21:29:15-07:00</updated>
+ <updated>2015-09-13T22:14:52-07:00</updated>
  <id></id>
  <author>
    <name>Jake Yesbeck</name>
    <email></email>
  </author>
 
+ 
+ <entry>
+   <title>Rescue Groups Ruby Wrapper</title>
+   <link href="/2015/09/13/rescue-groups/"/>
+   <updated>2015-09-13T05:00:00-07:00</updated>
+   <id>/2015/09/13/rescue-groups</id>
+   <content type="html">&lt;p&gt;People need companions. We are a social species that enjoys surrounding itself with family and friends. But sometimes, and maybe more often than just sometimes, people crave companionship from something that cannot talk back. This is probably one of the reasons so many people like pets. A pet cannot disagree with you or say judgmental remarks as you fill up that wine glass for a fourth time. No, a good pet will simply exist near you, occasionally asking for pets and food. Pets can be obtained from breeders for huge stacks of cash, or they can be adopted for significantly cheaper.&lt;/p&gt;
+
+&lt;h2&gt;The Adoption Option&lt;/h2&gt;
+
+&lt;p&gt;About 2.7 million animals are euthanized each year in animal shelters across the United States. That is some sad stuff right there. These animals could be hanging out with you at your house, clawing up or couch or barking at nothing. Does that not sound like just the best time? If only there was a Ruby library that some super awesome Software Artisans could use to make discoverable pet data a reality. Well now, there is! Over the past few months, as part of the &lt;a href=&quot;http://jakeyesbeck.com/2015/04/23/a-year-of-commits/&quot;&gt;Year of Commits&lt;/a&gt; initiative, I have built a &lt;a href=&quot;https://github.com/yez/rescue_groups&quot;&gt;wrapper for the RescueGroups.org API&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h2&gt;0. Sign up for an API key&lt;/h2&gt;
+
+&lt;p&gt;The RescueGroups API is free to use, but requires signing up for an API key. To do that, fill out &lt;a href=&quot;https://www.rescuegroups.org/services/request-an-api-key/&quot;&gt;this form&lt;/a&gt; and they will email you an API key for you to use.&lt;/p&gt;
+
+&lt;h2&gt;1. Install the &lt;code&gt;rescue_groups&lt;/code&gt; Gem&lt;/h2&gt;
+
+&lt;p&gt;To install the gem, simply add &lt;code&gt;rescue_groups&lt;/code&gt; to a ruby project&amp;#39;s Gemfile:&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Gemfile&lt;/strong&gt;&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;n&quot;&gt;source&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;rubygems&amp;#39;&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;gem&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;rescue_groups&amp;#39;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Then in an initializer or at the beginning of the execution flow for using the library, add your new fancy API key to the configuration.&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;no&quot;&gt;RescueGroups&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;configuration&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;config&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;config&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;apikey&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;your api key&amp;#39;&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h2&gt;2. Use the Gem!&lt;/h2&gt;
+
+&lt;p&gt;After the gem is installed, some handy dandy search functionality is right at your fingertips. Call me biased but I rather like the ActiveRecord &lt;code&gt;find&lt;/code&gt; and &lt;code&gt;where&lt;/code&gt; API. In fact, I like it so much that the &lt;code&gt;rescue_groups&lt;/code&gt; gem implemented its own version of both.&lt;/p&gt;
+
+&lt;h3&gt;Searching&lt;/h3&gt;
+
+&lt;p&gt;If an ID is known for an animal, simply pass it to &lt;code&gt;find&lt;/code&gt; and it will return an &lt;code&gt;Animal&lt;/code&gt; object. If an &lt;code&gt;Array&lt;/code&gt; is given to &lt;code&gt;find&lt;/code&gt;, it will return an &lt;code&gt;Array&lt;/code&gt; of &lt;code&gt;Animal&lt;/code&gt;s.&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;no&quot;&gt;Animal&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;find&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;#=&amp;gt; &amp;lt;Animal id: 1, name: &amp;#39;Fluffy&amp;#39; ...&amp;gt;&lt;/span&gt;
+
+&lt;span class=&quot;no&quot;&gt;Animal&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;find&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;20&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;30&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;40&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;#=&amp;gt; [&amp;lt;Animal id: 20, name: &amp;#39;Mittens&amp;#39; ...&amp;gt;, &amp;lt;Animal id: 30, name: &amp;#39;Mr. Doom&amp;#39; ...&amp;gt;, &amp;lt;Animal id: 40, name: &amp;#39;CatDog&amp;#39; ...&amp;gt;]&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;code&gt;Where&lt;/code&gt; is very similar, any of the supported fields for &lt;a href=&quot;https://github.com/yez/rescue_groups/blob/master/docs/animal_field.md&quot;&gt;Animals&lt;/a&gt;, &lt;a href=&quot;https://github.com/yez/rescue_groups/blob/master/docs/organization_field.md&quot;&gt;Organizations&lt;/a&gt;, and &lt;a href=&quot;https://github.com/yez/rescue_groups/blob/master/docs/event_field.md&quot;&gt;Events&lt;/a&gt; can be used to find the matching records.&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;no&quot;&gt;Organization&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;where&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;Pets-R-Us&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# =&amp;gt; [&amp;lt;Organization id: 1, name: &amp;#39;Pets-R-Us&amp;#39; ...&amp;gt;]&lt;/span&gt;
+
+&lt;span class=&quot;no&quot;&gt;Animal&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;where&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;color&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;black&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;brown&amp;#39;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# =&amp;gt; [&amp;lt;Animal id: 1, color: &amp;#39;black&amp;#39; ..&amp;gt;, &amp;lt;Animal id: 5, color: &amp;#39;brown&amp;#39; ..&amp;gt;]&lt;/span&gt;
+
+&lt;span class=&quot;no&quot;&gt;Animal&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;where&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;location_postal_code&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;94117&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;The default behavior asserts that the fields are equal, i.e. An animal that is brown will be returned when &lt;code&gt;Animal.where(color: &amp;#39;brown&amp;#39;)&lt;/code&gt; is used. Other comparisons are possible for more complex queries.&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;no&quot;&gt;Animal&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;where&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;general_age&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;less_than&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;5&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;})&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# =&amp;gt; [&amp;lt;Animal id: 1, age: 2 ..&amp;gt;, &amp;lt;Animal id: 3, age: 1 ..&amp;gt;]&lt;/span&gt;
+
+&lt;span class=&quot;no&quot;&gt;Organization&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;where&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;contains&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;shelter&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;},&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;location&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;90210&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# =&amp;gt; [&amp;lt;Organization id: 1, name: &amp;#39;Big Animal Shelter&amp;#39;, location: 90210 ...&amp;gt;, &amp;lt;Organization id: 2, name: &amp;#39;Small Animal Shelter&amp;#39;, location: 90210 ...&amp;gt;,]&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h2&gt;Relationships&lt;/h2&gt;
+
+&lt;p&gt;While I was in the spirit of borrowing, I did so with Ruby on Rails style relationships. In the &lt;code&gt;rescue_groups&lt;/code&gt; gem Animals and Events &lt;code&gt;belongs_to&lt;/code&gt; Organizations and, inversely, Organizations &lt;code&gt;has_many&lt;/code&gt; Animals and Events. When one of these models&amp;#39; relationship is called, the respective relationship is automagically fetched from the RescueGroups.org API.&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;n&quot;&gt;organization&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Organization&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;find&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# =&amp;gt; &amp;lt;Organization id: 1, name: &amp;#39;Pets&amp;#39;, city: &amp;#39;Dallas&amp;#39; ...&amp;gt;&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;# This will issue a remote call that is equivalent to Animal.where(organization_id: 1)&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;organization&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;animals&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# =&amp;gt; [&amp;lt;Animal id: 1, organization_id: 1 ...&amp;gt;, &amp;lt;Animal id: 2, organization_id: 1 ...&amp;gt;, ...]&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h2&gt;3. Make a Pet Project&lt;/h2&gt;
+
+&lt;p&gt;Now with all this pet data available, put it to work. I have really enjoyed making this library but am always looking for feedback. If anyone would like to know more or help contribute to this project please feel free! Github PRs and issues are always welcome.&lt;/p&gt;
+</content>
+ </entry>
  
  <entry>
    <title>Stop and Take a Moment</title>

@@ -67,155 +67,96 @@
   
   <div class="post">
     <h1 class="post-title">
-      <a href="/2015/08/09/how-to-process-large-data-sets-with-ruby/">
-        How to Process Large Data Sets with Ruby
+      <a href="/2015/08/16/gems-are-not-magic/">
+        Gems != Magic
       </a>
     </h1>
 
     
 
-    <span class="post-date">09 Aug 2015</span>
+    <span class="post-date">16 Aug 2015</span>
     <span class='share-container'><ul class="share-buttons">
   <li>
-    <a href="https://www.facebook.com/sharer/sharer.php?u=http://jakeyesbeck.com/2015/08/09/how-to-process-large-data-sets-with-ruby/&t=How to Process Large Data Sets with Ruby" title="Share on Facebook" target="_blank">
+    <a href="https://www.facebook.com/sharer/sharer.php?u=http://jakeyesbeck.com/2015/08/16/gems-are-not-magic/&t=Gems != Magic" title="Share on Facebook" target="_blank">
       <img src="http://jakeyesbeck.com/assets/images/facebook.svg">
     </a>
   </li>
   <li>
-    <a href="https://twitter.com/intent/tweet?source=http%3A%2F%2Fjakeyesbeck.com&text=How to Process Large Data Sets with Ruby:%20http%3A%2F%2Fjakeyesbeck.com&via=yez" target="_blank" title="Tweet">
+    <a href="https://twitter.com/intent/tweet?source=http%3A%2F%2Fjakeyesbeck.com&text=Gems != Magic:%20http%3A%2F%2Fjakeyesbeck.com&via=yez" target="_blank" title="Tweet">
       <img src="http://jakeyesbeck.com/assets/images/twitter.svg">
     </a>
   </li>
   <li>
-    <a href="https://plus.google.com/share?url=http://jakeyesbeck.com/2015/08/09/how-to-process-large-data-sets-with-ruby/" target="_blank" title="Share on Google+">
+    <a href="https://plus.google.com/share?url=http://jakeyesbeck.com/2015/08/16/gems-are-not-magic/" target="_blank" title="Share on Google+">
       <img src="http://jakeyesbeck.com/assets/images/google_plus.svg">
     </a>
   </li>
 
   <li>
-    <a href="https://news.ycombinator.com/submitlink?u=http://jakeyesbeck.com/2015/08/09/how-to-process-large-data-sets-with-ruby/&t=How to Process Large Data Sets with Ruby" target="_blank" title="Share on Hacker News">
+    <a href="https://news.ycombinator.com/submitlink?u=http://jakeyesbeck.com/2015/08/16/gems-are-not-magic/&t=Gems != Magic" target="_blank" title="Share on Hacker News">
       <img src="http://jakeyesbeck.com/assets/images/ycomb.svg">
     </a>
   </li>
 
   <li>
-    <a href="https://getpocket.com/save?url=http://jakeyesbeck.com/2015/08/09/how-to-process-large-data-sets-with-ruby/&title=How to Process Large Data Sets with Ruby" target="_blank" title="Add to Pocket">
+    <a href="https://getpocket.com/save?url=http://jakeyesbeck.com/2015/08/16/gems-are-not-magic/&title=Gems != Magic" target="_blank" title="Add to Pocket">
       <img src="http://jakeyesbeck.com/assets/images/pocket.svg">
     </a>
   </li>
   <li>
-    <a href="http://www.reddit.com/submit?url=http://jakeyesbeck.com/2015/08/09/how-to-process-large-data-sets-with-ruby/&title=How to Process Large Data Sets with Ruby" target="_blank" title="Submit to Reddit">
+    <a href="http://www.reddit.com/submit?url=http://jakeyesbeck.com/2015/08/16/gems-are-not-magic/&title=Gems != Magic" target="_blank" title="Submit to Reddit">
       <img src="http://jakeyesbeck.com/assets/images/reddit.svg">
     </a>
   </li>
 </ul>
 </span>
 
-    <p>The need for data migrations in mature systems is real. At times, requests for these migrations can appear at random. One minute, a system is behaving as specified, happily fulfilling requests, and then bam! All the user objects suddenly need an extremely crucial attribute. Well that seems relatively simple, right? All that is needed is a simple ruby script to iterate over all users and update every user with this essential piece of data.</p>
+    <p>Ruby gems can seem magical. Usually, one (or more accurately: thirty) solution to a problem exists in the form of a gem. Using gems is easy and intuitive. Simply add a line in the project root&#39;s <code>Gemfile</code> and run <code>bundle install</code>. Then, either <code>require</code> the name of the gem or, if using Ruby on Rails, start using the gem&#39;s code immediately anywhere in the project. What could possibly go wrong?</p>
 
-<p>To demonstrate such a problem, we can assume the following:</p>
+<h2>Gems on gems on gems</h2>
 
-<p>A Ruby on Rails application exists with a <code>User</code> class, each with a <code>phone_number</code> attribute.</p>
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
+<p>Unchecked and unmanaged, a project&#39;s <code>Gemfile</code> might turn into something that looks like:</p>
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">source</span> <span class="s1">&#39;http://rubygems.org&#39;</span>
 
-  <span class="n">validates_presence_of</span> <span class="ss">:phone_number</span>
-<span class="k">end</span>
+<span class="n">gem</span> <span class="s1">&#39;linkbuilder&#39;</span>
+<span class="n">gem</span> <span class="s1">&#39;http_helper&#39;</span>
+<span class="n">gem</span> <span class="s1">&#39;the-color-red&#39;</span>
+<span class="n">gem</span> <span class="s1">&#39;devise&#39;</span>
+<span class="n">gem</span> <span class="s1">&#39;cancancancancan&#39;</span>
+<span class="n">gem</span> <span class="s1">&#39;nokogiri&#39;</span>
+<span class="n">gem</span> <span class="s1">&#39;crack&#39;</span>
+<span class="c1"># ...</span>
+<span class="c1"># ....</span>
+<span class="c1"># .....</span>
+<span class="n">gem</span> <span class="s1">&#39;cucumber&#39;</span>
+<span class="n">gem</span> <span class="s1">&#39;avacado&#39;</span>
+<span class="n">gem</span> <span class="s1">&#39;you-get-the-idea&#39;</span>
+<span class="n">gem</span> <span class="s1">&#39;these-are-too-many-gems&#39;</span>
+<span class="n">gem</span> <span class="s1">&#39;really&#39;</span>
 </code></pre></div>
-<p>The application is relatively popular, which results in 2,000,000 <code>users</code>:</p>
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="no">User</span><span class="o">.</span><span class="n">count</span>
-<span class="c1">#=&gt; 2000000</span>
-</code></pre></div>
-<p>Finally, the requested task:</p>
+<p>It is very possible that all these gems do not have any adverse side effects. They might not even have any horrible monkey patches to <code>String</code> or <code>Object</code>. <a href="http://www.nateberkopec.com/2015/07/22/secrets-to-speedy-ruby-apps-on-heroku.html">This post</a> has more information on <em>&quot;Why do most Rails apps use so much memory per process?&quot;</em>.</p>
 
-<p><strong>Add a &quot;+1&quot; to the beginning of all user phone numbers (we are assuming that all phone numbers belong to users in the USA or Canada).</strong></p>
+<p>Without being able to see inside of them, intrusive gems might be mixed into this mass and we would have no idea. At a glance, it is not immediately obvious how to differentiate between benign and malignant gems. It becomes infinitely easier to understand how gems interact if we remember that gems are not magic.</p>
 
-<p><em>Disclaimer: Ruby is probably not the best tool for this kind of data migration but for argument&#39;s sake we can assume it is the only one available.</em></p>
+<h2>Gems are just Libraries</h2>
 
-<h2>Serial scripts at scale are slow</h2>
+<p>There it is! The rabbit is out of the hat. Somewhere, some amount of cats have been released from their respective bags. Gems are not magic silver bullets injected into a codebase. Instead <strong>they are nothing more than libraries of code</strong>. Gems are <em>(hopefully)</em> well encapsulated groups of files that amount to a <em>(again hopefully)</em> few pieces of helpful functionality. With this new understanding of what gems really are, it means that parsing, modifying, and creating gems is within reach. All that is left is to figure out how to pry them open.</p>
 
-<p>Without giving it too much thought, an approach to solve this problem might look something like:</p>
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="no">User</span><span class="o">.</span><span class="n">find_each</span> <span class="k">do</span> <span class="o">|</span><span class="n">user</span><span class="o">|</span>
-  <span class="n">user</span><span class="o">.</span><span class="n">phone_number</span> <span class="o">=</span> <span class="s2">&quot;+1</span><span class="si">#{</span> <span class="n">user</span><span class="o">.</span><span class="n">phone_number</span> <span class="si">}</span><span class="s2">&quot;</span>
+<h2>Opening gems</h2>
 
-  <span class="n">user</span><span class="o">.</span><span class="n">save!</span>
-<span class="k">end</span>
-</code></pre></div>
-<p>This approach will work. The <a href="http://guides.rubyonrails.org/active_record_querying.html#find-each">find_each</a> method will make sure the memory footprint of the script stays low (it will not load every user into memory at once) and the phone numbers will be updated.</p>
+<p>Understanding gems is a great way to learn different design patterns and idiomatic Ruby conventions. Good gems have <a href="https://github.com/jnunemaker/httparty/blob/master/lib/httparty.rb#L29">in-line documentation</a>, great gems have <a href="https://github.com/apotonick/trailblazer#trailblazer">comprehensive Github documentation</a>. Github is the most common place to find the source code for gems and a large number of them have really great method and API documentation. This level of detail might be all that is required; however, for the more opaque gems, the <code>bundle open</code> command is extremely helpful.</p>
 
-<p>However, this will be painfully slow. Even if the system is able to update 20 users per second, it will take approximately <strong>27 hours</strong> to complete.</p>
-<div class="highlight"><pre><code class="language-text" data-lang="text">2,000,000 users / 20 users per second
-= 100,000 seconds to process all users
-</code></pre></div><div class="highlight"><pre><code class="language-text" data-lang="text">100,000 seconds / 60 seconds
-~= 1,666 minutes
-</code></pre></div><div class="highlight"><pre><code class="language-text" data-lang="text">1,666 minutes / 60 minutes
-~= 27 hours
-</code></pre></div>
-<h2>Resque to the Rescue</h2>
+<p><code>bundle open &lt;gemname&gt;</code> will use the system default text editor to open the contents of a gem. Since all gems are installed locally on the system, they should be available to open from a project&#39;s root. If a default editor is not set, or the default is not desired, one can be added to the beginning of the command: <code>EDITOR=vim bundle open &lt;gemname&gt;</code>.</p>
 
-<p><a href="https://github.com/resque/resque">Resque</a> is a very useful Ruby library for creating background jobs. Redis is utilized as the storage for these jobs and individual Resque workers pick one job off each queue at a time.</p>
+<p>A common starting place for a gem&#39;s logic is in a file with the same name as the gem. Since most gems need to encapsulate their logic, a namespace or wrapper class is usually created with the same name as the gem. In this file it is equally common to find a list of required files or the entry point for the underlying logic. This file is usually in the root of the gem&#39;s source or in a <code>lib</code> directory.</p>
 
-<p>With a small amount of code reorganization, Resque enables processing multiple users <strong>at the same time</strong>. The basic idea behind this approach is divide and conquer.</p>
+<p>In the <a href="http://jakeyesbeck.com/2015/05/10/validates-type/">validates_type</a> root file:</p>
 
-<h3>0. Install Resque and <a href="http://redis.io/topics/quickstart">Redis</a></h3>
+<p><img src="/assets/images/validates_type_dir_list.png" alt="validates_type dir list"></p>
 
-<h3>1. Extract phone number updates into a new class</h3>
+<h2>Great! Now what?</h2>
 
-<p>This new class will accept a single <code>user</code> and update all associated <code>phone_numbers</code>.</p>
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">class</span> <span class="nc">PhoneUpdater</span>
-  <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
-    <span class="vi">@user</span> <span class="o">=</span> <span class="n">user</span>
-  <span class="k">end</span>
-
-  <span class="k">def</span> <span class="nf">update_phone!</span>
-    <span class="vi">@user</span><span class="o">.</span><span class="n">phone_number</span> <span class="o">=</span> <span class="s2">&quot;+1</span><span class="si">#{</span> <span class="vi">@user</span><span class="o">.</span><span class="n">phone_number</span> <span class="si">}</span><span class="s2">&quot;</span>
-
-    <span class="vi">@user</span><span class="o">.</span><span class="n">save!</span>
-  <span class="k">end</span>
-<span class="k">end</span>
-</code></pre></div>
-<h3>2. Create a Resque Job to use this logic</h3>
-
-<p>A Resque Job class needs to conform to a simple API. A <code>queue</code> must be defined and the class must have a class method named <code>perform</code>. The parameter given to <code>perform</code> is the same that is passed to Resque when a job is enqueued.</p>
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">class</span> <span class="nc">PhoneUpdaterJob</span>
-  <span class="vi">@queue</span> <span class="o">=</span> <span class="ss">:phone_updates</span>
-
-  <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">perform</span><span class="p">(</span><span class="n">user_id</span><span class="p">)</span>
-    <span class="n">user</span> <span class="o">=</span> <span class="no">User</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">user_id</span><span class="p">)</span>
-    <span class="n">updater</span> <span class="o">=</span> <span class="no">PhoneUpdater</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
-    <span class="n">updater</span><span class="o">.</span><span class="n">update_phone!</span>
-  <span class="k">end</span>
-<span class="k">end</span>
-</code></pre></div>
-<h3>3. Create script to enqueue ResqueJobs</h3>
-
-<p>Iterate over the user set and enqueue a job per user. The second argument is the <code>id</code> of the user to process.</p>
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="no">User</span><span class="o">.</span><span class="n">find_each</span> <span class="k">do</span> <span class="o">|</span><span class="n">user</span><span class="o">|</span>
-  <span class="no">Resque</span><span class="o">.</span><span class="n">enqueue</span><span class="p">(</span>
-    <span class="no">PhoneUpdaterJob</span><span class="p">,</span>
-    <span class="n">user</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
-<span class="k">end</span>
-</code></pre></div>
-<h3>4. Run many parallel Resque workers</h3>
-
-<p>This is where the fun happens. By initializing many different Resque worker processes, they all will read from the <code>phone_updates</code> queue and process users in parallel. The <code>QUEUE</code> specified matches what was defined in <code>PhoneUpdaterJob</code>.</p>
-<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="c"># Open a terminal in the root of your project...</span>
-<span class="nv">QUEUE</span><span class="o">=</span>phone_updates rake resque:work
-
-<span class="c"># Open another terminal in the root of your project...</span>
-<span class="nv">QUEUE</span><span class="o">=</span>phone_updates rake resque:work
-
-<span class="nv">QUEUE</span><span class="o">=</span>phone_updates rake resque:work
-<span class="c"># Open another terminal in the root of your project...</span>
-
-<span class="c"># etc.</span>
-</code></pre></div>
-<h3>5. Try not to overload the system</h3>
-
-<p>Now with 2,000,000 queued Resque jobs, each Resque worker will drastically decrease the execution time of the overall task. However, system constraints should not be ignored. Database connection saturation, CPU usage and memory usage should be used in calculation of how many Resque workers to run at once.</p>
-
-<h2>Parallelism is awesome</h2>
-
-<p>Although the parallel solution is not as simple as its serial counterpart, the benefits are extremely apparent. The parallel solution is not without its weaknesses, but they do not make it invalid. It iterates over the entire user set twice, but parallelizing the slow <code>phone_number</code> update queries makes up for that inefficiency ten-fold.</p>
+<p>Now, go out there and open up all the gems in the entire world! Read them, understand them, be one with the gems. Get a flavor for the different types of Ruby code that can exist. Then, after complete code nirvana has been achieved, submit a pull request to the gem&#39;s source with some great additions. Or, place a few bindings in a few obscure methods to see how the code flows in and out of the gem. A master craftsman understands all of the tools in his toolbox, the same should be true for software.</p>
 
   </div>
   
