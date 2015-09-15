@@ -21,7 +21,7 @@
 
 &lt;h2&gt;The Adoption Option&lt;/h2&gt;
 
-&lt;p&gt;About 2.7 million animals are euthanized each year in animal shelters across the United States. That is some sad stuff right there. These animals could be hanging out with you at your house, clawing up or couch or barking at nothing. Does that not sound like just the best time? If only there was a Ruby library that some super awesome Software Artisans could use to make discoverable pet data a reality. Well now, there is! Over the past few months, as part of the &lt;a href=&quot;http://jakeyesbeck.com/2015/04/23/a-year-of-commits/&quot;&gt;Year of Commits&lt;/a&gt; initiative, I have built a &lt;a href=&quot;https://github.com/yez/rescue_groups&quot;&gt;wrapper for the RescueGroups.org API&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;About 2.7 million animals are euthanized each year in animal shelters across the United States. That is some sad stuff right there. These animals could be hanging out with you at your house, clawing up the couch or barking at nothing. Does that not sound like just the best time? If only there was a Ruby library that some super awesome Software Artisans could use to make discoverable pet data a reality. Well now, there is! Over the past few months, as part of the &lt;a href=&quot;http://jakeyesbeck.com/2015/04/23/a-year-of-commits/&quot;&gt;Year of Commits&lt;/a&gt; initiative, I have built a &lt;a href=&quot;https://github.com/yez/rescue_groups&quot;&gt;wrapper for the RescueGroups.org API&lt;/a&gt;.&lt;/p&gt;
 
 &lt;h2&gt;0. Sign up for an API key&lt;/h2&gt;
 
