@@ -123,7 +123,7 @@
 </code></pre></div>
 <p>This simple controller action can respond with three HTTP status codes. A <code>200</code> will be in the response of any <code>Book</code> which matches the <code>:id</code> supplied. Likewise, a <code>404</code> will automatically be returned if the <code>Book</code> requested does not exist. Finally, if some &quot;code in need of improvement&quot; is accessed and fails, a <code>500</code> is returned to let the user know that the server has almost certainly caught fire <em>(surely no code pushed to production has bugs in it)</em>.</p>
 
-<p>For a very simple API, this response structure is adequate. However, achieving more complicated responses might not be so straight forward. For instance, if a user must be logged in to access a <code>Book</code>, the correct response might be <code>403</code>, to explicitly let the user know that they are not authorized to see that resource.</p>
+<p>For a very simple API, this response structure is adequate. However, achieving more complicated responses might not be so straight forward. For instance, if a user must be logged in to access a <code>Book</code>, the correct response might be <code>401</code>, to explicitly let the user know that they are not authorized to see that resource.</p>
 
 <p>If HTTP status codes are unknown or underutilized, an inexperienced developer might write that response that attempts to only use the text body of a response.</p>
 <div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">class</span> <span class="nc">BooksController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
@@ -150,7 +150,7 @@
 
   <span class="k">def</span> <span class="nf">show</span>
     <span class="k">if</span> <span class="vi">@user</span><span class="o">.</span><span class="n">nil?</span>
-      <span class="k">return</span> <span class="n">head</span> <span class="ss">:forbidden</span>
+      <span class="k">return</span> <span class="n">head</span> <span class="ss">:unauthorized</span>
     <span class="k">end</span>
 
     <span class="n">render</span> <span class="ss">json</span><span class="p">:</span> <span class="no">Book</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">params</span><span class="o">[</span><span class="ss">:id</span><span class="o">]</span><span class="p">)</span>
@@ -164,7 +164,7 @@
   <span class="k">def</span> <span class="nf">show</span>
     <span class="k">if</span> <span class="vi">@user</span><span class="o">.</span><span class="n">nil?</span>
       <span class="n">response</span> <span class="o">=</span> <span class="p">{</span> <span class="ss">error</span><span class="p">:</span> <span class="s1">&#39;User is not logged in&#39;</span> <span class="p">}</span>
-      <span class="n">status</span> <span class="o">=</span> <span class="ss">:forbidden</span>
+      <span class="n">status</span> <span class="o">=</span> <span class="ss">:unauthorized</span>
     <span class="k">else</span>
       <span class="n">response</span> <span class="o">=</span> <span class="no">Book</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">params</span><span class="o">[</span><span class="ss">:id</span><span class="o">]</span><span class="p">)</span>
       <span class="n">status</span> <span class="o">=</span> <span class="ss">:ok</span>
@@ -178,7 +178,7 @@
 
 <p>This example has exposed the difference between a decent API and one that understands how HTTP should work. While the specific problem <a href="https://github.com/CanCanCommunity/cancancan">could be solved with CanCanCan</a>, it is important to understand how and why those libraries work the way that they do.</p>
 
-<p>If one were to continue down the naive path, returning hashes or strings by default for all responses, things would become messy quickly. That response structure unjustly handcuffs the API clients to be unnecessarily malleable. But, if the API conforms to HTTP standards, a client knows exactly what each response means. Nothing is left up to the imagination, and no bright new developer can accidentally change the <code>error</code> key to <code>Error</code> and ruin everyone&#39;s day.</p>
+<p>If one were to continue down the naive path, returning hashes or strings by default for all responses, things would become messy quickly. That response structure unjustly handcuffs the API clients to be unnecessarily tolerant of ad-hoc text responses. But, if the API conforms to HTTP standards, a client knows exactly what each response means. Nothing is left up to the imagination, and no bright new developer can accidentally change the <code>error</code> key to <code>Error</code> and ruin everyone&#39;s day.</p>
 
 <p>Instead of capturing in text every single detail about why a request did not result in an expected response, use HTTP status codes and save the novella for another time.</p>
 

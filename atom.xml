@@ -38,7 +38,7 @@
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;This simple controller action can respond with three HTTP status codes. A &lt;code&gt;200&lt;/code&gt; will be in the response of any &lt;code&gt;Book&lt;/code&gt; which matches the &lt;code&gt;:id&lt;/code&gt; supplied. Likewise, a &lt;code&gt;404&lt;/code&gt; will automatically be returned if the &lt;code&gt;Book&lt;/code&gt; requested does not exist. Finally, if some &amp;quot;code in need of improvement&amp;quot; is accessed and fails, a &lt;code&gt;500&lt;/code&gt; is returned to let the user know that the server has almost certainly caught fire &lt;em&gt;(surely no code pushed to production has bugs in it)&lt;/em&gt;.&lt;/p&gt;
 
-&lt;p&gt;For a very simple API, this response structure is adequate. However, achieving more complicated responses might not be so straight forward. For instance, if a user must be logged in to access a &lt;code&gt;Book&lt;/code&gt;, the correct response might be &lt;code&gt;403&lt;/code&gt;, to explicitly let the user know that they are not authorized to see that resource.&lt;/p&gt;
+&lt;p&gt;For a very simple API, this response structure is adequate. However, achieving more complicated responses might not be so straight forward. For instance, if a user must be logged in to access a &lt;code&gt;Book&lt;/code&gt;, the correct response might be &lt;code&gt;401&lt;/code&gt;, to explicitly let the user know that they are not authorized to see that resource.&lt;/p&gt;
 
 &lt;p&gt;If HTTP status codes are unknown or underutilized, an inexperienced developer might write that response that attempts to only use the text body of a response.&lt;/p&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;BooksController&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;ApplicationController&lt;/span&gt;
@@ -65,7 +65,7 @@
 
   &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;show&lt;/span&gt;
     &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;vi&quot;&gt;@user&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;nil?&lt;/span&gt;
-      &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;head&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:forbidden&lt;/span&gt;
+      &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;head&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:unauthorized&lt;/span&gt;
     &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
 
     &lt;span class=&quot;n&quot;&gt;render&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;json&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Book&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;find&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;params&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:id&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
@@ -79,7 +79,7 @@
   &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;show&lt;/span&gt;
     &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;vi&quot;&gt;@user&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;nil?&lt;/span&gt;
       &lt;span class=&quot;n&quot;&gt;response&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;error&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;User is not logged in&amp;#39;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-      &lt;span class=&quot;n&quot;&gt;status&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:forbidden&lt;/span&gt;
+      &lt;span class=&quot;n&quot;&gt;status&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:unauthorized&lt;/span&gt;
     &lt;span class=&quot;k&quot;&gt;else&lt;/span&gt;
       &lt;span class=&quot;n&quot;&gt;response&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Book&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;find&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;params&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:id&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
       &lt;span class=&quot;n&quot;&gt;status&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:ok&lt;/span&gt;
@@ -93,7 +93,7 @@
 
 &lt;p&gt;This example has exposed the difference between a decent API and one that understands how HTTP should work. While the specific problem &lt;a href=&quot;https://github.com/CanCanCommunity/cancancan&quot;&gt;could be solved with CanCanCan&lt;/a&gt;, it is important to understand how and why those libraries work the way that they do.&lt;/p&gt;
 
-&lt;p&gt;If one were to continue down the naive path, returning hashes or strings by default for all responses, things would become messy quickly. That response structure unjustly handcuffs the API clients to be unnecessarily malleable. But, if the API conforms to HTTP standards, a client knows exactly what each response means. Nothing is left up to the imagination, and no bright new developer can accidentally change the &lt;code&gt;error&lt;/code&gt; key to &lt;code&gt;Error&lt;/code&gt; and ruin everyone&amp;#39;s day.&lt;/p&gt;
+&lt;p&gt;If one were to continue down the naive path, returning hashes or strings by default for all responses, things would become messy quickly. That response structure unjustly handcuffs the API clients to be unnecessarily tolerant of ad-hoc text responses. But, if the API conforms to HTTP standards, a client knows exactly what each response means. Nothing is left up to the imagination, and no bright new developer can accidentally change the &lt;code&gt;error&lt;/code&gt; key to &lt;code&gt;Error&lt;/code&gt; and ruin everyone&amp;#39;s day.&lt;/p&gt;
 
 &lt;p&gt;Instead of capturing in text every single detail about why a request did not result in an expected response, use HTTP status codes and save the novella for another time.&lt;/p&gt;
 </content>
