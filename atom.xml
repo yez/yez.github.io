@@ -59,7 +59,7 @@
 
 &lt;p&gt;Instead, Ruby on Rails gives us &lt;a href=&quot;http://billpatrianakos.me/blog/2013/10/13/list-of-rails-status-code-symbols/&quot;&gt;very helpful symbols&lt;/a&gt; that can be used to accurately convey the appropriate response to end users.&lt;/p&gt;
 
-&lt;p&gt;To only return the correct HTTP status code, the books controller can be rewritten to&lt;/p&gt;
+&lt;p&gt;To only return the correct HTTP status code, the books controller can be rewritten to:&lt;/p&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;BooksController&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;ApplicationController&lt;/span&gt;
   &lt;span class=&quot;n&quot;&gt;before_filter&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:authenticate_user&lt;/span&gt;
 
@@ -72,7 +72,7 @@
   &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
 &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;Alternatively, if extremely verbose and tedious error messages are the cat&amp;#39;s pajamas to you, it is possible to use these symbols in conjunction with response bodies:&lt;/p&gt;
+&lt;p&gt;Additionally, you can provide even more information to the consumer of your API with a combination of HTTP status codes and a response body:&lt;/p&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;BooksController&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;ApplicationController&lt;/span&gt;
   &lt;span class=&quot;n&quot;&gt;before_filter&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:authenticate_user&lt;/span&gt;
 
@@ -89,13 +89,13 @@
   &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
 &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;h2&gt;Brevity is underrated&lt;/h2&gt;
+&lt;h2&gt;Communicate effectively&lt;/h2&gt;
 
 &lt;p&gt;This example has exposed the difference between a decent API and one that understands how HTTP should work. While the specific problem &lt;a href=&quot;https://github.com/CanCanCommunity/cancancan&quot;&gt;could be solved with CanCanCan&lt;/a&gt;, it is important to understand how and why those libraries work the way that they do.&lt;/p&gt;
 
-&lt;p&gt;If one were to continue down the naive path, returning hashes or strings by default for all responses, things would become messy quickly. That response structure unjustly handcuffs the API clients to be unnecessarily tolerant of ad-hoc text responses. But, if the API conforms to HTTP standards, a client knows exactly what each response means. Nothing is left up to the imagination, and no bright new developer can accidentally change the &lt;code&gt;error&lt;/code&gt; key to &lt;code&gt;Error&lt;/code&gt; and ruin everyone&amp;#39;s day.&lt;/p&gt;
+&lt;p&gt;If one were to continue down the naive path, returning hashes or strings with incorrect HTTP status codes, things would become messy quickly. That response structure unjustly handcuffs the API clients to be unnecessarily tolerant of ad-hoc text responses. But, if the API conforms to HTTP standards, a client knows exactly what each response means. A &lt;code&gt;400&lt;/code&gt; status code in the response will give context to what a supplied error means. The client can respond correctly and know that their request resulted in an error. However, if a response body is the only way to denote that something went wrong, what stops a new developer on the API from changing the &lt;code&gt;error&lt;/code&gt; key to &lt;code&gt;Error&lt;/code&gt; and ruin everyone&amp;#39;s day?&lt;/p&gt;
 
-&lt;p&gt;Instead of capturing in text every single detail about why a request did not result in an expected response, use HTTP status codes and save the novella for another time.&lt;/p&gt;
+&lt;p&gt;Instead of capturing in text every single detail about why a request did not result in an expected response, use HTTP status codes to supplement and communicate effectively.&lt;/p&gt;
 </content>
  </entry>
  

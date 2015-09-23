@@ -144,7 +144,7 @@
 
 <p>Instead, Ruby on Rails gives us <a href="http://billpatrianakos.me/blog/2013/10/13/list-of-rails-status-code-symbols/">very helpful symbols</a> that can be used to accurately convey the appropriate response to end users.</p>
 
-<p>To only return the correct HTTP status code, the books controller can be rewritten to</p>
+<p>To only return the correct HTTP status code, the books controller can be rewritten to:</p>
 <div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">class</span> <span class="nc">BooksController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
   <span class="n">before_filter</span> <span class="ss">:authenticate_user</span>
 
@@ -157,7 +157,7 @@
   <span class="k">end</span>
 <span class="k">end</span>
 </code></pre></div>
-<p>Alternatively, if extremely verbose and tedious error messages are the cat&#39;s pajamas to you, it is possible to use these symbols in conjunction with response bodies:</p>
+<p>Additionally, you can provide even more information to the consumer of your API with a combination of HTTP status codes and a response body:</p>
 <div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">class</span> <span class="nc">BooksController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
   <span class="n">before_filter</span> <span class="ss">:authenticate_user</span>
 
@@ -174,13 +174,13 @@
   <span class="k">end</span>
 <span class="k">end</span>
 </code></pre></div>
-<h2>Brevity is underrated</h2>
+<h2>Communicate effectively</h2>
 
 <p>This example has exposed the difference between a decent API and one that understands how HTTP should work. While the specific problem <a href="https://github.com/CanCanCommunity/cancancan">could be solved with CanCanCan</a>, it is important to understand how and why those libraries work the way that they do.</p>
 
-<p>If one were to continue down the naive path, returning hashes or strings by default for all responses, things would become messy quickly. That response structure unjustly handcuffs the API clients to be unnecessarily tolerant of ad-hoc text responses. But, if the API conforms to HTTP standards, a client knows exactly what each response means. Nothing is left up to the imagination, and no bright new developer can accidentally change the <code>error</code> key to <code>Error</code> and ruin everyone&#39;s day.</p>
+<p>If one were to continue down the naive path, returning hashes or strings with incorrect HTTP status codes, things would become messy quickly. That response structure unjustly handcuffs the API clients to be unnecessarily tolerant of ad-hoc text responses. But, if the API conforms to HTTP standards, a client knows exactly what each response means. A <code>400</code> status code in the response will give context to what a supplied error means. The client can respond correctly and know that their request resulted in an error. However, if a response body is the only way to denote that something went wrong, what stops a new developer on the API from changing the <code>error</code> key to <code>Error</code> and ruin everyone&#39;s day?</p>
 
-<p>Instead of capturing in text every single detail about why a request did not result in an expected response, use HTTP status codes and save the novella for another time.</p>
+<p>Instead of capturing in text every single detail about why a request did not result in an expected response, use HTTP status codes to supplement and communicate effectively.</p>
 
 </div>
 
