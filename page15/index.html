@@ -67,63 +67,118 @@
   
   <div class="post">
     <h1 class="post-title">
-      <a href="/2015/06/14/you-are-not-your-code/">
-        You are not your code
+      <a href="/2015/06/21/validates-subset/">
+        Rails style subset validation
       </a>
     </h1>
 
     
 
-    <span class="post-date">14 Jun 2015</span>
+    <span class="post-date">21 Jun 2015</span>
     <span class='share-container'><ul class="share-buttons">
   <li>
-    <a href="https://www.facebook.com/sharer/sharer.php?u=http://jakeyesbeck.com/2015/06/14/you-are-not-your-code/&t=You are not your code" title="Share on Facebook" target="_blank">
+    <a href="https://www.facebook.com/sharer/sharer.php?u=http://jakeyesbeck.com/2015/06/21/validates-subset/&t=Rails style subset validation" title="Share on Facebook" target="_blank">
       <img src="http://jakeyesbeck.com/assets/images/facebook.svg">
     </a>
   </li>
   <li>
-    <a href="https://twitter.com/intent/tweet?source=http%3A%2F%2Fjakeyesbeck.com&text=You are not your code:%20http%3A%2F%2Fjakeyesbeck.com&via=yez" target="_blank" title="Tweet">
+    <a href="https://twitter.com/intent/tweet?source=http%3A%2F%2Fjakeyesbeck.com&text=Rails style subset validation:%20http%3A%2F%2Fjakeyesbeck.com&via=yez" target="_blank" title="Tweet">
       <img src="http://jakeyesbeck.com/assets/images/twitter.svg">
     </a>
   </li>
   <li>
-    <a href="https://plus.google.com/share?url=http://jakeyesbeck.com/2015/06/14/you-are-not-your-code/" target="_blank" title="Share on Google+">
+    <a href="https://plus.google.com/share?url=http://jakeyesbeck.com/2015/06/21/validates-subset/" target="_blank" title="Share on Google+">
       <img src="http://jakeyesbeck.com/assets/images/google_plus.svg">
     </a>
   </li>
 
   <li>
-    <a href="https://news.ycombinator.com/submitlink?u=http://jakeyesbeck.com/2015/06/14/you-are-not-your-code/&t=You are not your code" target="_blank" title="Share on Hacker News">
+    <a href="https://news.ycombinator.com/submitlink?u=http://jakeyesbeck.com/2015/06/21/validates-subset/&t=Rails style subset validation" target="_blank" title="Share on Hacker News">
       <img src="http://jakeyesbeck.com/assets/images/ycomb.svg">
     </a>
   </li>
 
   <li>
-    <a href="https://getpocket.com/save?url=http://jakeyesbeck.com/2015/06/14/you-are-not-your-code/&title=You are not your code" target="_blank" title="Add to Pocket">
+    <a href="https://getpocket.com/save?url=http://jakeyesbeck.com/2015/06/21/validates-subset/&title=Rails style subset validation" target="_blank" title="Add to Pocket">
       <img src="http://jakeyesbeck.com/assets/images/pocket.svg">
     </a>
   </li>
   <li>
-    <a href="http://www.reddit.com/submit?url=http://jakeyesbeck.com/2015/06/14/you-are-not-your-code/&title=You are not your code" target="_blank" title="Submit to Reddit">
+    <a href="http://www.reddit.com/submit?url=http://jakeyesbeck.com/2015/06/21/validates-subset/&title=Rails style subset validation" target="_blank" title="Submit to Reddit">
       <img src="http://jakeyesbeck.com/assets/images/reddit.svg">
     </a>
   </li>
 </ul>
 </span>
 
-    <p>It may have been a mentor, a colleague, or even a random vagrant on your way to work. One of these people has been wise enough in to let you in on the well known fact that: <em>&quot;You are not your code&quot;</em>. The words themselves seem so simple, so obvious and straightforward. But simple as it may be, this concept is paramount if you are to survive as a <a href="http://jakeyesbeck.com/2015/05/17/just_learn_rails/">Software Artisan</a> and as a functioning member of society.</p>
+    <p>Do you suddenly wake up in a cold sweat, wondering if there is <strong>finally</strong> a way to validate that your data is a proper subset that you desire? I too have experienced this horror, and that is why I made a rails style <a href="https://github.com/yez/validates_subset">subset validator</a>.</p>
 
-<p>When writing software, having a sizable ego is not always appropriate. In fact, it could become a hindrance that will prevent you from being productive and happy. Software contribution is about coordinating with others to make the best possible software. It is very hard to coordinate if a person is unable to relinquish control of their projects because they feel defined by them.</p>
+<h2>Validations über alles</h2>
 
-<p>The first time someone said that I was not my code, I took offense. I didn&#39;t understand what they really meant. All I could think was: <em>&quot;What do you mean? <strong>I</strong> wrote the code. <strong>I</strong> put my heart, soul, blood, sweat, and tears into the code. It is the epitome of <strong>me</strong>. The code <strong>I</strong> write defines <strong>me!</strong> &quot;</em>. It was that last statement that demonstrated how naive I really was. Your code was crafted by you, maintained by you, and evolved with you. But, like a carpenter is not a chair, <strong>you are not your code</strong>.</p>
+<p>Data validation is important. Having data you can depend on is the difference between a great application and one that might be classified as: <em>&quot;amateur hour&quot;</em>. Rails provides a nice amount of validators via <code>ActiveModel::Validations</code>, but not an exhaustive set (get it?). One of those missing pieces involves validating sets of data. Just in case you haven&#39;t had your coffee yet, we define a <a href="https://en.wikipedia.org/wiki/Set_(abstract_data_type)">set</a> as an abstract data type that stores distinct values in no particular order.</p>
 
-<p>During my <a href="http://jakeyesbeck.com/2015/04/23/a_year_of_commits/">Year of Commits</a>, it has been very important to internalize the difference between my code and myself. If I have too much ownership and pride dealing with the code I write, it makes it impossible for me to contribute as part of a community. The difference between writing software and other creative forms of work lies in the longevity of what is created. For a more traditional artisan, a painting or a house will last much longer than the average piece of code.</p>
+<p>Ruby does indeed have the <code>Set</code> class but most code I&#39;ve come across simply uses the <code>Array</code> class. So, for simplicity&#39;s sake, all examples will use <code>Array</code>.</p>
 
-<p>You, me, even that guy at work who seems to be the fabled &quot;10x engineer&quot;, write transient code. Our code will not outlive us. Heck, the average lifespan of code written is between 6 months and 2 years. That is <em>nothing</em> compared to other professions. What if civil engineers only had to make a bridge that lasted for 6 months? That would be one poorly built bridge that no one would want to drive over. But when writing software, that is often the expected life of the code. With that, it becomes quite clear that code written to not last a century should never be used to define a person&#39;s life. If you had the desire to really define yourself by your code, you would probably spend 10 years writing and perfecting every single component. This is not feasible nor realistic. We are not building bridges to last decades upon decades, neither are we creating pieces of art to hang in museums for generations. We are building software to last &quot;long enough&quot;. We build it because we love to and because someone is most likely paying us to do it <em>(I still smile sometimes when I realize I get <strong>paid</strong> to write code)</em>.</p>
+<p>Now that we have all been convinced that subset validation is the greatest thing since sliced bread, how about some examples?</p>
 
-<p>At the end of the day, everyone wants to be proud of the job they have done and the things they have achieved. People who write software are very lucky. We get to go home every day having created something new or made something better. However, we must remain humble. Humility will be our saving grace. It will be the thing that prevents us from going gray at the age of 35. Letting go of the code that we write will help us keep that bottle of Glenlivet from diminishing at an expeditious pace. Our families will not have to wonder when we will return home because we let our code go. We can rest easy knowing &quot;that new guy who uses tabs instead of spaces&quot; will be taking over the code we wrote a month ago, and that is <strong>ok</strong>. Because in the end, the code we write will most likely be deleted within a year of its conception.</p>
+<h2>Example usage</h2>
 
-<p>You are not your code. You love to write code but are not defined by it. The code we write enriches our lives. We learn a great deal from the problems that we solve, but we are not defined by the solutions. I am a Software Artisan who&#39;s code will be forgotten along with everyone else&#39;s. I am happy I got to write it at all.</p>
+<p>To include <code>validates_subset</code>, simply add <code>gem &#39;validates_subset&#39;</code> in your Gemfile of your projects. Or type <code>gem install validates_subset</code> in your terminal.</p>
+
+<p>For rails applications, the gem is automagically available to you. For other ruby frameworks, just add the line: <code>require &#39;validates_subset&#39;</code> wherever you need the library. For this, we can assume that our application is using Rails 4.0 and we have a class that looks like:</p>
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">class</span> <span class="nc">HasASubset</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
+  <span class="kp">attr_accessor</span> <span class="ss">:foo</span>
+
+  <span class="n">validates_subset</span> <span class="ss">:foo</span><span class="p">,</span> <span class="o">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="o">]</span>
+<span class="k">end</span>
+</code></pre></div>
+<h2>Using our handy dandy test class, we can see that:</h2>
+
+<h3>A valid subset is valid:</h3>
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="nb">test</span> <span class="o">=</span> <span class="no">HasASubset</span><span class="o">.</span><span class="n">new</span>
+<span class="nb">test</span><span class="o">.</span><span class="n">foo</span> <span class="o">=</span> <span class="o">[</span><span class="mi">1</span><span class="o">]</span>
+<span class="nb">test</span><span class="o">.</span><span class="n">valid?</span>
+<span class="c1"># =&gt; true</span>
+</code></pre></div>
+<h3>An empty set is also very valid:</h3>
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="nb">test</span> <span class="o">=</span> <span class="no">HasASubset</span><span class="o">.</span><span class="n">new</span>
+<span class="nb">test</span><span class="o">.</span><span class="n">foo</span> <span class="o">=</span> <span class="o">[]</span>
+<span class="nb">test</span><span class="o">.</span><span class="n">valid?</span>
+<span class="c1"># =&gt; true</span>
+</code></pre></div>
+<h3>An invalid set is... invalid:</h3>
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="nb">test</span> <span class="o">=</span> <span class="no">HasASubset</span><span class="o">.</span><span class="n">new</span>
+<span class="nb">test</span><span class="o">.</span><span class="n">foo</span> <span class="o">=</span> <span class="o">[</span><span class="s1">&#39;banana&#39;</span><span class="o">]</span>
+<span class="nb">test</span><span class="o">.</span><span class="n">valid?</span>
+<span class="c1"># =&gt; false</span>
+</code></pre></div>
+<h3>And a non-set is invalid:</h3>
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="nb">test</span> <span class="o">=</span> <span class="no">HasASubset</span><span class="o">.</span><span class="n">new</span>
+<span class="nb">test</span><span class="o">.</span><span class="n">foo</span> <span class="o">=</span> <span class="mi">99_999</span>
+<span class="nb">test</span><span class="o">.</span><span class="n">valid?</span>
+<span class="c1"># =&gt; false</span>
+</code></pre></div>
+<p>Holy guacamole that is some sweet validation. But wait, there&#39;s more! Since this validator is built on top of rock solid <code>ActiveModel::Validations</code> logic, all modifiers are supported.</p>
+
+<h2>Modification nation</h2>
+
+<p>If your particular dataset needs something to be a subset or <code>nil</code>, it is a simple as:</p>
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">class</span> <span class="nc">HasASubset</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
+  <span class="kp">attr_accessor</span> <span class="ss">:foo</span>
+
+  <span class="n">validates_subset</span> <span class="ss">:foo</span><span class="p">,</span> <span class="o">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="o">]</span><span class="p">,</span> <span class="ss">allow_nil</span><span class="p">:</span> <span class="kp">true</span>
+<span class="k">end</span>
+</code></pre></div>
+<p>If you needed the data to <code>allow_nil</code> and only validate on <code>create</code>, you could easily define the validation as:</p>
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">class</span> <span class="nc">HasASubset</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
+  <span class="kp">attr_accessor</span> <span class="ss">:foo</span>
+
+  <span class="n">validates_subset</span> <span class="ss">:foo</span><span class="p">,</span> <span class="o">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="o">]</span><span class="p">,</span> <span class="ss">allow_nil</span><span class="p">:</span> <span class="kp">true</span><span class="p">,</span> <span class="ss">on</span><span class="p">:</span> <span class="ss">:create</span>
+<span class="k">end</span>
+</code></pre></div>
+<p>Any combination of modifiers is supported by <code>validates_subset</code>. For a complete list of modifiers, have a look at the <a href="http://api.rubyonrails.org/classes/ActiveModel/Validations/ClassMethods.html#method-i-validate">rails documentationn</a>.</p>
+
+<p>As always, please contribute to and use this software for the low low price of free.</p>
 
   </div>
   

@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta http-equiv="content-type" content="text/html; charset=utf-8">
   
-    <meta name="description" content="A technology blog about a Year of Commits to Open Source projects.">
+    <meta name="description" content="Create a custom Enumerable with Ruby. Include the Enumerable Module and create a custom collection class.">
   
 
   <!-- Enable responsiveness on mobile devices-->
@@ -14,7 +14,7 @@
 
   <title>
     
-      A Year of Commits &middot; 
+      How to Create a Custom Enumerable &middot; A Year of Commits
     
   </title>
 
@@ -63,19 +63,11 @@
 
 
     <div class="content container">
-      <div class="posts">
+      <div class="post">
+  <h1 class="post-title">How to Create a Custom Enumerable</h1>
+  <span class="post-date">27 Sep 2015</span>
   
-  <div class="post">
-    <h1 class="post-title">
-      <a href="/2015/09/27/how-to-create-a-custom-enumerable/">
-        How to Create a Custom Enumerable
-      </a>
-    </h1>
-
-    
-
-    <span class="post-date">27 Sep 2015</span>
-    <span class='share-container'><ul class="share-buttons">
+  <span class='share-container'><ul class="share-buttons">
   <li>
     <a href="https://www.facebook.com/sharer/sharer.php?u=http://jakeyesbeck.com/2015/09/27/how-to-create-a-custom-enumerable/&t=How to Create a Custom Enumerable" title="Share on Facebook" target="_blank">
       <img src="http://jakeyesbeck.com/assets/images/facebook.svg">
@@ -110,8 +102,7 @@
   </li>
 </ul>
 </span>
-
-    <p>Ruby is a wonderfully flexible language. An example of this flexibility is in the ability to define a custom collection class that acts as an <a href="http://ruby-doc.org/core-2.1.1/Enumerable.html">Enumerable</a> object. In Ruby, a collection that acts as an <code>Enumerable</code> is basically a class which holds a list of objects and exposes helpful methods for iteration and collection. An example of this pattern built into Ruby is the <a href="http://ruby-doc.org/core-2.2.3/Array.html">Array</a> class.</p>
+  <p>Ruby is a wonderfully flexible language. An example of this flexibility is in the ability to define a custom collection class that acts as an <a href="http://ruby-doc.org/core-2.1.1/Enumerable.html">Enumerable</a> object. In Ruby, a collection that acts as an <code>Enumerable</code> is basically a class which holds a list of objects and exposes helpful methods for iteration and collection. An example of this pattern built into Ruby is the <a href="http://ruby-doc.org/core-2.2.3/Array.html">Array</a> class.</p>
 
 <p>In keeping with a <a href="http://jakeyesbeck.com/2015/09/13/rescue-groups/">theme</a>, let us assume that an application about dogs exists. In this example, a <code>DogKennel</code> class exists that will hold information about each dog in the kennel and detailed information about said kennel.</p>
 <div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">class</span> <span class="nc">DogKennel</span>
@@ -217,17 +208,40 @@
 
 <p>The strength behind this approach is expressed through its maintainability. Since no long list of methods was defined, and no duplicative code was written, this code can exist alongside active development of the <code>Enumerable</code> module. For the example in question, this could be an overkill solution. But, in a more complex and sophistiacted system, using the <code>Enumerable</code> could be the best option.</p>
 
-  </div>
-  
 </div>
 
-<div class="pagination">
-  
-    <a class="pagination-item older" href="http://jakeyesbeck.com/page2">Older</a>
-  
-  
-    <span class="pagination-item newer">Newer</span>
-  
+<div class="related">
+  <h2>Related Posts</h2>
+  <ul class="related-posts">
+    
+      <li>
+        <h3>
+          <a href="/2015/09/20/rails-http-status-codes/">
+            Just learn Rails (Part 3) HTTP status codes
+            <small>20 Sep 2015</small>
+          </a>
+        </h3>
+      </li>
+    
+      <li>
+        <h3>
+          <a href="/2015/09/13/rescue-groups/">
+            Rescue Groups Ruby Wrapper
+            <small>13 Sep 2015</small>
+          </a>
+        </h3>
+      </li>
+    
+      <li>
+        <h3>
+          <a href="/2015/09/06/stop-and-take-a-moment/">
+            Stop and Take a Moment
+            <small>06 Sep 2015</small>
+          </a>
+        </h3>
+      </li>
+    
+  </ul>
 </div>
 
     </div>
