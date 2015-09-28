@@ -80,7 +80,7 @@
 
 &lt;p&gt;In this new collection class, the &lt;code&gt;sort&lt;/code&gt; method will default using the &lt;code&gt;&amp;lt;=&amp;gt;&lt;/code&gt; (sometimes called spaceship) operator. This combined comparison operator returns &lt;code&gt;0&lt;/code&gt; if first operand equals the second, &lt;code&gt;1&lt;/code&gt; if first operand is greater than the second and &lt;code&gt;-1&lt;/code&gt; if first operand is less than the second.&lt;/p&gt;
 
-&lt;p&gt;While this will work fine for strings and other basic object types. However, if a more complex object held the information about each dog, the &lt;code&gt;&amp;lt;=&amp;gt;&lt;/code&gt; method must be defined on that object.&lt;/p&gt;
+&lt;p&gt;This will work fine for strings and other basic object types; however, if a more complex object held the information about each dog, the &lt;code&gt;&amp;lt;=&amp;gt;&lt;/code&gt; method must be defined on that object.&lt;/p&gt;
 
 &lt;p&gt;A &lt;code&gt;Dog&lt;/code&gt; class is created to represent a dog&amp;#39;s attributes:&lt;/p&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Dog&lt;/span&gt;
