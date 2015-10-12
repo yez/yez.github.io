@@ -167,6 +167,8 @@ Connection: close
 &lt;p&gt;Other improvements would be header configuration, incoming request parsing, and thread pooling.&lt;/p&gt;
 
 &lt;p&gt;Spending a thousand hours iterating on this code will certainly improve its quality, but it still might not allow this simple server stack up to the leaders in the space. I would recommend using a more battle tested web server for an actual production application. At least some of those awesome servers&amp;#39; mysteries have been explained.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;For more server fun, and details about how to respond with more than &lt;code&gt;&amp;#39;hello world&amp;#39;&lt;/code&gt;, check out next week&amp;#39;s article!&lt;/strong&gt;&lt;/p&gt;
 </content>
  </entry>
  
