@@ -139,7 +139,7 @@ Connection: close
 
 &lt;h2&gt;What now?&lt;/h2&gt;
 
-&lt;p&gt;Now, this simple server will fulfill concurrent requests in a way that will make sense to its consumers. Right now it is very much a one trick pony. It always responds with &lt;code&gt;&amp;#39;hello world&amp;#39;&lt;/code&gt; regardless of the request data but that is just fine for now. To fetch and parse the data, &lt;code&gt;request.gets&lt;/code&gt; is available:&lt;/p&gt;
+&lt;p&gt;Now, this simple server will fulfill concurrent requests in a way that will make sense to its consumers. However, it always responds with &lt;code&gt;&amp;#39;hello world&amp;#39;&lt;/code&gt;, regardless of the request data. To fetch and parse the incoming data, &lt;code&gt;request.gets&lt;/code&gt; is available:&lt;/p&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;nb&quot;&gt;require&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;socket&amp;#39;&lt;/span&gt;
 
 &lt;span class=&quot;n&quot;&gt;server&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;TCPServer&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;new&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;8080&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
@@ -164,7 +164,7 @@ Connection: close
   &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
 &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;Other improvements would be header configuration, incoming request parsing, and thread pooling. However, even spending a thousand hours worth of iterations might not help this simple server stack up to the leaders in the space. I would still recommend using a more battle tested web server for an actual production application, but at least some of their mysteries have been uncovered.&lt;/p&gt;
+&lt;p&gt;Other improvements would be header configuration, incoming request parsing, and thread pooling. However, even spending a thousand hours worth of iterations might not help this simple server stack up to the leaders in the space. I would still recommend using a more battle tested web server for an actual production application, but at least some of their mysteries have been explained.&lt;/p&gt;
 </content>
  </entry>
  

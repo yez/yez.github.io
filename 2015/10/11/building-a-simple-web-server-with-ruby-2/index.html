@@ -224,7 +224,7 @@ Connection: close
 
 <h2>What now?</h2>
 
-<p>Now, this simple server will fulfill concurrent requests in a way that will make sense to its consumers. Right now it is very much a one trick pony. It always responds with <code>&#39;hello world&#39;</code> regardless of the request data but that is just fine for now. To fetch and parse the data, <code>request.gets</code> is available:</p>
+<p>Now, this simple server will fulfill concurrent requests in a way that will make sense to its consumers. However, it always responds with <code>&#39;hello world&#39;</code>, regardless of the request data. To fetch and parse the incoming data, <code>request.gets</code> is available:</p>
 <div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="nb">require</span> <span class="s1">&#39;socket&#39;</span>
 
 <span class="n">server</span> <span class="o">=</span> <span class="no">TCPServer</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="mi">8080</span><span class="p">)</span>
@@ -249,7 +249,7 @@ Connection: close
   <span class="k">end</span>
 <span class="k">end</span>
 </code></pre></div>
-<p>Other improvements would be header configuration, incoming request parsing, and thread pooling. However, even spending a thousand hours worth of iterations might not help this simple server stack up to the leaders in the space. I would still recommend using a more battle tested web server for an actual production application, but at least some of their mysteries have been uncovered.</p>
+<p>Other improvements would be header configuration, incoming request parsing, and thread pooling. However, even spending a thousand hours worth of iterations might not help this simple server stack up to the leaders in the space. I would still recommend using a more battle tested web server for an actual production application, but at least some of their mysteries have been explained.</p>
 
 </div>
 
