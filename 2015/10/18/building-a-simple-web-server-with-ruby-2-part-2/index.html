@@ -114,13 +114,15 @@
 <div class="highlight"><pre><code class="language-sh" data-lang="sh">GET /path/to/my_file.html?query<span class="o">=</span>params<span class="p">&amp;</span><span class="nv">are</span><span class="o">=</span>cool HTTP/1.1
 </code></pre></div>
 <p>A simple file fetching method might look like:</p>
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="no">SEVER_ROOT_DIR</span> <span class="o">=</span> <span class="s1">&#39;/var/www&#39;</span>
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="nb">require</span> <span class="s1">&#39;uri&#39;</span>
+
+<span class="no">SEVER_ROOT_DIR</span> <span class="o">=</span> <span class="s1">&#39;/var/www&#39;</span>
 
 <span class="k">def</span> <span class="nf">fetch_file</span><span class="p">(</span><span class="n">request_string</span><span class="p">)</span>
   <span class="n">request_parts</span> <span class="o">=</span> <span class="n">request_string</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)</span>
 
   <span class="c1"># Remove query params and HTTP verb, version</span>
-  <span class="n">path</span> <span class="o">=</span> <span class="n">request_parts</span><span class="o">[</span><span class="mi">1</span><span class="o">].</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;?&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">first</span>
+  <span class="n">path</span> <span class="o">=</span> <span class="no">URI</span><span class="p">(</span><span class="n">request_parts</span><span class="o">[</span><span class="mi">1</span><span class="o">]</span><span class="p">)</span><span class="o">.</span><span class="n">path</span>
 
   <span class="no">File</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="no">File</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="no">SERVER_ROOT_DIR</span><span class="p">,</span> <span class="n">path</span><span class="p">))</span> <span class="k">rescue</span> <span class="kp">nil</span>
 <span class="k">end</span>
@@ -129,12 +131,13 @@
 
 <p>Putting it all together, the server can now fetch and return files that exist.</p>
 <div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="nb">require</span> <span class="s1">&#39;socket&#39;</span>
+<span class="nb">require</span> <span class="s1">&#39;uri&#39;</span>
 
 <span class="no">SERVER_ROOT_DIR</span> <span class="o">=</span> <span class="s1">&#39;/var/www&#39;</span>
 
 <span class="k">def</span> <span class="nf">fetch_file</span><span class="p">(</span><span class="n">request_string</span><span class="p">)</span>
   <span class="n">request_parts</span> <span class="o">=</span> <span class="n">request_string</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)</span>
-  <span class="n">path</span> <span class="o">=</span> <span class="n">request_parts</span><span class="o">[</span><span class="mi">1</span><span class="o">].</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;?&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">first</span>
+  <span class="n">path</span> <span class="o">=</span> <span class="no">URI</span><span class="p">(</span><span class="n">request_parts</span><span class="o">[</span><span class="mi">1</span><span class="o">]</span><span class="p">)</span><span class="o">.</span><span class="n">path</span>
   <span class="no">File</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="no">File</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="no">SERVER_ROOT_DIR</span><span class="p">,</span> <span class="n">path</span><span class="p">))</span> <span class="k">rescue</span> <span class="kp">nil</span>
 <span class="k">end</span>
 
@@ -181,10 +184,10 @@ Connection: close
 <div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">def</span> <span class="nf">fetch_file</span><span class="p">(</span><span class="n">request_string</span><span class="p">)</span>
   <span class="n">request_parts</span> <span class="o">=</span> <span class="n">request_string</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)</span>
   <span class="n">path</span> <span class="o">=</span> <span class="k">begin</span>
-    <span class="n">insecure_path</span> <span class="o">=</span> <span class="n">request_parts</span><span class="o">[</span><span class="mi">1</span><span class="o">].</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;?&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">first</span>
+    <span class="n">insecure_path</span> <span class="o">=</span> <span class="no">URI</span><span class="p">(</span><span class="n">request_parts</span><span class="o">[</span><span class="mi">1</span><span class="o">]</span><span class="p">)</span><span class="o">.</span><span class="n">path</span>
 
     <span class="n">secure_request_parts</span> <span class="o">=</span> <span class="n">insecure_path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">reject</span> <span class="k">do</span> <span class="o">|</span><span class="n">part</span><span class="o">|</span>
-      <span class="n">part</span> <span class="o">==</span> <span class="s1">&#39;..&#39;</span>
+      <span class="n">part</span> <span class="o">==</span> <span class="s1">&#39;..&#39;</span> <span class="o">||</span> <span class="n">part</span> <span class="o">==</span> <span class="s1">&#39;.&#39;</span> <span class="o">||</span> <span class="n">part</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span>
     <span class="k">end</span>
 
     <span class="n">secure_request_parts</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)</span>
@@ -214,16 +217,17 @@ Connection: close
 
 <p>Using some additional <code>File.extname</code> extraction, using this <code>content_type</code> method is simple:</p>
 <div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="nb">require</span> <span class="s1">&#39;socket&#39;</span>
+<span class="nb">require</span> <span class="s1">&#39;uri&#39;</span>
 
 <span class="no">SERVER_ROOT_DIR</span> <span class="o">=</span> <span class="s1">&#39;/var/www&#39;</span>
 
 <span class="k">def</span> <span class="nf">fetch_file</span><span class="p">(</span><span class="n">request_string</span><span class="p">)</span>
   <span class="n">request_parts</span> <span class="o">=</span> <span class="n">request_string</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)</span>
   <span class="n">path</span> <span class="o">=</span> <span class="k">begin</span>
-    <span class="n">insecure_path</span> <span class="o">=</span> <span class="n">request_parts</span><span class="o">[</span><span class="mi">1</span><span class="o">].</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;?&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">first</span>
+    <span class="n">insecure_path</span> <span class="o">=</span> <span class="no">URI</span><span class="p">(</span><span class="n">request_parts</span><span class="o">[</span><span class="mi">1</span><span class="o">]</span><span class="p">)</span><span class="o">.</span><span class="n">path</span>
 
     <span class="n">secure_request_parts</span> <span class="o">=</span> <span class="n">insecure_path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">reject</span> <span class="k">do</span> <span class="o">|</span><span class="n">part</span><span class="o">|</span>
-      <span class="n">part</span> <span class="o">==</span> <span class="s1">&#39;..&#39;</span>
+      <span class="n">part</span> <span class="o">==</span> <span class="s1">&#39;..&#39;</span> <span class="o">||</span> <span class="n">part</span> <span class="o">==</span> <span class="s1">&#39;.&#39;</span> <span class="o">||</span> <span class="n">part</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span>
     <span class="k">end</span>
 
     <span class="n">secure_request_parts</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)</span>
