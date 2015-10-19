@@ -133,7 +133,9 @@
   <span class="c1"># Remove query params and HTTP verb, version</span>
   <span class="n">path</span> <span class="o">=</span> <span class="no">URI</span><span class="p">(</span><span class="n">request_parts</span><span class="o">[</span><span class="mi">1</span><span class="o">]</span><span class="p">)</span><span class="o">.</span><span class="n">path</span>
 
-  <span class="no">File</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="no">File</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="no">SERVER_ROOT_DIR</span><span class="p">,</span> <span class="n">path</span><span class="p">))</span> <span class="k">rescue</span> <span class="kp">nil</span>
+  <span class="n">full_path</span> <span class="o">=</span> <span class="no">File</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="no">SERVER_ROOT_DIR</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>
+
+  <span class="no">File</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">full_path</span><span class="p">)</span> <span class="k">if</span> <span class="no">File</span><span class="o">.</span><span class="n">file?</span><span class="p">(</span><span class="n">full_path</span><span class="p">)</span>
 <span class="k">end</span>
 </code></pre></div>
 <p>Given a request string input (from <code>request.gets</code> in the existing code), this method returns an instance of <code>File</code> if it can find the requested file or <code>nil</code> if it does not exist. The <code>SERVER_ROOT_DIR</code> is used to ensure the file lookup is centralized to where the server expects the files to be.</p>
@@ -147,7 +149,8 @@
 <span class="k">def</span> <span class="nf">fetch_file</span><span class="p">(</span><span class="n">request_string</span><span class="p">)</span>
   <span class="n">request_parts</span> <span class="o">=</span> <span class="n">request_string</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)</span>
   <span class="n">path</span> <span class="o">=</span> <span class="no">URI</span><span class="p">(</span><span class="n">request_parts</span><span class="o">[</span><span class="mi">1</span><span class="o">]</span><span class="p">)</span><span class="o">.</span><span class="n">path</span>
-  <span class="no">File</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="no">File</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="no">SERVER_ROOT_DIR</span><span class="p">,</span> <span class="n">path</span><span class="p">))</span> <span class="k">rescue</span> <span class="kp">nil</span>
+  <span class="n">full_path</span> <span class="o">=</span> <span class="no">File</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="no">SERVER_ROOT_DIR</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>
+  <span class="no">File</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">full_path</span><span class="p">)</span> <span class="k">if</span> <span class="no">File</span><span class="o">.</span><span class="n">file?</span><span class="p">(</span><span class="n">full_path</span><span class="p">)</span>
 <span class="k">end</span>
 
 <span class="n">server</span> <span class="o">=</span> <span class="no">TCPServer</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="mi">8080</span><span class="p">)</span>
@@ -202,7 +205,9 @@ Connection: close
     <span class="n">secure_request_parts</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)</span>
   <span class="k">end</span>
 
-  <span class="no">File</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="no">File</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="no">SERVER_ROOT_DIR</span><span class="p">,</span> <span class="n">path</span><span class="p">))</span> <span class="k">rescue</span> <span class="kp">nil</span>
+  <span class="n">full_path</span> <span class="o">=</span> <span class="no">File</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="no">SERVER_ROOT_DIR</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>
+
+  <span class="no">File</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">full_path</span><span class="p">)</span> <span class="k">if</span> <span class="no">File</span><span class="o">.</span><span class="n">file?</span><span class="p">(</span><span class="n">full_path</span><span class="p">)</span>
 <span class="k">end</span>
 </code></pre></div>
 <p>This will change a path from <code>/../../../my/hidden/file</code> to <code>/my/hidden/file</code>, nullifying the attempt to expose private files.</p>
@@ -242,7 +247,9 @@ Connection: close
     <span class="n">secure_request_parts</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)</span>
   <span class="k">end</span>
 
-  <span class="no">File</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="no">File</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="no">SERVER_ROOT_DIR</span><span class="p">,</span> <span class="n">path</span><span class="p">))</span> <span class="k">rescue</span> <span class="kp">nil</span>
+  <span class="n">full_path</span> <span class="o">=</span> <span class="no">File</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="no">SERVER_ROOT_DIR</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>
+
+  <span class="no">File</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">full_path</span><span class="p">)</span> <span class="k">if</span> <span class="no">File</span><span class="o">.</span><span class="n">file?</span><span class="p">(</span><span class="n">full_path</span><span class="p">)</span>
 <span class="k">end</span>
 
 <span class="k">def</span> <span class="nf">content_type</span><span class="p">(</span><span class="n">file_extension</span><span class="p">)</span>
@@ -288,7 +295,7 @@ Connection: close
 <div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">extension</span> <span class="o">=</span> <span class="no">File</span><span class="o">.</span><span class="n">extname</span><span class="p">(</span><span class="n">file_to_return</span><span class="o">.</span><span class="n">to_path</span><span class="p">)</span>
                 <span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">last</span><span class="o">.</span><span class="n">to_sym</span>
 </code></pre></div>
-<p>This code results in a string to pass to <code>content_type</code> that returns a meaningful content type for the client.</p>
+<p>This code results in a symbol to pass to <code>content_type</code> that returns a meaningful content type for the client.</p>
 
 <p>The results of a request using this new content type parsing are just as expected:</p>
 <div class="highlight"><pre><code class="language-sh" data-lang="sh">curl localhost:8080/path/to/my_file.html -I
