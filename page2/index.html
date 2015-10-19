@@ -67,81 +67,202 @@
   
   <div class="post">
     <h1 class="post-title">
-      <a href="/2015/10/04/someone-wrote-that-code-on-purpose/">
-        Someone Wrote that Code on Purpose
+      <a href="/2015/10/11/building-a-simple-web-server-with-ruby-2/">
+        Building a Simple Web Server with Ruby 2.0+
       </a>
     </h1>
 
     
 
-    <span class="post-date">04 Oct 2015</span>
+    <span class="post-date">11 Oct 2015</span>
     <span class='share-container'><ul class="share-buttons">
   <li>
-    <a href="https://www.facebook.com/sharer/sharer.php?u=http://jakeyesbeck.com/2015/10/04/someone-wrote-that-code-on-purpose/&t=Someone Wrote that Code on Purpose" title="Share on Facebook" target="_blank">
+    <a href="https://www.facebook.com/sharer/sharer.php?u=http://jakeyesbeck.com/2015/10/11/building-a-simple-web-server-with-ruby-2/&t=Building a Simple Web Server with Ruby 2.0+" title="Share on Facebook" target="_blank">
       <img src="http://jakeyesbeck.com/assets/images/facebook.svg">
     </a>
   </li>
   <li>
-    <a href="https://twitter.com/intent/tweet?source=http%3A%2F%2Fjakeyesbeck.com&text=Someone Wrote that Code on Purpose%20http://jakeyesbeck.com/2015/10/04/someone-wrote-that-code-on-purpose/&via=jakeyesbeck" target="_blank" title="Tweet">
+    <a href="https://twitter.com/intent/tweet?source=http%3A%2F%2Fjakeyesbeck.com&text=Building a Simple Web Server with Ruby 2.0+%20http://jakeyesbeck.com/2015/10/11/building-a-simple-web-server-with-ruby-2/&via=jakeyesbeck" target="_blank" title="Tweet">
       <img src="http://jakeyesbeck.com/assets/images/twitter.svg">
     </a>
   </li>
   <li>
-    <a href="https://plus.google.com/share?url=http://jakeyesbeck.com/2015/10/04/someone-wrote-that-code-on-purpose/" target="_blank" title="Share on Google+">
+    <a href="https://plus.google.com/share?url=http://jakeyesbeck.com/2015/10/11/building-a-simple-web-server-with-ruby-2/" target="_blank" title="Share on Google+">
       <img src="http://jakeyesbeck.com/assets/images/google_plus.svg">
     </a>
   </li>
 
   <li>
-    <a href="https://news.ycombinator.com/submitlink?u=http://jakeyesbeck.com/2015/10/04/someone-wrote-that-code-on-purpose/&t=Someone Wrote that Code on Purpose" target="_blank" title="Share on Hacker News">
+    <a href="https://news.ycombinator.com/submitlink?u=http://jakeyesbeck.com/2015/10/11/building-a-simple-web-server-with-ruby-2/&t=Building a Simple Web Server with Ruby 2.0+" target="_blank" title="Share on Hacker News">
       <img src="http://jakeyesbeck.com/assets/images/ycomb.svg">
     </a>
   </li>
 
   <li>
-    <a href="https://getpocket.com/save?url=http://jakeyesbeck.com/2015/10/04/someone-wrote-that-code-on-purpose/&title=Someone Wrote that Code on Purpose" target="_blank" title="Add to Pocket">
+    <a href="https://getpocket.com/save?url=http://jakeyesbeck.com/2015/10/11/building-a-simple-web-server-with-ruby-2/&title=Building a Simple Web Server with Ruby 2.0+" target="_blank" title="Add to Pocket">
       <img src="http://jakeyesbeck.com/assets/images/pocket.svg">
     </a>
   </li>
   <li>
-    <a href="http://www.reddit.com/submit?url=http://jakeyesbeck.com/2015/10/04/someone-wrote-that-code-on-purpose/&title=Someone Wrote that Code on Purpose" target="_blank" title="Submit to Reddit">
+    <a href="http://www.reddit.com/submit?url=http://jakeyesbeck.com/2015/10/11/building-a-simple-web-server-with-ruby-2/&title=Building a Simple Web Server with Ruby 2.0+" target="_blank" title="Submit to Reddit">
       <img src="http://jakeyesbeck.com/assets/images/reddit.svg">
     </a>
   </li>
 </ul>
 </span>
 
-    <p>One of the great misconceptions of software engineering is the belief that <em>&quot;any code written in the past is probably wrong&quot;</em>. For some reason, an accepted mindset (usually among junior developers) is that older code was written with haste or by someone who did not fully understand the problem at hand, invalidating its existence.</p>
+    <p>The Ruby language can be utilized for a variety of different purposes. The most popular of these is as a web scripting language. The entry point to these applications, the web server, is not something that is usually built from the ground up. Most applications have the lines <code>gem &#39;puma&#39;</code> or <code>gem &#39;unicorn&#39;</code> in their <code>Gemfile</code>. Those are high quality web servers that were built and are maintained by very talented people, but how do they work?</p>
 
-<p>A multitude of rationalizations may arise when the thought of refactoring software from the ground up is an option. After all, the person who wrote that code may not even be around anymore. They could have just been learning the language, surely that is a valid enough reason to completely decimate their work. What possible justification could there be for the opposite? The code just <strong>feels</strong> wrong, and I, the new domain expert, will rectify this situation!</p>
+<p>The aforementioned web servers are just Ruby gems written by Rubyists. While they are awesome gems, <a href="http://jakeyesbeck.com/2015/08/16/gems-are-not-magic/">they are not magic</a>. A basic web server can be written to satisfy some very simple requests.</p>
 
-<h2>The Devilish Details</h2>
+<h2><code>GET</code> Basic</h2>
 
-<p>A person who stumbles on older code can not possibly have the same level of understanding as its original author. Do not misunderstand, it is completely possible that the original author had an insufficient amount of knowledge when writing the code; however, if details have been lost between code inception and re-discovery, removing that code could have dire consequences. How dire could they be? <a href="http://www.bloombergview.com/articles/2015-09-30/high-speed-trading-firm-deleted-some-code-by-accident">Well according to a recent Bloomberg article</a>, it could be millions of dollars.</p>
+<p>The job of a web server is to take an incoming request, decide what it means and respond accordingly. Essentially, we want to read some text, process it, and send some other text as response. To create a very simple server, the built in <code>Socket</code> library will be utilized.</p>
 
-<p>According to the article:</p>
+<p>The goal of this tiny server will be to listen to <code>localhost</code> requests on port <code>8080</code>.</p>
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="nb">require</span> <span class="s1">&#39;socket&#39;</span>
 
-<p><em>The Core Engineering developer did not understand that the changes he made to the code sequences would affect the directed ISOs generated by Latour’s trading algorithms.</em></p>
+<span class="n">server</span> <span class="o">=</span> <span class="no">TCPServer</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="mi">8080</span><span class="p">)</span>
 
-<p>The key words to take away here is that the developer literally <strong>did not understand the code</strong>. The developer that made this mistake needed to simply understand the code that he or she was editing. However, due to time constraints, inexperience, or just plain arrogance, that crucial understanding was never reached. The small yet significant details of how the code worked within itself and with external services were never discovered, leading to a catastrophe.</p>
+<span class="kp">loop</span> <span class="k">do</span>
+  <span class="n">request</span> <span class="o">=</span> <span class="n">server</span><span class="o">.</span><span class="n">accept</span>
+  <span class="n">request</span><span class="o">.</span><span class="n">puts</span> <span class="s1">&#39;hello world&#39;</span>
+  <span class="n">request</span><span class="o">.</span><span class="n">close</span>
+<span class="k">end</span>
+</code></pre></div>
+<p>And there it is! A ridiculously tiny web server written in Ruby. Dissecting this code, we see how simple the <code>Socket</code> library makes this task.</p>
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">server</span> <span class="o">=</span> <span class="no">TCPServer</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="mi">8080</span><span class="p">)</span>
+</code></pre></div>
+<p>This line makes a new <code>TCPServer</code> instance that will accept requests to port <code>8080</code> and defaults to <code>localhost</code> as the host. The important method on the <code>TCPServer</code> instance is <code>accept</code>.</p>
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="kp">loop</span> <span class="k">do</span>
+</code></pre></div>
+<p>Since this server is meant to respond to any request on port <code>8080</code>, an infinite loop is created so that more than one request can be fulfilled before the process exits.</p>
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">request</span> <span class="o">=</span> <span class="n">server</span><span class="o">.</span><span class="n">accept</span>
+<span class="n">request</span><span class="o">.</span><span class="n">puts</span> <span class="s1">&#39;hello world&#39;</span>
+<span class="n">request</span><span class="o">.</span><span class="n">close</span>
+</code></pre></div>
+<p>Here is the real logic of the server. The <code>accept</code> method returns a new instance of <code>TCPSocket</code> which can be used to communicate with a client. A response string, <code>&#39;hello world&#39;</code>, is then printed to the client and the connection is closed.</p>
 
-<h2>Assume Smart People Wrote It</h2>
+<p>Saving this code to <code>example_server.rb</code>, the server can be started with <code>ruby example_server.rb</code> in a console.</p>
 
-<p>A simple rule that may help avoid multi-million dollar code rewrites is to make the assumption that the person who wrote that older piece of software is smart. With some exception, software currently running a business or application was written with care and planning. Time may have passed and the form or shape of the code might not be modern, but in those misplaced curves and edges might lurk the solution to some rarely seen and deadly problems.</p>
+<p>Using <code>curl</code> to test this server results in:</p>
+<div class="highlight"><pre><code class="language-sh" data-lang="sh"><span class="nv">$:</span> curl localhost:8080
+hello world
+curl: <span class="o">(</span>56<span class="o">)</span> Recv failure: Connection reset by peer
+</code></pre></div>
+<p>Alright, alright, the <code>&#39;hello world&#39;</code> has been printed to the console but it looks like there might be an issue. <code>Connection reset by peer</code>, what the heck does that mean? It means that the server did not send enough information to the client, particularly about when to close the connection. The client is expecting more data than this very naive server is providing. The client expects header data.</p>
 
-<p>In very lucky situations, the older software might be written by a current employee. This makes that person the obvious best candidate to ask about why the code might <em>&quot;look weird&quot;</em> or <em>&quot;does this obviously wonky thing&quot;</em>. Asking this person about the code or tagging them in the inevitable pull request might just save a few production meltdowns.</p>
+<h2>Look Ma, no Head(er)!</h2>
 
-<h2>Take a Break and Re-visit</h2>
+<p>An HTTP header consists of many colon-separated key-value pairs deliminated by a return and newline combination. Everything from a status code to response size can be returned in an HTTP header.</p>
 
-<p>If no resources are present and a full code obliteration seems like the right approach, it would be wise to walk away and think for a short amount of time. Thinking about a rewrite in a relaxed environment could help make sure no bit is left unturned. Remember, the code in question was most likely reviewed, iterated on, and deliberately turned into its current state.</p>
+<p>For this simple example, a status code, <code>Content-Type</code>, <code>Content-Length</code>, and <code>Connection</code> will be added to the response header.</p>
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="nb">require</span> <span class="s1">&#39;socket&#39;</span>
 
-<p>If solo breaks do not help get the cognitive juices flowing, try explaining the software design and purpose to an ever attentive <a href="https://en.wikipedia.org/wiki/Rubber_duck_debugging">Rubber Duck</a>. Quackers might not offer the best repartee, but speaking about the code aloud might shine some light onto the darker bytes.</p>
+<span class="n">server</span> <span class="o">=</span> <span class="no">TCPServer</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="mi">8080</span><span class="p">)</span>
 
-<h2>Learn and Burn</h2>
+<span class="kp">loop</span> <span class="k">do</span>
+  <span class="n">request</span> <span class="o">=</span> <span class="n">server</span><span class="o">.</span><span class="n">accept</span>
 
-<p>Finally, if the code has been understood and its existence is not longer required, feel free to unleash napalm and build elegant skyscrapers on top of the ruins. Because sometimes, and hopefully only sometimes, that old software hiding under a mountain of neglect really is in need of a phoenix-style rebirth. It is possible that it was written by that intern who only got the job because they were the son or daughter of the CEO&#39;s neighbor. Maybe it was code written by an independent contractor who thought it would be funny to name their variables after famous superheros. Whatever the case may be, stopping to make very deliberate changes will pay dividends.</p>
+  <span class="n">response</span> <span class="o">=</span> <span class="s1">&#39;hello world&#39;</span>
 
-<p>Taking time to understand old or opaque code can mean the difference between a healthy face lift to an application and accidentally removing its liver. How are you supposed to have a celebratory drink after a grand refactoring without a liver?</p>
+  <span class="n">header</span> <span class="o">=</span> <span class="s2">&quot;HTTP/1.1 200 OK</span><span class="se">\r\n</span><span class="s2">&quot;</span>
+  <span class="n">header</span> <span class="o">+=</span> <span class="s2">&quot;Content-Type: text/plain</span><span class="se">\r\n</span><span class="s2">&quot;</span>
+  <span class="n">header</span> <span class="o">+=</span> <span class="s2">&quot;Content-Length: </span><span class="si">#{</span> <span class="n">response</span><span class="o">.</span><span class="n">bytesize</span> <span class="si">}</span><span class="se">\r\n</span><span class="s2">&quot;</span>
+  <span class="n">header</span> <span class="o">+=</span> <span class="s2">&quot;Connection: close</span><span class="se">\r\n</span><span class="s2">&quot;</span>
+
+  <span class="n">request</span><span class="o">.</span><span class="n">puts</span> <span class="n">header</span>
+  <span class="n">request</span><span class="o">.</span><span class="n">puts</span> <span class="s2">&quot;</span><span class="se">\r\n</span><span class="s2">&quot;</span>
+  <span class="n">request</span><span class="o">.</span><span class="n">puts</span> <span class="n">response</span>
+
+  <span class="n">request</span><span class="o">.</span><span class="n">close</span>
+<span class="k">end</span>
+</code></pre></div>
+<p>With this additional information, a client using this server will know the type, size, and connection status of its request. This will enable the client to respect the content type, parse the result intelligently and close the connection.</p>
+
+<p>An interesting detail about HTTP headers is the way they end. A single line consisting of a return newline, <code>request.puts &quot;\r\n&quot;</code>, is how the client knows that the HTTP header is finished.</p>
+
+<p><strong>Note: If a server like this is created for any real requests, hard-coded response headers is not the best idea</strong>.</p>
+
+<h2>Head&#39;s up</h2>
+
+<p>Now, the same <code>curl localhost:8080</code> test to the new and improved server returns no error:</p>
+<div class="highlight"><pre><code class="language-sh" data-lang="sh"><span class="nv">$:</span> curl localhost:8080
+hello world
+</code></pre></div>
+<p>The new headers are visible via <code>curl localhost:8080 -I</code>:</p>
+<div class="highlight"><pre><code class="language-sh" data-lang="sh"><span class="nv">$:</span> curl localhost:8080 -I
+HTTP/1.1 <span class="m">200</span> OK
+Content-Type: text/plain
+Content-Length: 11
+Connection: close
+</code></pre></div>
+<p>The server is now responding in a sensible way, but a problem still exists. If more than one request is made, the first request will be processed and all others will wait.</p>
+
+<p>This implementation is not adequate for concurrent request handling, but another built in solution is readily available.</p>
+
+<h2>Threads the Needle</h2>
+
+<p>An easy way to achieve basic concurrency with this server is via <code>Threads</code>. Out of the box Ruby uses the Matz&#39;s Ruby Interpreter or MRI. MRI is not capable of true concurrency (due to the Global Interpreter Lock) but built in threads will be just fine for this small server.</p>
+
+<p>This example can be extended to use threads by wrapping the responsibility of the request in a block:</p>
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="nb">require</span> <span class="s1">&#39;socket&#39;</span>
+
+<span class="n">server</span> <span class="o">=</span> <span class="no">TCPServer</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="mi">8080</span><span class="p">)</span>
+
+<span class="kp">loop</span> <span class="k">do</span>
+  <span class="no">Thread</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">server</span><span class="o">.</span><span class="n">accept</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">request</span><span class="o">|</span>
+    <span class="n">response</span> <span class="o">=</span> <span class="s1">&#39;hello world&#39;</span>
+
+    <span class="n">header</span> <span class="o">=</span> <span class="s2">&quot;HTTP/1.1 200 OK</span><span class="se">\r\n</span><span class="s2">&quot;</span>
+    <span class="n">header</span> <span class="o">+=</span> <span class="s2">&quot;Content-Type: text/plain</span><span class="se">\r\n</span><span class="s2">&quot;</span>
+    <span class="n">header</span> <span class="o">+=</span> <span class="s2">&quot;Content-Length: </span><span class="si">#{</span> <span class="n">response</span><span class="o">.</span><span class="n">bytesize</span> <span class="si">}</span><span class="se">\r\n</span><span class="s2">&quot;</span>
+    <span class="n">header</span> <span class="o">+=</span> <span class="s2">&quot;Connection: close</span><span class="se">\r\n</span><span class="s2">&quot;</span>
+
+    <span class="n">request</span><span class="o">.</span><span class="n">puts</span> <span class="n">header</span>
+    <span class="n">request</span><span class="o">.</span><span class="n">puts</span> <span class="s2">&quot;</span><span class="se">\r\n</span><span class="s2">&quot;</span>
+    <span class="n">request</span><span class="o">.</span><span class="n">puts</span> <span class="n">response</span>
+
+    <span class="n">request</span><span class="o">.</span><span class="n">close</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div>
+<p>Voila! A simple threaded Ruby server!</p>
+
+<p><strong>Note: As with the previous solution, this might not be fit for a production environment since every single request spawns a new thread within a single process</strong>.</p>
+
+<h2>What now?</h2>
+
+<p>Now, this simple server will fulfill concurrent requests in a way that will make sense to its consumers. However, it always responds with <code>&#39;hello world&#39;</code>, regardless of the request data. To fetch and parse the incoming data, <code>request.gets</code> is available:</p>
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="nb">require</span> <span class="s1">&#39;socket&#39;</span>
+
+<span class="n">server</span> <span class="o">=</span> <span class="no">TCPServer</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="mi">8080</span><span class="p">)</span>
+
+<span class="kp">loop</span> <span class="k">do</span>
+  <span class="no">Thread</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">server</span><span class="o">.</span><span class="n">accept</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">request</span><span class="o">|</span>
+    <span class="n">response</span> <span class="o">=</span> <span class="s1">&#39;hello world&#39;</span>
+
+    <span class="n">request_input</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">gets</span>
+    <span class="c1"># handle request information</span>
+
+    <span class="n">header</span> <span class="o">=</span> <span class="s2">&quot;HTTP/1.1 200 OK</span><span class="se">\r\n</span><span class="s2">&quot;</span>
+    <span class="n">header</span> <span class="o">+=</span> <span class="s2">&quot;Content-Type: text/plain</span><span class="se">\r\n</span><span class="s2">&quot;</span>
+    <span class="n">header</span> <span class="o">+=</span> <span class="s2">&quot;Content-Length: </span><span class="si">#{</span> <span class="n">response</span><span class="o">.</span><span class="n">bytesize</span> <span class="si">}</span><span class="se">\r\n</span><span class="s2">&quot;</span>
+    <span class="n">header</span> <span class="o">+=</span> <span class="s2">&quot;Connection: close</span><span class="se">\r\n</span><span class="s2">&quot;</span>
+
+    <span class="n">request</span><span class="o">.</span><span class="n">puts</span> <span class="n">header</span>
+    <span class="n">request</span><span class="o">.</span><span class="n">puts</span> <span class="s2">&quot;</span><span class="se">\r\n</span><span class="s2">&quot;</span>
+    <span class="n">request</span><span class="o">.</span><span class="n">puts</span> <span class="n">response</span>
+
+    <span class="n">request</span><span class="o">.</span><span class="n">close</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div>
+<p>Other improvements would be header configuration, incoming request parsing, and thread pooling.</p>
+
+<p>Spending a thousand hours iterating on this code will certainly improve its quality, but it still might not allow this simple server stack up to the leaders in the space. I would recommend using a more battle tested web server for an actual production application. At least some of those awesome servers&#39; mysteries have been explained.</p>
+
+<p><strong>For more server fun, and details about how to respond with more than <code>&#39;hello world&#39;</code>, check out next week&#39;s article!</strong></p>
 
   </div>
   
