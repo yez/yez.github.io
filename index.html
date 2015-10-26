@@ -151,8 +151,8 @@
 
 <h2>2. Place a Reasonable <code>binding.pry</code></h2>
 
-<p>With the location of the method found, <code>binding.pry</code> has a logical place to go. Since <a href="http://jakeyesbeck.com/2015/08/16/gems-are-not-magic/">gems are not magic</a>, the <code>ActiveRecord</code> gem can be opened and its source easily read. Opening gems is fairly simple, set a desired <code>EDITOR</code> and open via the <code>bundle</code> command. For this example, sublime is mapped to Sublime Text.</p>
-<div class="highlight"><pre><code class="language-sh" data-lang="sh"><span class="nv">EDITOR</span><span class="o">=</span>sublime bundle open activerecord
+<p>With the location of the method found, <code>binding.pry</code> has a logical place to go. Since <a href="http://jakeyesbeck.com/2015/08/16/gems-are-not-magic/">gems are not magic</a>, the <code>ActiveRecord</code> gem can be opened and its source easily read. Opening gems is fairly simple, set a desired <code>EDITOR</code> and open via the <code>bundle</code> command. For this example, <code>subl</code> is mapped to Sublime Text.</p>
+<div class="highlight"><pre><code class="language-sh" data-lang="sh"><span class="nv">EDITOR</span><span class="o">=</span>subl bundle open activerecord
 </code></pre></div>
 <p>Then, navigating to line <code>85</code> of <code>store.rb</code>, a <code>binding.pry</code> can be added to stop code execution when the <code>contact_method=</code> method is used.</p>
 <div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="c1"># In activerecord-4.2.4/lib/active_record/store.rb</span>

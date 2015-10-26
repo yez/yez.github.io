@@ -57,8 +57,8 @@
 
 &lt;h2&gt;2. Place a Reasonable &lt;code&gt;binding.pry&lt;/code&gt;&lt;/h2&gt;
 
-&lt;p&gt;With the location of the method found, &lt;code&gt;binding.pry&lt;/code&gt; has a logical place to go. Since &lt;a href=&quot;http://jakeyesbeck.com/2015/08/16/gems-are-not-magic/&quot;&gt;gems are not magic&lt;/a&gt;, the &lt;code&gt;ActiveRecord&lt;/code&gt; gem can be opened and its source easily read. Opening gems is fairly simple, set a desired &lt;code&gt;EDITOR&lt;/code&gt; and open via the &lt;code&gt;bundle&lt;/code&gt; command. For this example, sublime is mapped to Sublime Text.&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-sh&quot; data-lang=&quot;sh&quot;&gt;&lt;span class=&quot;nv&quot;&gt;EDITOR&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;sublime bundle open activerecord
+&lt;p&gt;With the location of the method found, &lt;code&gt;binding.pry&lt;/code&gt; has a logical place to go. Since &lt;a href=&quot;http://jakeyesbeck.com/2015/08/16/gems-are-not-magic/&quot;&gt;gems are not magic&lt;/a&gt;, the &lt;code&gt;ActiveRecord&lt;/code&gt; gem can be opened and its source easily read. Opening gems is fairly simple, set a desired &lt;code&gt;EDITOR&lt;/code&gt; and open via the &lt;code&gt;bundle&lt;/code&gt; command. For this example, &lt;code&gt;subl&lt;/code&gt; is mapped to Sublime Text.&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-sh&quot; data-lang=&quot;sh&quot;&gt;&lt;span class=&quot;nv&quot;&gt;EDITOR&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;subl bundle open activerecord
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;Then, navigating to line &lt;code&gt;85&lt;/code&gt; of &lt;code&gt;store.rb&lt;/code&gt;, a &lt;code&gt;binding.pry&lt;/code&gt; can be added to stop code execution when the &lt;code&gt;contact_method=&lt;/code&gt; method is used.&lt;/p&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;c1&quot;&gt;# In activerecord-4.2.4/lib/active_record/store.rb&lt;/span&gt;
