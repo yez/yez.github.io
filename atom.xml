@@ -144,7 +144,7 @@
 &lt;span class=&quot;c1&quot;&gt;# =&amp;gt;   super object, attribute, key.to_s, value&lt;/span&gt;
 &lt;span class=&quot;c1&quot;&gt;# =&amp;gt; end&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;More bindings, more knowledge. Each new &lt;code&gt;binding.pry&lt;/code&gt; gives a new context which subsequently opens more avenues of exploration.&lt;/p&gt;
+&lt;p&gt;More bindings, more knowledge. Each new &lt;code&gt;binding.pry&lt;/code&gt; gives a new context which subsequently opens more avenues of exploration. This is obviously not the end of the &lt;code&gt;store_accessor&lt;/code&gt; logic, but a great first step has been made.&lt;/p&gt;
 
 &lt;p&gt;&lt;strong&gt;Note: The &lt;code&gt;@&lt;/code&gt; command can be used to show the current bound context. This is especially helpful if many different debug or output statements have been used in one bind point.&lt;/strong&gt;&lt;/p&gt;
 
