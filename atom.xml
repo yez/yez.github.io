@@ -73,7 +73,7 @@
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;&lt;strong&gt;Note: adding &lt;code&gt;require &amp;#39;pry&amp;#39;&lt;/code&gt; might not be necessary, depending on the bundle this code is running in.&lt;/strong&gt;&lt;/p&gt;
 
-&lt;p&gt;With the binding in place, launching a new &lt;code&gt;rails console&lt;/code&gt; will use the modified code. When a &lt;code&gt;user&lt;/code&gt;&amp;#39;s &lt;code&gt;contact_method=&lt;/code&gt; method is called, the binding will take over.&lt;/p&gt;
+&lt;p&gt;With the &lt;code&gt;binding.pry&lt;/code&gt; in place, launching a new &lt;code&gt;rails console&lt;/code&gt; will use the modified code. When a &lt;code&gt;user&lt;/code&gt;&amp;#39;s &lt;code&gt;contact_method=&lt;/code&gt; method is called, pry will take over.&lt;/p&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;n&quot;&gt;user&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;User&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;new&lt;/span&gt;
 &lt;span class=&quot;n&quot;&gt;user&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;contact_method&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;phone&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kp&quot;&gt;true&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
 
@@ -93,7 +93,7 @@
 &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;pry&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;key&lt;/span&gt;
 &lt;span class=&quot;c1&quot;&gt;# =&amp;gt; :contact_method&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;This tells us some, but it seems that the real logic is in the &lt;code&gt;write_store_attribute&lt;/code&gt; method. While in the binding, we are able to use the same &lt;code&gt;method().source&lt;/code&gt; and &lt;code&gt;method().source_location&lt;/code&gt; calls from before to gain even more insight.&lt;/p&gt;
+&lt;p&gt;This tells us some, but it seems that the real logic is in the &lt;code&gt;write_store_attribute&lt;/code&gt; method. While the code execution is stopped, we are able to use the same &lt;code&gt;method().source&lt;/code&gt; and &lt;code&gt;method().source_location&lt;/code&gt; calls from before to gain even more insight.&lt;/p&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;4&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;pry&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;puts&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;method&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:write_store_attribute&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;source&lt;/span&gt;
 &lt;span class=&quot;c1&quot;&gt;# =&amp;gt; def write_store_attribute(store_attribute, key, value)&lt;/span&gt;
 &lt;span class=&quot;c1&quot;&gt;# =&amp;gt;   accessor = store_accessor_for(store_attribute)&lt;/span&gt;
@@ -106,9 +106,9 @@
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;h2&gt;3. Make an Exit&lt;/h2&gt;
 
-&lt;p&gt;Pry comes with a number of &lt;a href=&quot;https://github.com/pry/pry/wiki/State-navigation&quot;&gt;helpful commands&lt;/a&gt; for code navigation. An important command is &lt;code&gt;exit&lt;/code&gt;, which will stop the binding and let the code continue to either the next binding or until completion.&lt;/p&gt;
+&lt;p&gt;Pry comes with a number of &lt;a href=&quot;https://github.com/pry/pry/wiki/State-navigation&quot;&gt;helpful commands&lt;/a&gt; for code navigation. An important command is &lt;code&gt;exit&lt;/code&gt;, which will stop the at a specified break point and let the code continue to either the next break point or until completion.&lt;/p&gt;
 
-&lt;p&gt;Multiple &lt;code&gt;binding.pry&lt;/code&gt; lines may be added to different files in order to jump from break point to break point. If we wanted to dig deeper, to see what the &lt;code&gt;accessor&lt;/code&gt; variable is in &lt;code&gt;write_store_attribute&lt;/code&gt;, we could place a second binding.&lt;/p&gt;
+&lt;p&gt;Multiple &lt;code&gt;binding.pry&lt;/code&gt; lines may be added to different files in order to jump from break point to break point. If we wanted to dig deeper, to see what the &lt;code&gt;accessor&lt;/code&gt; variable is in &lt;code&gt;write_store_attribute&lt;/code&gt;, we could place a second &lt;code&gt;binding.pry&lt;/code&gt;.&lt;/p&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;c1&quot;&gt;# In activerecord-4.2.4/lib/active_record/store.rb&lt;/span&gt;
 
 &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;write_store_attribute&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;store_attribute&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;key&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;value&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
@@ -144,7 +144,7 @@
 &lt;span class=&quot;c1&quot;&gt;# =&amp;gt;   super object, attribute, key.to_s, value&lt;/span&gt;
 &lt;span class=&quot;c1&quot;&gt;# =&amp;gt; end&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;More bindings, more knowledge. Each new &lt;code&gt;binding.pry&lt;/code&gt; gives a new context which subsequently opens more avenues of exploration. This is obviously not the end of the &lt;code&gt;store_accessor&lt;/code&gt; logic, but a great first step has been made.&lt;/p&gt;
+&lt;p&gt;More break points, more knowledge. Each new &lt;code&gt;binding.pry&lt;/code&gt; gives a new context which subsequently opens more avenues of exploration. This is obviously not the end of the &lt;code&gt;store_accessor&lt;/code&gt; logic, but a great first step has been made.&lt;/p&gt;
 
 &lt;p&gt;&lt;strong&gt;Note: The &lt;code&gt;@&lt;/code&gt; command can be used to show the current bound context. This is especially helpful if many different debug or output statements have been used in one bind point.&lt;/strong&gt;&lt;/p&gt;
 

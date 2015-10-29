@@ -167,7 +167,7 @@
 </code></pre></div>
 <p><strong>Note: adding <code>require &#39;pry&#39;</code> might not be necessary, depending on the bundle this code is running in.</strong></p>
 
-<p>With the binding in place, launching a new <code>rails console</code> will use the modified code. When a <code>user</code>&#39;s <code>contact_method=</code> method is called, the binding will take over.</p>
+<p>With the <code>binding.pry</code> in place, launching a new <code>rails console</code> will use the modified code. When a <code>user</code>&#39;s <code>contact_method=</code> method is called, pry will take over.</p>
 <div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">user</span> <span class="o">=</span> <span class="no">User</span><span class="o">.</span><span class="n">new</span>
 <span class="n">user</span><span class="o">.</span><span class="n">contact_method</span> <span class="o">=</span> <span class="p">{</span> <span class="ss">phone</span><span class="p">:</span> <span class="kp">true</span> <span class="p">}</span>
 
@@ -187,7 +187,7 @@
 <span class="o">[</span><span class="mi">3</span><span class="o">]</span> <span class="n">pry</span><span class="o">&gt;</span> <span class="n">key</span>
 <span class="c1"># =&gt; :contact_method</span>
 </code></pre></div>
-<p>This tells us some, but it seems that the real logic is in the <code>write_store_attribute</code> method. While in the binding, we are able to use the same <code>method().source</code> and <code>method().source_location</code> calls from before to gain even more insight.</p>
+<p>This tells us some, but it seems that the real logic is in the <code>write_store_attribute</code> method. While the code execution is stopped, we are able to use the same <code>method().source</code> and <code>method().source_location</code> calls from before to gain even more insight.</p>
 <div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="o">[</span><span class="mi">4</span><span class="o">]</span> <span class="n">pry</span><span class="o">&gt;</span> <span class="nb">puts</span> <span class="nb">method</span><span class="p">(</span><span class="ss">:write_store_attribute</span><span class="p">)</span><span class="o">.</span><span class="n">source</span>
 <span class="c1"># =&gt; def write_store_attribute(store_attribute, key, value)</span>
 <span class="c1"># =&gt;   accessor = store_accessor_for(store_attribute)</span>
@@ -200,9 +200,9 @@
 </code></pre></div>
 <h2>3. Make an Exit</h2>
 
-<p>Pry comes with a number of <a href="https://github.com/pry/pry/wiki/State-navigation">helpful commands</a> for code navigation. An important command is <code>exit</code>, which will stop the binding and let the code continue to either the next binding or until completion.</p>
+<p>Pry comes with a number of <a href="https://github.com/pry/pry/wiki/State-navigation">helpful commands</a> for code navigation. An important command is <code>exit</code>, which will stop the at a specified break point and let the code continue to either the next break point or until completion.</p>
 
-<p>Multiple <code>binding.pry</code> lines may be added to different files in order to jump from break point to break point. If we wanted to dig deeper, to see what the <code>accessor</code> variable is in <code>write_store_attribute</code>, we could place a second binding.</p>
+<p>Multiple <code>binding.pry</code> lines may be added to different files in order to jump from break point to break point. If we wanted to dig deeper, to see what the <code>accessor</code> variable is in <code>write_store_attribute</code>, we could place a second <code>binding.pry</code>.</p>
 <div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="c1"># In activerecord-4.2.4/lib/active_record/store.rb</span>
 
 <span class="k">def</span> <span class="nf">write_store_attribute</span><span class="p">(</span><span class="n">store_attribute</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
@@ -238,7 +238,7 @@
 <span class="c1"># =&gt;   super object, attribute, key.to_s, value</span>
 <span class="c1"># =&gt; end</span>
 </code></pre></div>
-<p>More bindings, more knowledge. Each new <code>binding.pry</code> gives a new context which subsequently opens more avenues of exploration. This is obviously not the end of the <code>store_accessor</code> logic, but a great first step has been made.</p>
+<p>More break points, more knowledge. Each new <code>binding.pry</code> gives a new context which subsequently opens more avenues of exploration. This is obviously not the end of the <code>store_accessor</code> logic, but a great first step has been made.</p>
 
 <p><strong>Note: The <code>@</code> command can be used to show the current bound context. This is especially helpful if many different debug or output statements have been used in one bind point.</strong></p>
 
