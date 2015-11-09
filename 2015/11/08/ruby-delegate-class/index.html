@@ -102,7 +102,7 @@
   </li>
 </ul>
 </span>
-  <p>Objects are a big deal in Ruby. A <a href="http://jakeyesbeck.com/2015/08/23/ruby-objects/">previous post about Ruby Objects</a> can collaborate: Ruby Objects are pretty cool.</p>
+  <p>Objects are a big deal in Ruby. A <a href="http://jakeyesbeck.com/2015/08/23/ruby-objects/">previous post about Ruby Objects</a> can corroborate: Ruby Objects are pretty cool.</p>
 
 <p>There are many ways to work with Ruby Objects. Standard inheritance, module inheritance, decorators, and composition are all commonly found in a codebase. One class in particular seems almost universal across applications: the <code>User</code> class.</p>
 
@@ -180,7 +180,7 @@
 
 <p>Tim is asking for a new use case for the product, a new type of <code>User</code> will be needed: the <code>Consumer</code>. As before, a <code>Consumer</code> could be an <code>Author</code>, <code>Critic</code>, both, or neither.</p>
 
-<p>Had this application been built with STI, I would wager some spaghetti code would form trying to shoehorn the same user into three roles.</p>
+<p>Had this application been built with STI, I would wager some spaghetti code would form trying, to shoehorn the same user into three roles.</p>
 
 <p>However, with the <code>DelegateClass</code> pattern we have used, it becomes trivial:</p>
 <div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">class</span> <span class="nc">Consumer</span> <span class="o">&lt;</span> <span class="no">DelegateClass</span><span class="p">(</span><span class="no">User</span><span class="p">)</span>

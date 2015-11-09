@@ -17,7 +17,7 @@
    <link href="/2015/11/08/ruby-delegate-class/"/>
    <updated>2015-11-08T04:00:00-08:00</updated>
    <id>/2015/11/08/ruby-delegate-class</id>
-   <content type="html">&lt;p&gt;Objects are a big deal in Ruby. A &lt;a href=&quot;http://jakeyesbeck.com/2015/08/23/ruby-objects/&quot;&gt;previous post about Ruby Objects&lt;/a&gt; can collaborate: Ruby Objects are pretty cool.&lt;/p&gt;
+   <content type="html">&lt;p&gt;Objects are a big deal in Ruby. A &lt;a href=&quot;http://jakeyesbeck.com/2015/08/23/ruby-objects/&quot;&gt;previous post about Ruby Objects&lt;/a&gt; can corroborate: Ruby Objects are pretty cool.&lt;/p&gt;
 
 &lt;p&gt;There are many ways to work with Ruby Objects. Standard inheritance, module inheritance, decorators, and composition are all commonly found in a codebase. One class in particular seems almost universal across applications: the &lt;code&gt;User&lt;/code&gt; class.&lt;/p&gt;
 
@@ -95,7 +95,7 @@
 
 &lt;p&gt;Tim is asking for a new use case for the product, a new type of &lt;code&gt;User&lt;/code&gt; will be needed: the &lt;code&gt;Consumer&lt;/code&gt;. As before, a &lt;code&gt;Consumer&lt;/code&gt; could be an &lt;code&gt;Author&lt;/code&gt;, &lt;code&gt;Critic&lt;/code&gt;, both, or neither.&lt;/p&gt;
 
-&lt;p&gt;Had this application been built with STI, I would wager some spaghetti code would form trying to shoehorn the same user into three roles.&lt;/p&gt;
+&lt;p&gt;Had this application been built with STI, I would wager some spaghetti code would form trying, to shoehorn the same user into three roles.&lt;/p&gt;
 
 &lt;p&gt;However, with the &lt;code&gt;DelegateClass&lt;/code&gt; pattern we have used, it becomes trivial:&lt;/p&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Consumer&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;DelegateClass&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;User&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
