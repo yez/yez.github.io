@@ -4,13 +4,139 @@
  <title>A Year of Commits</title>
  <link href="/atom.xml" rel="self"/>
  <link href="/"/>
- <updated>2015-11-01T23:09:18-08:00</updated>
+ <updated>2015-11-08T22:33:14-08:00</updated>
  <id></id>
  <author>
    <name>Jake Yesbeck</name>
    <email></email>
  </author>
 
+ 
+ <entry>
+   <title>Ruby DelegateClass</title>
+   <link href="/2015/11/08/ruby-delegate-class/"/>
+   <updated>2015-11-08T04:00:00-08:00</updated>
+   <id>/2015/11/08/ruby-delegate-class</id>
+   <content type="html">&lt;p&gt;Objects are a big deal in Ruby. A &lt;a href=&quot;http://jakeyesbeck.com/2015/08/23/ruby-objects/&quot;&gt;previous post about Ruby Objects&lt;/a&gt; can collaborate: Ruby Objects are pretty cool.&lt;/p&gt;
+
+&lt;p&gt;There are many ways to work with Ruby Objects. Standard inheritance, module inheritance, decorators, and composition are all commonly found in a codebase. One class in particular seems almost universal across applications: the &lt;code&gt;User&lt;/code&gt; class.&lt;/p&gt;
+
+&lt;p&gt;From social networks to online retails stores, web applications most always have a &lt;code&gt;user&lt;/code&gt;. Additionally, the &lt;code&gt;User&lt;/code&gt; class might interact with nearly all other classes. This can make the relationship and responsibilities of that &lt;code&gt;User&lt;/code&gt; awkward or unwieldy over time.&lt;/p&gt;
+
+&lt;p&gt;As an example, assume that an application &lt;em&gt;&amp;quot;booksandreviews.com&amp;quot;&lt;/em&gt; exists. This application serves both authors and critics, each representing a &lt;code&gt;User&lt;/code&gt;. These &lt;code&gt;User&lt;/code&gt; types have different responsibilities and privileges.&lt;/p&gt;
+
+&lt;p&gt;Assuming a Rails application, the basic user model will look most likely like:&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;User&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;ActiveRecord&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Base&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;One approach to extend this class and make &lt;code&gt;Author&lt;/code&gt; and &lt;code&gt;Critic&lt;/code&gt; classes is to use the Single Table Inheritance pattern. STI is a common pattern in Rails applications to share responsibilities between classes and store all records in the same place. This approach can work and might fit current needs just fine, but it might be beneficial to think outside the single table for a second.&lt;/p&gt;
+
+&lt;p&gt;After all, no one said a &lt;code&gt;User&lt;/code&gt; had to be either an &lt;code&gt;Author&lt;/code&gt; or a &lt;code&gt;Critic&lt;/code&gt;, what if they were both?&lt;/p&gt;
+
+&lt;h2&gt;Delegators, Mount Up!&lt;/h2&gt;
+
+&lt;p&gt;An alternative way to architect a system like the one described is by using delegation. Object delegation is a way of composing objects to achieve flexibility and maintain encapsulation.&lt;/p&gt;
+
+&lt;p&gt;Ruby provides a few ways to delegate objects. An interesting option that will nicely serve this application&amp;#39;s needs is &lt;a href=&quot;http://ruby-doc.org/stdlib-2.2.1/libdoc/delegate/rdoc/Object.html#method-i-DelegateClass&quot;&gt;&lt;code&gt;DelegateClass&lt;/code&gt;&lt;/a&gt;. The &lt;code&gt;DelegateClass&lt;/code&gt; method accepts a constant and returns a new class. The returned class takes the passed in class&amp;#39;s instance methods and defines delegating methods.&lt;/p&gt;
+
+&lt;p&gt;Defining &lt;code&gt;Author&lt;/code&gt; and &lt;code&gt;Critic&lt;/code&gt; classes:&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Author&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;DelegateClass&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;User&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Critic&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;DelegateClass&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;User&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;These classes both expect to be initialized with an instance of &lt;code&gt;User&lt;/code&gt;, then will delegate methods to the passed in &lt;code&gt;user&lt;/code&gt; by default. This allows each class to define their own logic for determining what an &lt;code&gt;Author&lt;/code&gt; or a &lt;code&gt;Critic&lt;/code&gt; has access to.&lt;/p&gt;
+
+&lt;p&gt;Initializing these classes is as simple as loading the &lt;code&gt;user&lt;/code&gt; then passing it in:&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;n&quot;&gt;user&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;User&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;find&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;8&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;critic&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Critic&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;new&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;user&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;critic&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;id&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# =&amp;gt; 8&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h2&gt;Business Logic&lt;/h2&gt;
+
+&lt;p&gt;Assuming that &lt;code&gt;Book&lt;/code&gt; and &lt;code&gt;Review&lt;/code&gt; records exist in this same application, related to a user by a &lt;code&gt;user_id&lt;/code&gt;, both new classes can handle those resources independently.&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Author&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;DelegateClass&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;User&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;written_books&lt;/span&gt;
+    &lt;span class=&quot;vi&quot;&gt;@written_books&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;||=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Book&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;where&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;user_id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;has_written_books?&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;written_books&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;present?&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;top_selling_books&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;written_books&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;max_by&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:revenue&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Critic&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;DelegateClass&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;User&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;written_reviews&lt;/span&gt;
+    &lt;span class=&quot;vi&quot;&gt;@written_reviews&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;||=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Review&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;where&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;user_id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;has_reviewed_book?&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;book_id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;written_reviews&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;where&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;book_id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;book_id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;present?&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;top_viewed_review&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;written_reviews&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;max_by&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:views&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;See how nice it is having the &lt;code&gt;User&lt;/code&gt; class responsible only for standard &lt;code&gt;User&lt;/code&gt; information? That leaves the &lt;code&gt;Author&lt;/code&gt; and &lt;code&gt;Critic&lt;/code&gt; classes to house business logic the &lt;code&gt;User&lt;/code&gt; should not have to concern itself with.&lt;/p&gt;
+
+&lt;p&gt;The &lt;code&gt;User&lt;/code&gt; class can keep caring about things like &lt;code&gt;updated_at&lt;/code&gt; timestamps, important booleans like &lt;code&gt;is_a_confirmed_user?&lt;/code&gt;, and any other methods that indicate how a general &lt;code&gt;user&lt;/code&gt; interacts with the software. Also, it remains the sole responsibility of the &lt;code&gt;user&lt;/code&gt; to interact with the persistence layer. The &lt;code&gt;Author&lt;/code&gt; and &lt;code&gt;Critic&lt;/code&gt; classes will delegate instance methods like &lt;code&gt;save&lt;/code&gt; and &lt;code&gt;update&lt;/code&gt; to the underlying &lt;code&gt;user&lt;/code&gt;.&lt;/p&gt;
+
+&lt;h2&gt;Adding Yet Another Type&lt;/h2&gt;
+
+&lt;p&gt;Imagine some time passes and &lt;em&gt;&amp;quot;booksandreviews.com&amp;quot;&lt;/em&gt;&amp;#39;s membership is popping off like gangbusters. Then one day, Tim from sales comes down and says: &lt;em&gt;&amp;quot;We are literally making no money, we need to sell these books or something&amp;quot;&lt;/em&gt;.&lt;/p&gt;
+
+&lt;p&gt;Tim is asking for a new use case for the product, a new type of &lt;code&gt;User&lt;/code&gt; will be needed: the &lt;code&gt;Consumer&lt;/code&gt;. As before, a &lt;code&gt;Consumer&lt;/code&gt; could be an &lt;code&gt;Author&lt;/code&gt;, &lt;code&gt;Critic&lt;/code&gt;, both, or neither.&lt;/p&gt;
+
+&lt;p&gt;Had this application been built with STI, I would wager some spaghetti code would form trying to shoehorn the same user into three roles.&lt;/p&gt;
+
+&lt;p&gt;However, with the &lt;code&gt;DelegateClass&lt;/code&gt; pattern we have used, it becomes trivial:&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Consumer&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;DelegateClass&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;User&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;transactions&lt;/span&gt;
+    &lt;span class=&quot;vi&quot;&gt;@purchased_books&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;||=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Transaction&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;where&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;user_id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;purchaed_books&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;transactions&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;map&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:book&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;needs_marketing_email?&lt;/span&gt;
+    &lt;span class=&quot;c1&quot;&gt;# Tim says we need to email people to &amp;quot;encourage&amp;quot;&lt;/span&gt;
+    &lt;span class=&quot;c1&quot;&gt;#  them into buying things.&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;transactions&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;length&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Now this new class can be utilized to spam the users of &lt;em&gt;&amp;quot;booksandreviews.com&amp;quot;&lt;/em&gt; until Tim is content.&lt;/p&gt;
+
+&lt;p&gt;An important note is that instances of &lt;code&gt;Author&lt;/code&gt;, &lt;code&gt;Critic&lt;/code&gt;, and &lt;code&gt;Consumer&lt;/code&gt; are not instances of &lt;code&gt;User&lt;/code&gt;.&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;n&quot;&gt;user&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;User&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;find&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;9&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;author&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Author&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;new&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;user&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;author&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;is_a?&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;User&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# =&amp;gt; false&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h2&gt;Keeping it Closed&lt;/h2&gt;
+
+&lt;p&gt;The &lt;code&gt;DelegateClass&lt;/code&gt; approach keeps the &lt;code&gt;User&lt;/code&gt; class &lt;a href=&quot;https://en.wikipedia.org/wiki/Open/closed_principle&quot;&gt;open to extension but closed for modification&lt;/a&gt;. Adhering to this principle becomes very beneficial if the backing of the &lt;code&gt;User&lt;/code&gt; model changes.&lt;/p&gt;
+
+&lt;p&gt;Maybe in the future, &lt;em&gt;&amp;quot;booksandreviews.com&amp;quot;&lt;/em&gt; experiences astronomical growth, resulting in a huge service oriented architecture overhaul. Suddenly, a &lt;code&gt;UserService&lt;/code&gt; exists which communicates with an internal API. If that happens, our code is safe.&lt;/p&gt;
+
+&lt;p&gt;The &lt;code&gt;Author&lt;/code&gt;, &lt;code&gt;Critic&lt;/code&gt;, and &lt;code&gt;Consumer&lt;/code&gt; classes need not change:&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;n&quot;&gt;user&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;UserService&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;find_user_by_id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;10&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;consumer&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Consumer&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;new&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;user&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;consumer&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;id&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# =&amp;gt; 10&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;As previously stated, there are many ways to solve this particular problem. Arguments for module inheritance or single table inheritance could be made and might result in just as valid solutions.&lt;/p&gt;
+</content>
+ </entry>
  
  <entry>
    <title>Six Months of Commits</title>
