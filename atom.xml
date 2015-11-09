@@ -37,7 +37,7 @@
 
 &lt;p&gt;An alternative way to architect a system like the one described is by using delegation. Object delegation is a way of composing objects to achieve flexibility and maintain encapsulation.&lt;/p&gt;
 
-&lt;p&gt;Ruby provides a few ways to delegate objects. An interesting option that will nicely serve this application&amp;#39;s needs is &lt;a href=&quot;http://ruby-doc.org/stdlib-2.2.1/libdoc/delegate/rdoc/Object.html#method-i-DelegateClass&quot;&gt;&lt;code&gt;DelegateClass&lt;/code&gt;&lt;/a&gt;. The &lt;code&gt;DelegateClass&lt;/code&gt; method accepts a constant and returns a new class. The returned class takes the passed in class&amp;#39;s instance methods and defines delegating methods.&lt;/p&gt;
+&lt;p&gt;Ruby provides a few ways to delegate objects. An interesting option that will nicely serve this application&amp;#39;s needs is &lt;a href=&quot;http://ruby-doc.org/stdlib-2.2.1/libdoc/delegate/rdoc/Object.html#method-i-DelegateClass&quot;&gt;&lt;code&gt;DelegateClass&lt;/code&gt;&lt;/a&gt;. The &lt;code&gt;DelegateClass&lt;/code&gt; method accepts a class and returns a new class. The returned class takes the passed in class&amp;#39;s instance methods and defines delegating methods.&lt;/p&gt;
 
 &lt;p&gt;Defining &lt;code&gt;Author&lt;/code&gt; and &lt;code&gt;Critic&lt;/code&gt; classes:&lt;/p&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Author&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;DelegateClass&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;User&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
@@ -66,7 +66,7 @@
     &lt;span class=&quot;n&quot;&gt;written_books&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;present?&lt;/span&gt;
   &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
 
-  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;top_selling_books&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;top_selling_book&lt;/span&gt;
     &lt;span class=&quot;n&quot;&gt;written_books&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;max_by&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:revenue&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
   &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
 &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
@@ -85,7 +85,7 @@
   &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
 &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;See how nice it is having the &lt;code&gt;User&lt;/code&gt; class responsible only for standard &lt;code&gt;User&lt;/code&gt; information? That leaves the &lt;code&gt;Author&lt;/code&gt; and &lt;code&gt;Critic&lt;/code&gt; classes to house business logic the &lt;code&gt;User&lt;/code&gt; should not have to concern itself with.&lt;/p&gt;
+&lt;p&gt;See how nice it is with the &lt;code&gt;User&lt;/code&gt; class responsible only for standard &lt;code&gt;User&lt;/code&gt; information? That leaves the &lt;code&gt;Author&lt;/code&gt; and &lt;code&gt;Critic&lt;/code&gt; classes available to house business logic the &lt;code&gt;User&lt;/code&gt; should not have to concern itself with.&lt;/p&gt;
 
 &lt;p&gt;The &lt;code&gt;User&lt;/code&gt; class can keep caring about things like &lt;code&gt;updated_at&lt;/code&gt; timestamps, important booleans like &lt;code&gt;is_a_confirmed_user?&lt;/code&gt;, and any other methods that indicate how a general &lt;code&gt;user&lt;/code&gt; interacts with the software. Also, it remains the sole responsibility of the &lt;code&gt;user&lt;/code&gt; to interact with the persistence layer. The &lt;code&gt;Author&lt;/code&gt; and &lt;code&gt;Critic&lt;/code&gt; classes will delegate instance methods like &lt;code&gt;save&lt;/code&gt; and &lt;code&gt;update&lt;/code&gt; to the underlying &lt;code&gt;user&lt;/code&gt;.&lt;/p&gt;
 

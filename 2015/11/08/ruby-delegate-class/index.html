@@ -122,7 +122,7 @@
 
 <p>An alternative way to architect a system like the one described is by using delegation. Object delegation is a way of composing objects to achieve flexibility and maintain encapsulation.</p>
 
-<p>Ruby provides a few ways to delegate objects. An interesting option that will nicely serve this application&#39;s needs is <a href="http://ruby-doc.org/stdlib-2.2.1/libdoc/delegate/rdoc/Object.html#method-i-DelegateClass"><code>DelegateClass</code></a>. The <code>DelegateClass</code> method accepts a constant and returns a new class. The returned class takes the passed in class&#39;s instance methods and defines delegating methods.</p>
+<p>Ruby provides a few ways to delegate objects. An interesting option that will nicely serve this application&#39;s needs is <a href="http://ruby-doc.org/stdlib-2.2.1/libdoc/delegate/rdoc/Object.html#method-i-DelegateClass"><code>DelegateClass</code></a>. The <code>DelegateClass</code> method accepts a class and returns a new class. The returned class takes the passed in class&#39;s instance methods and defines delegating methods.</p>
 
 <p>Defining <code>Author</code> and <code>Critic</code> classes:</p>
 <div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">class</span> <span class="nc">Author</span> <span class="o">&lt;</span> <span class="no">DelegateClass</span><span class="p">(</span><span class="no">User</span><span class="p">)</span>
@@ -151,7 +151,7 @@
     <span class="n">written_books</span><span class="o">.</span><span class="n">present?</span>
   <span class="k">end</span>
 
-  <span class="k">def</span> <span class="nf">top_selling_books</span>
+  <span class="k">def</span> <span class="nf">top_selling_book</span>
     <span class="n">written_books</span><span class="o">.</span><span class="n">max_by</span><span class="p">(</span><span class="o">&amp;</span><span class="ss">:revenue</span><span class="p">)</span>
   <span class="k">end</span>
 <span class="k">end</span>
@@ -170,7 +170,7 @@
   <span class="k">end</span>
 <span class="k">end</span>
 </code></pre></div>
-<p>See how nice it is having the <code>User</code> class responsible only for standard <code>User</code> information? That leaves the <code>Author</code> and <code>Critic</code> classes to house business logic the <code>User</code> should not have to concern itself with.</p>
+<p>See how nice it is with the <code>User</code> class responsible only for standard <code>User</code> information? That leaves the <code>Author</code> and <code>Critic</code> classes available to house business logic the <code>User</code> should not have to concern itself with.</p>
 
 <p>The <code>User</code> class can keep caring about things like <code>updated_at</code> timestamps, important booleans like <code>is_a_confirmed_user?</code>, and any other methods that indicate how a general <code>user</code> interacts with the software. Also, it remains the sole responsibility of the <code>user</code> to interact with the persistence layer. The <code>Author</code> and <code>Critic</code> classes will delegate instance methods like <code>save</code> and <code>update</code> to the underlying <code>user</code>.</p>
 
