@@ -4,13 +4,157 @@
  <title>A Year of Commits</title>
  <link href="/atom.xml" rel="self"/>
  <link href="/"/>
- <updated>2015-11-08T22:33:14-08:00</updated>
+ <updated>2015-11-15T23:13:58-08:00</updated>
  <id></id>
  <author>
    <name>Jake Yesbeck</name>
    <email></email>
  </author>
 
+ 
+ <entry>
+   <title>Five Active Record Features You Should Be Using</title>
+   <link href="/2015/11/15/five-active-record-features-you-should-be-using/"/>
+   <updated>2015-11-15T04:00:00-08:00</updated>
+   <id>/2015/11/15/five-active-record-features-you-should-be-using</id>
+   <content type="html">&lt;p&gt;Active Record is responsible for communicating with the persistence layer by default in Ruby on Rails applications. Using Active Record effectively and efficiently can greatly improve an application&amp;#39;s code.&lt;/p&gt;
+
+&lt;p&gt;In Ruby on Rails 4.0, some material changes have been made to Active Record. Understanding these changes, and how they are best utilized is important for any Rails developer.&lt;/p&gt;
+
+&lt;p&gt;To help explain these concepts, we can assume a Ruby on Rails application &lt;em&gt;&amp;quot;booksandreviews.com&amp;quot;&lt;/em&gt; exists with three models:&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Book&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;ActiveRecord&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Base&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;belongs_to&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:author&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;has_many&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:reviews&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Author&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;ActiveRecord&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Base&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;has_many&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:books&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Review&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;ActiveRecord&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Base&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;belongs_to&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:book&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;The smart people over at &lt;em&gt;&amp;quot;booksandreviews.com&amp;quot;&lt;/em&gt; need to know what the state of their data is to build metrics and make sales. Metrics need data and Active Record will be used to fetch that data.&lt;/p&gt;
+
+&lt;h2&gt;1. Nested Queries&lt;/h2&gt;
+
+&lt;p&gt;When doing database queries, the fewer the better. Since Active Record is in charge of crafting these queries, it is important to make sure it has all the help it needs. For simple queries this is rarely an issue, but more complex requirements can lead to sub-optimal results.&lt;/p&gt;
+
+&lt;p&gt;One day, Tim from sales has comes furiously rampaging through the office convinced that there &lt;strong&gt;must&lt;/strong&gt; be a bug in the system. A recent sale for &lt;em&gt;&amp;quot;booksandreviews.com&amp;quot;&lt;/em&gt; did not go well and he wants answers. Tim wants an analysis run. He wants all reviews published today, which are for books published in 2015.&lt;/p&gt;
+
+&lt;p&gt;Without too much thought, this approach seems reasonable:&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;n&quot;&gt;book_ids&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Book&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;where&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;publish_year&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;2015&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;map&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# =&amp;gt; SELECT &amp;quot;books&amp;quot;.* FROM &amp;quot;books&amp;quot; WHERE (publish_year = &amp;#39;2015&amp;#39;)&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;reviews&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Review&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;where&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;publish_date&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;2015-11-15&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;book_ids&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;book_ids&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;to_a&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# =&amp;gt; SELECT &amp;quot;reviews&amp;quot;.* FROM &amp;quot;reviews&amp;quot; WHERE &amp;quot;reviews&amp;quot;.&amp;quot;publish_date&amp;quot; = &amp;#39;2015-11-15&amp;#39; AND &amp;quot;reviews&amp;quot;.&amp;quot;book_ids&amp;quot; IN (1, 2, 3)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;This will load the desired books, extract their &lt;code&gt;id&lt;/code&gt;&amp;#39;s, and pass that result to the &lt;code&gt;Review&lt;/code&gt; query. Not only does this generate two queries, it also wastes memory by creating the array of &lt;code&gt;book_ids&lt;/code&gt;. With a large enough list of books, this could cause some serious problems.&lt;/p&gt;
+
+&lt;p&gt;Active Record&amp;#39;s &lt;code&gt;where&lt;/code&gt; method return an instance of &lt;code&gt;ActiveRecord::Relation&lt;/code&gt;. These relations can be passed to other methods to aid in query construction. With the same request, we can save the &lt;code&gt;map&lt;/code&gt; and array creation:&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;n&quot;&gt;books&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Book&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;where&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;publish_year&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;2015&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# =&amp;gt; ActiveRecord::Relation&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;reviews&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Review&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;where&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;publish_date&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;2015-11-15&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;book&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;books&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;to_a&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# SELECT &amp;quot;reviews&amp;quot;.* FROM &amp;quot;reviews&amp;quot; WHERE &amp;quot;reviews&amp;quot;.&amp;quot;publish_date&amp;quot; = &amp;#39;2015-11-15&amp;#39; AND &amp;quot;reviews&amp;quot;.&amp;quot;book_id&amp;quot; IN (SELECT &amp;quot;books&amp;quot;.&amp;quot;id&amp;quot; FROM &amp;quot;books&amp;quot; WHERE &amp;quot;books&amp;quot;.&amp;quot;publish_year&amp;quot; = &amp;#39;2015&amp;#39;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;This still executes two &lt;code&gt;SELECT&lt;/code&gt; statements but it nests them to let the database take care of memory allocation and optimization. The &lt;code&gt;book_ids&lt;/code&gt; array is replaced with the &lt;code&gt;books&lt;/code&gt; relation and is passed to the &lt;code&gt;Review&lt;/code&gt; query.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Note: This can reduced to a single query with &lt;code&gt;.joins&lt;/code&gt;, but for now we can assume that a nested query is desired.&lt;/strong&gt;&lt;/p&gt;
+
+&lt;h2&gt;2. DRY Scopes&lt;/h2&gt;
+
+&lt;p&gt;Still fuming, Tim demands more information. Now he wants to know the list of all &lt;code&gt;Books&lt;/code&gt; published in 2015 which have at least one approved &lt;code&gt;Review&lt;/code&gt;. Since &lt;code&gt;Reviews&lt;/code&gt; are subjective, they need to be approved in order to maintain the quality that &lt;em&gt;&amp;quot;booksandreviews.com&amp;quot;&lt;/em&gt; is known for.&lt;/p&gt;
+
+&lt;p&gt;Luckily, a scope has been written on the &lt;code&gt;Review&lt;/code&gt; class to accomplish this.&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Review&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;ActiveRecord&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Base&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;belongs_to&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:book&lt;/span&gt;
+
+  &lt;span class=&quot;n&quot;&gt;scope&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:approved&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;where&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;approved&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kp&quot;&gt;true&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;However, it is &lt;code&gt;Books&lt;/code&gt; that we need to return, not &lt;code&gt;Reviews&lt;/code&gt;. Repeating the scope definition, a join query can be used for this analysis:&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;n&quot;&gt;books&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Book&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;where&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;publish_year&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;2015&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+            &lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;joins&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:reviews&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+            &lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;where&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;reviews.approved = ?&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kp&quot;&gt;true&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+            &lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;to_a&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# =&amp;gt; SELECT &amp;quot;books&amp;quot;.* FROM &amp;quot;books&amp;quot; INNER JOIN &amp;quot;reviews&amp;quot; ON &amp;quot;reviews&amp;quot;.&amp;quot;book_id&amp;quot; = &amp;quot;books&amp;quot;.&amp;quot;id&amp;quot; WHERE &amp;quot;books&amp;quot;.&amp;quot;publish_year&amp;quot; = &amp;quot;2015&amp;quot; AND &amp;quot;reviews&amp;quot;.&amp;quot;approved&amp;quot; = &amp;quot;t&amp;quot;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;code&gt;Books&lt;/code&gt; are returned at the cost of duplicating the &lt;code&gt;approved&lt;/code&gt; scope. That means that the scope in &lt;code&gt;Review&lt;/code&gt; changes, this code will not benefit from that change.&lt;/p&gt;
+
+&lt;p&gt;The &lt;strong&gt;D&lt;/strong&gt;on&amp;#39;t &lt;strong&gt;R&lt;/strong&gt;epeat &lt;strong&gt;Y&lt;/strong&gt;ourself (DRY) principle was created for this exact reason. When identical code is not shared and instead repeated, changes to one version can have dangerous consequences on the other.&lt;/p&gt;
+
+&lt;p&gt;The good news is that Active Record provides precisely the medicine for this ailment: &lt;code&gt;.merge&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;With &lt;code&gt;.merge&lt;/code&gt;, an existing scope can be used in another Active Record query.&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;n&quot;&gt;books&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Book&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;where&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;publish_year&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;2015&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+            &lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;joins&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:reviews&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+            &lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;merge&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Review&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;active&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+            &lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;to_a&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# =&amp;gt; SELECT &amp;quot;books&amp;quot;.* FROM &amp;quot;books&amp;quot; INNER JOIN &amp;quot;reviews&amp;quot; ON &amp;quot;reviews&amp;quot;.&amp;quot;book_id&amp;quot; = &amp;quot;books&amp;quot;.&amp;quot;id&amp;quot; WHERE &amp;quot;books&amp;quot;.&amp;quot;publish_year&amp;quot; = &amp;quot;2015&amp;quot; AND &amp;quot;reviews&amp;quot;.&amp;quot;approved&amp;quot; = &amp;quot;t&amp;quot;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Great! Now the results are the exact same and the code is DRY.&lt;/p&gt;
+
+&lt;h2&gt;3. &lt;code&gt;where.not&lt;/code&gt;&lt;/h2&gt;
+
+&lt;p&gt;Typical insatiable Tim is back with yet another request to add to the brand new &amp;quot;totally not vanity metrics dashboard&amp;quot;. Now, he wants to know all the books &lt;strong&gt;not&lt;/strong&gt; published in 2012.&lt;/p&gt;
+
+&lt;p&gt;Without even asking why such a silly request is necessary, some more code can be cranked out to satisfy this request:&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;n&quot;&gt;books&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Book&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;where&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;publish_year != 2012&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;to_a&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# =&amp;gt; SELECT &amp;quot;books&amp;quot;.* FROM &amp;quot;books&amp;quot; WHERE (publish_year != &amp;#39;2012&amp;#39;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Like before, this code works but could be better. There is some raw SQL in there that the next developer might not understand well enough to manipulate. Whatever the reason, it is best to rely on abstraction instead of explicit SQL.&lt;/p&gt;
+
+&lt;p&gt;To help solve this dilemma, the &lt;code&gt;.not&lt;/code&gt; modifier has been introduced in Active Record 4.0.&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;n&quot;&gt;books&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Book&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;where&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;not&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;publish_year&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;2012&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;to_a&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# =&amp;gt; SELECT &amp;quot;books&amp;quot;.* FROM &amp;quot;books&amp;quot; WHERE (publish_year != &amp;#39;2012&amp;#39;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;The result is the same but look how much nicer that is. Not only is the raw SQL gone, the code is more positive too.&lt;/p&gt;
+
+&lt;h2&gt;4. &lt;code&gt;first&lt;/code&gt; and &lt;code&gt;take&lt;/code&gt;&lt;/h2&gt;
+
+&lt;p&gt;Since &lt;em&gt;&amp;quot;booksandreviews.com&amp;quot;&lt;/em&gt; has been around since 2012, chances are it upgraded from Ruby on Rails 3.0 to 4.0. One notable change from Active Record 3 to 4 is the behaviour of &lt;code&gt;.first&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;In Ruby on Rails 4.0+, the &lt;code&gt;.first&lt;/code&gt; method returns the first row after the table has been ordered by its &lt;code&gt;id&lt;/code&gt;.&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;no&quot;&gt;Author&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;where&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;first_name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;Bill&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;first&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# =&amp;gt; SELECT  &amp;quot;authors&amp;quot;.* FROM &amp;quot;authors&amp;quot; WHERE &amp;quot;authors&amp;quot;.&amp;quot;first_name&amp;quot; = &amp;quot;Bill&amp;quot; ORDER BY &amp;quot;authors&amp;quot;.&amp;quot;id&amp;quot; ASC LIMIT 1&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;This will work fine for every table that has an &lt;code&gt;id&lt;/code&gt; column. However, if a table does not need an &lt;code&gt;id&lt;/code&gt; column, this method causes a problem.&lt;/p&gt;
+
+&lt;p&gt;Despite each &lt;code&gt;Author&lt;/code&gt; having an id, complex joins might cause an issue with an implicit &lt;code&gt;ORDER BY&lt;/code&gt; on queries.&lt;/p&gt;
+
+&lt;p&gt;To alleviate that problem, the &lt;code&gt;take&lt;/code&gt; method can be substituted for &lt;code&gt;first&lt;/code&gt;:&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;no&quot;&gt;Author&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;where&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;first_name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;Bill&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;take&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# =&amp;gt; SELECT  &amp;quot;authors&amp;quot;.* FROM &amp;quot;authors&amp;quot; WHERE &amp;quot;authors&amp;quot;.&amp;quot;first_name&amp;quot; = &amp;quot;Bill&amp;quot; LIMIT 1&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;This behaves in a much more explicit way, returning the same information without a default ordering.&lt;/p&gt;
+
+&lt;h2&gt;5. &lt;code&gt;.unscoped&lt;/code&gt;&lt;/h2&gt;
+
+&lt;p&gt;During the development life of &amp;quot;&lt;em&gt;booksandreviews.com&amp;quot;&lt;/em&gt;, countless modules have been built and gems included. Amidst this chaos, someone must have typed &lt;code&gt;gem install hairball&lt;/code&gt; and horribly altered the &lt;code&gt;Author&lt;/code&gt; class. This has led to the new guy Mike&amp;#39;s  complaint that: &lt;em&gt;&amp;quot;Authors are missing data&amp;quot;&lt;/em&gt;.&lt;/p&gt;
+
+&lt;p&gt;Mike knows that authors have a &lt;code&gt;first_name&lt;/code&gt; but for some reason it is not being returned:&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;n&quot;&gt;authors&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Author&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;where&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;last_name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;Smith&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;take&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;5&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;authors&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;map&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:first_name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# =&amp;gt; [nil, nil, nil, nil, nil]&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;What Mike does not know is that one of those hairball gems added a default scope to all Active Record objects that begin with the letter &amp;quot;A&amp;quot;. However impossible this bug is, it exists and it is ruining Mike&amp;#39;s day.&lt;/p&gt;
+
+&lt;p&gt;What Mike needs is the &lt;code&gt;.unscoped&lt;/code&gt; method. This method removes all existing scopes on an Active Record relation.&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;n&quot;&gt;authors&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Author&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;unscoped&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;where&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;last_name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;Smith&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;take&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;5&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;authors&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;map&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:first_name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# =&amp;gt; [&amp;#39;Frank&amp;#39;, &amp;#39;Frank&amp;#39;, &amp;#39;Jim&amp;#39;, &amp;#39;Frank&amp;#39;, &amp;#39;Frank&amp;#39;]&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;em&gt;(Is anyone else concerned that there are four Frank Smith authors?)&lt;/em&gt;&lt;/p&gt;
+
+&lt;p&gt;With the &lt;code&gt;.unscoped&lt;/code&gt; method, all harmful default scopes are removed and the Franks are free.&lt;/p&gt;
+
+&lt;h2&gt;Queries on Queries&lt;/h2&gt;
+
+&lt;p&gt;With these five techniques (and probably a lot more), naiive Active Record queries can be turned into DRY performant tools. The exhaustive list of what Active Record can provide can be found &lt;a href=&quot;http://guides.rubyonrails.org/active_record_querying.html&quot;&gt;at Rails Guides&lt;/a&gt;.&lt;/p&gt;
+</content>
+ </entry>
  
  <entry>
    <title>Ruby DelegateClass</title>
