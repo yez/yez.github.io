@@ -4,7 +4,7 @@
  <title>A Year of Commits</title>
  <link href="/atom.xml" rel="self"/>
  <link href="/"/>
- <updated>2015-11-16T11:41:38-08:00</updated>
+ <updated>2015-11-16T14:13:17-08:00</updated>
  <id></id>
  <author>
    <name>Jake Yesbeck</name>
@@ -51,7 +51,7 @@
                        &lt;span class=&quot;ss&quot;&gt;book_ids&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;book_ids&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;to_a&lt;/span&gt;
 &lt;span class=&quot;c1&quot;&gt;# =&amp;gt; SELECT &amp;quot;reviews&amp;quot;.* FROM &amp;quot;reviews&amp;quot; WHERE &amp;quot;reviews&amp;quot;.&amp;quot;publish_date&amp;quot; = &amp;#39;2015-11-15&amp;#39; AND &amp;quot;reviews&amp;quot;.&amp;quot;book_ids&amp;quot; IN (1, 2, 3)&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;This will load the desired books, extract their &lt;code&gt;id&lt;/code&gt;&amp;#39;s, and pass that result to the &lt;code&gt;Review&lt;/code&gt; query. Not only does this generate two queries, it also wastes memory by creating the array of &lt;code&gt;book_ids&lt;/code&gt;. With a large enough list of books, this could cause some serious problems.&lt;/p&gt;
+&lt;p&gt;This will load the desired books, extract their &lt;code&gt;id&lt;/code&gt;&amp;#39;s, and pass that result to the &lt;code&gt;Review&lt;/code&gt; query. Not only does this generate two queries, it also wastes memory by creating an array of &lt;code&gt;Book&lt;/code&gt; objects to &lt;code&gt;map&lt;/code&gt; over and then another array of &lt;code&gt;book_ids&lt;/code&gt;. With a large enough list of books, this could cause some serious problems.&lt;/p&gt;
 
 &lt;p&gt;Active Record&amp;#39;s &lt;code&gt;where&lt;/code&gt; method returns an instance of &lt;code&gt;ActiveRecord::Relation&lt;/code&gt;. These relations can be passed to other methods to aid in query construction. With the same request, we can save the &lt;code&gt;map&lt;/code&gt; and array creation:&lt;/p&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;n&quot;&gt;books&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Book&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;where&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;publish_year&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;2015&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
