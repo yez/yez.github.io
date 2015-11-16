@@ -4,7 +4,7 @@
  <title>A Year of Commits</title>
  <link href="/atom.xml" rel="self"/>
  <link href="/"/>
- <updated>2015-11-15T23:13:58-08:00</updated>
+ <updated>2015-11-15T23:30:24-08:00</updated>
  <id></id>
  <author>
    <name>Jake Yesbeck</name>
@@ -41,7 +41,7 @@
 
 &lt;p&gt;When doing database queries, the fewer the better. Since Active Record is in charge of crafting these queries, it is important to make sure it has all the help it needs. For simple queries this is rarely an issue, but more complex requirements can lead to sub-optimal results.&lt;/p&gt;
 
-&lt;p&gt;One day, Tim from sales has comes furiously rampaging through the office convinced that there &lt;strong&gt;must&lt;/strong&gt; be a bug in the system. A recent sale for &lt;em&gt;&amp;quot;booksandreviews.com&amp;quot;&lt;/em&gt; did not go well and he wants answers. Tim wants an analysis run. He wants all reviews published today, which are for books published in 2015.&lt;/p&gt;
+&lt;p&gt;One day, Tim from sales comes rampaging through the office convinced that there &lt;strong&gt;must&lt;/strong&gt; be a bug in the system. A recent sale for &lt;em&gt;&amp;quot;booksandreviews.com&amp;quot;&lt;/em&gt; did not go well and he wants answers. Tim wants an analysis run. He wants all reviews published today, which are for books published in 2015.&lt;/p&gt;
 
 &lt;p&gt;Without too much thought, this approach seems reasonable:&lt;/p&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;n&quot;&gt;book_ids&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Book&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;where&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;publish_year&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;2015&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;map&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
@@ -52,7 +52,7 @@
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;This will load the desired books, extract their &lt;code&gt;id&lt;/code&gt;&amp;#39;s, and pass that result to the &lt;code&gt;Review&lt;/code&gt; query. Not only does this generate two queries, it also wastes memory by creating the array of &lt;code&gt;book_ids&lt;/code&gt;. With a large enough list of books, this could cause some serious problems.&lt;/p&gt;
 
-&lt;p&gt;Active Record&amp;#39;s &lt;code&gt;where&lt;/code&gt; method return an instance of &lt;code&gt;ActiveRecord::Relation&lt;/code&gt;. These relations can be passed to other methods to aid in query construction. With the same request, we can save the &lt;code&gt;map&lt;/code&gt; and array creation:&lt;/p&gt;
+&lt;p&gt;Active Record&amp;#39;s &lt;code&gt;where&lt;/code&gt; method returns an instance of &lt;code&gt;ActiveRecord::Relation&lt;/code&gt;. These relations can be passed to other methods to aid in query construction. With the same request, we can save the &lt;code&gt;map&lt;/code&gt; and array creation:&lt;/p&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;n&quot;&gt;books&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Book&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;where&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;publish_year&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;2015&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
 &lt;span class=&quot;c1&quot;&gt;# =&amp;gt; ActiveRecord::Relation&lt;/span&gt;
 
@@ -100,7 +100,7 @@
 
 &lt;p&gt;Typical insatiable Tim is back with yet another request to add to the brand new &amp;quot;totally not vanity metrics dashboard&amp;quot;. Now, he wants to know all the books &lt;strong&gt;not&lt;/strong&gt; published in 2012.&lt;/p&gt;
 
-&lt;p&gt;Without even asking why such a silly request is necessary, some more code can be cranked out to satisfy this request:&lt;/p&gt;
+&lt;p&gt;Without even asking why such a silly request is necessary, some more code can be cranked out:&lt;/p&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;n&quot;&gt;books&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Book&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;where&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;publish_year != 2012&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;to_a&lt;/span&gt;
 &lt;span class=&quot;c1&quot;&gt;# =&amp;gt; SELECT &amp;quot;books&amp;quot;.* FROM &amp;quot;books&amp;quot; WHERE (publish_year != &amp;#39;2012&amp;#39;)&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
