@@ -4,7 +4,7 @@
  <title>A Year of Commits</title>
  <link href="/atom.xml" rel="self"/>
  <link href="/"/>
- <updated>2015-11-15T23:30:24-08:00</updated>
+ <updated>2015-11-16T11:41:38-08:00</updated>
  <id></id>
  <author>
    <name>Jake Yesbeck</name>
@@ -35,11 +35,11 @@
   &lt;span class=&quot;n&quot;&gt;belongs_to&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:book&lt;/span&gt;
 &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;The smart people over at &lt;em&gt;&amp;quot;booksandreviews.com&amp;quot;&lt;/em&gt; need to know what the state of their data is to build metrics and make sales. Metrics need data and Active Record will be used to fetch that data.&lt;/p&gt;
+&lt;p&gt;The smart people over at &lt;em&gt;&amp;quot;booksandreviews.com&amp;quot;&lt;/em&gt; need to know what the state of their data to build metrics and make sales. Metrics need data and Active Record will be used to fetch that data.&lt;/p&gt;
 
 &lt;h2&gt;1. Nested Queries&lt;/h2&gt;
 
-&lt;p&gt;When doing database queries, the fewer the better. Since Active Record is in charge of crafting these queries, it is important to make sure it has all the help it needs. For simple queries this is rarely an issue, but more complex requirements can lead to sub-optimal results.&lt;/p&gt;
+&lt;p&gt;When doing database queries, the fewer the better. Since Active Record is responsible of crafting these queries, it is important to make sure it has all the help it needs. For simple queries this is rarely an issue, but more complex requirements can lead to sub-optimal results.&lt;/p&gt;
 
 &lt;p&gt;One day, Tim from sales comes rampaging through the office convinced that there &lt;strong&gt;must&lt;/strong&gt; be a bug in the system. A recent sale for &lt;em&gt;&amp;quot;booksandreviews.com&amp;quot;&lt;/em&gt; did not go well and he wants answers. Tim wants an analysis run. He wants all reviews published today, which are for books published in 2015.&lt;/p&gt;
 
@@ -47,7 +47,8 @@
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;n&quot;&gt;book_ids&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Book&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;where&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;publish_year&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;2015&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;map&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
 &lt;span class=&quot;c1&quot;&gt;# =&amp;gt; SELECT &amp;quot;books&amp;quot;.* FROM &amp;quot;books&amp;quot; WHERE (publish_year = &amp;#39;2015&amp;#39;)&lt;/span&gt;
 
-&lt;span class=&quot;n&quot;&gt;reviews&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Review&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;where&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;publish_date&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;2015-11-15&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;book_ids&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;book_ids&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;to_a&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;reviews&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Review&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;where&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;publish_date&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;2015-11-15&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+                       &lt;span class=&quot;ss&quot;&gt;book_ids&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;book_ids&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;to_a&lt;/span&gt;
 &lt;span class=&quot;c1&quot;&gt;# =&amp;gt; SELECT &amp;quot;reviews&amp;quot;.* FROM &amp;quot;reviews&amp;quot; WHERE &amp;quot;reviews&amp;quot;.&amp;quot;publish_date&amp;quot; = &amp;#39;2015-11-15&amp;#39; AND &amp;quot;reviews&amp;quot;.&amp;quot;book_ids&amp;quot; IN (1, 2, 3)&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;This will load the desired books, extract their &lt;code&gt;id&lt;/code&gt;&amp;#39;s, and pass that result to the &lt;code&gt;Review&lt;/code&gt; query. Not only does this generate two queries, it also wastes memory by creating the array of &lt;code&gt;book_ids&lt;/code&gt;. With a large enough list of books, this could cause some serious problems.&lt;/p&gt;
@@ -152,7 +153,7 @@
 
 &lt;h2&gt;Queries on Queries&lt;/h2&gt;
 
-&lt;p&gt;With these five techniques (and probably a lot more), naiive Active Record queries can be turned into DRY performant tools. The exhaustive list of what Active Record can provide can be found &lt;a href=&quot;http://guides.rubyonrails.org/active_record_querying.html&quot;&gt;at Rails Guides&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;With these five techniques (and probably a lot more), naiive Active Record queries can stay DRY and intuitive. The exhaustive list of what Active Record can provide can be found &lt;a href=&quot;http://guides.rubyonrails.org/active_record_querying.html&quot;&gt;at Rails Guides&lt;/a&gt;.&lt;/p&gt;
 </content>
  </entry>
  
