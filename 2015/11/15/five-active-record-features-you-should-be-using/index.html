@@ -176,7 +176,7 @@
 <p>With <code>.merge</code>, an existing scope can be used in another Active Record query.</p>
 <div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">books</span> <span class="o">=</span> <span class="no">Book</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="ss">publish_year</span><span class="p">:</span> <span class="s1">&#39;2015&#39;</span><span class="p">)</span>
             <span class="o">.</span><span class="n">joins</span><span class="p">(</span><span class="ss">:reviews</span><span class="p">)</span>
-            <span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="no">Review</span><span class="o">.</span><span class="n">active</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="no">Review</span><span class="o">.</span><span class="n">approved</span><span class="p">)</span>
             <span class="o">.</span><span class="n">to_a</span>
 <span class="c1"># =&gt; SELECT &quot;books&quot;.* FROM &quot;books&quot; INNER JOIN &quot;reviews&quot; ON &quot;reviews&quot;.&quot;book_id&quot; = &quot;books&quot;.&quot;id&quot; WHERE &quot;books&quot;.&quot;publish_year&quot; = &quot;2015&quot; AND &quot;reviews&quot;.&quot;approved&quot; = &quot;t&quot;</span>
 </code></pre></div>
