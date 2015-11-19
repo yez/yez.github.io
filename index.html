@@ -219,7 +219,7 @@
 
 <p>Despite each <code>Author</code> having an id, complex joins might cause an issue with an implicit <code>ORDER BY</code> on queries.</p>
 
-<p>To alleviate that problem, the <code>take</code> method can be substituted for <code>first</code>:</p>
+<p>To alleviate that problem, the <code>take</code> method can be used instead of <code>first</code>:</p>
 <div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="no">Author</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="ss">first_name</span><span class="p">:</span> <span class="s1">&#39;Bill&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">take</span>
 <span class="c1"># =&gt; SELECT  &quot;authors&quot;.* FROM &quot;authors&quot; WHERE &quot;authors&quot;.&quot;first_name&quot; = &quot;Bill&quot; LIMIT 1</span>
 </code></pre></div>

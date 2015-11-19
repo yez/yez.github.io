@@ -125,7 +125,7 @@
 
 &lt;p&gt;Despite each &lt;code&gt;Author&lt;/code&gt; having an id, complex joins might cause an issue with an implicit &lt;code&gt;ORDER BY&lt;/code&gt; on queries.&lt;/p&gt;
 
-&lt;p&gt;To alleviate that problem, the &lt;code&gt;take&lt;/code&gt; method can be substituted for &lt;code&gt;first&lt;/code&gt;:&lt;/p&gt;
+&lt;p&gt;To alleviate that problem, the &lt;code&gt;take&lt;/code&gt; method can be used instead of &lt;code&gt;first&lt;/code&gt;:&lt;/p&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;no&quot;&gt;Author&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;where&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;first_name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;Bill&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;take&lt;/span&gt;
 &lt;span class=&quot;c1&quot;&gt;# =&amp;gt; SELECT  &amp;quot;authors&amp;quot;.* FROM &amp;quot;authors&amp;quot; WHERE &amp;quot;authors&amp;quot;.&amp;quot;first_name&amp;quot; = &amp;quot;Bill&amp;quot; LIMIT 1&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
