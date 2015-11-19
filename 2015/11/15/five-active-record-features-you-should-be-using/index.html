@@ -162,12 +162,13 @@
 </code></pre></div>
 <p>However, it is <code>Books</code> that we need to return, not <code>Reviews</code>. Repeating the scope definition, a join query can be used for this analysis:</p>
 <div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">books</span> <span class="o">=</span> <span class="no">Book</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="ss">publish_year</span><span class="p">:</span> <span class="s1">&#39;2015&#39;</span><span class="p">)</span>
-            <span class="o">.</span><span class="n">joins</span><span class="p">(</span><span class="ss">:reviews</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">includes</span><span class="p">(</span><span class="ss">:reviews</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">references</span><span class="p">(</span><span class="ss">:reviews</span><span class="p">)</span>
             <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="s1">&#39;reviews.approved = ?&#39;</span><span class="p">,</span> <span class="kp">true</span> <span class="p">)</span>
             <span class="o">.</span><span class="n">to_a</span>
-<span class="c1"># =&gt; SELECT &quot;books&quot;.* FROM &quot;books&quot; INNER JOIN &quot;reviews&quot; ON &quot;reviews&quot;.&quot;book_id&quot; = &quot;books&quot;.&quot;id&quot; WHERE &quot;books&quot;.&quot;publish_year&quot; = &quot;2015&quot; AND &quot;reviews&quot;.&quot;approved&quot; = &quot;t&quot;</span>
+<span class="c1"># =&gt; SELECT #longs books and reviews column select# FROM &quot;books&quot; LEFT OUTER JOIN &quot;reviews&quot; ON &quot;reviews&quot;.&quot;book_id&quot; = &quot;books&quot;.&quot;id&quot; WHERE &quot;books&quot;.&quot;publish_year&quot; = &#39;2015&#39; AND (reviews.approved = &#39;t&#39;)</span>
 </code></pre></div>
-<p><code>Books</code> are returned at the cost of duplicating the <code>approved</code> scope. That means that the scope in <code>Review</code> changes, this code will not benefit from that change.</p>
+<p><code>Books</code> are returned at the cost of duplicating the <code>approved</code> scope. That means that the scope in <code>Review</code> changes, this code will not benefit from that change. The <code>.includes</code> and <code>.references</code> methods are used to ensure that we only return one <code>Book</code> (in the case of many <code>Reviews</code> belonging to the same <code>Book</code>).</p>
 
 <p>The <strong>D</strong>on&#39;t <strong>R</strong>epeat <strong>Y</strong>ourself (DRY) principle was created for this exact reason. When identical code is not shared and instead repeated, changes to one version can have dangerous consequences on the other.</p>
 
@@ -175,10 +176,11 @@
 
 <p>With <code>.merge</code>, an existing scope can be used in another Active Record query.</p>
 <div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">books</span> <span class="o">=</span> <span class="no">Book</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="ss">publish_year</span><span class="p">:</span> <span class="s1">&#39;2015&#39;</span><span class="p">)</span>
-            <span class="o">.</span><span class="n">joins</span><span class="p">(</span><span class="ss">:reviews</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">includes</span><span class="p">(</span><span class="ss">:reviews</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">references</span><span class="p">(</span><span class="ss">:reviews</span><span class="p">)</span>
             <span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="no">Review</span><span class="o">.</span><span class="n">approved</span><span class="p">)</span>
             <span class="o">.</span><span class="n">to_a</span>
-<span class="c1"># =&gt; SELECT &quot;books&quot;.* FROM &quot;books&quot; INNER JOIN &quot;reviews&quot; ON &quot;reviews&quot;.&quot;book_id&quot; = &quot;books&quot;.&quot;id&quot; WHERE &quot;books&quot;.&quot;publish_year&quot; = &quot;2015&quot; AND &quot;reviews&quot;.&quot;approved&quot; = &quot;t&quot;</span>
+<span class="c1"># =&gt; SELECT #longs books and reviews column select# FROM &quot;books&quot; LEFT OUTER JOIN &quot;reviews&quot; ON &quot;reviews&quot;.&quot;book_id&quot; = &quot;books&quot;.&quot;id&quot; WHERE &quot;books&quot;.&quot;publish_year&quot; = &#39;2015&#39; AND (reviews.approved = &#39;t&#39;)</span>
 </code></pre></div>
 <p>Great! Now the results are the exact same and the code is DRY.</p>
 
