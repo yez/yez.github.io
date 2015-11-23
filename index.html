@@ -179,7 +179,7 @@ Finished in 0.00773 seconds <span class="o">(</span>files took 0.09367 seconds t
 
 <h2>Think of the Future</h2>
 
-<p>After some time passes, it comes to pass that the <code>GroomingService::Grommer</code> has changed its method signature. Instead of the <code>groom</code> method, it has changed to <code>groom!</code>. Chances are someone thought that either the method had too many side affects or that <code>!</code> are just really awesome looking.</p>
+<p>After some time passes, the <code>GroomingService::Grommer</code> has changed its method signature. Instead of the <code>groom</code> method, it has changed to <code>groom!</code>. Chances are someone thought that either the method had too many side affects or that <code>!</code> are just really awesome looking.</p>
 
 <p>In any case, the included service changes and when the test runs:</p>
 <div class="highlight"><pre><code class="language-sh" data-lang="sh"><span class="nv">$:</span> rspec mock_examples_spec.rb
@@ -192,6 +192,8 @@ Finished in 0.00735 seconds <span class="o">(</span>files took 0.10532 seconds t
 <span class="m">1</span> example, <span class="m">0</span> failures
 </code></pre></div>
 <p><em>It passes</em>? How can that be? The method changed from <code>groom</code> to <code>groom!</code>. The <code>groom</code> method does not even exist on <code>GroomingService::Groomer</code>. It seems that the specs do not care what does or does not exist on the <code>double</code>, they just happily pass.</p>
+
+<h2>Use <code>instance_double</code></h2>
 
 <p>The answer here is to use <code>instance_double</code>. Like <code>double</code>, <code>instance_double</code> also returns a stand-in object that raises errors if methods not <code>allow</code>ed or <code>expect</code>ed are called on the object.</p>
 
@@ -222,15 +224,15 @@ Failures:
 
   1<span class="o">)</span> Dog#groom calls new with self and <span class="k">then</span> groom
      Failure/Error: expect<span class="o">(</span>groomer<span class="o">)</span>.to receive<span class="o">(</span>:groom<span class="o">)</span>
-       the GroomingService::Groomer class does not implement the instance method: groom
-     <span class="c"># ./mock_examples_spec.rb:44:in `block (3 levels) in &lt;top (required)&gt;&#39;</span>
+       the GroomingService::Groomer class does not
+          implement the instance method: groom
 
 Finished in 0.0054 seconds <span class="o">(</span>files took 0.08288 seconds to load<span class="o">)</span>
 <span class="m">1</span> example, <span class="m">1</span> failure
 </code></pre></div>
-<p>While no one likes failing specs, I would rather see a failure here than in production.</p>
+<p>While no one likes failing specs, a failure here is always preferable to one in production.</p>
 
-<p>Since the API that we do not own changed (<code>Groomer</code>), it was a mistake to blindly mock it without asking the underlying object if that method existed. However, with this problem corrected, the code is more robust and development can continue.</p>
+<p>Since the API that we do not own (<code>Groomer</code>) changed, it was a mistake to blindly mock it without asking the underlying object if that method existed. However, with this problem corrected, the code is more robust and development can continue.</p>
 
 <h2>Mocking with Confidence</h2>
 

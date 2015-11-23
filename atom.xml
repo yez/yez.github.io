@@ -85,7 +85,7 @@ Finished in 0.00773 seconds &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;files 
 
 &lt;h2&gt;Think of the Future&lt;/h2&gt;
 
-&lt;p&gt;After some time passes, it comes to pass that the &lt;code&gt;GroomingService::Grommer&lt;/code&gt; has changed its method signature. Instead of the &lt;code&gt;groom&lt;/code&gt; method, it has changed to &lt;code&gt;groom!&lt;/code&gt;. Chances are someone thought that either the method had too many side affects or that &lt;code&gt;!&lt;/code&gt; are just really awesome looking.&lt;/p&gt;
+&lt;p&gt;After some time passes, the &lt;code&gt;GroomingService::Grommer&lt;/code&gt; has changed its method signature. Instead of the &lt;code&gt;groom&lt;/code&gt; method, it has changed to &lt;code&gt;groom!&lt;/code&gt;. Chances are someone thought that either the method had too many side affects or that &lt;code&gt;!&lt;/code&gt; are just really awesome looking.&lt;/p&gt;
 
 &lt;p&gt;In any case, the included service changes and when the test runs:&lt;/p&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-sh&quot; data-lang=&quot;sh&quot;&gt;&lt;span class=&quot;nv&quot;&gt;$:&lt;/span&gt; rspec mock_examples_spec.rb
@@ -98,6 +98,8 @@ Finished in 0.00735 seconds &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;files 
 &lt;span class=&quot;m&quot;&gt;1&lt;/span&gt; example, &lt;span class=&quot;m&quot;&gt;0&lt;/span&gt; failures
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;&lt;em&gt;It passes&lt;/em&gt;? How can that be? The method changed from &lt;code&gt;groom&lt;/code&gt; to &lt;code&gt;groom!&lt;/code&gt;. The &lt;code&gt;groom&lt;/code&gt; method does not even exist on &lt;code&gt;GroomingService::Groomer&lt;/code&gt;. It seems that the specs do not care what does or does not exist on the &lt;code&gt;double&lt;/code&gt;, they just happily pass.&lt;/p&gt;
+
+&lt;h2&gt;Use &lt;code&gt;instance_double&lt;/code&gt;&lt;/h2&gt;
 
 &lt;p&gt;The answer here is to use &lt;code&gt;instance_double&lt;/code&gt;. Like &lt;code&gt;double&lt;/code&gt;, &lt;code&gt;instance_double&lt;/code&gt; also returns a stand-in object that raises errors if methods not &lt;code&gt;allow&lt;/code&gt;ed or &lt;code&gt;expect&lt;/code&gt;ed are called on the object.&lt;/p&gt;
 
@@ -128,15 +130,15 @@ Failures:
 
   1&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; Dog#groom calls new with self and &lt;span class=&quot;k&quot;&gt;then&lt;/span&gt; groom
      Failure/Error: expect&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;groomer&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;.to receive&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;:groom&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
-       the GroomingService::Groomer class does not implement the instance method: groom
-     &lt;span class=&quot;c&quot;&gt;# ./mock_examples_spec.rb:44:in `block (3 levels) in &amp;lt;top (required)&amp;gt;&amp;#39;&lt;/span&gt;
+       the GroomingService::Groomer class does not
+          implement the instance method: groom
 
 Finished in 0.0054 seconds &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;files took 0.08288 seconds to load&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
 &lt;span class=&quot;m&quot;&gt;1&lt;/span&gt; example, &lt;span class=&quot;m&quot;&gt;1&lt;/span&gt; failure
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;While no one likes failing specs, I would rather see a failure here than in production.&lt;/p&gt;
+&lt;p&gt;While no one likes failing specs, a failure here is always preferable to one in production.&lt;/p&gt;
 
-&lt;p&gt;Since the API that we do not own changed (&lt;code&gt;Groomer&lt;/code&gt;), it was a mistake to blindly mock it without asking the underlying object if that method existed. However, with this problem corrected, the code is more robust and development can continue.&lt;/p&gt;
+&lt;p&gt;Since the API that we do not own (&lt;code&gt;Groomer&lt;/code&gt;) changed, it was a mistake to blindly mock it without asking the underlying object if that method existed. However, with this problem corrected, the code is more robust and development can continue.&lt;/p&gt;
 
 &lt;h2&gt;Mocking with Confidence&lt;/h2&gt;
 
