@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta http-equiv="content-type" content="text/html; charset=utf-8">
   
-    <meta name="description" content="A technology blog about a Year of Commits to Open Source projects.">
+    <meta name="description" content="Writing Future-proof mocking with RSpec 3 in Ruby. Make sure that your tests do not suffer from too permissive mocking in Ruby.">
   
 
   <!-- Enable responsiveness on mobile devices-->
@@ -14,7 +14,7 @@
 
   <title>
     
-      A Year of Commits &middot; 
+      How to Write Future-proof Mocks in RSpec 3 &middot; A Year of Commits
     
   </title>
 
@@ -63,19 +63,11 @@
 
 
     <div class="content container">
-      <div class="posts">
+      <div class="post">
+  <h1 class="post-title">How to Write Future-proof Mocks in RSpec 3</h1>
+  <span class="post-date">22 Nov 2015</span>
   
-  <div class="post">
-    <h1 class="post-title">
-      <a href="/2015/11/22/how-to-write-futureproof-mocks/">
-        How to Write Future-proof Mocks in RSpec 3
-      </a>
-    </h1>
-
-    
-
-    <span class="post-date">22 Nov 2015</span>
-    <span class='share-container'><ul class="share-buttons">
+  <span class='share-container'><ul class="share-buttons">
   <li>
     <a href="https://www.facebook.com/sharer/sharer.php?u=http://jakeyesbeck.com/2015/11/22/how-to-write-futureproof-mocks/&t=How to Write Future-proof Mocks in RSpec 3" title="Share on Facebook" target="_blank">
       <img src="http://jakeyesbeck.com/assets/images/facebook.svg">
@@ -110,8 +102,7 @@
   </li>
 </ul>
 </span>
-
-    <p>Tests are an important component in most software applications. Whether tests drive the development, or are bootstrapped on after the fact, tests need to be reliable for future development to progress. An application&#39;s complexity rises with time. During and after this increase, a rock solid test suite is crucial.</p>
+  <p>Tests are an important component in most software applications. Whether tests drive the development, or are bootstrapped on after the fact, tests need to be reliable for future development to progress. An application&#39;s complexity rises with time. During and after this increase, a rock solid test suite is crucial.</p>
 
 <h2>Let the Dogs Out</h2>
 
@@ -234,17 +225,40 @@ Finished in 0.0054 seconds <span class="o">(</span>files took 0.08288 seconds to
 
 <p>Asserting that a method is called on an object is a very common pattern in Ruby tests. Additionally, Ruby does not have the benefit of compiled languages with method invocation validation. We as Rubyists rely on automated testing to make sure that our applications work as expected, can be iterated upon, and handle third party library updates. While it may be attractive to use permissive mocking assertions, they can be dangerous and cause more problems than they are worth.</p>
 
-  </div>
-  
 </div>
 
-<div class="pagination">
-  
-    <a class="pagination-item older" href="http://jakeyesbeck.com/page2">Older</a>
-  
-  
-    <span class="pagination-item newer">Newer</span>
-  
+<div class="related">
+  <h2>Related Posts</h2>
+  <ul class="related-posts">
+    
+      <li>
+        <h3>
+          <a href="/2015/09/27/how-to-create-a-custom-enumerable/">
+            How to Create a Custom Enumerable
+            <small>27 Sep 2015</small>
+          </a>
+        </h3>
+      </li>
+    
+      <li>
+        <h3>
+          <a href="/2015/11/08/ruby-delegate-class/">
+            Ruby DelegateClass
+            <small>08 Nov 2015</small>
+          </a>
+        </h3>
+      </li>
+    
+      <li>
+        <h3>
+          <a href="/2015/08/23/ruby-objects/">
+            I, Object!
+            <small>23 Aug 2015</small>
+          </a>
+        </h3>
+      </li>
+    
+  </ul>
 </div>
 
     </div>

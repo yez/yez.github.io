@@ -4,13 +4,143 @@
  <title>A Year of Commits</title>
  <link href="/atom.xml" rel="self"/>
  <link href="/"/>
- <updated>2015-11-16T14:13:17-08:00</updated>
+ <updated>2015-11-22T21:30:20-08:00</updated>
  <id></id>
  <author>
    <name>Jake Yesbeck</name>
    <email></email>
  </author>
 
+ 
+ <entry>
+   <title>How to Write Future-proof Mocks in RSpec 3</title>
+   <link href="/2015/11/22/how-to-write-futureproof-mocks/"/>
+   <updated>2015-11-22T04:00:00-08:00</updated>
+   <id>/2015/11/22/how-to-write-futureproof-mocks</id>
+   <content type="html">&lt;p&gt;Tests are an important component in most software applications. Whether tests drive the development, or are bootstrapped on after the fact, tests need to be reliable for future development to progress. An application&amp;#39;s complexity rises with time. During and after this increase, a rock solid test suite is crucial.&lt;/p&gt;
+
+&lt;h2&gt;Let the Dogs Out&lt;/h2&gt;
+
+&lt;p&gt;Given an application that deals with &lt;code&gt;Dogs&lt;/code&gt;:&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Dog&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Keeping track of grooming statistics about this application&amp;#39;s dogs is the obvious cash cow. But that sounds very tedious and complicated, so we can assume that a &lt;code&gt;GroomingService&lt;/code&gt; exists that exposes a single &lt;code&gt;Groomer&lt;/code&gt; object:&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;k&quot;&gt;module&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;GroomingService&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Groomer&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;initialize&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;dog&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+      &lt;span class=&quot;vi&quot;&gt;@dog&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;dog&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+    &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;groom&lt;/span&gt;
+      &lt;span class=&quot;c1&quot;&gt;# Some complex grooming logic&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;This service was included by the &lt;code&gt;groomer&lt;/code&gt; gem and will become a core piece of the application. To keep everyone in the project sane and well rested, a robust spec suite is needed.&lt;/p&gt;
+
+&lt;h2&gt;Spec It Up&lt;/h2&gt;
+
+&lt;p&gt;Using &lt;code&gt;RSpec&lt;/code&gt; and the &lt;code&gt;GroomingService&lt;/code&gt;, a very basic test can be written to make sure the code works as expected. Introducing the &lt;code&gt;GroomingService&lt;/code&gt; into the &lt;code&gt;Dog&lt;/code&gt; class could look like:&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Dog&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;groom&lt;/span&gt;
+    &lt;span class=&quot;no&quot;&gt;GroomingService&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Groomer&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;new&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;groom&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;The first test should be to make sure that when the &lt;code&gt;groom&lt;/code&gt; method on a dog is called, it initializes and calls &lt;code&gt;groom&lt;/code&gt; out to the &lt;code&gt;GroomService::Groomer&lt;/code&gt; object.&lt;/p&gt;
+
+&lt;p&gt;When asserting that a certain set of methods is called on a particular object, the built in &lt;a href=&quot;https://www.relishapp.com/rspec/rspec-mocks/v/3-4/docs/basics/test-doubles&quot;&gt;RSpec double&lt;/a&gt; method is very handy.&lt;/p&gt;
+
+&lt;p&gt;The &lt;code&gt;double&lt;/code&gt; method returns a stand-in object to assert &lt;code&gt;allow&lt;/code&gt; and &lt;code&gt;expect&lt;/code&gt; messages against. Any method that is called on the test double which is not explicitly &lt;code&gt;allow&lt;/code&gt;ed or &lt;code&gt;expect&lt;/code&gt;ed results in an error.&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;n&quot;&gt;describe&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Dog&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;subject&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;described_class&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+  &lt;span class=&quot;n&quot;&gt;describe&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;#groom&amp;#39;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;let&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:groomer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;double&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;GroomingService&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Groomer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+    &lt;span class=&quot;n&quot;&gt;it&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;initializes and calls groom&amp;#39;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
+      &lt;span class=&quot;n&quot;&gt;expect&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;GroomingService&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Groomer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;to&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;receive&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:new&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;groomer&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+      &lt;span class=&quot;n&quot;&gt;expect&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;groomer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;to&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;receive&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:groom&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+      &lt;span class=&quot;n&quot;&gt;subject&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;groom&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;As expected, this test passes beautifully:&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-sh&quot; data-lang=&quot;sh&quot;&gt;&lt;span class=&quot;nv&quot;&gt;$:&lt;/span&gt; rspec dog_spec.rb
+
+Dog
+  &lt;span class=&quot;c&quot;&gt;#groom&lt;/span&gt;
+    calls new with self and &lt;span class=&quot;k&quot;&gt;then&lt;/span&gt; groom
+
+Finished in 0.00773 seconds &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;files took 0.09367 seconds to load&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;m&quot;&gt;1&lt;/span&gt; example, &lt;span class=&quot;m&quot;&gt;0&lt;/span&gt; failures
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;That can be it, right? Pack it up and put the dogs away, whoever let them out will have to do it all again later.&lt;/p&gt;
+
+&lt;h2&gt;Think of the Future&lt;/h2&gt;
+
+&lt;p&gt;After some time passes, it comes to pass that the &lt;code&gt;GroomingService::Grommer&lt;/code&gt; has changed its method signature. Instead of the &lt;code&gt;groom&lt;/code&gt; method, it has changed to &lt;code&gt;groom!&lt;/code&gt;. Chances are someone thought that either the method had too many side affects or that &lt;code&gt;!&lt;/code&gt; are just really awesome looking.&lt;/p&gt;
+
+&lt;p&gt;In any case, the included service changes and when the test runs:&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-sh&quot; data-lang=&quot;sh&quot;&gt;&lt;span class=&quot;nv&quot;&gt;$:&lt;/span&gt; rspec mock_examples_spec.rb
+
+Dog
+  &lt;span class=&quot;c&quot;&gt;#groom&lt;/span&gt;
+    calls new with self and &lt;span class=&quot;k&quot;&gt;then&lt;/span&gt; groom
+
+Finished in 0.00735 seconds &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;files took 0.10532 seconds to load&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;m&quot;&gt;1&lt;/span&gt; example, &lt;span class=&quot;m&quot;&gt;0&lt;/span&gt; failures
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;&lt;em&gt;It passes&lt;/em&gt;? How can that be? The method changed from &lt;code&gt;groom&lt;/code&gt; to &lt;code&gt;groom!&lt;/code&gt;. The &lt;code&gt;groom&lt;/code&gt; method does not even exist on &lt;code&gt;GroomingService::Groomer&lt;/code&gt;. It seems that the specs do not care what does or does not exist on the &lt;code&gt;double&lt;/code&gt;, they just happily pass.&lt;/p&gt;
+
+&lt;p&gt;The answer here is to use &lt;code&gt;instance_double&lt;/code&gt;. Like &lt;code&gt;double&lt;/code&gt;, &lt;code&gt;instance_double&lt;/code&gt; also returns a stand-in object that raises errors if methods not &lt;code&gt;allow&lt;/code&gt;ed or &lt;code&gt;expect&lt;/code&gt;ed are called on the object.&lt;/p&gt;
+
+&lt;p&gt;The key difference is that &lt;code&gt;instance_double&lt;/code&gt; checks the underlying object to make sure that it responds to methods before making assertions that they are called.&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;n&quot;&gt;describe&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Dog&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;subject&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;described_class&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+  &lt;span class=&quot;n&quot;&gt;describe&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;#groom&amp;#39;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;let&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:groomer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;instance_double&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;GroomingService&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Groomer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+    &lt;span class=&quot;n&quot;&gt;it&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;initializes and calls groom&amp;#39;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
+      &lt;span class=&quot;n&quot;&gt;expect&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;GroomingService&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Groomer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;to&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;receive&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:new&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;groomer&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+      &lt;span class=&quot;n&quot;&gt;expect&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;groomer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;to&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;receive&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:groom&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+      &lt;span class=&quot;n&quot;&gt;subject&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;groom&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Now running this test, we see the failure we should expect:&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-sh&quot; data-lang=&quot;sh&quot;&gt;&lt;span class=&quot;nv&quot;&gt;$:&lt;/span&gt; rspec dog_spec.rb
+
+Dog
+  &lt;span class=&quot;c&quot;&gt;#groom&lt;/span&gt;
+    calls new with self and &lt;span class=&quot;k&quot;&gt;then&lt;/span&gt; groom &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;FAILED - 1&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+
+Failures:
+
+  1&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; Dog#groom calls new with self and &lt;span class=&quot;k&quot;&gt;then&lt;/span&gt; groom
+     Failure/Error: expect&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;groomer&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;.to receive&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;:groom&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+       the GroomingService::Groomer class does not implement the instance method: groom
+     &lt;span class=&quot;c&quot;&gt;# ./mock_examples_spec.rb:44:in `block (3 levels) in &amp;lt;top (required)&amp;gt;&amp;#39;&lt;/span&gt;
+
+Finished in 0.0054 seconds &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;files took 0.08288 seconds to load&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;m&quot;&gt;1&lt;/span&gt; example, &lt;span class=&quot;m&quot;&gt;1&lt;/span&gt; failure
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;While no one likes failing specs, I would rather see a failure here than in production.&lt;/p&gt;
+
+&lt;p&gt;Since the API that we do not own changed (&lt;code&gt;Groomer&lt;/code&gt;), it was a mistake to blindly mock it without asking the underlying object if that method existed. However, with this problem corrected, the code is more robust and development can continue.&lt;/p&gt;
+
+&lt;h2&gt;Mocking with Confidence&lt;/h2&gt;
+
+&lt;p&gt;Asserting that a method is called on an object is a very common pattern in Ruby tests. Additionally, Ruby does not have the benefit of compiled languages with method invocation validation. We as Rubyists rely on automated testing to make sure that our applications work as expected, can be iterated upon, and handle third party library updates. While it may be attractive to use permissive mocking assertions, they can be dangerous and cause more problems than they are worth.&lt;/p&gt;
+</content>
+ </entry>
  
  <entry>
    <title>Five Active Record Features You Should Be Using</title>
