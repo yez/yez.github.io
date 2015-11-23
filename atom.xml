@@ -42,14 +42,16 @@
 
 &lt;h2&gt;Spec It Up&lt;/h2&gt;
 
-&lt;p&gt;Using &lt;code&gt;RSpec&lt;/code&gt; and the &lt;code&gt;GroomingService&lt;/code&gt;, a very basic test can be written to make sure the code works as expected. Introducing the &lt;code&gt;GroomingService&lt;/code&gt; into the &lt;code&gt;Dog&lt;/code&gt; class could look like:&lt;/p&gt;
+&lt;p&gt;Using &lt;code&gt;RSpec&lt;/code&gt; and the &lt;code&gt;GroomingService&lt;/code&gt;, a very basic test can be written to make sure the code works as expected.&lt;/p&gt;
+
+&lt;p&gt;Introducing the &lt;code&gt;GroomingService&lt;/code&gt; into the &lt;code&gt;Dog&lt;/code&gt; class could look like:&lt;/p&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Dog&lt;/span&gt;
   &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;groom&lt;/span&gt;
     &lt;span class=&quot;no&quot;&gt;GroomingService&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Groomer&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;new&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;groom&lt;/span&gt;
   &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
 &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;The first test should be to make sure that when the &lt;code&gt;groom&lt;/code&gt; method on a dog is called, it initializes and calls &lt;code&gt;groom&lt;/code&gt; out to the &lt;code&gt;GroomService::Groomer&lt;/code&gt; object.&lt;/p&gt;
+&lt;p&gt;The first test should be to make sure that when the &lt;code&gt;groom&lt;/code&gt; method on a &lt;code&gt;Dog&lt;/code&gt; is called, it initializes and calls &lt;code&gt;groom&lt;/code&gt; out to the &lt;code&gt;GroomService::Groomer&lt;/code&gt; object.&lt;/p&gt;
 
 &lt;p&gt;When asserting that a certain set of methods is called on a particular object, the built in &lt;a href=&quot;https://www.relishapp.com/rspec/rspec-mocks/v/3-4/docs/basics/test-doubles&quot;&gt;RSpec double&lt;/a&gt; method is very handy.&lt;/p&gt;
 
@@ -138,7 +140,7 @@ Finished in 0.0054 seconds &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;files t
 
 &lt;h2&gt;Mocking with Confidence&lt;/h2&gt;
 
-&lt;p&gt;Asserting that a method is called on an object is a very common pattern in Ruby tests. Additionally, Ruby does not have the benefit of compiled languages with method invocation validation. We as Rubyists rely on automated testing to make sure that our applications work as expected, can be iterated upon, and handle third party library updates. While it may be attractive to use permissive mocking assertions, they can be dangerous and cause more problems than they are worth.&lt;/p&gt;
+&lt;p&gt;Asserting that a method is called on an object is a very common pattern in Ruby tests. Additionally, Ruby does not have the benefit of compiled languages in terms of method invocation validation. We as Rubyists rely on automated testing to make sure that our applications work as expected, can be iterated upon, and handle third party library updates. While it may be attractive to use permissive mocking assertions, they can be dangerous and cause more problems than they are worth.&lt;/p&gt;
 </content>
  </entry>
  

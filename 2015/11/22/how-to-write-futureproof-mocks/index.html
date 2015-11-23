@@ -127,14 +127,16 @@
 
 <h2>Spec It Up</h2>
 
-<p>Using <code>RSpec</code> and the <code>GroomingService</code>, a very basic test can be written to make sure the code works as expected. Introducing the <code>GroomingService</code> into the <code>Dog</code> class could look like:</p>
+<p>Using <code>RSpec</code> and the <code>GroomingService</code>, a very basic test can be written to make sure the code works as expected.</p>
+
+<p>Introducing the <code>GroomingService</code> into the <code>Dog</code> class could look like:</p>
 <div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">class</span> <span class="nc">Dog</span>
   <span class="k">def</span> <span class="nf">groom</span>
     <span class="no">GroomingService</span><span class="o">::</span><span class="no">Groomer</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="nb">self</span><span class="p">)</span><span class="o">.</span><span class="n">groom</span>
   <span class="k">end</span>
 <span class="k">end</span>
 </code></pre></div>
-<p>The first test should be to make sure that when the <code>groom</code> method on a dog is called, it initializes and calls <code>groom</code> out to the <code>GroomService::Groomer</code> object.</p>
+<p>The first test should be to make sure that when the <code>groom</code> method on a <code>Dog</code> is called, it initializes and calls <code>groom</code> out to the <code>GroomService::Groomer</code> object.</p>
 
 <p>When asserting that a certain set of methods is called on a particular object, the built in <a href="https://www.relishapp.com/rspec/rspec-mocks/v/3-4/docs/basics/test-doubles">RSpec double</a> method is very handy.</p>
 
@@ -223,7 +225,7 @@ Finished in 0.0054 seconds <span class="o">(</span>files took 0.08288 seconds to
 
 <h2>Mocking with Confidence</h2>
 
-<p>Asserting that a method is called on an object is a very common pattern in Ruby tests. Additionally, Ruby does not have the benefit of compiled languages with method invocation validation. We as Rubyists rely on automated testing to make sure that our applications work as expected, can be iterated upon, and handle third party library updates. While it may be attractive to use permissive mocking assertions, they can be dangerous and cause more problems than they are worth.</p>
+<p>Asserting that a method is called on an object is a very common pattern in Ruby tests. Additionally, Ruby does not have the benefit of compiled languages in terms of method invocation validation. We as Rubyists rely on automated testing to make sure that our applications work as expected, can be iterated upon, and handle third party library updates. While it may be attractive to use permissive mocking assertions, they can be dangerous and cause more problems than they are worth.</p>
 
 </div>
 
