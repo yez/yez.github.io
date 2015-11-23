@@ -88,7 +88,7 @@ Finished in 0.00773 seconds &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;files 
 &lt;p&gt;After some time passes, the &lt;code&gt;GroomingService::Grommer&lt;/code&gt; has changed its method signature. Instead of the &lt;code&gt;groom&lt;/code&gt; method, it has changed to &lt;code&gt;groom!&lt;/code&gt;. Chances are someone thought that either the method had too many side affects or that &lt;code&gt;!&lt;/code&gt; are just really awesome looking.&lt;/p&gt;
 
 &lt;p&gt;In any case, the included service changes and when the test runs:&lt;/p&gt;
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-sh&quot; data-lang=&quot;sh&quot;&gt;&lt;span class=&quot;nv&quot;&gt;$:&lt;/span&gt; rspec mock_examples_spec.rb
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-sh&quot; data-lang=&quot;sh&quot;&gt;&lt;span class=&quot;nv&quot;&gt;$:&lt;/span&gt; rspec dog_spec.rb
 
 Dog
   &lt;span class=&quot;c&quot;&gt;#groom&lt;/span&gt;
