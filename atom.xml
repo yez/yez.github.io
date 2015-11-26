@@ -17,7 +17,7 @@
    <link href="/2015/11/22/how-to-write-futureproof-mocks/"/>
    <updated>2015-11-22T04:00:00-08:00</updated>
    <id>/2015/11/22/how-to-write-futureproof-mocks</id>
-   <content type="html">&lt;p&gt;Tests are an important component in most software applications. Whether tests drive the development, or are bootstrapped on after the fact, tests need to be reliable for future development to progress. An application&amp;#39;s complexity rises with time. During and after this increase, a rock solid test suite is crucial.&lt;/p&gt;
+   <content type="html">&lt;p&gt;Tests are an important component in most software applications. Whether tests drive the development, or are strapped on after the fact, tests need to be reliable for future development to progress. An application&amp;#39;s complexity rises with time. During and after this increase, a rock solid test suite is crucial.&lt;/p&gt;
 
 &lt;h2&gt;Let the Dogs Out&lt;/h2&gt;
 
@@ -85,7 +85,7 @@ Finished in 0.00773 seconds &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;files 
 
 &lt;h2&gt;Think of the Future&lt;/h2&gt;
 
-&lt;p&gt;After some time passes, the &lt;code&gt;GroomingService::Grommer&lt;/code&gt; has changed its method signature. Instead of the &lt;code&gt;groom&lt;/code&gt; method, it has changed to &lt;code&gt;groom!&lt;/code&gt;. Chances are someone thought that either the method had too many side affects or that &lt;code&gt;!&lt;/code&gt; are just really awesome looking.&lt;/p&gt;
+&lt;p&gt;After some time passes, the &lt;code&gt;GroomingService::Groomer&lt;/code&gt; has changed its method signature. Instead of the &lt;code&gt;groom&lt;/code&gt; method, it has changed to &lt;code&gt;groom!&lt;/code&gt;. Chances are someone thought that either the method had too many side affects or that &lt;code&gt;!&lt;/code&gt; are just really awesome looking.&lt;/p&gt;
 
 &lt;p&gt;In any case, the included service changes and when the test runs:&lt;/p&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-sh&quot; data-lang=&quot;sh&quot;&gt;&lt;span class=&quot;nv&quot;&gt;$:&lt;/span&gt; rspec dog_spec.rb
