@@ -25,7 +25,7 @@
 
 &lt;h2&gt;Still Valid&lt;/h2&gt;
 
-&lt;p&gt;The &lt;code&gt;validates_type&lt;/code&gt; gem can be useful for a system that cares about exact types at save time. For instance, a model has an incorrect database column type (because of legacy or other reasons) can still control validation over its data just the same.&lt;/p&gt;
+&lt;p&gt;The &lt;code&gt;validates_type&lt;/code&gt; gem can be useful for a system that cares about exact types at save time. For instance, a model that has an incorrect database column type (because of legacy or other reasons) can still control validation over its data just the same.&lt;/p&gt;
 
 &lt;p&gt;If a &amp;quot;junior developer who is now somehow the CTO&amp;quot; created the original system. And if that developer did something like create an  &lt;code&gt;is_published&lt;/code&gt; column on the &lt;code&gt;authors&lt;/code&gt; table set as a &lt;code&gt;varchar&lt;/code&gt;, &lt;code&gt;validates_type&lt;/code&gt; makes that less of an issue.&lt;/p&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Author&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;ActiveRecord&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Base&lt;/span&gt;

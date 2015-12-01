@@ -119,7 +119,7 @@
 
 <h2>Still Valid</h2>
 
-<p>The <code>validates_type</code> gem can be useful for a system that cares about exact types at save time. For instance, a model has an incorrect database column type (because of legacy or other reasons) can still control validation over its data just the same.</p>
+<p>The <code>validates_type</code> gem can be useful for a system that cares about exact types at save time. For instance, a model that has an incorrect database column type (because of legacy or other reasons) can still control validation over its data just the same.</p>
 
 <p>If a &quot;junior developer who is now somehow the CTO&quot; created the original system. And if that developer did something like create an  <code>is_published</code> column on the <code>authors</code> table set as a <code>varchar</code>, <code>validates_type</code> makes that less of an issue.</p>
 <div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">class</span> <span class="nc">Author</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
