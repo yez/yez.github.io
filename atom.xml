@@ -4,13 +4,160 @@
  <title>A Year of Commits</title>
  <link href="/atom.xml" rel="self"/>
  <link href="/"/>
- <updated>2015-11-29T22:03:16-08:00</updated>
+ <updated>2015-12-07T00:03:08-08:00</updated>
  <id></id>
  <author>
    <name>Jake Yesbeck</name>
    <email></email>
  </author>
 
+ 
+ <entry>
+   <title>How to use Rails Strong Parameters</title>
+   <link href="/2015/12/06/how-to-use-rails-strong-parameters/"/>
+   <updated>2015-12-06T04:00:00-08:00</updated>
+   <id>/2015/12/06/how-to-use-rails-strong-parameters</id>
+   <content type="html">&lt;p&gt;In the latest major version of Ruby on Rails, &lt;strong&gt;Strong Parameters&lt;/strong&gt; were introduced. The intent of this addition was to enable consistent and reliable parameter checking. Using Strong Parameters is simple and intuitive. It provides a very clean method API to help keep controllers DRY.&lt;/p&gt;
+
+&lt;p&gt;However, knowing when to use Strong Parameters and how to use them correctly is very important. After all, what good is parameter validation if it is in the wrong place or conveys the wrong message?&lt;/p&gt;
+
+&lt;h2&gt;Hit the Books&lt;/h2&gt;
+
+&lt;p&gt;The trusty &lt;em&gt;&amp;quot;booksandreviews.com&amp;quot;&lt;/em&gt; will serve as a good example application.&lt;/p&gt;
+
+&lt;p&gt;Given a controller that can create &lt;code&gt;Authors&lt;/code&gt;, a default pattern without Strong Parameters could look like:&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;AuthorsController&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;ApplicationController&lt;/span&gt;
+  &lt;span class=&quot;c1&quot;&gt;# POST /authors&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;create&lt;/span&gt;
+    &lt;span class=&quot;vi&quot;&gt;@author&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Author&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;create!&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;author_params&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+    &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;vi&quot;&gt;@author&lt;/span&gt;
+      &lt;span class=&quot;n&quot;&gt;redirect_to&lt;/span&gt; &lt;span class=&quot;vi&quot;&gt;@author&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;notice&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;Author was successfully created.&amp;#39;&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;else&lt;/span&gt;
+      &lt;span class=&quot;n&quot;&gt;render&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:new&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+  &lt;span class=&quot;kp&quot;&gt;private&lt;/span&gt;
+
+  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;author_params&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;params&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:author&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Assuming that there are no presence validations on the &lt;code&gt;Author&lt;/code&gt; class itself (or in the form view creating this model), this code has no check to make sure that anything about an &lt;code&gt;Author&lt;/code&gt; is passed in to create.&lt;/p&gt;
+
+&lt;p&gt;This means that any &lt;code&gt;POST&lt;/code&gt; request is made to &lt;code&gt;/authors&lt;/code&gt; will create a new &lt;code&gt;Author&lt;/code&gt;. While this kind of problem would most likely not make it to production, let us assume that the poor people over at &amp;quot;booksandreviews.com&amp;quot; came from such humble code beginnings that this &lt;strong&gt;was&lt;/strong&gt; the first iteration of the &lt;code&gt;AuthorsController&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;To make the &lt;code&gt;AuthorsController&lt;/code&gt; more robust, the &lt;code&gt;require&lt;/code&gt; method can be used on the &lt;code&gt;params&lt;/code&gt; hash:&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;AuthorsController&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;ApplicationController&lt;/span&gt;
+  &lt;span class=&quot;c1&quot;&gt;# ...&lt;/span&gt;
+
+  &lt;span class=&quot;kp&quot;&gt;private&lt;/span&gt;
+
+  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;author_params&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;params&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;require&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:author&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Now if a &lt;code&gt;POST&lt;/code&gt; to &lt;code&gt;/authors&lt;/code&gt; does not contain a payload with an &lt;code&gt;:author&lt;/code&gt; key in the body, the request will error:&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;ActionController::ParameterMissing&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;However, a request with the &lt;code&gt;:author&lt;/code&gt; attribute will...&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;ActiveModel::ForbiddenAttributesError&lt;/code&gt; &lt;em&gt;Also&lt;/em&gt; cause an error, apparently.&lt;/p&gt;
+
+&lt;p&gt;This is another feature of Strong Parameters. The reason an error occurs is that the &lt;code&gt;author_params&lt;/code&gt; method did not specify which parameters could be mass assigned to the &lt;code&gt;Author&lt;/code&gt; class. Passing the result of &lt;code&gt;require&lt;/code&gt; directly to &lt;code&gt;Author.create&lt;/code&gt; will trip this safety measure.&lt;/p&gt;
+
+&lt;h2&gt;Shut &amp;#39;em Down&lt;/h2&gt;
+
+&lt;p&gt;To correct the &lt;code&gt;ForbiddenAttributesError&lt;/code&gt; and add some much needed structure to the &lt;code&gt;AuthorsController&lt;/code&gt;, the &lt;code&gt;permit&lt;/code&gt; method needs to be used in conjunction with &lt;code&gt;require&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;Adding a list of attributes as individual symbols will make sure that only those attributes can be passed through to &lt;code&gt;Author.create!&lt;/code&gt;&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;AuthorsController&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;ApplicationController&lt;/span&gt;
+  &lt;span class=&quot;c1&quot;&gt;# ...&lt;/span&gt;
+
+  &lt;span class=&quot;kp&quot;&gt;private&lt;/span&gt;
+
+  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;author_params&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;params&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;require&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:author&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;permit&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:country&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:email&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Great! Now a properly formatted &lt;code&gt;POST&lt;/code&gt; containing only the correct attributes will create an &lt;code&gt;Author&lt;/code&gt; appropriately.&lt;/p&gt;
+
+&lt;p&gt;But, why go through all the hassle? There should be a way to let all attributes pass, regardless of how crazy harmful they could be to our application we use to pay bills.&lt;/p&gt;
+
+&lt;p&gt;The &lt;code&gt;permit!&lt;/code&gt; method is a completely permissive way to allow all attributes to be mass assigned to a model:&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;AuthorsController&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;ApplicationController&lt;/span&gt;
+  &lt;span class=&quot;c1&quot;&gt;# ...&lt;/span&gt;
+
+  &lt;span class=&quot;kp&quot;&gt;private&lt;/span&gt;
+
+  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;author_params&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;params&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;require&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:author&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;permit!&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;This will allow any attributes nested under &lt;code&gt;:author&lt;/code&gt; to be set on an &lt;code&gt;Author&lt;/code&gt;. A solution like this requires no declaration of attributes, but is this better?&lt;/p&gt;
+
+&lt;p&gt;The short answer is &lt;em&gt;&amp;quot;no&amp;quot;&lt;/em&gt;.&lt;/p&gt;
+
+&lt;p&gt;The reason why being completely permissive with parameters is a bad idea is because not all attributes were created equally.&lt;/p&gt;
+
+&lt;p&gt;If &lt;em&gt;&amp;quot;booksandreviews.com&amp;quot;&lt;/em&gt; had an &lt;code&gt;admin&lt;/code&gt; or &lt;code&gt;superuser&lt;/code&gt; column on their &lt;code&gt;authors&lt;/code&gt; table, any &lt;code&gt;POST&lt;/code&gt; with &lt;code&gt;admin: true&lt;/code&gt; would create not a normal &lt;code&gt;Author&lt;/code&gt;, but an all-mighty &lt;code&gt;Author&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;Specifying the attributes that can be mass assigned to an &lt;code&gt;ActiveRecord&lt;/code&gt; model is not a new concept, with Strong Parameters this pattern is just too easy not to do.&lt;/p&gt;
+
+&lt;h2&gt;Open Up Shop&lt;/h2&gt;
+
+&lt;p&gt;Another great feature of using Strong Parameters is type assertion. Regardless of &lt;code&gt;ActiveRecord&lt;/code&gt;&amp;#39;s type coercion, ensuring that data is as valid as early as possible is important.&lt;/p&gt;
+
+&lt;p&gt;Consider that an &lt;code&gt;Author&lt;/code&gt; can have an array of &lt;code&gt;genres&lt;/code&gt; which summarize their bodies of work. To ensure that this list of &lt;code&gt;genres&lt;/code&gt; is an array, a hash syntax can be used:&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;AuthorsController&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;ApplicationController&lt;/span&gt;
+  &lt;span class=&quot;c1&quot;&gt;# ...&lt;/span&gt;
+
+  &lt;span class=&quot;kp&quot;&gt;private&lt;/span&gt;
+
+  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;author_params&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;params&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;require&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:author&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+          &lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;permit&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:country&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:email&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;genres&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[]&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;})&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;By adding &lt;code&gt;{ genres: [] }&lt;/code&gt; to the end of the &lt;code&gt;permit&lt;/code&gt; call, it ensures that the &lt;code&gt;genres&lt;/code&gt; value is always an array. This prevents random nonsense or a malformed request from compromising the &lt;code&gt;Author&lt;/code&gt; class&amp;#39; data integrity. If something other than an array is passed as the &lt;code&gt;genres&lt;/code&gt; attribute, it will disregard it.&lt;/p&gt;
+
+&lt;p&gt;Alternatively, when a parameter is a hash (like &lt;code&gt;preferences&lt;/code&gt;), all the keys in the hash need to be present in the &lt;code&gt;permit&lt;/code&gt; call.&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-JSON&quot; data-lang=&quot;JSON&quot;&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;nt&quot;&gt;&amp;quot;preferences&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;&amp;quot;time_zone&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;GMT&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;&amp;quot;subscribed&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kc&quot;&gt;true&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;AuthorsController&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;ApplicationController&lt;/span&gt;
+  &lt;span class=&quot;c1&quot;&gt;# ...&lt;/span&gt;
+
+  &lt;span class=&quot;kp&quot;&gt;private&lt;/span&gt;
+
+  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;author_params&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;params&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;require&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:author&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+          &lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;permit&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+                  &lt;span class=&quot;ss&quot;&gt;:country&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+                  &lt;span class=&quot;ss&quot;&gt;:email&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+                  &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;preferences&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:time_zone&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:subscribed&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;})&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;If this is a tad confusing, check out more examples at the &lt;a href=&quot;http://edgeguides.rubyonrails.org/action_controller_overview.html#strong-parameters&quot;&gt;official guide for Strong Parameters&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h2&gt;Everything in Moderation&lt;/h2&gt;
+
+&lt;p&gt;Strong Parameters is not appropriate for every situation. In the case that a certain number of parameters must be present, or if one parameter must only be present when not accompanied by another specific parameter, Strong Parameters will fall short. The time and place to use Strong Parameters is when creating or updating an &lt;code&gt;ActiveRecord&lt;/code&gt; object.&lt;/p&gt;
+
+&lt;p&gt;Additionally, if the Ruby on Rails application in question was an API, Strong Parameters would only be effective in very specific circumstances. Since the feedback given by Strong Parameters is not as granular as an API would like to be, it could be hard to find many uses of it.&lt;/p&gt;
+</content>
+ </entry>
  
  <entry>
    <title>Validates Type 2.0</title>

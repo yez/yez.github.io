@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta http-equiv="content-type" content="text/html; charset=utf-8">
   
-    <meta name="description" content="A technology blog about a Year of Commits to Open Source projects.">
+    <meta name="description" content="Using Strong Params in Rails 4.0 is a great way to acheive data consistency and real parameter validation.">
   
 
   <!-- Enable responsiveness on mobile devices-->
@@ -14,7 +14,7 @@
 
   <title>
     
-      A Year of Commits &middot; 
+      How to use Rails Strong Parameters &middot; A Year of Commits
     
   </title>
 
@@ -63,19 +63,11 @@
 
 
     <div class="content container">
-      <div class="posts">
+      <div class="post">
+  <h1 class="post-title">How to use Rails Strong Parameters</h1>
+  <span class="post-date">06 Dec 2015</span>
   
-  <div class="post">
-    <h1 class="post-title">
-      <a href="/2015/12/06/how-to-use-rails-strong-parameters/">
-        How to use Rails Strong Parameters
-      </a>
-    </h1>
-
-    
-
-    <span class="post-date">06 Dec 2015</span>
-    <span class='share-container'><ul class="share-buttons">
+  <span class='share-container'><ul class="share-buttons">
   <li>
     <a href="https://www.facebook.com/sharer/sharer.php?u=http://jakeyesbeck.com/2015/12/06/how-to-use-rails-strong-parameters/&t=How to use Rails Strong Parameters" title="Share on Facebook" target="_blank">
       <img src="http://jakeyesbeck.com/assets/images/facebook.svg">
@@ -110,8 +102,7 @@
   </li>
 </ul>
 </span>
-
-    <p>In the latest major version of Ruby on Rails, <strong>Strong Parameters</strong> were introduced. The intent of this addition was to enable consistent and reliable parameter checking. Using Strong Parameters is simple and intuitive. It provides a very clean method API to help keep controllers DRY.</p>
+  <p>In the latest major version of Ruby on Rails, <strong>Strong Parameters</strong> were introduced. The intent of this addition was to enable consistent and reliable parameter checking. Using Strong Parameters is simple and intuitive. It provides a very clean method API to help keep controllers DRY.</p>
 
 <p>However, knowing when to use Strong Parameters and how to use them correctly is very important. After all, what good is parameter validation if it is in the wrong place or conveys the wrong message?</p>
 
@@ -251,17 +242,40 @@
 
 <p>Additionally, if the Ruby on Rails application in question was an API, Strong Parameters would only be effective in very specific circumstances. Since the feedback given by Strong Parameters is not as granular as an API would like to be, it could be hard to find many uses of it.</p>
 
-  </div>
-  
 </div>
 
-<div class="pagination">
-  
-    <a class="pagination-item older" href="http://jakeyesbeck.com/page2">Older</a>
-  
-  
-    <span class="pagination-item newer">Newer</span>
-  
+<div class="related">
+  <h2>Related Posts</h2>
+  <ul class="related-posts">
+    
+      <li>
+        <h3>
+          <a href="/2015/11/15/five-active-record-features-you-should-be-using/">
+            Five Active Record Features You Should Be Using
+            <small>15 Nov 2015</small>
+          </a>
+        </h3>
+      </li>
+    
+      <li>
+        <h3>
+          <a href="/2015/05/10/validates-type/">
+            validates_type
+            <small>10 May 2015</small>
+          </a>
+        </h3>
+      </li>
+    
+      <li>
+        <h3>
+          <a href="/2015/09/20/rails-http-status-codes/">
+            Just learn Rails (Part 3) HTTP status codes
+            <small>20 Sep 2015</small>
+          </a>
+        </h3>
+      </li>
+    
+  </ul>
 </div>
 
     </div>
