@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta http-equiv="content-type" content="text/html; charset=utf-8">
   
-    <meta name="description" content="">
+    <meta name="description" content="Changing Ruby methods and classes after their definition is a powerful tool for any Rubyists. But Monkey Patching is scary and full of danger, use Refinements instead. Ruby Refinements are the sleek alternative to huge changes such as Monkey Patches.">
   
 
   <!-- Enable responsiveness on mobile devices-->
@@ -106,9 +106,9 @@
 
 <h2>The Problem</h2>
 
-<p>A reason that monkey patched code has issues lies in the scope of the changed code. If code is expected to be in a certain state and then is changed, all other parts of the application suffer from those changes.</p>
+<p>A reason that monkey patched code has issues lies in the scope of the changed code. If previously defined code is changed at an arbitrary time, all other parts of the application suffer from those changes.</p>
 
-<p>Why would someone need to change an existing class? Perhaps an included <code>gem</code> needs to be altered in a small way to behave correctly in a very specific system. Or maybe there exists a very dark area of a codebase that must not be touched directly for fear that the entire application will go under.</p>
+<p>Why would someone need to change an existing class? Perhaps an included <code>gem</code> needs to be altered in a small way to behave correctly in a very specific system. Or maybe, there exists a very dark area of a codebase that must not be touched directly for fear that the entire application will go under.</p>
 
 <p>Whatever the case, patching code that has been already defined happens and it usually happens poorly.</p>
 
