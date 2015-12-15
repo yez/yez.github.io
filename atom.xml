@@ -25,7 +25,7 @@
 
 &lt;p&gt;Why would someone need to change an existing class? Perhaps an included &lt;code&gt;gem&lt;/code&gt; needs to be altered in a small way to behave correctly in a very specific system. Or maybe, there exists a very dark area of a codebase that must not be touched directly for fear that the entire application will go under.&lt;/p&gt;
 
-&lt;p&gt;Whatever the case, patching code that has been already defined happens and it usually happens poorly.&lt;/p&gt;
+&lt;p&gt;Whatever the case, patching code that has been already defined happens, and it usually happens poorly.&lt;/p&gt;
 
 &lt;p&gt;These problems can be especially nefarious if the patches are not in automatically loaded files. For example, say we have a &lt;code&gt;Dog&lt;/code&gt; class:&lt;/p&gt;
 
@@ -104,6 +104,10 @@
 &lt;span class=&quot;n&quot;&gt;training&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Training&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;new&lt;/span&gt;
 &lt;span class=&quot;n&quot;&gt;training&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;train&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;dog&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
 &lt;span class=&quot;c1&quot;&gt;# =&amp;gt; Woof woof, good sir.&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Neither the passed in dog, nor newly created dogs&amp;#39; functionality is not changed:&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;n&quot;&gt;dog&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;bark&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# =&amp;gt; woof woof&lt;/span&gt;
 
 &lt;span class=&quot;n&quot;&gt;dog&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Dog&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;new&lt;/span&gt;
 &lt;span class=&quot;n&quot;&gt;dog&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;bark&lt;/span&gt;
@@ -131,7 +135,7 @@
 &lt;span class=&quot;no&quot;&gt;Dog&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;new&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;bark&lt;/span&gt;
 &lt;span class=&quot;c1&quot;&gt;# =&amp;gt; NoMethodError: super: no superclass method `bark&amp;#39; for Dog&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;The original implementation of &lt;code&gt;Dog&lt;/code&gt; had a very specific string that might not want to be duplicated. However, after the class has been monkey patched, that method is no longer accessible.&lt;/p&gt;
+&lt;p&gt;The original implementation of &lt;code&gt;Dog&lt;/code&gt; had a very specific string that might not want to be duplicated. When the class is monkey patched, the original method is replaced and &lt;code&gt;super&lt;/code&gt; is not accessible.&lt;/p&gt;
 
 &lt;p&gt;In a less silly example, maybe the method being patched had some valuable code a patch could have used. Since Refinements are not strict code overwrites, they maintain the &lt;code&gt;super&lt;/code&gt; functionality found in inheritance:&lt;/p&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Dog&lt;/span&gt;

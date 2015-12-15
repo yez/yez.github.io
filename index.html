@@ -119,7 +119,7 @@
 
 <p>Why would someone need to change an existing class? Perhaps an included <code>gem</code> needs to be altered in a small way to behave correctly in a very specific system. Or maybe, there exists a very dark area of a codebase that must not be touched directly for fear that the entire application will go under.</p>
 
-<p>Whatever the case, patching code that has been already defined happens and it usually happens poorly.</p>
+<p>Whatever the case, patching code that has been already defined happens, and it usually happens poorly.</p>
 
 <p>These problems can be especially nefarious if the patches are not in automatically loaded files. For example, say we have a <code>Dog</code> class:</p>
 
@@ -198,6 +198,10 @@
 <span class="n">training</span> <span class="o">=</span> <span class="no">Training</span><span class="o">.</span><span class="n">new</span>
 <span class="n">training</span><span class="o">.</span><span class="n">train</span><span class="p">(</span><span class="n">dog</span><span class="p">)</span>
 <span class="c1"># =&gt; Woof woof, good sir.</span>
+</code></pre></div>
+<p>Neither the passed in dog, nor newly created dogs&#39; functionality is not changed:</p>
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">dog</span><span class="o">.</span><span class="n">bark</span>
+<span class="c1"># =&gt; woof woof</span>
 
 <span class="n">dog</span> <span class="o">=</span> <span class="no">Dog</span><span class="o">.</span><span class="n">new</span>
 <span class="n">dog</span><span class="o">.</span><span class="n">bark</span>
@@ -225,7 +229,7 @@
 <span class="no">Dog</span><span class="o">.</span><span class="n">new</span><span class="o">.</span><span class="n">bark</span>
 <span class="c1"># =&gt; NoMethodError: super: no superclass method `bark&#39; for Dog</span>
 </code></pre></div>
-<p>The original implementation of <code>Dog</code> had a very specific string that might not want to be duplicated. However, after the class has been monkey patched, that method is no longer accessible.</p>
+<p>The original implementation of <code>Dog</code> had a very specific string that might not want to be duplicated. When the class is monkey patched, the original method is replaced and <code>super</code> is not accessible.</p>
 
 <p>In a less silly example, maybe the method being patched had some valuable code a patch could have used. Since Refinements are not strict code overwrites, they maintain the <code>super</code> functionality found in inheritance:</p>
 <div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">class</span> <span class="nc">Dog</span>
