@@ -67,61 +67,193 @@
   
   <div class="post">
     <h1 class="post-title">
-      <a href="/2015/05/24/finding-projects/">
-        Contributing
+      <a href="/2015/05/31/wrapping-apis/">
+        Writing good API wrappers
       </a>
     </h1>
 
     
 
-    <span class="post-date">24 May 2015</span>
+    <span class="post-date">31 May 2015</span>
     <span class='share-container'><ul class="share-buttons">
   <li>
-    <a href="https://www.facebook.com/sharer/sharer.php?u=http://jakeyesbeck.com/2015/05/24/finding-projects/&t=Contributing" title="Share on Facebook" target="_blank">
+    <a href="https://www.facebook.com/sharer/sharer.php?u=http://jakeyesbeck.com/2015/05/31/wrapping-apis/&t=Writing good API wrappers" title="Share on Facebook" target="_blank">
       <img src="http://jakeyesbeck.com/assets/images/facebook.svg">
     </a>
   </li>
   <li>
-    <a href="https://twitter.com/intent/tweet?source=http%3A%2F%2Fjakeyesbeck.com&text=Contributing%20http://jakeyesbeck.com/2015/05/24/finding-projects/&via=jakeyesbeck" target="_blank" title="Tweet">
+    <a href="https://twitter.com/intent/tweet?source=http%3A%2F%2Fjakeyesbeck.com&text=Writing good API wrappers%20http://jakeyesbeck.com/2015/05/31/wrapping-apis/&via=jakeyesbeck" target="_blank" title="Tweet">
       <img src="http://jakeyesbeck.com/assets/images/twitter.svg">
     </a>
   </li>
   <li>
-    <a href="https://plus.google.com/share?url=http://jakeyesbeck.com/2015/05/24/finding-projects/" target="_blank" title="Share on Google+">
+    <a href="https://plus.google.com/share?url=http://jakeyesbeck.com/2015/05/31/wrapping-apis/" target="_blank" title="Share on Google+">
       <img src="http://jakeyesbeck.com/assets/images/google_plus.svg">
     </a>
   </li>
 
   <li>
-    <a href="https://news.ycombinator.com/submitlink?u=http://jakeyesbeck.com/2015/05/24/finding-projects/&t=Contributing" target="_blank" title="Share on Hacker News">
+    <a href="https://news.ycombinator.com/submitlink?u=http://jakeyesbeck.com/2015/05/31/wrapping-apis/&t=Writing good API wrappers" target="_blank" title="Share on Hacker News">
       <img src="http://jakeyesbeck.com/assets/images/ycomb.svg">
     </a>
   </li>
 
   <li>
-    <a href="https://getpocket.com/save?url=http://jakeyesbeck.com/2015/05/24/finding-projects/&title=Contributing" target="_blank" title="Add to Pocket">
+    <a href="https://getpocket.com/save?url=http://jakeyesbeck.com/2015/05/31/wrapping-apis/&title=Writing good API wrappers" target="_blank" title="Add to Pocket">
       <img src="http://jakeyesbeck.com/assets/images/pocket.svg">
     </a>
   </li>
   <li>
-    <a href="http://www.reddit.com/submit?url=http://jakeyesbeck.com/2015/05/24/finding-projects/&title=Contributing" target="_blank" title="Submit to Reddit">
+    <a href="http://www.reddit.com/submit?url=http://jakeyesbeck.com/2015/05/31/wrapping-apis/&title=Writing good API wrappers" target="_blank" title="Submit to Reddit">
       <img src="http://jakeyesbeck.com/assets/images/reddit.svg">
     </a>
   </li>
 </ul>
 </span>
 
-    <p>Since starting this 365 day adventure, I have done a mixture of contributing to my own projects and to others. At the on-set, I made an assumption that it would be an even distribution of commits between my own projects and existing ones. However, this proved much harder than I originally thought. After a sizable amount of effort, I did find a few projects to contribute to. 28 days into this endeavor and seems like I might actually be able to accomplish my goal.</p>
+    <p>Both in my day job and in my <a href="http://jakeyesbeck.com/2015/04/23/a_year_of_commits/">year of commits</a>, I spend a lot of time thinking about APIs.</p>
 
-<p>One of the existing projects, <a href="https://github.com/girishso/pluck_to_hash">pluck to hash</a>, was a very young project when I found it. The project was released without any test coverage so I attempted to <a href="https://github.com/girishso/pluck_to_hash/pull/6">rectify that</a>. Thankfully my pull request was accepted! It felt great to finally contribute to a project that wasn&#39;t my own. I also learned a few things by doing so.</p>
+<p>For the uninitiated, an <strong>A</strong>pplication <strong>P</strong>rogram <strong>I</strong>nterface (<strong>API</strong>) is an avenue for one piece of software to speak to another. This could be a remote, web-based, HTTP API. Or, the API might be an internal interface for one portion of a software system to talk to another. Designing an API that is simple and maintainable is crucial if it is intended to be used and quickly adopted by colleagues or 3rd party developers.</p>
 
-<p>The first important learning from making a contribution was understanding that the caliber of contributors to open source software was not vastly superior to &quot;normal&quot; software engineers. I had previously thought of people who wrote open source libraries to be some sort of battle-tested, hardened, bug-resistant demi-gods sent here from Krypton in order to write code for us mortals. This was a very debilitating thought. For years it was a wall between me and open source software development. I didn&#39;t even entertain the idea of surpassing that wall and inevitably gave up on making meaningful contributions. Alright, that is probably a little dramatic but I think it makes my point for me. It was intimidating to contribute! Then, like a breath of fresh air, my pull request was accepted and these preconceptions vanished. It was awesome. It was super awesome (and objectively I didn&#39;t even do that much).</p>
+<p>Being one of those 3rd party developers, I find myself using and writing wrappers to these APIs. Here, I will explain what makes a good API wrapper. Let&#39;s postulate about some example wrapper designs.</p>
 
-<p>A second learning from finding projects to contribute to was how to find them. It seems like an important thing to know, right? There are a few tools one can use to find projects that are ripe for the commit-in. Using the <a href="https://github.com/trending">explore function on Github</a>, you can find the top trending projects on a per language basis. This process is how I found the puck to hash gem and decided to contribute. A big difference between the pluck to hash repository and others is the fact that pluck to hash did not have any open issues. Contributing to a repository with no open issues could be considered risky. After all, if a project has open issues then at least some work is welcome and expected. A project with no open issues can not be assumed to want, need, or accept contributions. Luckily for me, the pluck to hash maintainer was open to my additions.</p>
+<h2>The Barely Abstractor</h2>
 
-<p>A great resource for finding projects ordered by issue count is <a href="http://www.codetriage.com/">CodeTriage</a>. CodeTriage does a great job of indexing projects hosted on Github in descending order of their open issues. Finding the right projects to contribute to is hard, but with CodeTriage and the built in issue trackers in Github, contributing to repositories that matter to you and to others is achievable.</p>
+<p>The mantra of this design is: &quot;I will take away that annoying HTTP element and you do literally all the rest.&quot;</p>
 
-<p>Use these resources and start making some contributions of your own.</p>
+<p>We can assume that a library called <code>api_requester</code> exists to wrap our very important 3rd party remote API (Which we will also assume is a <a href="http://en.wikipedia.org/wiki/Representational_state_transfer">RESTful API</a>).</p>
+
+<p>If we wanted to retrieve an object our code might look something like:</p>
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="nb">require</span> <span class="s1">&#39;api_requester&#39;</span>
+
+<span class="n">params</span> <span class="o">=</span> <span class="p">{</span> <span class="nb">object_id</span><span class="p">:</span> <span class="mi">1</span> <span class="p">}</span>
+<span class="n">headers</span> <span class="o">=</span> <span class="p">{</span> <span class="s1">&#39;Content-Type&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;application/json&#39;</span> <span class="p">}</span>
+
+<span class="n">object_wanted</span> <span class="o">=</span> <span class="no">APIWrapper</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+                  <span class="s1">&#39;relative/path/to/object/&#39;</span><span class="p">,</span>
+                  <span class="n">params</span><span class="p">,</span>
+                  <span class="n">headers</span><span class="p">)</span>
+
+<span class="c1"># =&gt; { big: :hash, of: :attributes}</span>
+</code></pre></div>
+<p>To post an object via this wrapper:</p>
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="nb">require</span> <span class="s1">&#39;api_requester&#39;</span>
+
+<span class="n">params</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="nb">object_id</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+  <span class="ss">object_name</span><span class="p">:</span> <span class="ss">:foo</span><span class="p">,</span>
+  <span class="ss">object_type</span><span class="p">:</span> <span class="ss">:bar</span><span class="p">,</span>
+  <span class="ss">object_description</span><span class="p">:</span> <span class="s1">&#39;I am an object&#39;</span>
+<span class="p">}</span>
+<span class="n">headers</span> <span class="o">=</span> <span class="p">{</span> <span class="s1">&#39;Content-Type&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;application/json&#39;</span> <span class="p">}</span>
+
+<span class="no">APIWrapper</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
+  <span class="s1">&#39;relative/path/to/object/&#39;</span><span class="p">,</span>
+  <span class="n">params</span><span class="p">,</span>
+  <span class="n">headers</span><span class="p">)</span>
+<span class="c1"># =&gt; { big: :hash, of: :attributes}</span>
+</code></pre></div>
+<p>So, you get the idea. That idea is verbosity. However, this approach is not all negative.</p>
+
+<h3>Pros:</h3>
+
+<ol>
+<li><p><strong>Resilient to API changes</strong></p>
+
+<p>A big problem with wrapping APIs outside of your own control is endpoint churn, change, and deprecation. With such a verbose wrapper, the consumer is in complete control of the request. From URL changes to parameter addition and deletion, a consumer of <code>api_requester</code> is able to adapt without updating their library (just their own source code).</p></li>
+<li><p><strong>Transparent</strong></p>
+
+<p>Since <code>api_requester</code> does attempt to abstract out the intricacies of our 3rd party API, the consumer of <code>api_requester</code> knows exactly how the underlying API works. Understanding the nuances of the API being &quot;wrapped&quot; might influence the consumer&#39;s system architecture positively.</p></li>
+</ol>
+
+<h3>Cons:</h3>
+
+<ol>
+<li><p><strong>No abstraction</strong></p>
+
+<p>Without abstraction, a consumer of <code>api_requester</code> must be one with the 3rd party API&#39;s documentation. To ensure competent use, the consumer must become familiar with all possible endpoints and usage patterns. This nearly completely defeats the purpose of providing a wrapper.</p></li>
+<li><p><strong>Does not minimize 3rd party surface area</strong></p>
+
+<p>One of the main purposes of wrapping a 3rd party API is to minimize its overall surface area. Making small, distinct interaction points is important for the consumer of <code>api_requester</code>. Fewer moving pieces means fewer points of failure. It is probably not necessary for every single end point and function to be exposed by <code>api_requester</code>.</p></li>
+</ol>
+
+<h2>The Over-abstraction contraption</h2>
+
+<p>Unlike our <code>api_requester</code>, the mindset behind this pattern is: &quot;Make sure no one can actually understand what is going on behind the scenes&quot;.</p>
+
+<p>Wrapping the same RESTful 3rd party API, <code>api_contraption</code>, will be our next library. Its code might be used in the following way:</p>
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="nb">require</span> <span class="s1">&#39;api_contraption&#39;</span>
+
+<span class="n">object_wanted</span> <span class="o">=</span> <span class="no">APIWrapper</span><span class="o">.</span><span class="n">fetch_an_object</span>
+<span class="c1"># =&gt; &lt;Object @variable=:thing, @other_variable=:other_thing&gt;</span>
+</code></pre></div>
+<p>To post an object via this wrapper:</p>
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="nb">require</span> <span class="s1">&#39;api_contraption&#39;</span>
+
+<span class="n">object_wanted</span> <span class="o">=</span> <span class="no">APIWrapper</span><span class="o">.</span><span class="n">fetch_an_object</span>
+
+<span class="n">object_wanted</span><span class="o">.</span><span class="n">update_object_attribute!</span>
+<span class="c1"># =&gt; &lt;Object @variable=:updated, @other_variable=:also_magically_updated&gt;</span>
+</code></pre></div>
+<p>As demonstrated, this library is nearly 100% magic. <code>APIWrapper</code> exposes arbitrary methods like <code>fetch_an_object</code> and returns a magical object with instance variables set.</p>
+
+<h3>Pros:</h3>
+
+<ol>
+<li><p><strong>Actual abstraction</strong></p>
+
+<p>Consumers of <code>api_contraption</code> do not need to understand the underlying API&#39;s full functionality. The wrapper has provided (hopefully) a small handful of useful methods and classes to expose the heart of the API it wraps.</p></li>
+</ol>
+
+<h3>Cons:</h3>
+
+<ol>
+<li><p><strong>Inflexible</strong></p>
+
+<p>Whenever the underlying API needs to change a response or request contract, the <code>api_contraption</code> has to change. This can be a very tiring exercise for its consumers. However, if the API being wrapped is very stable, this inflexibility might not be noticed as greatly.</p></li>
+<li><p><strong>Makes the underlying API a black box</strong></p>
+
+<p>While the <code>api_requester</code> above did not do enough abstraction, this <code>api_contraption</code> does too much. It prevents developers from discovering useful features of the 3rd party API that might be helpful to them. Granted, a consumer could refer to the service&#39;s own documentation for feature discovery but who says that they should be forced to?</p></li>
+</ol>
+
+<h2>So which is better?</h2>
+
+<p>The answer is neither. A desirable solution exists somewhere between these two examples. An API wrapper should be terse yet flexible, simple yet sophisticated. Making a consumer of your wrapper upgrade with every API change is not scalable and will drive people away from it. At the same time, if a consumer cannot see the value your library gives them, why would they bother to use it?</p>
+
+<p>A good abstraction, a positive value add piece of software can be defined by a few key features:</p>
+
+<ul>
+<li>Flexibility</li>
+<li>Usefulness</li>
+<li>Readability</li>
+</ul>
+
+<p>Each of our example libraries had one or two of these features but not all three. To make up for what was lacking let&#39;s try and make a hybrid of the two: an <code>api_wrapper</code>.</p>
+
+<h2>The middle ground</h2>
+
+<p>Requesting an Object</p>
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="nb">require</span> <span class="s1">&#39;api_wrapper&#39;</span>
+
+<span class="n">object_wanted</span> <span class="o">=</span> <span class="no">APIWrapper</span><span class="o">::</span><span class="no">DesiredObject</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="mi">123</span><span class="p">)</span>
+<span class="c1">#=&gt; &lt;DesiredObject @id=123, @name=&#39;The One&#39;, @author=&#39;The Architect&#39;&gt;</span>
+</code></pre></div>
+<p>Updating an object</p>
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="nb">require</span> <span class="s1">&#39;api_wrapper&#39;</span>
+
+<span class="n">object_wanted</span> <span class="o">=</span> <span class="no">APIWrapper</span><span class="o">::</span><span class="no">DesiredObject</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="mi">123</span><span class="p">)</span>
+
+<span class="n">object_wanted</span><span class="o">.</span><span class="n">update!</span><span class="p">(</span><span class="ss">author</span><span class="p">:</span> <span class="s1">&#39;Mr. Smith&#39;</span><span class="p">)</span>
+<span class="c1">#=&gt; &lt;DesiredObject @id=123, @name=&#39;The One&#39;, @author=&#39;Mr. Smith&#39;&gt;</span>
+</code></pre></div>
+<p>At first glance it might not seem like all too much is different between this solution and the previous two. However, a few key differences are present.</p>
+
+<ol>
+<li><p>We no longer have a generic superclass <code>APIWrapper</code> to interact with, it has become a namespace. With this namespace, clients can freely inherit their own objects from our <code>DesiredObject</code> class and make modifications as they see fit.</p></li>
+<li><p>Abstraction is still very much in play. URL structures, HTTP payloads and other small minutia about the request is abstracted away from our consumers and they are given very logical methods <code>find</code> and <code>update</code>. These methods enable our consumer to interact with their resources in a familiar and pleasant way.</p></li>
+</ol>
+
+<p>I am not saying this solution is perfect, but it is objectively better than the other two. A lot of factors go into making a great API wrapper. Adhering to the three ideal attributes: <strong>Flexibility</strong>, <strong>Usefulness</strong> and <strong>Readability</strong> will at least point your projects in the right direction.</p>
 
   </div>
   
