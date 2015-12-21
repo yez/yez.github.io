@@ -125,7 +125,7 @@
 <span class="k">class</span> <span class="nc">Transaction</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
 <span class="k">end</span>
 </code></pre></div>
-<p>This structure, like most in the wild, could have been created before all edge cases were thought through. For some reason, <code>success</code> is a <code>String</code> instead of a <code>Boolean</code>. This is a perfect example problem that <code>Attributes</code> can help remedy.</p>
+<p>This structure, like most in the wild, could have been created before all edge cases were thought through. For some reason, <code>success</code> is a <code>String</code> instead of a <code>Boolean</code>. While this problem might seem trivial, imagine a system where hundreds of millions of <code>transactions</code> exist. In such a system the entire column might not be able to change without incurring downtime. This is a perfect example problem that <code>Attributes</code> can help remedy.</p>
 
 <p>Starting simple, a single line can be added to the <code>Transaction</code> class definition to coerce <code>success</code> to a <code>boolean</code>:</p>
 <div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">class</span> <span class="nc">Transaction</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
