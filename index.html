@@ -179,23 +179,25 @@
 </code></pre></div>
 <p>Each of these types has their own place and value in a system. Their purpose is simple: to make the experience between developer and framework fluid.</p>
 
-<p>For instance, if a developer decides that they will only use binary numbers in their code, it could create a less than optimal experience in an out of the box Rails application:</p>
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">transaction</span> <span class="o">=</span> <span class="no">Transaction</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="ss">price</span><span class="p">:</span> <span class="mb">0b1001</span><span class="p">)</span>
-<span class="n">transaction</span><span class="o">.</span><span class="n">price</span>
-<span class="c1"># =&gt; #&lt;BigDecimal:7f93039a1210,&#39;0.9E1&#39;,9(27)&gt;</span>
-<span class="n">transaction</span><span class="o">.</span><span class="n">price</span><span class="o">.</span><span class="n">to_i</span>
-<span class="c1"># =&gt; 9</span>
-</code></pre></div>
-<p>While eveything may <em>just work</em> with this code, <code>Attributes</code> can be used to allow binary numbers to be entered without <code>BigDecimals</code> involved:</p>
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">class</span> <span class="nc">Transaction</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
-  <span class="n">attribute</span> <span class="ss">:price</span><span class="p">,</span> <span class="ss">:binary</span>
-<span class="k">end</span>
+<p>The <code>Attribute</code> feature is not restricted to database columns. If an attribute is only used during the life cycle of an object, it too can benefit from type coercion.</p>
 
-<span class="n">transaction</span> <span class="o">=</span> <span class="no">Transaction</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="ss">price</span><span class="p">:</span> <span class="mb">0b1001</span><span class="p">)</span>
-<span class="n">transaction</span><span class="o">.</span><span class="n">price</span>
-<span class="c1"># =&gt; 9</span>
+<p>For instance, if a <code>confirmed_at</code> attribute had a useful purpose for a <code>Transaction</code>, but the format of it could vary, the <code>Attribute</code> module can step in and keep things clean.</p>
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">class</span> <span class="nc">Transaction</span>
+  <span class="n">attribute</span> <span class="ss">:confirmed_at</span><span class="p">,</span> <span class="ss">:date_time</span>
+<span class="k">end</span>
 </code></pre></div>
-<p>Why is the <code>price</code> column being set by hand to an integer value using a binary number? No one knows. However, if someone would like to do this, <code>Attributes</code> can help keep the rest of the developer team sane as the binary bandit roams the code.</p>
+<p>Without adding a new column or defining an <code>attr_accessor</code> for the <code>confirmed_at</code> attribute, the <code>:date_time</code> coercion works perfectly:</p>
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">transaction</span> <span class="o">=</span> <span class="no">Transaction</span><span class="o">.</span><span class="n">new</span>
+<span class="n">transaction</span><span class="o">.</span><span class="n">confirmed_at</span> <span class="o">=</span> <span class="s1">&#39;2015-12-12 03:00&#39;</span>
+<span class="n">transaction</span><span class="o">.</span><span class="n">confirmed_at</span>
+<span class="c1"># =&gt; Sat, 12 Dec 2015 03:00:00 UTC +00:00</span>
+
+<span class="n">transaction</span> <span class="o">=</span> <span class="no">Transaction</span><span class="o">.</span><span class="n">new</span>
+<span class="n">transaction</span><span class="o">.</span><span class="n">confirmed_at</span> <span class="o">=</span> <span class="s1">&#39;2015/12/12&#39;</span>
+<span class="n">transaction</span><span class="o">.</span><span class="n">confirmed_at</span>
+<span class="c1"># =&gt; Sat, 12 Dec 2015 00:00:00 UTC +00:00</span>
+</code></pre></div>
+<p>Since most Ruby on Rails applications deal with strings via form encoded data, it is easy to see just how valuable the <code>Attribute</code> module can be.</p>
 
 <h2>Out of the Box Typing</h2>
 
