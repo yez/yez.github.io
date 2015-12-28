@@ -13,9 +13,9 @@
 
  
  <entry>
-   <title>What I Would Tell Myself When I Started Programming</title>
+   <title>Things I Wish I Knew When I Started Programming</title>
    <link href="/2015/12/27/what-i-would-tell-myself-when-i-started-programming/"/>
-   <updated>2015-12-27T07:00:00-05:00</updated>
+   <updated>2015-12-27T04:00:00-08:00</updated>
    <id>/2015/12/27/what-i-would-tell-myself-when-i-started-programming</id>
    <content type="html">&lt;p&gt;If by some magical event I could go back in time to the day before I started my first job as a software engineer, this is what I would say.&lt;/p&gt;
 
@@ -25,7 +25,7 @@
 
 &lt;p&gt;The people who seem &amp;quot;fast&amp;quot; or come off as a &amp;quot;10x engineer&amp;quot; were not born that way. They took their time and learned their craft. And with that, they have slowly accelerated their process and patterns to make them appear extremely quick and efficient.&lt;/p&gt;
 
-&lt;p&gt;Deadlines should be thought of as real and valid; however, working at lightening speed to try and meet those deadlines will end up causing more work in the long run. What would be better, missing a deadline by a day or making a deadline and incurring so many bugs and tech debt that it takes two weeks to clean everything up?&lt;/p&gt;
+&lt;p&gt;Deadlines should be thought of as real and valid; however, working at lightning speed to try and meet those deadlines will end up causing more work in the long run. What would be better, missing a deadline by a day or making a deadline and incurring so many bugs and tech debt that it takes two weeks to clean everything up?&lt;/p&gt;
 
 &lt;h2&gt;ABL&lt;/h2&gt;
 
@@ -37,15 +37,17 @@
 
 &lt;h2&gt;It is Ok to be Wrong&lt;/h2&gt;
 
-&lt;p&gt;Similar to not asking questions, most new engineers are terrified of being wrong. A golden rule is to be correct frequently, but no one is capable of being correct all the time. The trick to being wrong is how a person reacts when it happens. There is a huge difference between being defensive of a technique or solution and being closed-minded to alternatives.&lt;/p&gt;
+&lt;p&gt;Similar to not asking questions, most new engineers are terrified of being wrong. A golden rule is to be correct frequently, but no one is capable of being correct all the time. The trick to being wrong is how a person reacts when it happens. There is a huge difference between promoting a technique or solution and being closed-minded to alternatives.&lt;/p&gt;
 
 &lt;p&gt;If someone was never wrong, how could they learn? And if they did not learn, how could they &lt;strong&gt;A&lt;/strong&gt;lways &lt;strong&gt;B&lt;/strong&gt;e &lt;strong&gt;L&lt;/strong&gt;earning? Tackling instances of being wrong with an open mind helps refine a person&amp;#39;s skills, shaping them with feedback from others. While this mentality, like others already mentioned, is relevant throughout a person&amp;#39;s career, it is especially important in the beginning. In the beginning a person is likely wrong a lot of the time. This means that in the beginning a person has the most opportunity to grow; to be wrong and learn from those mistakes. Internalizing these mistakes can help bolster a person&amp;#39;s technical skills and confidence.&lt;/p&gt;
 
 &lt;h2&gt;R.T.F.S.&lt;/h2&gt;
 
-&lt;p&gt;At the onset of one&amp;#39;s career, it is easy to treat third party software or services as magical boxes of mystery. However, this is not necessary. It is actually &lt;a href=&quot;http://jakeyesbeck.com/2015/10/25/how-to-traverse-foreign-ruby-code/&quot;&gt;very easy to open and read the source&lt;/a&gt; of many third party applications (especially in web development). Therefore, it becomes imperative to &lt;strong&gt;R&lt;/strong&gt;read &lt;strong&gt;T&lt;/strong&gt;he &lt;strong&gt;F&lt;/strong&gt;reaking &lt;strong&gt;S&lt;/strong&gt;ource.&lt;/p&gt;
+&lt;p&gt;At the onset of one&amp;#39;s career, it is easy to treat third party software or services as magical boxes of mystery. However, this is not necessary. It is actually &lt;a href=&quot;http://jakeyesbeck.com/2015/10/25/how-to-traverse-foreign-ruby-code/&quot;&gt;very easy to open and read the source&lt;/a&gt; of many third party applications (especially in web development). Therefore, it becomes imperative to &lt;strong&gt;R&lt;/strong&gt;ead &lt;strong&gt;T&lt;/strong&gt;he &lt;strong&gt;F&lt;/strong&gt;reaking &lt;strong&gt;S&lt;/strong&gt;ource.&lt;/p&gt;
 
 &lt;p&gt;Reading and having at least a basic understanding of how a piece of third party software works is paramount for a new developer. If foreign code is treated as magic, that is all it will ever be. This magic can become a crutch that an innocent new developer may find themselves leaning against more and more until it eventually breaks, leaving the developer confused and helpless.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Note: Not all third party software&amp;#39;s source can be read as not all of it is open source. If this is the case, do not try to read the source, it will not make much sense.&lt;/strong&gt;&lt;/p&gt;
 
 &lt;p&gt;Who wants to be confused and helpless? No one wants that and no one needs to experience that. Reading the source code of a library or crucial bit of third party open source software can help bring light to an otherwise shrouded system, bringing a new level of depth to a developer&amp;#39;s understanding.&lt;/p&gt;
 </content>
