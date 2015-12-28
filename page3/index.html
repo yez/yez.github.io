@@ -67,185 +67,203 @@
   
   <div class="post">
     <h1 class="post-title">
-      <a href="/2015/12/06/how-to-use-rails-strong-parameters/">
-        How to use Rails Strong Parameters
+      <a href="/2015/12/13/ruby-refinements/">
+        Ruby Refinements
       </a>
     </h1>
 
     
 
-    <span class="post-date">06 Dec 2015</span>
+    <span class="post-date">13 Dec 2015</span>
     <span class='share-container'><ul class="share-buttons">
   <li>
-    <a href="https://www.facebook.com/sharer/sharer.php?u=http://jakeyesbeck.com/2015/12/06/how-to-use-rails-strong-parameters/&t=How to use Rails Strong Parameters" title="Share on Facebook" target="_blank">
+    <a href="https://www.facebook.com/sharer/sharer.php?u=http://jakeyesbeck.com/2015/12/13/ruby-refinements/&t=Ruby Refinements" title="Share on Facebook" target="_blank">
       <img src="http://jakeyesbeck.com/assets/images/facebook.svg">
     </a>
   </li>
   <li>
-    <a href="https://twitter.com/intent/tweet?source=http%3A%2F%2Fjakeyesbeck.com&text=How to use Rails Strong Parameters%20http://jakeyesbeck.com/2015/12/06/how-to-use-rails-strong-parameters/&via=jakeyesbeck" target="_blank" title="Tweet">
+    <a href="https://twitter.com/intent/tweet?source=http%3A%2F%2Fjakeyesbeck.com&text=Ruby Refinements%20http://jakeyesbeck.com/2015/12/13/ruby-refinements/&via=jakeyesbeck" target="_blank" title="Tweet">
       <img src="http://jakeyesbeck.com/assets/images/twitter.svg">
     </a>
   </li>
   <li>
-    <a href="https://plus.google.com/share?url=http://jakeyesbeck.com/2015/12/06/how-to-use-rails-strong-parameters/" target="_blank" title="Share on Google+">
+    <a href="https://plus.google.com/share?url=http://jakeyesbeck.com/2015/12/13/ruby-refinements/" target="_blank" title="Share on Google+">
       <img src="http://jakeyesbeck.com/assets/images/google_plus.svg">
     </a>
   </li>
 
   <li>
-    <a href="https://news.ycombinator.com/submitlink?u=http://jakeyesbeck.com/2015/12/06/how-to-use-rails-strong-parameters/&t=How to use Rails Strong Parameters" target="_blank" title="Share on Hacker News">
+    <a href="https://news.ycombinator.com/submitlink?u=http://jakeyesbeck.com/2015/12/13/ruby-refinements/&t=Ruby Refinements" target="_blank" title="Share on Hacker News">
       <img src="http://jakeyesbeck.com/assets/images/ycomb.svg">
     </a>
   </li>
 
   <li>
-    <a href="https://getpocket.com/save?url=http://jakeyesbeck.com/2015/12/06/how-to-use-rails-strong-parameters/&title=How to use Rails Strong Parameters" target="_blank" title="Add to Pocket">
+    <a href="https://getpocket.com/save?url=http://jakeyesbeck.com/2015/12/13/ruby-refinements/&title=Ruby Refinements" target="_blank" title="Add to Pocket">
       <img src="http://jakeyesbeck.com/assets/images/pocket.svg">
     </a>
   </li>
   <li>
-    <a href="http://www.reddit.com/submit?url=http://jakeyesbeck.com/2015/12/06/how-to-use-rails-strong-parameters/&title=How to use Rails Strong Parameters" target="_blank" title="Submit to Reddit">
+    <a href="http://www.reddit.com/submit?url=http://jakeyesbeck.com/2015/12/13/ruby-refinements/&title=Ruby Refinements" target="_blank" title="Submit to Reddit">
       <img src="http://jakeyesbeck.com/assets/images/reddit.svg">
     </a>
   </li>
 </ul>
 </span>
 
-    <p>In the latest major version of Ruby on Rails, <strong>Strong Parameters</strong> were introduced. The intent of this addition was to enable consistent and reliable parameter checking. Using Strong Parameters is simple and intuitive. It provides a very clean method API to help keep controllers DRY.</p>
+    <p>The Ruby language provides many powerful tools for software engineers to utilize. For instance, classes that have been previously defined and evaluated can be reopened and changed. This is commonly referred to as <em>&quot;monkey patching&quot;</em>, a term which elicits almost universal disdain among Ruby developers.</p>
 
-<p>However, knowing when to use Strong Parameters and how to use them correctly is very important. After all, what good is parameter validation if it is in the wrong place or conveys the wrong message?</p>
+<h2>The Problem</h2>
 
-<h2>Hit the Books</h2>
+<p>A reason that monkey patched code has issues lies in the scope of the changed code. If previously defined code is changed at an arbitrary time, all other parts of the application suffer from those changes.</p>
 
-<p>The trusty <em>&quot;booksandreviews.com&quot;</em> will serve as a good example application.</p>
+<p>Why would someone need to change an existing class? Perhaps an included <code>gem</code> needs to be altered in a small way to behave correctly in a very specific system. Or maybe, there exists a very dark area of a codebase that must not be touched directly for fear that the entire application will go under.</p>
 
-<p>Given a controller that can create <code>Authors</code>, a default pattern without Strong Parameters could look like:</p>
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">class</span> <span class="nc">AuthorsController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
-  <span class="c1"># POST /authors</span>
-  <span class="k">def</span> <span class="nf">create</span>
-    <span class="vi">@author</span> <span class="o">=</span> <span class="no">Author</span><span class="o">.</span><span class="n">create!</span><span class="p">(</span><span class="n">author_params</span><span class="p">)</span>
+<p>Whatever the case, patching code that has been already defined happens, and it usually happens poorly.</p>
 
-    <span class="n">redirect_to</span> <span class="vi">@author</span><span class="p">,</span> <span class="ss">notice</span><span class="p">:</span> <span class="s1">&#39;Author was successfully created.&#39;</span>
-  <span class="k">end</span>
+<p>These problems can be especially nefarious if the patches are not in automatically loaded files. For example, say we have a <code>Dog</code> class:</p>
 
-  <span class="kp">private</span>
+<p><strong>dog.rb</strong></p>
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">class</span> <span class="nc">Dog</span>
+  <span class="kp">attr_accessor</span> <span class="ss">:trained</span>
 
-  <span class="k">def</span> <span class="nf">author_params</span>
-    <span class="n">params</span><span class="o">[</span><span class="ss">:author</span><span class="o">]</span>
+  <span class="k">def</span> <span class="nf">bark</span>
+    <span class="s2">&quot;woof woof&quot;</span>
   <span class="k">end</span>
 <span class="k">end</span>
 </code></pre></div>
-<p>Assuming that there are no presence validations on the <code>Author</code> class itself (or in the form view creating this model), this code has no check to make sure that anything about an <code>Author</code> is passed in to create.</p>
+<p>Then in file loaded later, the <code>bark</code> method changes to be much more formal:</p>
 
-<p>This means that any <code>POST</code> request is made to <code>/authors</code> will create a new <code>Author</code>. While this kind of problem would most likely not make it to production, let us assume that the poor people over at &quot;booksandreviews.com&quot; came from such humble code beginnings that this <strong>was</strong> the first iteration of the <code>AuthorsController</code>.</p>
+<p><strong>training.rb</strong></p>
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">class</span> <span class="nc">Training</span>
+  <span class="k">def</span> <span class="nf">train</span><span class="p">(</span><span class="n">dog</span><span class="p">)</span>
+    <span class="n">dog</span><span class="o">.</span><span class="n">trained</span> <span class="o">=</span> <span class="kp">true</span>
+    <span class="n">dog</span><span class="o">.</span><span class="n">bark</span>
+  <span class="k">end</span>
+<span class="k">end</span>
 
-<p>To make the <code>AuthorsController</code> more robust, the <code>require</code> method can be used on the <code>params</code> hash:</p>
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">class</span> <span class="nc">AuthorsController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
-  <span class="c1"># ...</span>
-
-  <span class="kp">private</span>
-
-  <span class="k">def</span> <span class="nf">author_params</span>
-    <span class="n">params</span><span class="o">.</span><span class="n">require</span><span class="p">(</span><span class="ss">:author</span><span class="p">)</span>
+<span class="k">class</span> <span class="nc">Dog</span>
+  <span class="k">def</span> <span class="nf">bark</span>
+    <span class="s2">&quot;Woof woof, good sir.&quot;</span>
   <span class="k">end</span>
 <span class="k">end</span>
 </code></pre></div>
-<p>Now if a <code>POST</code> to <code>/authors</code> does not contain a payload with an <code>:author</code> key in the body, the request will error:</p>
+<p>After the <code>Traning</code> class is loaded, any consumers of the <code>Dog</code> class will be in for a surprise whenever the <code>bark</code> method is called. Even worse, when a confused developer opens the <code>dog.rb</code> class to check <code>bark</code>&#39;s functionality, they will not see the patched version.</p>
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">dog</span> <span class="o">=</span> <span class="no">Dog</span><span class="o">.</span><span class="n">new</span>
+<span class="n">dog</span><span class="o">.</span><span class="n">bark</span>
+<span class="c1"># =&gt; woof woof</span>
 
-<p><code>ActionController::ParameterMissing</code></p>
+<span class="nb">require</span> <span class="s1">&#39;./training&#39;</span>
+<span class="n">training</span> <span class="o">=</span> <span class="no">Training</span><span class="o">.</span><span class="n">new</span>
+<span class="n">training</span><span class="o">.</span><span class="n">train</span><span class="p">(</span><span class="n">dog</span><span class="p">)</span>
+<span class="c1"># =&gt; Woof woof, good sir.</span>
 
-<p>However, a request with the <code>:author</code> attribute will...</p>
+<span class="n">dog</span> <span class="o">=</span> <span class="no">Dog</span><span class="o">.</span><span class="n">new</span>
+<span class="n">dog</span><span class="o">.</span><span class="n">bark</span>
+<span class="c1"># =&gt; Woof woof, good sir.</span>
+</code></pre></div>
+<p>As shown, the second initialized <code>Dog</code> barks the same way as the trained <code>Dog</code>. Globally, the way a <code>Dog</code> barks has been changed after the <code>training</code> file has been included.</p>
 
-<p><code>ActiveModel::ForbiddenAttributesError</code> <em>Also</em> cause an error, apparently.</p>
+<h2>Enter Refinements</h2>
 
-<p>This is another feature of Strong Parameters. The reason an error occurs is that the <code>author_params</code> method did not specify which parameters could be mass assigned to the <code>Author</code> class. Passing the result of <code>require</code> directly to <code>Author.create</code> will trip this safety measure.</p>
+<p>An alternative way to extend a class&#39; functionality is by using the built in ruby construct: <code>Refinements</code>. Refinements are context specific alterations to a class&#39; methods.</p>
 
-<h2>Shut &#39;em Down</h2>
-
-<p>To correct the <code>ForbiddenAttributesError</code> and add some much needed structure to the <code>AuthorsController</code>, the <code>permit</code> method needs to be used in conjunction with <code>require</code>.</p>
-
-<p>Adding a list of attributes as individual symbols will make sure that only those attributes can be passed through to <code>Author.create!</code></p>
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">class</span> <span class="nc">AuthorsController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
-  <span class="c1"># ...</span>
-
-  <span class="kp">private</span>
-
-  <span class="k">def</span> <span class="nf">author_params</span>
-    <span class="n">params</span><span class="o">.</span><span class="n">require</span><span class="p">(</span><span class="ss">:author</span><span class="p">)</span><span class="o">.</span><span class="n">permit</span><span class="p">(</span><span class="ss">:name</span><span class="p">,</span> <span class="ss">:country</span><span class="p">,</span> <span class="ss">:email</span><span class="p">)</span>
+<p>To refine the <code>Dog</code> class, a <code>module</code> needs to be written:</p>
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">module</span> <span class="nn">SophisticatedDog</span>
+  <span class="n">refine</span> <span class="no">Dog</span> <span class="k">do</span>
+    <span class="k">def</span> <span class="nf">bark</span>
+      <span class="s2">&quot;Woof woof, good sir.&quot;</span>
+    <span class="k">end</span>
   <span class="k">end</span>
 <span class="k">end</span>
 </code></pre></div>
-<p>Great! Now a properly formatted <code>POST</code> containing only the correct attributes will create an <code>Author</code> appropriately.</p>
+<p>The interesting piece here is the <code>refine</code> method. This method returns an overlaid module specific to the class passed into it, allowing a very small scoped change of the <code>Dog</code> class.</p>
 
-<p>But, why go through all the hassle? There should be a way to let all attributes pass, regardless of how crazy harmful they could be to our application we use to pay bills.</p>
+<p>To include this Refinement in the place where it is needed, the <code>using</code> method can be added to the <code>Training</code> class.</p>
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">class</span> <span class="nc">Training</span>
+  <span class="n">using</span> <span class="no">SophisticatedDog</span>
 
-<p>The <code>permit!</code> method is a completely permissive way to allow all attributes to be mass assigned to a model:</p>
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">class</span> <span class="nc">AuthorsController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
-  <span class="c1"># ...</span>
-
-  <span class="kp">private</span>
-
-  <span class="k">def</span> <span class="nf">author_params</span>
-    <span class="n">params</span><span class="o">.</span><span class="n">require</span><span class="p">(</span><span class="ss">:author</span><span class="p">)</span><span class="o">.</span><span class="n">permit!</span>
+  <span class="k">def</span> <span class="nf">train</span><span class="p">(</span><span class="n">dog</span><span class="p">)</span>
+    <span class="n">dog</span><span class="o">.</span><span class="n">trained</span> <span class="o">=</span> <span class="kp">true</span>
+    <span class="n">dog</span><span class="o">.</span><span class="n">bark</span>
   <span class="k">end</span>
 <span class="k">end</span>
 </code></pre></div>
-<p>This will allow any attributes nested under <code>:author</code> to be set on an <code>Author</code>. A solution like this requires no declaration of attributes, but is this better?</p>
+<p>Now, the changes to the <code>Dog</code> method are contained within the <code>Training</code> class:</p>
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">dog</span> <span class="o">=</span> <span class="no">Dog</span><span class="o">.</span><span class="n">new</span>
+<span class="n">dog</span><span class="o">.</span><span class="n">bark</span>
+<span class="c1"># =&gt; woof woof</span>
 
-<p>The short answer is <em>&quot;no&quot;</em>.</p>
+<span class="nb">require</span> <span class="s1">&#39;./training&#39;</span>
+<span class="n">training</span> <span class="o">=</span> <span class="no">Training</span><span class="o">.</span><span class="n">new</span>
+<span class="n">training</span><span class="o">.</span><span class="n">train</span><span class="p">(</span><span class="n">dog</span><span class="p">)</span>
+<span class="c1"># =&gt; Woof woof, good sir.</span>
+</code></pre></div>
+<p>Neither the passed in dog, nor newly created dogs&#39; bark method has been permanently changed:</p>
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">dog</span><span class="o">.</span><span class="n">bark</span>
+<span class="c1"># =&gt; woof woof</span>
 
-<p>The reason why being completely permissive with parameters is a bad idea is because not all attributes were created equally.</p>
+<span class="n">dog</span> <span class="o">=</span> <span class="no">Dog</span><span class="o">.</span><span class="n">new</span>
+<span class="n">dog</span><span class="o">.</span><span class="n">bark</span>
+<span class="c1"># =&gt; woof woof</span>
+</code></pre></div>
+<p>No more surprise behaviour! Each new <code>Dog</code> is created just as unrefined and unsophisticated as ever.</p>
 
-<p>If <em>&quot;booksandreviews.com&quot;</em> had an <code>admin</code> or <code>superuser</code> column on their <code>authors</code> table, any <code>POST</code> with <code>admin: true</code> would create not a normal <code>Author</code>, but an all-mighty <code>Author</code>.</p>
+<h2>Super Cool</h2>
 
-<p>Specifying the attributes that can be mass assigned to an <code>ActiveRecord</code> model is not a new concept, with Strong Parameters this pattern is just too easy not to do.</p>
-
-<h2>Open Up Shop</h2>
-
-<p>Another great feature of using Strong Parameters is type assertion. Regardless of <code>ActiveRecord</code>&#39;s type coercion, ensuring that data is as valid as early as possible is important.</p>
-
-<p>Consider that an <code>Author</code> can have an array of <code>genres</code> which summarize their bodies of work. To ensure that this list of <code>genres</code> is an array, a hash syntax can be used:</p>
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">class</span> <span class="nc">AuthorsController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
-  <span class="c1"># ...</span>
-
-  <span class="kp">private</span>
-
-  <span class="k">def</span> <span class="nf">author_params</span>
-    <span class="n">params</span><span class="o">.</span><span class="n">require</span><span class="p">(</span><span class="ss">:author</span><span class="p">)</span>
-          <span class="o">.</span><span class="n">permit</span><span class="p">(</span><span class="ss">:name</span><span class="p">,</span> <span class="ss">:country</span><span class="p">,</span> <span class="ss">:email</span><span class="p">,</span> <span class="p">{</span> <span class="ss">genres</span><span class="p">:</span> <span class="o">[]</span> <span class="p">})</span>
+<p>Another problem with traditional monkey patching is that the patched method is no longer accessible.</p>
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">class</span> <span class="nc">Dog</span>
+  <span class="k">def</span> <span class="nf">bark</span>
+    <span class="s1">&#39;woof woof&#39;</span>
   <span class="k">end</span>
 <span class="k">end</span>
-</code></pre></div>
-<p>By adding <code>{ genres: [] }</code> to the end of the <code>permit</code> call, it ensures that the <code>genres</code> value is always an array. This prevents random nonsense or a malformed request from compromising the <code>Author</code> class&#39; data integrity. If something other than an array is passed as the <code>genres</code> attribute, it will disregard it.</p>
 
-<p>Alternatively, when a parameter is a hash (like <code>preferences</code>), all the keys in the hash need to be present in the <code>permit</code> call.</p>
-<div class="highlight"><pre><code class="language-JSON" data-lang="JSON"><span class="p">{</span>
-  <span class="nt">&quot;preferences&quot;</span><span class="p">:</span> <span class="p">{</span>
-    <span class="nt">&quot;time_zone&quot;</span><span class="p">:</span> <span class="s2">&quot;GMT&quot;</span><span class="p">,</span>
-    <span class="nt">&quot;subscribed&quot;</span><span class="p">:</span> <span class="kc">true</span>
-  <span class="p">}</span>
-<span class="p">}</span>
-</code></pre></div><div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">class</span> <span class="nc">AuthorsController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
-  <span class="c1"># ...</span>
+<span class="c1"># Then later:</span>
 
-  <span class="kp">private</span>
-
-  <span class="k">def</span> <span class="nf">author_params</span>
-    <span class="n">params</span><span class="o">.</span><span class="n">require</span><span class="p">(</span><span class="ss">:author</span><span class="p">)</span>
-          <span class="o">.</span><span class="n">permit</span><span class="p">(</span><span class="ss">:name</span><span class="p">,</span>
-                  <span class="ss">:country</span><span class="p">,</span>
-                  <span class="ss">:email</span><span class="p">,</span>
-                  <span class="p">{</span> <span class="ss">preferences</span><span class="p">:</span> <span class="o">[</span><span class="ss">:time_zone</span><span class="p">,</span> <span class="ss">:subscribed</span><span class="o">]</span> <span class="p">})</span>
+<span class="k">class</span> <span class="nc">Dog</span>
+  <span class="k">def</span> <span class="nf">bark</span>
+    <span class="k">super</span> <span class="o">+</span> <span class="s1">&#39;, good sir.&#39;</span>
   <span class="k">end</span>
 <span class="k">end</span>
+
+<span class="no">Dog</span><span class="o">.</span><span class="n">new</span><span class="o">.</span><span class="n">bark</span>
+<span class="c1"># =&gt; NoMethodError: super: no superclass method `bark&#39; for Dog</span>
 </code></pre></div>
-<p>If this is a tad confusing, check out more examples at the <a href="http://edgeguides.rubyonrails.org/action_controller_overview.html#strong-parameters">official guide for Strong Parameters</a>.</p>
+<p>The original implementation of <code>Dog</code> had a very specific string that might not want to be duplicated. When the class is monkey patched, the original method is replaced and <code>super</code> is not accessible.</p>
 
-<h2>Everything in Moderation</h2>
+<p>In a less silly example, maybe the method being patched had some valuable code a patch could have used. Since Refinements are not strict code overwrites, they maintain the <code>super</code> functionality found in inheritance:</p>
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">class</span> <span class="nc">Dog</span>
+  <span class="k">def</span> <span class="nf">bark</span>
+    <span class="s1">&#39;woof woof&#39;</span>
+  <span class="k">end</span>
+<span class="k">end</span>
 
-<p>Strong Parameters is not appropriate for every situation. In the case that a certain number of parameters must be present, or if one parameter must only be present when not accompanied by another specific parameter, Strong Parameters will fall short. The time and place to use Strong Parameters is when creating or updating an <code>ActiveRecord</code> object.</p>
+<span class="k">module</span> <span class="nn">SubWoofer</span>
+  <span class="n">refine</span> <span class="no">Dog</span> <span class="k">do</span>
+    <span class="k">def</span> <span class="nf">bark</span>
+      <span class="k">super</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)</span><span class="o">.</span><span class="n">first</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span>
 
-<p>Additionally, if the Ruby on Rails application in question was an API, Strong Parameters would only be effective in very specific circumstances. Since the feedback given by Strong Parameters is not as granular as an API would like to be, it could be hard to find many uses of it.</p>
+<span class="k">class</span> <span class="nc">DogTest</span>
+  <span class="n">using</span> <span class="no">SubWoofer</span>
+
+  <span class="k">def</span> <span class="nf">call</span>
+    <span class="n">dog</span> <span class="o">=</span> <span class="no">Dog</span><span class="o">.</span><span class="n">new</span>
+    <span class="n">dog</span><span class="o">.</span><span class="n">bark</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="no">DogTest</span><span class="o">.</span><span class="n">new</span><span class="o">.</span><span class="n">call</span>
+<span class="c1"># =&gt; &#39;woof&#39;</span>
+
+<span class="no">Dog</span><span class="o">.</span><span class="n">new</span><span class="o">.</span><span class="n">bark</span>
+<span class="c1"># =&gt; &#39;woof woof&#39;</span>
+</code></pre></div>
+<p>The <code>SubWoofer</code> Refinement was able to call the existing <code>Dog#bark</code> method and change it how it saw fit. This keeps the code around barking DRY. Since Refinements are intended to extend or refine existing code, it makes sense that they could use the existing code to their benefit. When that existing code is changed, it would be arduous to make every single Refinement aware.</p>
+
+<p>Using Refinements is a nice alternative to the sledgehammer that is monkey patching. Bending a class to fit a very specific need in an encapsulated manner can mean the difference between a stable system and one riddled with hard to track down bugs. While Refinements still have their own drawbacks, they are much less intrusive than the alternative.</p>
 
   </div>
   

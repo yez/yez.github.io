@@ -67,168 +67,189 @@
   
   <div class="post">
     <h1 class="post-title">
-      <a href="/2015/11/08/ruby-delegate-class/">
-        Ruby DelegateClass
+      <a href="/2015/11/15/five-active-record-features-you-should-be-using/">
+        Five Active Record Features You Should Be Using
       </a>
     </h1>
 
     
 
-    <span class="post-date">08 Nov 2015</span>
+    <span class="post-date">15 Nov 2015</span>
     <span class='share-container'><ul class="share-buttons">
   <li>
-    <a href="https://www.facebook.com/sharer/sharer.php?u=http://jakeyesbeck.com/2015/11/08/ruby-delegate-class/&t=Ruby DelegateClass" title="Share on Facebook" target="_blank">
+    <a href="https://www.facebook.com/sharer/sharer.php?u=http://jakeyesbeck.com/2015/11/15/five-active-record-features-you-should-be-using/&t=Five Active Record Features You Should Be Using" title="Share on Facebook" target="_blank">
       <img src="http://jakeyesbeck.com/assets/images/facebook.svg">
     </a>
   </li>
   <li>
-    <a href="https://twitter.com/intent/tweet?source=http%3A%2F%2Fjakeyesbeck.com&text=Ruby DelegateClass%20http://jakeyesbeck.com/2015/11/08/ruby-delegate-class/&via=jakeyesbeck" target="_blank" title="Tweet">
+    <a href="https://twitter.com/intent/tweet?source=http%3A%2F%2Fjakeyesbeck.com&text=Five Active Record Features You Should Be Using%20http://jakeyesbeck.com/2015/11/15/five-active-record-features-you-should-be-using/&via=jakeyesbeck" target="_blank" title="Tweet">
       <img src="http://jakeyesbeck.com/assets/images/twitter.svg">
     </a>
   </li>
   <li>
-    <a href="https://plus.google.com/share?url=http://jakeyesbeck.com/2015/11/08/ruby-delegate-class/" target="_blank" title="Share on Google+">
+    <a href="https://plus.google.com/share?url=http://jakeyesbeck.com/2015/11/15/five-active-record-features-you-should-be-using/" target="_blank" title="Share on Google+">
       <img src="http://jakeyesbeck.com/assets/images/google_plus.svg">
     </a>
   </li>
 
   <li>
-    <a href="https://news.ycombinator.com/submitlink?u=http://jakeyesbeck.com/2015/11/08/ruby-delegate-class/&t=Ruby DelegateClass" target="_blank" title="Share on Hacker News">
+    <a href="https://news.ycombinator.com/submitlink?u=http://jakeyesbeck.com/2015/11/15/five-active-record-features-you-should-be-using/&t=Five Active Record Features You Should Be Using" target="_blank" title="Share on Hacker News">
       <img src="http://jakeyesbeck.com/assets/images/ycomb.svg">
     </a>
   </li>
 
   <li>
-    <a href="https://getpocket.com/save?url=http://jakeyesbeck.com/2015/11/08/ruby-delegate-class/&title=Ruby DelegateClass" target="_blank" title="Add to Pocket">
+    <a href="https://getpocket.com/save?url=http://jakeyesbeck.com/2015/11/15/five-active-record-features-you-should-be-using/&title=Five Active Record Features You Should Be Using" target="_blank" title="Add to Pocket">
       <img src="http://jakeyesbeck.com/assets/images/pocket.svg">
     </a>
   </li>
   <li>
-    <a href="http://www.reddit.com/submit?url=http://jakeyesbeck.com/2015/11/08/ruby-delegate-class/&title=Ruby DelegateClass" target="_blank" title="Submit to Reddit">
+    <a href="http://www.reddit.com/submit?url=http://jakeyesbeck.com/2015/11/15/five-active-record-features-you-should-be-using/&title=Five Active Record Features You Should Be Using" target="_blank" title="Submit to Reddit">
       <img src="http://jakeyesbeck.com/assets/images/reddit.svg">
     </a>
   </li>
 </ul>
 </span>
 
-    <p>Objects are a big deal in Ruby. A <a href="http://jakeyesbeck.com/2015/08/23/ruby-objects/">previous post about Ruby Objects</a> can corroborate: Ruby Objects are pretty cool.</p>
+    <p>Active Record is responsible for communicating with the persistence layer by default in Ruby on Rails applications. Using Active Record effectively and efficiently can greatly improve an application&#39;s code.</p>
 
-<p>There are many ways to work with Ruby Objects. Standard inheritance, module inheritance, decorators, and composition are all commonly found in a codebase. One class in particular seems almost universal across applications: the <code>User</code> class.</p>
+<p>In Ruby on Rails 4.0, some material changes have been made to Active Record. Understanding these changes, and how they are best utilized is important for any Rails developer.</p>
 
-<p>From social networks to online retails stores, web applications most always have a <code>user</code>. Additionally, the <code>User</code> class might interact with nearly all other classes. This can make the relationship and responsibilities of that <code>User</code> awkward or unwieldy over time.</p>
-
-<p>As an example, assume that an application <em>&quot;booksandreviews.com&quot;</em> exists. This application serves both authors and critics, each representing a <code>User</code>. These <code>User</code> types have different responsibilities and privileges.</p>
-
-<p>Assuming a Rails application, the basic user model will look most likely like:</p>
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
-<span class="k">end</span>
-</code></pre></div>
-<p>One approach to extend this class and make <code>Author</code> and <code>Critic</code> classes is to use the Single Table Inheritance pattern. STI is a common pattern in Rails applications to share responsibilities between classes and store all records in the same place. This approach can work and might fit current needs just fine, but it might be beneficial to think outside the single table for a second.</p>
-
-<p>After all, no one said a <code>User</code> had to be either an <code>Author</code> or a <code>Critic</code>, what if they were both?</p>
-
-<h2>Delegators, Mount Up!</h2>
-
-<p>An alternative way to architect a system like the one described is by using delegation. Object delegation is a way of composing objects to achieve flexibility and maintain encapsulation.</p>
-
-<p>Ruby provides a few ways to delegate objects. An interesting option that will nicely serve this application&#39;s needs is <a href="http://ruby-doc.org/stdlib-2.2.1/libdoc/delegate/rdoc/Object.html#method-i-DelegateClass"><code>DelegateClass</code></a>. The <code>DelegateClass</code> method accepts a class and returns a new class. The returned class takes the passed in class&#39;s instance methods and defines delegating methods.</p>
-
-<p>Defining <code>Author</code> and <code>Critic</code> classes:</p>
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">class</span> <span class="nc">Author</span> <span class="o">&lt;</span> <span class="no">DelegateClass</span><span class="p">(</span><span class="no">User</span><span class="p">)</span>
+<p>To help explain these concepts, we can assume a Ruby on Rails application <em>&quot;booksandreviews.com&quot;</em> exists with three models:</p>
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">class</span> <span class="nc">Book</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
+  <span class="n">belongs_to</span> <span class="ss">:author</span>
+  <span class="n">has_many</span> <span class="ss">:reviews</span>
 <span class="k">end</span>
 
-<span class="k">class</span> <span class="nc">Critic</span> <span class="o">&lt;</span> <span class="no">DelegateClass</span><span class="p">(</span><span class="no">User</span><span class="p">)</span>
-<span class="k">end</span>
-</code></pre></div>
-<p>These classes both expect to be initialized with an instance of <code>User</code>, then will delegate methods to the passed in <code>user</code> by default. This allows each class to define their own logic for determining what an <code>Author</code> or a <code>Critic</code> has access to.</p>
-
-<p>Initializing these classes is as simple as loading the <code>user</code> then passing it in:</p>
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">user</span> <span class="o">=</span> <span class="no">User</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="mi">8</span><span class="p">)</span>
-<span class="n">critic</span> <span class="o">=</span> <span class="no">Critic</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
-<span class="n">critic</span><span class="o">.</span><span class="n">id</span>
-<span class="c1"># =&gt; 8</span>
-</code></pre></div>
-<h2>Business Logic</h2>
-
-<p>Assuming that <code>Book</code> and <code>Review</code> records exist in this same application, related to a user by a <code>user_id</code>, both new classes can handle those resources independently.</p>
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">class</span> <span class="nc">Author</span> <span class="o">&lt;</span> <span class="no">DelegateClass</span><span class="p">(</span><span class="no">User</span><span class="p">)</span>
-  <span class="k">def</span> <span class="nf">written_books</span>
-    <span class="vi">@written_books</span> <span class="o">||=</span> <span class="no">Book</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="ss">user_id</span><span class="p">:</span> <span class="nb">id</span><span class="p">)</span>
-  <span class="k">end</span>
-
-  <span class="k">def</span> <span class="nf">has_written_books?</span>
-    <span class="n">written_books</span><span class="o">.</span><span class="n">present?</span>
-  <span class="k">end</span>
-
-  <span class="k">def</span> <span class="nf">top_selling_book</span>
-    <span class="n">written_books</span><span class="o">.</span><span class="n">max_by</span><span class="p">(</span><span class="o">&amp;</span><span class="ss">:revenue</span><span class="p">)</span>
-  <span class="k">end</span>
+<span class="k">class</span> <span class="nc">Author</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
+  <span class="n">has_many</span> <span class="ss">:books</span>
 <span class="k">end</span>
 
-<span class="k">class</span> <span class="nc">Critic</span> <span class="o">&lt;</span> <span class="no">DelegateClass</span><span class="p">(</span><span class="no">User</span><span class="p">)</span>
-  <span class="k">def</span> <span class="nf">written_reviews</span>
-    <span class="vi">@written_reviews</span> <span class="o">||=</span> <span class="no">Review</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="ss">user_id</span><span class="p">:</span> <span class="nb">id</span><span class="p">)</span>
-  <span class="k">end</span>
-
-  <span class="k">def</span> <span class="nf">has_reviewed_book?</span><span class="p">(</span><span class="n">book_id</span><span class="p">)</span>
-    <span class="n">written_reviews</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="ss">book_id</span><span class="p">:</span> <span class="n">book_id</span><span class="p">)</span><span class="o">.</span><span class="n">present?</span>
-  <span class="k">end</span>
-
-  <span class="k">def</span> <span class="nf">top_viewed_review</span>
-    <span class="n">written_reviews</span><span class="o">.</span><span class="n">max_by</span><span class="p">(</span><span class="o">&amp;</span><span class="ss">:views</span><span class="p">)</span>
-  <span class="k">end</span>
+<span class="k">class</span> <span class="nc">Review</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
+  <span class="n">belongs_to</span> <span class="ss">:book</span>
 <span class="k">end</span>
 </code></pre></div>
-<p>See how nice it is with the <code>User</code> class responsible only for standard <code>User</code> information? That leaves the <code>Author</code> and <code>Critic</code> classes available to house business logic the <code>User</code> should not have to concern itself with.</p>
+<p>The smart people over at <em>&quot;booksandreviews.com&quot;</em> need to know what the state of their data to build metrics and make sales. Metrics need data and Active Record will be used to fetch that data.</p>
 
-<p>The <code>User</code> class can keep caring about things like <code>updated_at</code> timestamps, important booleans like <code>is_a_confirmed_user?</code>, and any other methods that indicate how a general <code>user</code> interacts with the software. Also, it remains the sole responsibility of the <code>user</code> to interact with the persistence layer. The <code>Author</code> and <code>Critic</code> classes will delegate instance methods like <code>save</code> and <code>update</code> to the underlying <code>user</code>.</p>
+<h2>1. Nested Queries</h2>
 
-<h2>Adding Yet Another Type</h2>
+<p>When doing database queries, the fewer the better. Since Active Record is responsible of crafting these queries, it is important to make sure it has all the help it needs. For simple queries this is rarely an issue, but more complex requirements can lead to sub-optimal results.</p>
 
-<p>Imagine some time passes and <em>&quot;booksandreviews.com&quot;</em>&#39;s membership is popping off like gangbusters. Then one day, Tim from sales comes down and says: <em>&quot;We are literally making no money, we need to sell these books or something&quot;</em>.</p>
+<p>One day, Tim from sales comes rampaging through the office convinced that there <strong>must</strong> be a bug in the system. A recent sale for <em>&quot;booksandreviews.com&quot;</em> did not go well and he wants answers. Tim wants an analysis run. He wants all reviews published today, which are for books published in 2015.</p>
 
-<p>Tim is asking for a new use case for the product, a new type of <code>User</code> will be needed: the <code>Consumer</code>. As before, a <code>Consumer</code> could be an <code>Author</code>, <code>Critic</code>, both, or neither.</p>
+<p>Without too much thought, this approach seems reasonable:</p>
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">book_ids</span> <span class="o">=</span> <span class="no">Book</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="ss">publish_year</span><span class="p">:</span> <span class="s1">&#39;2015&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="o">&amp;</span><span class="ss">:id</span><span class="p">)</span>
+<span class="c1"># =&gt; SELECT &quot;books&quot;.* FROM &quot;books&quot; WHERE (publish_year = &#39;2015&#39;)</span>
 
-<p>Had this application been built with STI, I would wager some spaghetti code would form trying, to shoehorn the same user into three roles.</p>
+<span class="n">reviews</span> <span class="o">=</span> <span class="no">Review</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="ss">publish_date</span><span class="p">:</span> <span class="s1">&#39;2015-11-15&#39;</span><span class="p">,</span>
+                       <span class="ss">book_ids</span><span class="p">:</span> <span class="n">book_ids</span><span class="p">)</span><span class="o">.</span><span class="n">to_a</span>
+<span class="c1"># =&gt; SELECT &quot;reviews&quot;.* FROM &quot;reviews&quot; WHERE &quot;reviews&quot;.&quot;publish_date&quot; = &#39;2015-11-15&#39; AND &quot;reviews&quot;.&quot;book_ids&quot; IN (1, 2, 3)</span>
+</code></pre></div>
+<p>This will load the desired books, extract their <code>id</code>&#39;s, and pass that result to the <code>Review</code> query. Not only does this generate two queries, it also wastes memory by creating an array of <code>Book</code> objects to <code>map</code> over and then another array of <code>book_ids</code>. With a large enough list of books, this could cause some serious problems.</p>
 
-<p>However, with the <code>DelegateClass</code> pattern we have used, it becomes trivial:</p>
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">class</span> <span class="nc">Consumer</span> <span class="o">&lt;</span> <span class="no">DelegateClass</span><span class="p">(</span><span class="no">User</span><span class="p">)</span>
-  <span class="k">def</span> <span class="nf">transactions</span>
-    <span class="vi">@purchased_books</span> <span class="o">||=</span> <span class="no">Transaction</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="ss">user_id</span><span class="p">:</span> <span class="nb">id</span><span class="p">)</span>
-  <span class="k">end</span>
+<p>Active Record&#39;s <code>where</code> method returns an instance of <code>ActiveRecord::Relation</code>. These relations can be passed to other methods to aid in query construction. With the same request, we can save the <code>map</code> and array creation:</p>
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">books</span> <span class="o">=</span> <span class="no">Book</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="ss">publish_year</span><span class="p">:</span> <span class="s1">&#39;2015&#39;</span><span class="p">)</span>
+<span class="c1"># =&gt; ActiveRecord::Relation</span>
 
-  <span class="k">def</span> <span class="nf">purchaed_books</span>
-    <span class="n">transactions</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="o">&amp;</span><span class="ss">:book</span><span class="p">)</span>
-  <span class="k">end</span>
+<span class="n">reviews</span> <span class="o">=</span> <span class="no">Review</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="ss">publish_date</span><span class="p">:</span> <span class="s1">&#39;2015-11-15&#39;</span><span class="p">,</span> <span class="ss">book</span><span class="p">:</span> <span class="n">books</span><span class="p">)</span><span class="o">.</span><span class="n">to_a</span>
+<span class="c1"># SELECT &quot;reviews&quot;.* FROM &quot;reviews&quot; WHERE &quot;reviews&quot;.&quot;publish_date&quot; = &#39;2015-11-15&#39; AND &quot;reviews&quot;.&quot;book_id&quot; IN (SELECT &quot;books&quot;.&quot;id&quot; FROM &quot;books&quot; WHERE &quot;books&quot;.&quot;publish_year&quot; = &#39;2015&#39;)</span>
+</code></pre></div>
+<p>This still executes two <code>SELECT</code> statements but it nests them to let the database take care of memory allocation and optimization. The <code>book_ids</code> array is replaced with the <code>books</code> relation and is passed to the <code>Review</code> query.</p>
 
-  <span class="k">def</span> <span class="nf">needs_marketing_email?</span>
-    <span class="c1"># Tim says we need to email people to &quot;encourage&quot;</span>
-    <span class="c1">#  them into buying things.</span>
-    <span class="n">transactions</span><span class="o">.</span><span class="n">length</span> <span class="o">==</span> <span class="mi">0</span>
-  <span class="k">end</span>
+<p><strong>Note: This can reduced to a single query with <code>.joins</code>, but for now we can assume that a nested query is desired.</strong></p>
+
+<h2>2. DRY Scopes</h2>
+
+<p>Still fuming, Tim demands more information. Now he wants to know the list of all <code>Books</code> published in 2015 which have at least one approved <code>Review</code>. Since <code>Reviews</code> are subjective, they need to be approved in order to maintain the quality that <em>&quot;booksandreviews.com&quot;</em> is known for.</p>
+
+<p>Luckily, a scope has been written on the <code>Review</code> class to accomplish this.</p>
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">class</span> <span class="nc">Review</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
+  <span class="n">belongs_to</span> <span class="ss">:book</span>
+
+  <span class="n">scope</span> <span class="ss">:approved</span><span class="p">,</span> <span class="o">-&gt;</span><span class="p">{</span> <span class="n">where</span><span class="p">(</span><span class="ss">approved</span><span class="p">:</span> <span class="kp">true</span><span class="p">)</span> <span class="p">}</span>
 <span class="k">end</span>
 </code></pre></div>
-<p>Now this new class can be utilized to spam the users of <em>&quot;booksandreviews.com&quot;</em> until Tim is content.</p>
-
-<p>An important note is that instances of <code>Author</code>, <code>Critic</code>, and <code>Consumer</code> are not instances of <code>User</code>.</p>
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">user</span> <span class="o">=</span> <span class="no">User</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="mi">9</span><span class="p">)</span>
-<span class="n">author</span> <span class="o">=</span> <span class="no">Author</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
-<span class="n">author</span><span class="o">.</span><span class="n">is_a?</span><span class="p">(</span><span class="no">User</span><span class="p">)</span>
-<span class="c1"># =&gt; false</span>
+<p>However, it is <code>Books</code> that we need to return, not <code>Reviews</code>. Repeating the scope definition, a join query can be used for this analysis:</p>
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">books</span> <span class="o">=</span> <span class="no">Book</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="ss">publish_year</span><span class="p">:</span> <span class="s1">&#39;2015&#39;</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">includes</span><span class="p">(</span><span class="ss">:reviews</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">references</span><span class="p">(</span><span class="ss">:reviews</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="s1">&#39;reviews.approved = ?&#39;</span><span class="p">,</span> <span class="kp">true</span> <span class="p">)</span>
+            <span class="o">.</span><span class="n">to_a</span>
+<span class="c1"># =&gt; SELECT #long books and reviews column select# FROM &quot;books&quot; LEFT OUTER JOIN &quot;reviews&quot; ON &quot;reviews&quot;.&quot;book_id&quot; = &quot;books&quot;.&quot;id&quot; WHERE &quot;books&quot;.&quot;publish_year&quot; = &#39;2015&#39; AND (reviews.approved = &#39;t&#39;)</span>
 </code></pre></div>
-<h2>Keeping it Closed</h2>
+<p><code>Books</code> are returned at the cost of duplicating the <code>approved</code> scope. That means that the scope in <code>Review</code> changes, this code will not benefit from that change. The <code>.includes</code> and <code>.references</code> methods are used to ensure that we only return one <code>Book</code> (in the case of many <code>Reviews</code> belonging to the same <code>Book</code>).</p>
 
-<p>The <code>DelegateClass</code> approach keeps the <code>User</code> class <a href="https://en.wikipedia.org/wiki/Open/closed_principle">open to extension but closed for modification</a>. Adhering to this principle becomes very beneficial if the backing of the <code>User</code> model changes.</p>
+<p>The <strong>D</strong>on&#39;t <strong>R</strong>epeat <strong>Y</strong>ourself (DRY) principle was created for this exact reason. When identical code is not shared and instead repeated, changes to one version can have dangerous consequences on the other.</p>
 
-<p>Maybe in the future, <em>&quot;booksandreviews.com&quot;</em> experiences astronomical growth, resulting in a huge service oriented architecture overhaul. Suddenly, a <code>UserService</code> exists which communicates with an internal API. If that happens, our code is safe.</p>
+<p>The good news is that Active Record provides precisely the medicine for this ailment: <code>.merge</code>.</p>
 
-<p>The <code>Author</code>, <code>Critic</code>, and <code>Consumer</code> classes need not change:</p>
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">user</span> <span class="o">=</span> <span class="no">UserService</span><span class="o">.</span><span class="n">find_user_by_id</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
-<span class="n">consumer</span> <span class="o">=</span> <span class="no">Consumer</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
-<span class="n">consumer</span><span class="o">.</span><span class="n">id</span>
-<span class="c1"># =&gt; 10</span>
+<p>With <code>.merge</code>, an existing scope can be used in another Active Record query.</p>
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">books</span> <span class="o">=</span> <span class="no">Book</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="ss">publish_year</span><span class="p">:</span> <span class="s1">&#39;2015&#39;</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">includes</span><span class="p">(</span><span class="ss">:reviews</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">references</span><span class="p">(</span><span class="ss">:reviews</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="no">Review</span><span class="o">.</span><span class="n">approved</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">to_a</span>
+<span class="c1"># =&gt; SELECT #long books and reviews column select# FROM &quot;books&quot; LEFT OUTER JOIN &quot;reviews&quot; ON &quot;reviews&quot;.&quot;book_id&quot; = &quot;books&quot;.&quot;id&quot; WHERE &quot;books&quot;.&quot;publish_year&quot; = &#39;2015&#39; AND (reviews.approved = &#39;t&#39;)</span>
 </code></pre></div>
-<p>As previously stated, there are many ways to solve this particular problem. Arguments for module inheritance or single table inheritance could be made and might result in just as valid solutions.</p>
+<p>Great! Now the results are the exact same and the code is DRY.</p>
+
+<h2>3. <code>where.not</code></h2>
+
+<p>Typical insatiable Tim is back with yet another request to add to the brand new &quot;totally not vanity metrics dashboard&quot;. Now, he wants to know all the books <strong>not</strong> published in 2012.</p>
+
+<p>Without even asking why such a silly request is necessary, some more code can be cranked out:</p>
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">books</span> <span class="o">=</span> <span class="no">Book</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="s1">&#39;publish_year != 2012&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">to_a</span>
+<span class="c1"># =&gt; SELECT &quot;books&quot;.* FROM &quot;books&quot; WHERE (publish_year != &#39;2012&#39;)</span>
+</code></pre></div>
+<p>Like before, this code works but could be better. There is some raw SQL in there that the next developer might not understand well enough to manipulate. Whatever the reason, it is best to rely on abstraction instead of explicit SQL.</p>
+
+<p>To help solve this dilemma, the <code>.not</code> modifier has been introduced in Active Record 4.0.</p>
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">books</span> <span class="o">=</span> <span class="no">Book</span><span class="o">.</span><span class="n">where</span><span class="o">.</span><span class="n">not</span><span class="p">(</span><span class="ss">publish_year</span><span class="p">:</span> <span class="mi">2012</span><span class="p">)</span><span class="o">.</span><span class="n">to_a</span>
+<span class="c1"># =&gt; SELECT &quot;books&quot;.* FROM &quot;books&quot; WHERE (publish_year != &#39;2012&#39;)</span>
+</code></pre></div>
+<p>The result is the same but look how much nicer that is. Not only is the raw SQL gone, the code is more positive too.</p>
+
+<h2>4. <code>first</code> and <code>take</code></h2>
+
+<p>Since <em>&quot;booksandreviews.com&quot;</em> has been around since 2012, chances are it upgraded from Ruby on Rails 3.0 to 4.0. One notable change from Active Record 3 to 4 is the behaviour of <code>.first</code>.</p>
+
+<p>In Ruby on Rails 4.0+, the <code>.first</code> method returns the first row after the table has been ordered by its <code>id</code>.</p>
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="no">Author</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="ss">first_name</span><span class="p">:</span> <span class="s1">&#39;Bill&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">first</span>
+<span class="c1"># =&gt; SELECT  &quot;authors&quot;.* FROM &quot;authors&quot; WHERE &quot;authors&quot;.&quot;first_name&quot; = &quot;Bill&quot; ORDER BY &quot;authors&quot;.&quot;id&quot; ASC LIMIT 1</span>
+</code></pre></div>
+<p>This will work fine for every table that has an <code>id</code> column. However, if a table does not need an <code>id</code> column, this method causes a problem.</p>
+
+<p>Despite each <code>Author</code> having an id, complex joins might cause an issue with an implicit <code>ORDER BY</code> on queries.</p>
+
+<p>To alleviate that problem, the <code>take</code> method can be used instead of <code>first</code>:</p>
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="no">Author</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="ss">first_name</span><span class="p">:</span> <span class="s1">&#39;Bill&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">take</span>
+<span class="c1"># =&gt; SELECT  &quot;authors&quot;.* FROM &quot;authors&quot; WHERE &quot;authors&quot;.&quot;first_name&quot; = &quot;Bill&quot; LIMIT 1</span>
+</code></pre></div>
+<p>This behaves in a much more explicit way, returning the same information without a default ordering.</p>
+
+<h2>5. <code>.unscoped</code></h2>
+
+<p>During the development life of &quot;<em>booksandreviews.com&quot;</em>, countless modules have been built and gems included. Amidst this chaos, someone must have typed <code>gem install hairball</code> and horribly altered the <code>Author</code> class. This has led to the new guy Mike&#39;s  complaint that: <em>&quot;Authors are missing data&quot;</em>.</p>
+
+<p>Mike knows that authors have a <code>first_name</code> but for some reason it is not being returned:</p>
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">authors</span> <span class="o">=</span> <span class="no">Author</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="ss">last_name</span><span class="p">:</span> <span class="s1">&#39;Smith&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">take</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+<span class="n">authors</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="o">&amp;</span><span class="ss">:first_name</span><span class="p">)</span>
+<span class="c1"># =&gt; [nil, nil, nil, nil, nil]</span>
+</code></pre></div>
+<p>What Mike does not know is that one of those hairball gems added a default scope to all Active Record objects that begin with the letter &quot;A&quot;. However impossible this bug is, it exists and it is ruining Mike&#39;s day.</p>
+
+<p>What Mike needs is the <code>.unscoped</code> method. This method removes all existing scopes on an Active Record relation.</p>
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">authors</span> <span class="o">=</span> <span class="no">Author</span><span class="o">.</span><span class="n">unscoped</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="ss">last_name</span><span class="p">:</span> <span class="s1">&#39;Smith&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">take</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+<span class="n">authors</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="o">&amp;</span><span class="ss">:first_name</span><span class="p">)</span>
+<span class="c1"># =&gt; [&#39;Frank&#39;, &#39;Frank&#39;, &#39;Jim&#39;, &#39;Frank&#39;, &#39;Frank&#39;]</span>
+</code></pre></div>
+<p><em>(Is anyone else concerned that there are four Frank Smith authors?)</em></p>
+
+<p>With the <code>.unscoped</code> method, all harmful default scopes are removed and the Franks are free.</p>
+
+<h2>Queries on Queries</h2>
+
+<p>With these five techniques (and probably a lot more), naiive Active Record queries can stay DRY and intuitive. The exhaustive list of what Active Record can provide can be found <a href="http://guides.rubyonrails.org/active_record_querying.html">at Rails Guides</a>.</p>
 
   </div>
   

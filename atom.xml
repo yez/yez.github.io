@@ -4,13 +4,50 @@
  <title>A Year of Commits</title>
  <link href="/atom.xml" rel="self"/>
  <link href="/"/>
- <updated>2015-12-20T18:16:17-05:00</updated>
+ <updated>2015-12-28T12:05:20-05:00</updated>
  <id></id>
  <author>
    <name>Jake Yesbeck</name>
    <email></email>
  </author>
 
+ 
+ <entry>
+   <title>What I Would Tell Myself When I Started Programming</title>
+   <link href="/2015/12/27/what-i-would-tell-myself-when-i-started-programming/"/>
+   <updated>2015-12-27T07:00:00-05:00</updated>
+   <id>/2015/12/27/what-i-would-tell-myself-when-i-started-programming</id>
+   <content type="html">&lt;h2&gt;Drive Slow&lt;/h2&gt;
+
+&lt;p&gt;I mentioned a similar message in &lt;a href=&quot;http://jakeyesbeck.com/2015/09/06/stop-and-take-a-moment/&quot;&gt;a previous post&lt;/a&gt; and I believe it is worth repeating. When starting a new job or a new career, it is easy to place external pressures on ourselves regarding time. This is a common issue that can arise when comparing one&amp;#39;s own work with those around them. As the new employee, noticing and measuring your own speed and efficiency against existing personnel can feel like the correct thing to do; however, chasing the &amp;quot;competition&amp;quot; or &amp;quot;proving that you are just as fast as them&amp;quot; will only result in high stress levels and bug riddled software.&lt;/p&gt;
+
+&lt;p&gt;The people who seem &amp;quot;fast&amp;quot; or come off as a &amp;quot;10x engineer&amp;quot; were not born that way. They took their time and learned their craft. And with that, they have slowly accelerated their process and patterns to make them appear extremely quick and efficient.&lt;/p&gt;
+
+&lt;p&gt;Deadlines should be thought of as real and valid; however, working at lightening speed to try and meet those deadlines will end up causing more work in the long run. What would be better, missing a deadline by a day or making a deadline and incurring so many bugs and tech debt that it takes two weeks to clean everything up?&lt;/p&gt;
+
+&lt;h2&gt;ABL&lt;/h2&gt;
+
+&lt;p&gt;&lt;em&gt;Glengarry Glen Ross&amp;#39;s&lt;/em&gt; iconic scene has very clear message: &lt;strong&gt;A&lt;/strong&gt;lways &lt;strong&gt;B&lt;/strong&gt;e &lt;strong&gt;C&lt;/strong&gt;losing, meaning that one should constantly strive to be in the process completing a sale. When starting out writing software and even after years of doing it, a similar attitude can be extremely helpful: &lt;strong&gt;A&lt;/strong&gt;lways &lt;strong&gt;B&lt;/strong&gt;e &lt;strong&gt;L&lt;/strong&gt;earning.&lt;/p&gt;
+
+&lt;p&gt;From day one to day one thousand, learning and absorbing new information is very important. A key to learning new things is in asking questions. When starting a new job or a new career, there seems to be a stigma attached to asking questions. We are all under the impression that &lt;em&gt;&amp;quot;they hired me to do this job, they must assume I know exactly what I&amp;#39;m doing.&amp;quot;&lt;/em&gt; This mentality can inhibit our natural inquisitive nature which is a great catalyst to learning.&lt;/p&gt;
+
+&lt;p&gt;Ridicule and impostor syndrome are the most likely the reasons stopping people from asking questions. The idea that questions might expose a person as not &amp;quot;good enough&amp;quot; or &amp;quot;smart enough&amp;quot; for their job is ridiculous and often unfounded. Getting over these fears early in one&amp;#39;s career is extremely important. Questions should be encouraged and celebrated. Ask questions every single day, ask a lot of them but make sure not to ask the same one too many times. No one enjoys repeating themselves.&lt;/p&gt;
+
+&lt;h2&gt;It is Ok to be Wrong&lt;/h2&gt;
+
+&lt;p&gt;Similar to not asking questions, most new engineers are terrified of being wrong. A golden rule is to be correct frequently, but no one is capable of being correct all the time. The trick to being wrong is how a person reacts when it happens. There is a huge difference between being defensive of a technique or solution and being closed-minded to alternatives.&lt;/p&gt;
+
+&lt;p&gt;If someone was never wrong, how could they learn? And if they did not learn, how could they &lt;strong&gt;A&lt;/strong&gt;lways &lt;strong&gt;B&lt;/strong&gt;e &lt;strong&gt;L&lt;/strong&gt;earning? Tackling instances of being wrong with an open mind helps refine a person&amp;#39;s skills, shaping them with feedback from others. While this mentality, like others already mentioned, is relevant throughout a person&amp;#39;s career, it is especially important in the beginning. In the beginning a person is likely wrong a lot of the time. This means that in the beginning a person has the most opportunity to grow; to be wrong and learn from those mistakes. Internalizing these mistakes can help bolster a person&amp;#39;s technical skills and confidence.&lt;/p&gt;
+
+&lt;h2&gt;R.T.F.S.&lt;/h2&gt;
+
+&lt;p&gt;At the onset of one&amp;#39;s career, it is easy to treat third party software or services as magical boxes of mystery. However, this is not necessary. It is actually &lt;a href=&quot;http://jakeyesbeck.com/2015/10/25/how-to-traverse-foreign-ruby-code/&quot;&gt;very easy to open and read the source&lt;/a&gt; of many third party applications (especially in web development). Therefore, it becomes imperative to &lt;strong&gt;R&lt;/strong&gt;read &lt;strong&gt;T&lt;/strong&gt;he &lt;strong&gt;F&lt;/strong&gt;reaking &lt;strong&gt;S&lt;/strong&gt;ource.&lt;/p&gt;
+
+&lt;p&gt;Reading and having at least a basic understanding of how a piece of third party software works is paramount for a new developer. If foreign code is treated as magic, that is all it will ever be. This magic can become a crutch that an innocent new developer may find themselves leaning against more and more until it eventually breaks, leaving the developer confused and helpless.&lt;/p&gt;
+
+&lt;p&gt;Who wants to be confused and helpless? No one wants that and no one needs to experience that. Reading the source code of a library or crucial bit of third party open source software can help bring light to an otherwise shrouded system, bringing a new level of depth to a developer&amp;#39;s understanding.&lt;/p&gt;
+</content>
+ </entry>
  
  <entry>
    <title>Introduction to Rails 5 Attributes</title>
