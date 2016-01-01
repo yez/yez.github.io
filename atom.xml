@@ -152,7 +152,7 @@
 
 &lt;p&gt;A fantastic detail about &lt;code&gt;Attributes&lt;/code&gt; is that type coercion is not limited to only &amp;quot;supported&amp;quot; types. Any object that adheres to a proper contract may be used.&lt;/p&gt;
 
-&lt;p&gt;To help illustrate this feature, we can assume that all prices in the database have been changed to only deal with cents. This helps remove some complexities with floating point math oddities and prevents nefarious &lt;strong&gt;Office Space/Superman II&lt;/strong&gt; bugs from creeping up.&lt;/p&gt;
+&lt;p&gt;To help illustrate this feature, we can assume that all prices in the database have been changed to only deal with cents. This helps remove some complexities with floating point math oddities and prevents nefarious &lt;strong&gt;Office Space/Superman III&lt;/strong&gt; bugs from creeping up.&lt;/p&gt;
 
 &lt;p&gt;Given a &lt;code&gt;MoneyType&lt;/code&gt; object:&lt;/p&gt;
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;MoneyType&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;ActiveRecord&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Type&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;Integer&lt;/span&gt;
