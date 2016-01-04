@@ -67,57 +67,82 @@
   
   <div class="post">
     <h1 class="post-title">
-      <a href="/2015/04/23/a-year-of-commits/">
-        A Year of Commits
+      <a href="/2015/05/03/ruby-boolean/">
+        Ruby Boolean
       </a>
     </h1>
 
     
 
-    <span class="post-date">23 Apr 2015</span>
+    <span class="post-date">03 May 2015</span>
     <span class='share-container'><ul class="share-buttons">
   <li>
-    <a href="https://www.facebook.com/sharer/sharer.php?u=http://jakeyesbeck.com/2015/04/23/a-year-of-commits/&t=A Year of Commits" title="Share on Facebook" target="_blank">
+    <a href="https://www.facebook.com/sharer/sharer.php?u=http://jakeyesbeck.com/2015/05/03/ruby-boolean/&t=Ruby Boolean" title="Share on Facebook" target="_blank">
       <img src="http://jakeyesbeck.com/assets/images/facebook.svg">
     </a>
   </li>
   <li>
-    <a href="https://twitter.com/intent/tweet?source=http%3A%2F%2Fjakeyesbeck.com&text=A Year of Commits%20http://jakeyesbeck.com/2015/04/23/a-year-of-commits/&via=jakeyesbeck" target="_blank" title="Tweet">
+    <a href="https://twitter.com/intent/tweet?source=http%3A%2F%2Fjakeyesbeck.com&text=Ruby Boolean%20http://jakeyesbeck.com/2015/05/03/ruby-boolean/&via=jakeyesbeck" target="_blank" title="Tweet">
       <img src="http://jakeyesbeck.com/assets/images/twitter.svg">
     </a>
   </li>
   <li>
-    <a href="https://plus.google.com/share?url=http://jakeyesbeck.com/2015/04/23/a-year-of-commits/" target="_blank" title="Share on Google+">
+    <a href="https://plus.google.com/share?url=http://jakeyesbeck.com/2015/05/03/ruby-boolean/" target="_blank" title="Share on Google+">
       <img src="http://jakeyesbeck.com/assets/images/google_plus.svg">
     </a>
   </li>
 
   <li>
-    <a href="https://news.ycombinator.com/submitlink?u=http://jakeyesbeck.com/2015/04/23/a-year-of-commits/&t=A Year of Commits" target="_blank" title="Share on Hacker News">
+    <a href="https://news.ycombinator.com/submitlink?u=http://jakeyesbeck.com/2015/05/03/ruby-boolean/&t=Ruby Boolean" target="_blank" title="Share on Hacker News">
       <img src="http://jakeyesbeck.com/assets/images/ycomb.svg">
     </a>
   </li>
 
   <li>
-    <a href="https://getpocket.com/save?url=http://jakeyesbeck.com/2015/04/23/a-year-of-commits/&title=A Year of Commits" target="_blank" title="Add to Pocket">
+    <a href="https://getpocket.com/save?url=http://jakeyesbeck.com/2015/05/03/ruby-boolean/&title=Ruby Boolean" target="_blank" title="Add to Pocket">
       <img src="http://jakeyesbeck.com/assets/images/pocket.svg">
     </a>
   </li>
   <li>
-    <a href="http://www.reddit.com/submit?url=http://jakeyesbeck.com/2015/04/23/a-year-of-commits/&title=A Year of Commits" target="_blank" title="Submit to Reddit">
+    <a href="http://www.reddit.com/submit?url=http://jakeyesbeck.com/2015/05/03/ruby-boolean/&title=Ruby Boolean" target="_blank" title="Submit to Reddit">
       <img src="http://jakeyesbeck.com/assets/images/reddit.svg">
     </a>
   </li>
 </ul>
 </span>
 
-    <p>Some people have no problem being motivated to be excellent every single day. I am not one of those people. While I love what I do, I think I can do better. It is very easy to make excuses for why I have countless side projects around 20% completion. Maybe people believe me when I say &quot;I just don&#39;t have time right now.&quot; or &quot;I&#39;ve just been slammed at work.&quot;. Those excuses are bullshit. There are plenty of people with may more on their plate than I. That is why I want to embark on a new adventure -- &quot;A Year of Commits&quot;.</p>
+    <p>Week one of my <a href="/2015/04/23/a_year_of_commits/">Year of Commits</a> initiative is complete, 51 more to go. I did not plan on telling people about this until a few weeks into the task (in case history repeated itself and I gave up 20% in). But that didn&#39;t happen; people found out about it almost immediately, demonstrating yet again just how easy it is to find anything on the Internet. Thanks, Obama.</p>
 
-<p>For the next year, I will make at least 1 commit per day to a <strong>public</strong> repository on github. I am counting the commits by the day they are made, not they day they are merged in (in cases of public PRs).</p>
+<p>So what happened in the first week? Did I change the world of open source forever? Did I contribute a monumental change to one of the most well renown ruby libraries out there? Nope, I made a gem that at its core is 3 lines long. I made a <a href="https://github.com/yez/ruby-boolean">boolean gem</a>.</p>
 
-<p>Additionally, I will make 1 blog post per week. That&#39;s 52 blog posts total counting this one (in case for some reason you don&#39;t know how many weeks are in a year or whatever). It&#39;s my first blog so who knows what will happen. Do people put pictures in blogs?</p>
+<p>I can see that most people would wonder: &quot;Why?&quot;, &quot;Why did he make this useless thing? Doesn&#39;t he know that ruby does not have the boolean type <a href="http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-talk/96356">by design</a>?&quot;. The answer is simple. I found myself over and over again typing some kind of nonsense like this:</p>
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="c1"># For some reason we need to know if this value</span>
+<span class="c1"># is a boolean or not</span>
+<span class="c1">#</span>
+<span class="c1"># @boolean?</span>
+<span class="c1">#   param: value - what we want to know is a boolean or not</span>
+<span class="c1">#   return: true/false</span>
+<span class="k">def</span> <span class="nf">boolean?</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+  <span class="n">value</span><span class="o">.</span><span class="n">is_a?</span><span class="p">(</span><span class="no">TrueClass</span><span class="p">)</span> <span class="o">||</span> <span class="n">value</span><span class="o">.</span><span class="n">is_a?</span><span class="p">(</span><span class="no">FalseClass</span><span class="p">)</span>
+<span class="k">end</span>
+</code></pre></div>
+<p>This, however, could also be questioned. &quot;Who cares if something is a boolean or not? This is ruby, duck-type that shiz&quot;. Sure, that makes sense, I can do that. But do I want to do that? No. Why not? Because sometimes knowing the type of something can be important. You might not always have a background process like ActiveRecord&#39;s type coercion to clean up your types for you. Or maybe you actually want something to be a boolean, not <code>&#39;t&#39;</code> or <code>&#39;f&#39;</code>.</p>
 
-<p>So who cares? Why would I go through the trouble of making this blog to exist alongside the gazillion other ones out there? Because I want to. I think it will be not only a great motivator for me but potentially provide some comic relief to any wandering interneters that happen to stumble upon this joke of a blog.</p>
+<p>This gem is not alone. Other gems that do similar and much more functionality exist as well (i.e. <a href="https://rubygems.org/gems/bool/versions/1.0.20">bool</a> and <a href="https://github.com/RISCfuture/boolean">boolean</a>)</p>
+
+<p>With the <a href="https://github.com/yez/ruby-boolean">ruby-boolean gem</a>, the same kind of code can be re-written:</p>
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="c1"># Super important business logic method</span>
+<span class="k">def</span> <span class="nf">some_method_where_booleans_matter</span>
+  <span class="k">if</span> <span class="n">thing</span><span class="o">.</span><span class="n">is_a?</span><span class="p">(</span><span class="no">Boolean</span><span class="p">)</span>
+    <span class="c1"># Do boolean related stuff</span>
+  <span class="k">else</span>
+    <span class="c1"># Throw a fit about it not being a boolean</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div>
+<p>Great! Now I only have to check one class instead of two. My life is now perfect, what could possibly make this any better? Nothing.</p>
+
+<p>This project was a fun introduction to the 365 commit-a-thon I am embarking on. Maybe someone will even use it.</p>
 
   </div>
   
@@ -125,7 +150,7 @@
 
 <div class="pagination">
   
-    <span class="pagination-item older">Older</span>
+    <a class="pagination-item older" href="http://jakeyesbeck.com/page37">Older</a>
   
   
     

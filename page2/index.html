@@ -67,178 +67,83 @@
   
   <div class="post">
     <h1 class="post-title">
-      <a href="/2015/12/20/rails-5-attributes/">
-        Introduction to Rails 5 Attributes
+      <a href="/2015/12/27/what-i-would-tell-myself-when-i-started-programming/">
+        Things I Wish I Knew When I Started Programming
       </a>
     </h1>
 
     
 
-    <span class="post-date">20 Dec 2015</span>
+    <span class="post-date">27 Dec 2015</span>
     <span class='share-container'><ul class="share-buttons">
   <li>
-    <a href="https://www.facebook.com/sharer/sharer.php?u=http://jakeyesbeck.com/2015/12/20/rails-5-attributes/&t=Introduction to Rails 5 Attributes" title="Share on Facebook" target="_blank">
+    <a href="https://www.facebook.com/sharer/sharer.php?u=http://jakeyesbeck.com/2015/12/27/what-i-would-tell-myself-when-i-started-programming/&t=Things I Wish I Knew When I Started Programming" title="Share on Facebook" target="_blank">
       <img src="http://jakeyesbeck.com/assets/images/facebook.svg">
     </a>
   </li>
   <li>
-    <a href="https://twitter.com/intent/tweet?source=http%3A%2F%2Fjakeyesbeck.com&text=Introduction to Rails 5 Attributes%20http://jakeyesbeck.com/2015/12/20/rails-5-attributes/&via=jakeyesbeck" target="_blank" title="Tweet">
+    <a href="https://twitter.com/intent/tweet?source=http%3A%2F%2Fjakeyesbeck.com&text=Things I Wish I Knew When I Started Programming%20http://jakeyesbeck.com/2015/12/27/what-i-would-tell-myself-when-i-started-programming/&via=jakeyesbeck" target="_blank" title="Tweet">
       <img src="http://jakeyesbeck.com/assets/images/twitter.svg">
     </a>
   </li>
   <li>
-    <a href="https://plus.google.com/share?url=http://jakeyesbeck.com/2015/12/20/rails-5-attributes/" target="_blank" title="Share on Google+">
+    <a href="https://plus.google.com/share?url=http://jakeyesbeck.com/2015/12/27/what-i-would-tell-myself-when-i-started-programming/" target="_blank" title="Share on Google+">
       <img src="http://jakeyesbeck.com/assets/images/google_plus.svg">
     </a>
   </li>
 
   <li>
-    <a href="https://news.ycombinator.com/submitlink?u=http://jakeyesbeck.com/2015/12/20/rails-5-attributes/&t=Introduction to Rails 5 Attributes" target="_blank" title="Share on Hacker News">
+    <a href="https://news.ycombinator.com/submitlink?u=http://jakeyesbeck.com/2015/12/27/what-i-would-tell-myself-when-i-started-programming/&t=Things I Wish I Knew When I Started Programming" target="_blank" title="Share on Hacker News">
       <img src="http://jakeyesbeck.com/assets/images/ycomb.svg">
     </a>
   </li>
 
   <li>
-    <a href="https://getpocket.com/save?url=http://jakeyesbeck.com/2015/12/20/rails-5-attributes/&title=Introduction to Rails 5 Attributes" target="_blank" title="Add to Pocket">
+    <a href="https://getpocket.com/save?url=http://jakeyesbeck.com/2015/12/27/what-i-would-tell-myself-when-i-started-programming/&title=Things I Wish I Knew When I Started Programming" target="_blank" title="Add to Pocket">
       <img src="http://jakeyesbeck.com/assets/images/pocket.svg">
     </a>
   </li>
   <li>
-    <a href="http://www.reddit.com/submit?url=http://jakeyesbeck.com/2015/12/20/rails-5-attributes/&title=Introduction to Rails 5 Attributes" target="_blank" title="Submit to Reddit">
+    <a href="http://www.reddit.com/submit?url=http://jakeyesbeck.com/2015/12/27/what-i-would-tell-myself-when-i-started-programming/&title=Things I Wish I Knew When I Started Programming" target="_blank" title="Submit to Reddit">
       <img src="http://jakeyesbeck.com/assets/images/reddit.svg">
     </a>
   </li>
 </ul>
 </span>
 
-    <p>Shortly after the tenth anniversary of Ruby on Rails 1.0, Rails 5.0 Beta has been announced. While the main character of this release was without a doubt <code>ActionCable</code>, other really great features have made their debut.</p>
+    <p>If by some magical event I could go back in time to the day before I started my first job as a software engineer, this is what I would say.</p>
 
-<h2>Types of Changes</h2>
+<h2>Drive Slow</h2>
 
-<p>One feature that particularly stood out is the introduction of <code>ActiveRecord Attributes</code>. This feature allows a developer to assert a specific type for a given attribute and an optional default value. It is not strict type validation (<a href="http://jakeyesbeck.com/2015/11/29/updated-validates-type/">which I have a very strong affinity for</a>), but it does define explicit type coercion that can be very useful.</p>
+<p>I mentioned a similar message in <a href="http://jakeyesbeck.com/2015/09/06/stop-and-take-a-moment/">a previous post</a> and I believe it is worth repeating. When starting a new job or a new career, it is easy to place external pressures on ourselves regarding time. This is a common issue that can arise when comparing one&#39;s own work with those around them. As the new employee, noticing and measuring your own speed and efficiency against existing personnel can feel like the correct thing to do; however, chasing the &quot;competition&quot; or &quot;proving that you are just as fast as them&quot; will only result in high stress levels and bug riddled software.</p>
 
-<p>Given an example application that deals with <code>Transactions</code>, a single table and model might exist:</p>
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">class</span> <span class="nc">CreateTransactions</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Migration</span>
-  <span class="k">def</span> <span class="nf">change</span>
-    <span class="n">create_table</span> <span class="ss">:transactions</span> <span class="k">do</span> <span class="o">|</span><span class="n">t</span><span class="o">|</span>
-      <span class="n">t</span><span class="o">.</span><span class="n">integer</span> <span class="ss">:user_id</span>
-      <span class="n">t</span><span class="o">.</span><span class="n">string</span> <span class="ss">:item_name</span>
-      <span class="n">t</span><span class="o">.</span><span class="n">integer</span> <span class="ss">:quantity</span>
-      <span class="n">t</span><span class="o">.</span><span class="n">string</span> <span class="ss">:success</span>
-      <span class="n">t</span><span class="o">.</span><span class="n">decimal</span> <span class="ss">:price</span>
-      <span class="n">t</span><span class="o">.</span><span class="n">timestamps</span><span class="p">(</span><span class="ss">null</span><span class="p">:</span> <span class="kp">false</span><span class="p">)</span>
-    <span class="k">end</span>
-  <span class="k">end</span>
-<span class="k">end</span>
+<p>The people who seem &quot;fast&quot; or come off as a &quot;10x engineer&quot; were not born that way. They took their time and learned their craft. And with that, they have slowly accelerated their process and patterns to make them appear extremely quick and efficient.</p>
 
-<span class="k">class</span> <span class="nc">Transaction</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
-<span class="k">end</span>
-</code></pre></div>
-<p>This structure, like most in the wild, could have been created before all edge cases were thought through. For some reason, <code>success</code> is a <code>String</code> instead of a <code>Boolean</code>. While this problem might seem trivial, imagine a system where hundreds of millions of <code>transactions</code> exist.</p>
+<p>Deadlines should be thought of as real and valid; however, working at lightning speed to try and meet those deadlines will end up causing more work in the long run. What would be better, missing a deadline by a day or making a deadline and incurring so many bugs and tech debt that it takes two weeks to clean everything up?</p>
 
-<p>In such a system the entire column might not be able to change without incurring downtime. This is a perfect example problem that <code>Attributes</code> can help remedy.</p>
+<h2>ABL</h2>
 
-<p>Starting simple, a single line can be added to the <code>Transaction</code> class definition to coerce <code>success</code> to a <code>boolean</code>:</p>
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">class</span> <span class="nc">Transaction</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
-  <span class="n">attribute</span> <span class="ss">:success</span><span class="p">,</span> <span class="ss">:boolean</span>
-<span class="k">end</span>
-</code></pre></div>
-<p>Using the same logic that <code>ActiveRecord</code> uses for database column coercion, we can see attributes in action!</p>
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">transaction</span> <span class="o">=</span> <span class="no">Transaction</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="ss">success</span><span class="p">:</span> <span class="s1">&#39;yes&#39;</span><span class="p">)</span>
-<span class="n">transaction</span><span class="o">.</span><span class="n">success</span>
-<span class="c1"># =&gt; true</span>
+<p><em>Glengarry Glen Ross&#39;s</em> iconic scene has very clear message: <strong>A</strong>lways <strong>B</strong>e <strong>C</strong>losing, meaning that one should constantly strive to be in the process completing a sale. When starting out writing software and even after years of doing it, a similar attitude can be extremely helpful: <strong>A</strong>lways <strong>B</strong>e <strong>L</strong>earning.</p>
 
-<span class="n">transaction</span> <span class="o">=</span> <span class="no">Transaction</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="ss">success</span><span class="p">:</span> <span class="s1">&#39;f&#39;</span><span class="p">)</span>
-<span class="n">transaction</span><span class="o">.</span><span class="n">success</span>
-<span class="c1"># =&gt; false</span>
+<p>From day one to day one thousand, learning and absorbing new information is very important. A key to learning new things is in asking questions. When starting a new job or a new career, there seems to be a stigma attached to asking questions. We are all under the impression that <em>&quot;they hired me to do this job, they must assume I know exactly what I&#39;m doing.&quot;</em> This mentality can inhibit our natural inquisitive nature which is a great catalyst to learning.</p>
 
-<span class="n">transaction</span> <span class="o">=</span> <span class="no">Transaction</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="ss">success</span><span class="p">:</span> <span class="mi">0</span><span class="p">)</span>
-<span class="n">transaction</span><span class="o">.</span><span class="n">success</span>
-<span class="c1"># =&gt; false</span>
-</code></pre></div>
-<p>Just like that, the schema has been improved. Aside from raw <code>SQL</code> update statements, this code now prevents strings like <code>&quot;maybe&quot;</code> from littering the <code>success</code> column of the <code>transactions</code> table.</p>
+<p>Ridicule and impostor syndrome are the most likely the reasons stopping people from asking questions. The idea that questions might expose a person as not &quot;good enough&quot; or &quot;smart enough&quot; for their job is ridiculous and often unfounded. Getting over these fears early in one&#39;s career is extremely important. Questions should be encouraged and celebrated. Ask questions every single day, ask a lot of them but make sure not to ask the same one too many times. No one enjoys repeating themselves.</p>
 
-<p>Before <code>Attributes</code>, a callback or custom setter method would have been the preferred way to address this problem. However, with this new built in solution for mismatched database column types, old one-off or ad-hoc solutions can be replaced with this new standard.</p>
+<h2>It is Ok to be Wrong</h2>
 
-<h2>The Friendly Type</h2>
+<p>Similar to not asking questions, most new engineers are terrified of being wrong. A golden rule is to be correct frequently, but no one is capable of being correct all the time. The trick to being wrong is how a person reacts when it happens. There is a huge difference between promoting a technique or solution and being closed-minded to alternatives.</p>
 
-<p>With such a clean DSL, it is obvious that a lot of time and thought went into the design of <code>Attributes</code>. Being able to specify how a model should interact with the persistence layer is a powerful tool.</p>
+<p>If someone was never wrong, how could they learn? And if they did not learn, how could they <strong>A</strong>lways <strong>B</strong>e <strong>L</strong>earning? Tackling instances of being wrong with an open mind helps refine a person&#39;s skills, shaping them with feedback from others. While this mentality, like others already mentioned, is relevant throughout a person&#39;s career, it is especially important in the beginning. In the beginning a person is likely wrong a lot of the time. This means that in the beginning a person has the most opportunity to grow; to be wrong and learn from those mistakes. Internalizing these mistakes can help bolster a person&#39;s technical skills and confidence.</p>
 
-<p>The full list of supported types that <code>Attributes</code> provides can be found deep in the source code for <code>ActiveRecord</code> or right here:</p>
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="c1">#Supported Types</span>
+<h2>R.T.F.S.</h2>
 
-<span class="ss">:big_integer</span>
-<span class="ss">:binary</span>
-<span class="ss">:boolean</span>
-<span class="ss">:date</span>
-<span class="ss">:date_time</span>
-<span class="ss">:decimal</span>
-<span class="ss">:float</span>
-<span class="ss">:integer</span>
-<span class="ss">:string</span>
-<span class="ss">:text</span>
-<span class="ss">:time</span>
-</code></pre></div>
-<p>Each of these types has their own place and value in a system. Their purpose is simple: to make the experience between developer and framework fluid.</p>
+<p>At the onset of one&#39;s career, it is easy to treat third party software or services as magical boxes of mystery. However, this is not necessary. It is actually <a href="http://jakeyesbeck.com/2015/10/25/how-to-traverse-foreign-ruby-code/">very easy to open and read the source</a> of many third party applications (especially in web development). Therefore, it becomes imperative to <strong>R</strong>ead <strong>T</strong>he <strong>F</strong>reaking <strong>S</strong>ource.</p>
 
-<p>The <code>Attribute</code> feature is not restricted to database columns. If an attribute is only used during the life cycle of an object, it too can benefit from type coercion.</p>
+<p>Reading and having at least a basic understanding of how a piece of third party software works is paramount for a new developer. If foreign code is treated as magic, that is all it will ever be. This magic can become a crutch that an innocent new developer may find themselves leaning against more and more until it eventually breaks, leaving the developer confused and helpless.</p>
 
-<p>For instance, if a <code>confirmed_at</code> attribute had a useful purpose for a <code>Transaction</code>, but the format of it could vary, the <code>Attribute</code> module can step in and keep things clean.</p>
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">class</span> <span class="nc">Transaction</span>
-  <span class="n">attribute</span> <span class="ss">:confirmed_at</span><span class="p">,</span> <span class="ss">:date_time</span>
-<span class="k">end</span>
-</code></pre></div>
-<p>Without adding a new column or defining an <code>attr_accessor</code> for the <code>confirmed_at</code> attribute, the <code>:date_time</code> coercion works perfectly:</p>
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">transaction</span> <span class="o">=</span> <span class="no">Transaction</span><span class="o">.</span><span class="n">new</span>
-<span class="n">transaction</span><span class="o">.</span><span class="n">confirmed_at</span> <span class="o">=</span> <span class="s1">&#39;2015-12-12 03:00&#39;</span>
-<span class="n">transaction</span><span class="o">.</span><span class="n">confirmed_at</span>
-<span class="c1"># =&gt; Sat, 12 Dec 2015 03:00:00 UTC +00:00</span>
+<p><strong>Note: Not all third party software&#39;s source can be read as not all of it is open source. If this is the case, do not try to read the source, it will not make much sense.</strong></p>
 
-<span class="n">transaction</span> <span class="o">=</span> <span class="no">Transaction</span><span class="o">.</span><span class="n">new</span>
-<span class="n">transaction</span><span class="o">.</span><span class="n">confirmed_at</span> <span class="o">=</span> <span class="s1">&#39;2015/12/12&#39;</span>
-<span class="n">transaction</span><span class="o">.</span><span class="n">confirmed_at</span>
-<span class="c1"># =&gt; Sat, 12 Dec 2015 00:00:00 UTC +00:00</span>
-</code></pre></div>
-<p>Since most Ruby on Rails applications deal with strings via form encoded data, it is easy to see just how valuable the <code>Attribute</code> module can be.</p>
-
-<h2>Out of the Box Typing</h2>
-
-<p>A fantastic detail about <code>Attributes</code> is that type coercion is not limited to only &quot;supported&quot; types. Any object that adheres to a proper contract may be used.</p>
-
-<p>To help illustrate this feature, we can assume that all prices in the database have been changed to only deal with cents. This helps remove some complexities with floating point math oddities and prevents nefarious <strong>Office Space/Superman III</strong> bugs from creeping up.</p>
-
-<p>Given a <code>MoneyType</code> object:</p>
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">class</span> <span class="nc">MoneyType</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Type</span><span class="o">::</span><span class="nb">Integer</span>
-  <span class="k">def</span> <span class="nf">type_cast</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">value</span><span class="o">.</span><span class="n">include?</span><span class="p">(</span><span class="s1">&#39;$&#39;</span><span class="p">)</span>
-      <span class="n">price_in_dollars</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">gsub</span><span class="p">(</span><span class="sr">/\$/</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">to_f</span>
-      <span class="n">price_in_dollars</span> <span class="o">*</span> <span class="mi">100</span>
-    <span class="k">else</span>
-      <span class="n">value</span><span class="o">.</span><span class="n">to_i</span>
-    <span class="k">end</span>
-  <span class="k">end</span>
-<span class="k">end</span>
-</code></pre></div>
-<p>An important takeaway here is the inheritance and <code>type_cast</code> method definition. Both elements are necessary to create a custom type that the <code>Attributes</code> module can use effectively.</p>
-
-<p>To use this new type, an initialized object is passed to the <code>attribute</code> method:</p>
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">class</span> <span class="nc">Transaction</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
-  <span class="n">attribute</span> <span class="ss">:price</span><span class="p">,</span> <span class="no">MoneyType</span><span class="o">.</span><span class="n">new</span>
-<span class="k">end</span>
-</code></pre></div>
-<p>Then, if all keystrokes were done with style and grace, the effects should look something like:</p>
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="no">Transaction</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="ss">price</span><span class="p">:</span> <span class="s1">&#39;$10.00&#39;</span><span class="p">)</span>
-<span class="c1"># =&gt; SELECT * FROM transactions WHERE price = 1000</span>
-</code></pre></div>
-<p>The observed behaviour here is very interesting. A string representing a money amount can be coerced to an <code>Integer</code> value representing the same data. Instead of the <code>MoneyType</code>&#39;s <code>type_cast</code> method being extracted and used many times in controller or other model methods, it can be centralized to one specific spot.</p>
-
-<p>Like the previous example, this solution is not the only way to achieve the desired result; however, it is unique enough to inspire new ways of thinking about these problems.</p>
-
-<h2>Type Validation</h2>
-
-<p>Avoiding hidden type coercion was a driving force when I created the <a href="https://github.com/yez/validates_type">validates_type</a> gem. With <code>Attributes</code>, that coercion is still there but can be explicitly specified in a model&#39;s definition. While this is a great step forward, I still find value in rejecting data of the wrong type. As a previous example can illustrate: why does the string <code>&quot;yes&quot;</code> map to the boolean value <code>true</code>? It does make some sense but <code>&quot;yes&quot;</code> is not a boolean.</p>
-
-<p>The addition of <code>Attributes</code> will hopefully promote some new patterns and considerations around dealing with types in Ruby on Rails applications. Data consistency and reliability are important, it is exciting to see people making steps toward it in the Rails community.</p>
+<p>Who wants to be confused and helpless? No one wants that and no one needs to experience that. Reading the source code of a library or crucial bit of third party open source software can help bring light to an otherwise shrouded system, bringing a new level of depth to a developer&#39;s understanding.</p>
 
   </div>
   

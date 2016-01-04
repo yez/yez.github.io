@@ -4,13 +4,66 @@
  <title>A Year of Commits</title>
  <link href="/atom.xml" rel="self"/>
  <link href="/"/>
- <updated>2015-12-28T12:05:20-05:00</updated>
+ <updated>2016-01-03T17:42:07-08:00</updated>
  <id></id>
  <author>
    <name>Jake Yesbeck</name>
    <email></email>
  </author>
 
+ 
+ <entry>
+   <title>Passages Rails Engine</title>
+   <link href="/2016/01/03/passages/"/>
+   <updated>2016-01-03T04:00:00-08:00</updated>
+   <id>/2016/01/03/passages</id>
+   <content type="html">&lt;p&gt;Routing in the Ruby on Rails world can, at times, be a tad confusing. The &lt;a href=&quot;http://guides.rubyonrails.org/routing.html&quot;&gt;official Rails guide&lt;/a&gt; is very helpful for the basics; but, as an application grows, it can become hard to remember specific details about every single route.&lt;/p&gt;
+
+&lt;h2&gt;Existing Routing Tools&lt;/h2&gt;
+
+&lt;p&gt;To remedy the issue of route complexity, a few helpful tools already exist. The most useful one is &lt;code&gt;rake routes&lt;/code&gt;, which can be executed in the working directory of a Rails application. This tool requires that the application be on the developer&amp;#39;s local system, which is fine for applications that a developer owns, but what about services that the developer does not own?&lt;/p&gt;
+
+&lt;p&gt;While this problem might not exist for everyone, chances are at least one poor software engineer has been slapped in the face with a &lt;code&gt;404&lt;/code&gt; page and shouted: &lt;em&gt;&amp;quot;I know that route exists! Why doesn&amp;#39;t this work?&amp;quot;&lt;/em&gt;&lt;/p&gt;
+
+&lt;p&gt;Another helpful tool in development mode is this screen:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/no_route_page.png&quot; alt=&quot;Default Rails Dev No Route&quot;&gt;&lt;/p&gt;
+
+&lt;p&gt;As show, this page provides the ability to enter search terms that match words in the &lt;code&gt;paths&lt;/code&gt; of specfic routes. However, similarly to &lt;code&gt;rake routes&lt;/code&gt;, this screen is only accessible in development mode. While this tool is still extremely useful, there could be cases when route inspection would be helpful without running the server locally.&lt;/p&gt;
+
+&lt;h2&gt;New Hotness&lt;/h2&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://github.com/yez/passages&quot;&gt;The Passages Rails Engine&lt;/a&gt; was created to fulfill two main purposes:&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;1.&lt;/strong&gt; To expose routes of a Ruby on Rails application either during or outside development mode.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;2.&lt;/strong&gt; Enable searching on multiple pieces of a route&amp;#39;s information (HTTP verb, controller, path, etc).&lt;/p&gt;
+
+&lt;p&gt;Some might wonder by &lt;strong&gt;1&lt;/strong&gt; would even be valuable. Imagine for a moment that a team of engineers decides that they need an internal API to power their various applications. Perhaps while developing this API, some basic documentation is written but never actually kept up to date. Maybe the API changes so fast that documentation just falls behind.&lt;/p&gt;
+
+&lt;p&gt;Whatever the reason, it becomes laborious for the consumers of that internal API to constantly ask which route does what and which parameters are expected in each URL.&lt;/p&gt;
+
+&lt;p&gt;Internal APIs are not the only candidate for &lt;code&gt;Passages&lt;/code&gt;. An external API can also benefit from discoverable routing in lieu of or in addition to documentation. Since &lt;code&gt;Passages&lt;/code&gt; has the option to use HTTP Basic Authentication, securing &lt;code&gt;Passages&lt;/code&gt; is as simple as setting two &lt;code&gt;ENV&lt;/code&gt; variables.&lt;/p&gt;
+
+&lt;p&gt;Purpose &lt;strong&gt;2&lt;/strong&gt; is an attempt to reduce a large application&amp;#39;s route pile by expanding each route&amp;#39;s search surface area. A user of &lt;code&gt;Passages&lt;/code&gt; might want to know of all the &lt;code&gt;PUT&lt;/code&gt; routes or routes that map to a &lt;code&gt;destroy&lt;/code&gt; action. Like its predecessor, &lt;code&gt;Passages&amp;#39;&lt;/code&gt; route path search is also extremely valuable.&lt;/p&gt;
+
+&lt;p&gt;With (hopefully) the help of the open source community, the types of useful search features for &lt;code&gt;Passages&lt;/code&gt; will expand from these very humble beginnings.&lt;/p&gt;
+
+&lt;h2&gt;Demo&lt;/h2&gt;
+
+&lt;p&gt;After following the &lt;a href=&quot;https://github.com/yez/passages#install&quot;&gt;installation guide from the project&amp;#39;s README&lt;/a&gt;, A very basic use of &lt;code&gt;Passages&lt;/code&gt; would look like:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/passages_demo.gif&quot; alt=&quot;Passages Demo&quot;&gt;&lt;/p&gt;
+
+&lt;h2&gt;Contributing&lt;/h2&gt;
+
+&lt;p&gt;Like most Open Source projects, &lt;code&gt;Passages&lt;/code&gt; has many areas that welcome modification. Specifically, the design and search functionalities are suitable candidates for enhancement.&lt;/p&gt;
+
+&lt;p&gt;Please feel free to &lt;a href=&quot;https://github.com/yez/passages&quot;&gt;fork the repository&lt;/a&gt; or create an issue on Github if something seems wrong or out of place.&lt;/p&gt;
+
+&lt;p&gt;Currently, &lt;code&gt;Passages&lt;/code&gt; only supports Ruby on Rails 4. It will most likely be upgraded when Ruby on Rails 5 is released but there are no plans to support Ruby on Rails 3 and older.&lt;/p&gt;
+</content>
+ </entry>
  
  <entry>
    <title>Things I Wish I Knew When I Started Programming</title>

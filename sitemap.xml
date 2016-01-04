@@ -1,6 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>/2016/01/03/passages/</loc>
+    <lastmod>2016-01-03T04:00:00-08:00</lastmod>
+  </url>
+  <url>
+    <loc>/2015/12/27/what-i-would-tell-myself-when-i-started-programming/</loc>
+    <lastmod>2015-12-27T04:00:00-08:00</lastmod>
+  </url>
+  <url>
+    <loc>/2015/12/20/rails-5-attributes/</loc>
+    <lastmod>2015-12-20T04:00:00-08:00</lastmod>
+  </url>
+  <url>
     <loc>/2015/12/13/ruby-refinements/</loc>
     <lastmod>2015-12-13T04:00:00-08:00</lastmod>
   </url>
