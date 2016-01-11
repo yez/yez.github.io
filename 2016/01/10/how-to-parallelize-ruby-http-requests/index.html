@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta http-equiv="content-type" content="text/html; charset=utf-8">
   
-    <meta name="description" content="A technology blog about a Year of Commits to Open Source projects.">
+    <meta name="description" content="Using Event Machine, making parallel HTTP Requests in Ruby is not only easy but also fast! Serial requests are slow, users want fast response times from Ruby servers.">
   
 
   <!-- Enable responsiveness on mobile devices-->
@@ -14,7 +14,7 @@
 
   <title>
     
-      A Year of Commits
+      How To Parallelize Ruby HTTP Requests
     
   </title>
 
@@ -63,19 +63,11 @@
 
 
     <div class="content container">
-      <div class="posts">
+      <div class="post">
+  <h1 class="post-title">How To Parallelize Ruby HTTP Requests</h1>
+  <span class="post-date">10 Jan 2016</span>
   
-  <div class="post">
-    <h1 class="post-title">
-      <a href="/2016/01/10/how-to-parallelize-ruby-http-requests/">
-        How To Parallelize Ruby HTTP Requests
-      </a>
-    </h1>
-
-    
-
-    <span class="post-date">10 Jan 2016</span>
-    <span class='share-container'><ul class="share-buttons">
+  <span class='share-container'><ul class="share-buttons">
   <li>
     <a href="https://www.facebook.com/sharer/sharer.php?u=http://jakeyesbeck.com/2016/01/10/how-to-parallelize-ruby-http-requests/&t=How To Parallelize Ruby HTTP Requests" title="Share on Facebook" target="_blank">
       <img src="http://jakeyesbeck.com/assets/images/facebook.svg">
@@ -110,8 +102,7 @@
   </li>
 </ul>
 </span>
-
-    <p>It turns out that managing web requests is quite important when doing web development. A web application backed by an external or internal API can issue <strong>a lot</strong> of requests when rendering a seemingly simple web page. How those requests are made and in what order is very important. With improper parallelization, an end user&#39;s entire experience can go from delightful to horrific in a matter of seconds.</p>
+  <p>It turns out that managing web requests is quite important when doing web development. A web application backed by an external or internal API can issue <strong>a lot</strong> of requests when rendering a seemingly simple web page. How those requests are made and in what order is very important. With improper parallelization, an end user&#39;s entire experience can go from delightful to horrific in a matter of seconds.</p>
 
 <h2>The Build Up</h2>
 
@@ -281,17 +272,40 @@
 </ul></li>
 </ol>
 
-  </div>
-  
 </div>
 
-<div class="pagination">
-  
-    <a class="pagination-item older" href="http://jakeyesbeck.com/page2">Older</a>
-  
-  
-    <span class="pagination-item newer">Newer</span>
-  
+<div class="related">
+  <h2>Related Posts</h2>
+  <ul class="related-posts">
+    
+      <li>
+        <h3>
+          <a href="/2015/09/20/rails-http-status-codes/">
+            Just learn Rails (Part 3) HTTP status codes
+            <small>20 Sep 2015</small>
+          </a>
+        </h3>
+      </li>
+    
+      <li>
+        <h3>
+          <a href="/2015/10/11/building-a-simple-web-server-with-ruby-2/">
+            Building a Simple Web Server with Ruby 2.0+
+            <small>11 Oct 2015</small>
+          </a>
+        </h3>
+      </li>
+    
+      <li>
+        <h3>
+          <a href="/2015/11/15/five-active-record-features-you-should-be-using/">
+            Five Active Record Features You Should Be Using
+            <small>15 Nov 2015</small>
+          </a>
+        </h3>
+      </li>
+    
+  </ul>
 </div>
 
     </div>

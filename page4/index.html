@@ -67,203 +67,178 @@
   
   <div class="post">
     <h1 class="post-title">
-      <a href="/2015/12/13/ruby-refinements/">
-        Ruby Refinements
+      <a href="/2015/12/20/rails-5-attributes/">
+        Introduction to Rails 5 Attributes
       </a>
     </h1>
 
     
 
-    <span class="post-date">13 Dec 2015</span>
+    <span class="post-date">20 Dec 2015</span>
     <span class='share-container'><ul class="share-buttons">
   <li>
-    <a href="https://www.facebook.com/sharer/sharer.php?u=http://jakeyesbeck.com/2015/12/13/ruby-refinements/&t=Ruby Refinements" title="Share on Facebook" target="_blank">
+    <a href="https://www.facebook.com/sharer/sharer.php?u=http://jakeyesbeck.com/2015/12/20/rails-5-attributes/&t=Introduction to Rails 5 Attributes" title="Share on Facebook" target="_blank">
       <img src="http://jakeyesbeck.com/assets/images/facebook.svg">
     </a>
   </li>
   <li>
-    <a href="https://twitter.com/intent/tweet?source=http%3A%2F%2Fjakeyesbeck.com&text=Ruby Refinements%20http://jakeyesbeck.com/2015/12/13/ruby-refinements/&via=jakeyesbeck" target="_blank" title="Tweet">
+    <a href="https://twitter.com/intent/tweet?source=http%3A%2F%2Fjakeyesbeck.com&text=Introduction to Rails 5 Attributes%20http://jakeyesbeck.com/2015/12/20/rails-5-attributes/&via=jakeyesbeck" target="_blank" title="Tweet">
       <img src="http://jakeyesbeck.com/assets/images/twitter.svg">
     </a>
   </li>
   <li>
-    <a href="https://plus.google.com/share?url=http://jakeyesbeck.com/2015/12/13/ruby-refinements/" target="_blank" title="Share on Google+">
+    <a href="https://plus.google.com/share?url=http://jakeyesbeck.com/2015/12/20/rails-5-attributes/" target="_blank" title="Share on Google+">
       <img src="http://jakeyesbeck.com/assets/images/google_plus.svg">
     </a>
   </li>
 
   <li>
-    <a href="https://news.ycombinator.com/submitlink?u=http://jakeyesbeck.com/2015/12/13/ruby-refinements/&t=Ruby Refinements" target="_blank" title="Share on Hacker News">
+    <a href="https://news.ycombinator.com/submitlink?u=http://jakeyesbeck.com/2015/12/20/rails-5-attributes/&t=Introduction to Rails 5 Attributes" target="_blank" title="Share on Hacker News">
       <img src="http://jakeyesbeck.com/assets/images/ycomb.svg">
     </a>
   </li>
 
   <li>
-    <a href="https://getpocket.com/save?url=http://jakeyesbeck.com/2015/12/13/ruby-refinements/&title=Ruby Refinements" target="_blank" title="Add to Pocket">
+    <a href="https://getpocket.com/save?url=http://jakeyesbeck.com/2015/12/20/rails-5-attributes/&title=Introduction to Rails 5 Attributes" target="_blank" title="Add to Pocket">
       <img src="http://jakeyesbeck.com/assets/images/pocket.svg">
     </a>
   </li>
   <li>
-    <a href="http://www.reddit.com/submit?url=http://jakeyesbeck.com/2015/12/13/ruby-refinements/&title=Ruby Refinements" target="_blank" title="Submit to Reddit">
+    <a href="http://www.reddit.com/submit?url=http://jakeyesbeck.com/2015/12/20/rails-5-attributes/&title=Introduction to Rails 5 Attributes" target="_blank" title="Submit to Reddit">
       <img src="http://jakeyesbeck.com/assets/images/reddit.svg">
     </a>
   </li>
 </ul>
 </span>
 
-    <p>The Ruby language provides many powerful tools for software engineers to utilize. For instance, classes that have been previously defined and evaluated can be reopened and changed. This is commonly referred to as <em>&quot;monkey patching&quot;</em>, a term which elicits almost universal disdain among Ruby developers.</p>
+    <p>Shortly after the tenth anniversary of Ruby on Rails 1.0, Rails 5.0 Beta has been announced. While the main character of this release was without a doubt <code>ActionCable</code>, other really great features have made their debut.</p>
 
-<h2>The Problem</h2>
+<h2>Types of Changes</h2>
 
-<p>A reason that monkey patched code has issues lies in the scope of the changed code. If previously defined code is changed at an arbitrary time, all other parts of the application suffer from those changes.</p>
+<p>One feature that particularly stood out is the introduction of <code>ActiveRecord Attributes</code>. This feature allows a developer to assert a specific type for a given attribute and an optional default value. It is not strict type validation (<a href="http://jakeyesbeck.com/2015/11/29/updated-validates-type/">which I have a very strong affinity for</a>), but it does define explicit type coercion that can be very useful.</p>
 
-<p>Why would someone need to change an existing class? Perhaps an included <code>gem</code> needs to be altered in a small way to behave correctly in a very specific system. Or maybe, there exists a very dark area of a codebase that must not be touched directly for fear that the entire application will go under.</p>
-
-<p>Whatever the case, patching code that has been already defined happens, and it usually happens poorly.</p>
-
-<p>These problems can be especially nefarious if the patches are not in automatically loaded files. For example, say we have a <code>Dog</code> class:</p>
-
-<p><strong>dog.rb</strong></p>
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">class</span> <span class="nc">Dog</span>
-  <span class="kp">attr_accessor</span> <span class="ss">:trained</span>
-
-  <span class="k">def</span> <span class="nf">bark</span>
-    <span class="s2">&quot;woof woof&quot;</span>
-  <span class="k">end</span>
-<span class="k">end</span>
-</code></pre></div>
-<p>Then in file loaded later, the <code>bark</code> method changes to be much more formal:</p>
-
-<p><strong>training.rb</strong></p>
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">class</span> <span class="nc">Training</span>
-  <span class="k">def</span> <span class="nf">train</span><span class="p">(</span><span class="n">dog</span><span class="p">)</span>
-    <span class="n">dog</span><span class="o">.</span><span class="n">trained</span> <span class="o">=</span> <span class="kp">true</span>
-    <span class="n">dog</span><span class="o">.</span><span class="n">bark</span>
-  <span class="k">end</span>
-<span class="k">end</span>
-
-<span class="k">class</span> <span class="nc">Dog</span>
-  <span class="k">def</span> <span class="nf">bark</span>
-    <span class="s2">&quot;Woof woof, good sir.&quot;</span>
-  <span class="k">end</span>
-<span class="k">end</span>
-</code></pre></div>
-<p>After the <code>Traning</code> class is loaded, any consumers of the <code>Dog</code> class will be in for a surprise whenever the <code>bark</code> method is called. Even worse, when a confused developer opens the <code>dog.rb</code> class to check <code>bark</code>&#39;s functionality, they will not see the patched version.</p>
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">dog</span> <span class="o">=</span> <span class="no">Dog</span><span class="o">.</span><span class="n">new</span>
-<span class="n">dog</span><span class="o">.</span><span class="n">bark</span>
-<span class="c1"># =&gt; woof woof</span>
-
-<span class="nb">require</span> <span class="s1">&#39;./training&#39;</span>
-<span class="n">training</span> <span class="o">=</span> <span class="no">Training</span><span class="o">.</span><span class="n">new</span>
-<span class="n">training</span><span class="o">.</span><span class="n">train</span><span class="p">(</span><span class="n">dog</span><span class="p">)</span>
-<span class="c1"># =&gt; Woof woof, good sir.</span>
-
-<span class="n">dog</span> <span class="o">=</span> <span class="no">Dog</span><span class="o">.</span><span class="n">new</span>
-<span class="n">dog</span><span class="o">.</span><span class="n">bark</span>
-<span class="c1"># =&gt; Woof woof, good sir.</span>
-</code></pre></div>
-<p>As shown, the second initialized <code>Dog</code> barks the same way as the trained <code>Dog</code>. Globally, the way a <code>Dog</code> barks has been changed after the <code>training</code> file has been included.</p>
-
-<h2>Enter Refinements</h2>
-
-<p>An alternative way to extend a class&#39; functionality is by using the built in ruby construct: <code>Refinements</code>. Refinements are context specific alterations to a class&#39; methods.</p>
-
-<p>To refine the <code>Dog</code> class, a <code>module</code> needs to be written:</p>
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">module</span> <span class="nn">SophisticatedDog</span>
-  <span class="n">refine</span> <span class="no">Dog</span> <span class="k">do</span>
-    <span class="k">def</span> <span class="nf">bark</span>
-      <span class="s2">&quot;Woof woof, good sir.&quot;</span>
-    <span class="k">end</span>
-  <span class="k">end</span>
-<span class="k">end</span>
-</code></pre></div>
-<p>The interesting piece here is the <code>refine</code> method. This method returns an overlaid module specific to the class passed into it, allowing a very small scoped change of the <code>Dog</code> class.</p>
-
-<p>To include this Refinement in the place where it is needed, the <code>using</code> method can be added to the <code>Training</code> class.</p>
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">class</span> <span class="nc">Training</span>
-  <span class="n">using</span> <span class="no">SophisticatedDog</span>
-
-  <span class="k">def</span> <span class="nf">train</span><span class="p">(</span><span class="n">dog</span><span class="p">)</span>
-    <span class="n">dog</span><span class="o">.</span><span class="n">trained</span> <span class="o">=</span> <span class="kp">true</span>
-    <span class="n">dog</span><span class="o">.</span><span class="n">bark</span>
-  <span class="k">end</span>
-<span class="k">end</span>
-</code></pre></div>
-<p>Now, the changes to the <code>Dog</code> method are contained within the <code>Training</code> class:</p>
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">dog</span> <span class="o">=</span> <span class="no">Dog</span><span class="o">.</span><span class="n">new</span>
-<span class="n">dog</span><span class="o">.</span><span class="n">bark</span>
-<span class="c1"># =&gt; woof woof</span>
-
-<span class="nb">require</span> <span class="s1">&#39;./training&#39;</span>
-<span class="n">training</span> <span class="o">=</span> <span class="no">Training</span><span class="o">.</span><span class="n">new</span>
-<span class="n">training</span><span class="o">.</span><span class="n">train</span><span class="p">(</span><span class="n">dog</span><span class="p">)</span>
-<span class="c1"># =&gt; Woof woof, good sir.</span>
-</code></pre></div>
-<p>Neither the passed in dog, nor newly created dogs&#39; bark method has been permanently changed:</p>
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">dog</span><span class="o">.</span><span class="n">bark</span>
-<span class="c1"># =&gt; woof woof</span>
-
-<span class="n">dog</span> <span class="o">=</span> <span class="no">Dog</span><span class="o">.</span><span class="n">new</span>
-<span class="n">dog</span><span class="o">.</span><span class="n">bark</span>
-<span class="c1"># =&gt; woof woof</span>
-</code></pre></div>
-<p>No more surprise behaviour! Each new <code>Dog</code> is created just as unrefined and unsophisticated as ever.</p>
-
-<h2>Super Cool</h2>
-
-<p>Another problem with traditional monkey patching is that the patched method is no longer accessible.</p>
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">class</span> <span class="nc">Dog</span>
-  <span class="k">def</span> <span class="nf">bark</span>
-    <span class="s1">&#39;woof woof&#39;</span>
-  <span class="k">end</span>
-<span class="k">end</span>
-
-<span class="c1"># Then later:</span>
-
-<span class="k">class</span> <span class="nc">Dog</span>
-  <span class="k">def</span> <span class="nf">bark</span>
-    <span class="k">super</span> <span class="o">+</span> <span class="s1">&#39;, good sir.&#39;</span>
-  <span class="k">end</span>
-<span class="k">end</span>
-
-<span class="no">Dog</span><span class="o">.</span><span class="n">new</span><span class="o">.</span><span class="n">bark</span>
-<span class="c1"># =&gt; NoMethodError: super: no superclass method `bark&#39; for Dog</span>
-</code></pre></div>
-<p>The original implementation of <code>Dog</code> had a very specific string that might not want to be duplicated. When the class is monkey patched, the original method is replaced and <code>super</code> is not accessible.</p>
-
-<p>In a less silly example, maybe the method being patched had some valuable code a patch could have used. Since Refinements are not strict code overwrites, they maintain the <code>super</code> functionality found in inheritance:</p>
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">class</span> <span class="nc">Dog</span>
-  <span class="k">def</span> <span class="nf">bark</span>
-    <span class="s1">&#39;woof woof&#39;</span>
-  <span class="k">end</span>
-<span class="k">end</span>
-
-<span class="k">module</span> <span class="nn">SubWoofer</span>
-  <span class="n">refine</span> <span class="no">Dog</span> <span class="k">do</span>
-    <span class="k">def</span> <span class="nf">bark</span>
-      <span class="k">super</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)</span><span class="o">.</span><span class="n">first</span>
+<p>Given an example application that deals with <code>Transactions</code>, a single table and model might exist:</p>
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">class</span> <span class="nc">CreateTransactions</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Migration</span>
+  <span class="k">def</span> <span class="nf">change</span>
+    <span class="n">create_table</span> <span class="ss">:transactions</span> <span class="k">do</span> <span class="o">|</span><span class="n">t</span><span class="o">|</span>
+      <span class="n">t</span><span class="o">.</span><span class="n">integer</span> <span class="ss">:user_id</span>
+      <span class="n">t</span><span class="o">.</span><span class="n">string</span> <span class="ss">:item_name</span>
+      <span class="n">t</span><span class="o">.</span><span class="n">integer</span> <span class="ss">:quantity</span>
+      <span class="n">t</span><span class="o">.</span><span class="n">string</span> <span class="ss">:success</span>
+      <span class="n">t</span><span class="o">.</span><span class="n">decimal</span> <span class="ss">:price</span>
+      <span class="n">t</span><span class="o">.</span><span class="n">timestamps</span><span class="p">(</span><span class="ss">null</span><span class="p">:</span> <span class="kp">false</span><span class="p">)</span>
     <span class="k">end</span>
   <span class="k">end</span>
 <span class="k">end</span>
 
-<span class="k">class</span> <span class="nc">DogTest</span>
-  <span class="n">using</span> <span class="no">SubWoofer</span>
+<span class="k">class</span> <span class="nc">Transaction</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
+<span class="k">end</span>
+</code></pre></div>
+<p>This structure, like most in the wild, could have been created before all edge cases were thought through. For some reason, <code>success</code> is a <code>String</code> instead of a <code>Boolean</code>. While this problem might seem trivial, imagine a system where hundreds of millions of <code>transactions</code> exist.</p>
 
-  <span class="k">def</span> <span class="nf">call</span>
-    <span class="n">dog</span> <span class="o">=</span> <span class="no">Dog</span><span class="o">.</span><span class="n">new</span>
-    <span class="n">dog</span><span class="o">.</span><span class="n">bark</span>
+<p>In such a system the entire column might not be able to change without incurring downtime. This is a perfect example problem that <code>Attributes</code> can help remedy.</p>
+
+<p>Starting simple, a single line can be added to the <code>Transaction</code> class definition to coerce <code>success</code> to a <code>boolean</code>:</p>
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">class</span> <span class="nc">Transaction</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
+  <span class="n">attribute</span> <span class="ss">:success</span><span class="p">,</span> <span class="ss">:boolean</span>
+<span class="k">end</span>
+</code></pre></div>
+<p>Using the same logic that <code>ActiveRecord</code> uses for database column coercion, we can see attributes in action!</p>
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">transaction</span> <span class="o">=</span> <span class="no">Transaction</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="ss">success</span><span class="p">:</span> <span class="s1">&#39;yes&#39;</span><span class="p">)</span>
+<span class="n">transaction</span><span class="o">.</span><span class="n">success</span>
+<span class="c1"># =&gt; true</span>
+
+<span class="n">transaction</span> <span class="o">=</span> <span class="no">Transaction</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="ss">success</span><span class="p">:</span> <span class="s1">&#39;f&#39;</span><span class="p">)</span>
+<span class="n">transaction</span><span class="o">.</span><span class="n">success</span>
+<span class="c1"># =&gt; false</span>
+
+<span class="n">transaction</span> <span class="o">=</span> <span class="no">Transaction</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="ss">success</span><span class="p">:</span> <span class="mi">0</span><span class="p">)</span>
+<span class="n">transaction</span><span class="o">.</span><span class="n">success</span>
+<span class="c1"># =&gt; false</span>
+</code></pre></div>
+<p>Just like that, the schema has been improved. Aside from raw <code>SQL</code> update statements, this code now prevents strings like <code>&quot;maybe&quot;</code> from littering the <code>success</code> column of the <code>transactions</code> table.</p>
+
+<p>Before <code>Attributes</code>, a callback or custom setter method would have been the preferred way to address this problem. However, with this new built in solution for mismatched database column types, old one-off or ad-hoc solutions can be replaced with this new standard.</p>
+
+<h2>The Friendly Type</h2>
+
+<p>With such a clean DSL, it is obvious that a lot of time and thought went into the design of <code>Attributes</code>. Being able to specify how a model should interact with the persistence layer is a powerful tool.</p>
+
+<p>The full list of supported types that <code>Attributes</code> provides can be found deep in the source code for <code>ActiveRecord</code> or right here:</p>
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="c1">#Supported Types</span>
+
+<span class="ss">:big_integer</span>
+<span class="ss">:binary</span>
+<span class="ss">:boolean</span>
+<span class="ss">:date</span>
+<span class="ss">:date_time</span>
+<span class="ss">:decimal</span>
+<span class="ss">:float</span>
+<span class="ss">:integer</span>
+<span class="ss">:string</span>
+<span class="ss">:text</span>
+<span class="ss">:time</span>
+</code></pre></div>
+<p>Each of these types has their own place and value in a system. Their purpose is simple: to make the experience between developer and framework fluid.</p>
+
+<p>The <code>Attribute</code> feature is not restricted to database columns. If an attribute is only used during the life cycle of an object, it too can benefit from type coercion.</p>
+
+<p>For instance, if a <code>confirmed_at</code> attribute had a useful purpose for a <code>Transaction</code>, but the format of it could vary, the <code>Attribute</code> module can step in and keep things clean.</p>
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">class</span> <span class="nc">Transaction</span>
+  <span class="n">attribute</span> <span class="ss">:confirmed_at</span><span class="p">,</span> <span class="ss">:date_time</span>
+<span class="k">end</span>
+</code></pre></div>
+<p>Without adding a new column or defining an <code>attr_accessor</code> for the <code>confirmed_at</code> attribute, the <code>:date_time</code> coercion works perfectly:</p>
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">transaction</span> <span class="o">=</span> <span class="no">Transaction</span><span class="o">.</span><span class="n">new</span>
+<span class="n">transaction</span><span class="o">.</span><span class="n">confirmed_at</span> <span class="o">=</span> <span class="s1">&#39;2015-12-12 03:00&#39;</span>
+<span class="n">transaction</span><span class="o">.</span><span class="n">confirmed_at</span>
+<span class="c1"># =&gt; Sat, 12 Dec 2015 03:00:00 UTC +00:00</span>
+
+<span class="n">transaction</span> <span class="o">=</span> <span class="no">Transaction</span><span class="o">.</span><span class="n">new</span>
+<span class="n">transaction</span><span class="o">.</span><span class="n">confirmed_at</span> <span class="o">=</span> <span class="s1">&#39;2015/12/12&#39;</span>
+<span class="n">transaction</span><span class="o">.</span><span class="n">confirmed_at</span>
+<span class="c1"># =&gt; Sat, 12 Dec 2015 00:00:00 UTC +00:00</span>
+</code></pre></div>
+<p>Since most Ruby on Rails applications deal with strings via form encoded data, it is easy to see just how valuable the <code>Attribute</code> module can be.</p>
+
+<h2>Out of the Box Typing</h2>
+
+<p>A fantastic detail about <code>Attributes</code> is that type coercion is not limited to only &quot;supported&quot; types. Any object that adheres to a proper contract may be used.</p>
+
+<p>To help illustrate this feature, we can assume that all prices in the database have been changed to only deal with cents. This helps remove some complexities with floating point math oddities and prevents nefarious <strong>Office Space/Superman III</strong> bugs from creeping up.</p>
+
+<p>Given a <code>MoneyType</code> object:</p>
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">class</span> <span class="nc">MoneyType</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Type</span><span class="o">::</span><span class="nb">Integer</span>
+  <span class="k">def</span> <span class="nf">type_cast</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">value</span><span class="o">.</span><span class="n">include?</span><span class="p">(</span><span class="s1">&#39;$&#39;</span><span class="p">)</span>
+      <span class="n">price_in_dollars</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">gsub</span><span class="p">(</span><span class="sr">/\$/</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">to_f</span>
+      <span class="n">price_in_dollars</span> <span class="o">*</span> <span class="mi">100</span>
+    <span class="k">else</span>
+      <span class="n">value</span><span class="o">.</span><span class="n">to_i</span>
+    <span class="k">end</span>
   <span class="k">end</span>
 <span class="k">end</span>
-
-<span class="no">DogTest</span><span class="o">.</span><span class="n">new</span><span class="o">.</span><span class="n">call</span>
-<span class="c1"># =&gt; &#39;woof&#39;</span>
-
-<span class="no">Dog</span><span class="o">.</span><span class="n">new</span><span class="o">.</span><span class="n">bark</span>
-<span class="c1"># =&gt; &#39;woof woof&#39;</span>
 </code></pre></div>
-<p>The <code>SubWoofer</code> Refinement was able to call the existing <code>Dog#bark</code> method and change it how it saw fit. This keeps the code around barking DRY. Since Refinements are intended to extend or refine existing code, it makes sense that they could use the existing code to their benefit. When that existing code is changed, it would be arduous to make every single Refinement aware.</p>
+<p>An important takeaway here is the inheritance and <code>type_cast</code> method definition. Both elements are necessary to create a custom type that the <code>Attributes</code> module can use effectively.</p>
 
-<p>Using Refinements is a nice alternative to the sledgehammer that is monkey patching. Bending a class to fit a very specific need in an encapsulated manner can mean the difference between a stable system and one riddled with hard to track down bugs. While Refinements still have their own drawbacks, they are much less intrusive than the alternative.</p>
+<p>To use this new type, an initialized object is passed to the <code>attribute</code> method:</p>
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">class</span> <span class="nc">Transaction</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
+  <span class="n">attribute</span> <span class="ss">:price</span><span class="p">,</span> <span class="no">MoneyType</span><span class="o">.</span><span class="n">new</span>
+<span class="k">end</span>
+</code></pre></div>
+<p>Then, if all keystrokes were done with style and grace, the effects should look something like:</p>
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="no">Transaction</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="ss">price</span><span class="p">:</span> <span class="s1">&#39;$10.00&#39;</span><span class="p">)</span>
+<span class="c1"># =&gt; SELECT * FROM transactions WHERE price = 1000</span>
+</code></pre></div>
+<p>The observed behaviour here is very interesting. A string representing a money amount can be coerced to an <code>Integer</code> value representing the same data. Instead of the <code>MoneyType</code>&#39;s <code>type_cast</code> method being extracted and used many times in controller or other model methods, it can be centralized to one specific spot.</p>
+
+<p>Like the previous example, this solution is not the only way to achieve the desired result; however, it is unique enough to inspire new ways of thinking about these problems.</p>
+
+<h2>Type Validation</h2>
+
+<p>Avoiding hidden type coercion was a driving force when I created the <a href="https://github.com/yez/validates_type">validates_type</a> gem. With <code>Attributes</code>, that coercion is still there but can be explicitly specified in a model&#39;s definition. While this is a great step forward, I still find value in rejecting data of the wrong type. As a previous example can illustrate: why does the string <code>&quot;yes&quot;</code> map to the boolean value <code>true</code>? It does make some sense but <code>&quot;yes&quot;</code> is not a boolean.</p>
+
+<p>The addition of <code>Attributes</code> will hopefully promote some new patterns and considerations around dealing with types in Ruby on Rails applications. Data consistency and reliability are important, it is exciting to see people making steps toward it in the Rails community.</p>
 
   </div>
   

@@ -4,13 +4,190 @@
  <title>A Year of Commits</title>
  <link href="/atom.xml" rel="self"/>
  <link href="/"/>
- <updated>2016-01-03T17:42:07-08:00</updated>
+ <updated>2016-01-10T22:02:41-08:00</updated>
  <id></id>
  <author>
    <name>Jake Yesbeck</name>
    <email></email>
  </author>
 
+ 
+ <entry>
+   <title>How To Parallelize Ruby HTTP Requests</title>
+   <link href="/2016/01/10/how-to-parallelize-ruby-http-requests/"/>
+   <updated>2016-01-10T04:00:00-08:00</updated>
+   <id>/2016/01/10/how-to-parallelize-ruby-http-requests</id>
+   <content type="html">&lt;p&gt;It turns out that managing web requests is quite important when doing web development. A web application backed by an external or internal API can issue &lt;strong&gt;a lot&lt;/strong&gt; of requests when rendering a seemingly simple web page. How those requests are made and in what order is very important. With improper parallelization, an end user&amp;#39;s entire experience can go from delightful to horrific in a matter of seconds.&lt;/p&gt;
+
+&lt;h2&gt;The Build Up&lt;/h2&gt;
+
+&lt;p&gt;A basic Ruby on Rails application might have the following features:&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;A &lt;code&gt;User&lt;/code&gt; can create a favorite of an item, creating a &lt;code&gt;FavoriteItem&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;A &lt;code&gt;User&lt;/code&gt; can add an item to their wishlist, creating a &lt;code&gt;WishlistItem&lt;/code&gt;.&lt;/li&gt;
+&lt;li&gt;A &lt;code&gt;User&lt;/code&gt; can buy an item, creating a &lt;code&gt;TransactionItem&lt;/code&gt;.&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;Each model this system uses is backed by an API. &lt;code&gt;User&lt;/code&gt;, &lt;code&gt;TransactionItem&lt;/code&gt;, &lt;code&gt;WishlistItem&lt;/code&gt;, and &lt;code&gt;FavoriteItem&lt;/code&gt; models all require a remote HTTP request for their information.&lt;/p&gt;
+
+&lt;p&gt;As a web application experiences growth, this structure is not uncommon. The same API might back a mobile app, website, and any other internal tooling to help this company with its day to day affairs.&lt;/p&gt;
+
+&lt;p&gt;The API that this application uses works in a two phase manner:&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;A user can be requested by their &lt;code&gt;id&lt;/code&gt;.
+
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;/users/:id&lt;/code&gt; returns a &lt;code&gt;User&lt;/code&gt; corresponding to the given &lt;code&gt;id&lt;/code&gt;.&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;Each supporting model is requested with the same &lt;code&gt;user_id&lt;/code&gt;.
+
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;/users/:id/favorite_items&lt;/code&gt; will return an array of &lt;code&gt;FavoriteItems&lt;/code&gt; for the specified &lt;code&gt;User&lt;/code&gt;.&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;The contract of this API is for all intents an purposes, non-negotiable. In-lined data or other request saving patterns are not available, the client must use the API as provided.&lt;/p&gt;
+
+&lt;h2&gt;Sequential Approach&lt;/h2&gt;
+
+&lt;p&gt;Within this example application, the most request intensive page is the &lt;code&gt;User&amp;#39;s&lt;/code&gt; history page. The history page consists of everything the user has done. &lt;code&gt;Items&lt;/code&gt; a user has added to their favorites resulting in &lt;code&gt;FavoriteItems&lt;/code&gt;, &lt;code&gt;Items&lt;/code&gt; bought by the user resulting in &lt;code&gt;TransactionItems&lt;/code&gt;, and &lt;code&gt;Items&lt;/code&gt; added to a user&amp;#39;s wish list resulting in &lt;code&gt;WishListItems&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;To complement the (ex/in)ternal API, two helper methods exist on each model: &lt;code&gt;remote_find&lt;/code&gt; which accepts an &lt;code&gt;id&lt;/code&gt; or array of &lt;code&gt;ids&lt;/code&gt;, returning the matching models, and &lt;code&gt;remote_find_by_user_id&lt;/code&gt; which accepts a &lt;code&gt;user_id&lt;/code&gt; and returns an array of &lt;code&gt;ids&lt;/code&gt; for the corresponding model.&lt;/p&gt;
+
+&lt;p&gt;Leveraging the API and these two helper methods, a serial version of a &lt;code&gt;User&amp;#39;s&lt;/code&gt; pertinent data could look something like:&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;UserHistoryController&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;ApplicationController&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;show&lt;/span&gt;
+    &lt;span class=&quot;vi&quot;&gt;@user&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;User&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;remote_find&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;params&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;require&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:user_id&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;
+
+    &lt;span class=&quot;vi&quot;&gt;@favorite_items&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;
+      &lt;span class=&quot;no&quot;&gt;FavoriteItem&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;remote_find_by_user_id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;vi&quot;&gt;@user&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+    &lt;span class=&quot;vi&quot;&gt;@wish_list_items&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;
+      &lt;span class=&quot;no&quot;&gt;WishlistItem&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;remote_find_by_user_id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;vi&quot;&gt;@user&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+    &lt;span class=&quot;vi&quot;&gt;@transaction_items&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;
+      &lt;span class=&quot;no&quot;&gt;TransactionItem&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;remote_find_by_user_id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;vi&quot;&gt;@user&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;However slow it may be, this code will indeed fulfill its duty. First the &lt;code&gt;User&lt;/code&gt; is found, then all the supporting information about a &lt;code&gt;User&amp;#39;s&lt;/code&gt; history is retrieved one by one from the API.&lt;/p&gt;
+
+&lt;p&gt;In a worst case scenario, assume the API returns an individual request in about &lt;code&gt;150ms&lt;/code&gt;. With &lt;code&gt;4&lt;/code&gt; requests, this means that &lt;strong&gt;only required page elements will take &lt;code&gt;600ms&lt;/code&gt;&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;p&gt;Tacking on view rendering, whatever data processing or formatting that needs to be done at the presentation layer, and finally some amount of Javascript, this page becomes objectively &lt;em&gt;slow&lt;/em&gt;.&lt;/p&gt;
+
+&lt;h2&gt;Enter &lt;code&gt;EM-Synchrony&lt;/code&gt;&lt;/h2&gt;
+
+&lt;p&gt;As with most problems, someone smart has had it before and probably done something about it. Luckily, this particular problem has been addressed by &lt;a href=&quot;https://github.com/igrigorik/em-synchrony&quot;&gt;Ilya Grigorik&amp;#39;s EM-Synchrony library&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;Grigorik&amp;#39;s library leverages the use of Ruby &lt;code&gt;Fibers&lt;/code&gt; to parallelize* code execution.&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;*Note: Because of the Global Interpreter Lock (GIL) present in MRI, true parallelization is not possible.&lt;/em&gt;&lt;/p&gt;
+
+&lt;p&gt;The real benefit of using &lt;code&gt;EM-Synchrony&lt;/code&gt; is the way it handles scheduling the underlying &lt;code&gt;Fibers&lt;/code&gt;. A Ruby &lt;code&gt;Fiber&lt;/code&gt; is basically a &lt;code&gt;Thread&lt;/code&gt; that is not automatically scheduled by the Ruby VM. This means that it is up to the programmer to let the &lt;code&gt;Fiber&lt;/code&gt; know when it should relinquish control to another &lt;code&gt;Fiber&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;Since this example is almost completely bound by &lt;code&gt;Input/Output&lt;/code&gt; (&lt;code&gt;I/O&lt;/code&gt;) operations, it is a perfect candidate for &lt;code&gt;EM-Synchrony&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;To use &lt;code&gt;EM-Synchrony&lt;/code&gt; effectively, existing requests must be broken up into pieces that can accessed independently. A &lt;code&gt;requests&lt;/code&gt; method can be created to extract details surrounding each request. The result of the &lt;code&gt;requests&lt;/code&gt; method must be an enumerable.&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;Note: As explained &lt;a href=&quot;#caveats&quot;&gt;below&lt;/a&gt;, &lt;code&gt;EM-Synchrony&lt;/code&gt; can only be used with supported HTTP clients.&lt;/em&gt;&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;UserHistoryController&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;ApplicationController&lt;/span&gt;
+  &lt;span class=&quot;c1&quot;&gt;# ...&lt;/span&gt;
+  &lt;span class=&quot;c1&quot;&gt;# ...&lt;/span&gt;
+
+  &lt;span class=&quot;kp&quot;&gt;private&lt;/span&gt;
+
+  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;requests&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+      &lt;span class=&quot;no&quot;&gt;User&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;nb&quot;&gt;method&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:remote_find&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+        &lt;span class=&quot;ss&quot;&gt;arg&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;vi&quot;&gt;@user_id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+        &lt;span class=&quot;ss&quot;&gt;instance_var&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:@user&lt;/span&gt;
+      &lt;span class=&quot;p&quot;&gt;},&lt;/span&gt;
+      &lt;span class=&quot;no&quot;&gt;FavoriteItem&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;nb&quot;&gt;method&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:remote_find_by_user_id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+        &lt;span class=&quot;ss&quot;&gt;arg&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;vi&quot;&gt;@user_id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+        &lt;span class=&quot;ss&quot;&gt;instance_var&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:@favorite_items&lt;/span&gt;
+      &lt;span class=&quot;p&quot;&gt;},&lt;/span&gt;
+      &lt;span class=&quot;no&quot;&gt;WishListItem&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;nb&quot;&gt;method&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:remote_find_by_user_id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+        &lt;span class=&quot;ss&quot;&gt;arg&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;vi&quot;&gt;@user_id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+        &lt;span class=&quot;ss&quot;&gt;instance_var&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:@wish_list_items&lt;/span&gt;
+      &lt;span class=&quot;p&quot;&gt;},&lt;/span&gt;
+      &lt;span class=&quot;no&quot;&gt;TransactionItem&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;nb&quot;&gt;method&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:remote_find_by_user_id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+        &lt;span class=&quot;ss&quot;&gt;arg&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;vi&quot;&gt;@user_id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+        &lt;span class=&quot;ss&quot;&gt;instance_var&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:@transaction_items&lt;/span&gt;
+      &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;For the sake of being explicit, this very redundant helper method will be used to iterate over requests and allow &lt;code&gt;EM-Synchrony&lt;/code&gt; to process them in parallel:&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;UserHistoryController&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;ApplicationController&lt;/span&gt;
+  &lt;span class=&quot;no&quot;&gt;CONCURRENCY&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;4&lt;/span&gt;
+
+  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;show&lt;/span&gt;
+    &lt;span class=&quot;vi&quot;&gt;@user_id&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;params&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;require&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:user_id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+    &lt;span class=&quot;no&quot;&gt;EM&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;synchrony&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
+      &lt;span class=&quot;no&quot;&gt;EM&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Synchrony&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;FiberIterator&lt;/span&gt;
+        &lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;new&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;requests&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;CONCURRENCY&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+        &lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;each&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;key&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;request_hash&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+
+        &lt;span class=&quot;c1&quot;&gt;# Example of below with real values:&lt;/span&gt;
+        &lt;span class=&quot;c1&quot;&gt;#&lt;/span&gt;
+        &lt;span class=&quot;c1&quot;&gt;# key = Transaction&lt;/span&gt;
+        &lt;span class=&quot;c1&quot;&gt;# Transation.remote_find_by_user_id(@user.id)&lt;/span&gt;
+
+        &lt;span class=&quot;n&quot;&gt;result&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;key&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;send&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;request_hash&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:method&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;request_hash&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:arg&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+        &lt;span class=&quot;nb&quot;&gt;instance_variable_set&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;args&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:instance_var&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;result&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+      &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+      &lt;span class=&quot;no&quot;&gt;EM&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;stop&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;A few important lines of this solution are worth a closer look:&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;no&quot;&gt;CONCURRENCY&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;4&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;This line tells &lt;code&gt;EM-Synchrony&lt;/code&gt; how many &lt;code&gt;Fibers&lt;/code&gt; it is allowed to run at once. Since the example needed to request four remote  resources, the concurrency amount is set to four.&lt;/p&gt;
+
+&lt;p&gt;The next line of interest is:&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;no&quot;&gt;EM&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Synchrony&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;FiberIterator&lt;/span&gt;
+        &lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;new&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;requests&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;CONCURRENCY&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+        &lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;each&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;key&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;request_hash&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Here is where the actual work is done. After meticulously crafting the structure of the &lt;code&gt;requests&lt;/code&gt; hash, the &lt;code&gt;FiberIterator&lt;/code&gt; will pick the next element from the list and give it to a &lt;code&gt;Fiber&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;Finally the line stopping of Event Machine can not go unnoticed.&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;no&quot;&gt;EM&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;stop&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;This method has literally no documentation but is in every example of using Event Machine, so it is probably very crucial.&lt;/p&gt;
+
+&lt;p&gt;And that is all there is to it! All four HTTP requests can now be run in parallel, resulting in a major speed up and a much happier user experience.&lt;/p&gt;
+
+&lt;p&gt;&lt;h2 id=&#39;caveats&#39;&gt;Caveats&lt;/h3&gt;&lt;/p&gt;
+
+&lt;p&gt;A few considerations must be made in order to use &lt;code&gt;EM-Synchrony&lt;/code&gt; effectively.&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;A compliant HTTP library must be used.&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;https://github.com/igrigorik/em-http-request#extensions&quot;&gt;As em-http-client&amp;#39;s the README&lt;/a&gt; a compliant HTTP library must be used when making the requests. &lt;a href=&quot;https://github.com/lostisland/faraday&quot;&gt;Faraday&lt;/a&gt; is my favorite compliant library and it has worked great for me so far. Unfortunately, the very popular &lt;code&gt;HTTParty&lt;/code&gt; library is not compliant and therefore no one may &amp;quot;Party Hard&amp;quot; when using &lt;code&gt;EM-Synchrony&lt;/code&gt; and &lt;code&gt;HTTParty&lt;/code&gt;.&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;One size does not fit all.&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Unlike the described example, not all code can be saved by &lt;code&gt;EM-Synchrony&lt;/code&gt;. If a request depends on the result of another request, sharing those results between &lt;code&gt;Fibers&lt;/code&gt; is neither simple, nor a good idea.&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ol&gt;
+</content>
+ </entry>
  
  <entry>
    <title>Passages Rails Engine</title>
@@ -109,7 +286,7 @@
  <entry>
    <title>Introduction to Rails 5 Attributes</title>
    <link href="/2015/12/20/rails-5-attributes/"/>
-   <updated>2015-12-20T07:00:00-05:00</updated>
+   <updated>2015-12-20T04:00:00-08:00</updated>
    <id>/2015/12/20/rails-5-attributes</id>
    <content type="html">&lt;p&gt;Shortly after the tenth anniversary of Ruby on Rails 1.0, Rails 5.0 Beta has been announced. While the main character of this release was without a doubt &lt;code&gt;ActionCable&lt;/code&gt;, other really great features have made their debut.&lt;/p&gt;
 
