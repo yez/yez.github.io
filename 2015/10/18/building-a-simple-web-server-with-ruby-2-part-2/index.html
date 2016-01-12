@@ -102,203 +102,230 @@
   </li>
 </ul>
 </span>
-  <p>In <a href="http://jakeyesbeck.com/2015/10/11/building-a-simple-web-server-with-ruby-2/">a previous post</a>, a very simple Ruby server was created to listen to HTTP requests. While great for a first step, this example server does nothing more than respond with &quot;Hello World&quot;. Greetings are nice and polite, but I think we can do better.</p>
+  <p>In <a href="http://jakeyesbeck.com/2015/10/11/building-a-simple-web-server-with-ruby-2/">a previous post</a>, a very simple Ruby server was created to listen to HTTP requests. While great for a first step, this example server does nothing more than respond with “Hello World”. Greetings are nice and polite, but I think we can do better.</p>
 
-<h2>Pro-filing</h2>
+<h2 id="pro-filing">Pro-filing</h2>
 
 <p>A reasonable feature for this simple server is the ability to serve files. When retrieving files, the server must remain secure, only serving files that should be readable by clients. Additionally, if a requested file does not exist, the server should make the client aware.</p>
 
-<p>Since a request can have multiple parts, the server will need to parse out the noise from the desired file. For instance, if the request looks like <code>/path/to/my_file.html?query=params&amp;are=cool</code>, the server should remove all query parameters and search for <code>my_file.html</code> nested within the <code>/path/to/</code> directory.</p>
+<p>Since a request can have multiple parts, the server will need to parse out the noise from the desired file. For instance, if the request looks like <code class="highlighter-rouge">/path/to/my_file.html?query=params&amp;are=cool</code>, the server should remove all query parameters and search for <code class="highlighter-rouge">my_file.html</code> nested within the <code class="highlighter-rouge">/path/to/</code> directory.</p>
 
 <p>With an incoming request:</p>
-<div class="highlight"><pre><code class="language-sh" data-lang="sh">GET /path/to/my_file.html?query<span class="o">=</span>params<span class="p">&amp;</span><span class="nv">are</span><span class="o">=</span>cool HTTP/1.1
-</code></pre></div>
-<p>A simple file fetching method might look like:</p>
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="nb">require</span> <span class="s1">&#39;uri&#39;</span>
 
-<span class="no">SEVER_ROOT_DIR</span> <span class="o">=</span> <span class="s1">&#39;/var/www&#39;</span>
+<div class="highlighter-rouge"><pre class="highlight"><code>GET /path/to/my_file.html?query<span class="o">=</span>params&amp;are<span class="o">=</span>cool HTTP/1.1
+</code></pre>
+</div>
+
+<p>A simple file fetching method might look like:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="nb">require</span> <span class="s1">'uri'</span>
+
+<span class="no">SEVER_ROOT_DIR</span> <span class="o">=</span> <span class="s1">'/var/www'</span>
 
 <span class="k">def</span> <span class="nf">fetch_file</span><span class="p">(</span><span class="n">request_string</span><span class="p">)</span>
-  <span class="n">request_parts</span> <span class="o">=</span> <span class="n">request_string</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)</span>
+  <span class="n">request_parts</span> <span class="o">=</span> <span class="n">request_string</span><span class="p">.</span><span class="nf">split</span><span class="p">(</span><span class="s1">' '</span><span class="p">)</span>
 
   <span class="c1"># Remove query params and HTTP verb, version</span>
-  <span class="n">path</span> <span class="o">=</span> <span class="no">URI</span><span class="p">(</span><span class="n">request_parts</span><span class="o">[</span><span class="mi">1</span><span class="o">]</span><span class="p">)</span><span class="o">.</span><span class="n">path</span>
+  <span class="n">path</span> <span class="o">=</span> <span class="no">URI</span><span class="p">(</span><span class="n">request_parts</span><span class="p">[</span><span class="mi">1</span><span class="p">]).</span><span class="nf">path</span>
 
-  <span class="n">full_path</span> <span class="o">=</span> <span class="no">File</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="no">SERVER_ROOT_DIR</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>
+  <span class="n">full_path</span> <span class="o">=</span> <span class="no">File</span><span class="p">.</span><span class="nf">join</span><span class="p">(</span><span class="no">SERVER_ROOT_DIR</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>
 
-  <span class="no">File</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">full_path</span><span class="p">)</span> <span class="k">if</span> <span class="no">File</span><span class="o">.</span><span class="n">file?</span><span class="p">(</span><span class="n">full_path</span><span class="p">)</span>
+  <span class="no">File</span><span class="p">.</span><span class="nf">open</span><span class="p">(</span><span class="n">full_path</span><span class="p">)</span> <span class="k">if</span> <span class="no">File</span><span class="p">.</span><span class="nf">file?</span><span class="p">(</span><span class="n">full_path</span><span class="p">)</span>
 <span class="k">end</span>
-</code></pre></div>
-<p>Given a request string input (from <code>request.gets</code> in the existing code), this method returns an instance of <code>File</code> if it can find the requested file or <code>nil</code> if it does not exist. The <code>SERVER_ROOT_DIR</code> is used to ensure the file lookup is centralized to where the server expects the files to be.</p>
+</code></pre>
+</div>
+
+<p>Given a request string input (from <code class="highlighter-rouge">request.gets</code> in the existing code), this method returns an instance of <code class="highlighter-rouge">File</code> if it can find the requested file or <code class="highlighter-rouge">nil</code> if it does not exist. The <code class="highlighter-rouge">SERVER_ROOT_DIR</code> is used to ensure the file lookup is centralized to where the server expects the files to be.</p>
 
 <p>Putting it all together, the server can now fetch and return files that exist.</p>
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="nb">require</span> <span class="s1">&#39;socket&#39;</span>
-<span class="nb">require</span> <span class="s1">&#39;uri&#39;</span>
 
-<span class="no">SERVER_ROOT_DIR</span> <span class="o">=</span> <span class="s1">&#39;/var/www&#39;</span>
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="nb">require</span> <span class="s1">'socket'</span>
+<span class="nb">require</span> <span class="s1">'uri'</span>
+
+<span class="no">SERVER_ROOT_DIR</span> <span class="o">=</span> <span class="s1">'/var/www'</span>
 
 <span class="k">def</span> <span class="nf">fetch_file</span><span class="p">(</span><span class="n">request_string</span><span class="p">)</span>
-  <span class="n">request_parts</span> <span class="o">=</span> <span class="n">request_string</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)</span>
-  <span class="n">path</span> <span class="o">=</span> <span class="no">URI</span><span class="p">(</span><span class="n">request_parts</span><span class="o">[</span><span class="mi">1</span><span class="o">]</span><span class="p">)</span><span class="o">.</span><span class="n">path</span>
-  <span class="n">full_path</span> <span class="o">=</span> <span class="no">File</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="no">SERVER_ROOT_DIR</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>
-  <span class="no">File</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">full_path</span><span class="p">)</span> <span class="k">if</span> <span class="no">File</span><span class="o">.</span><span class="n">file?</span><span class="p">(</span><span class="n">full_path</span><span class="p">)</span>
+  <span class="n">request_parts</span> <span class="o">=</span> <span class="n">request_string</span><span class="p">.</span><span class="nf">split</span><span class="p">(</span><span class="s1">' '</span><span class="p">)</span>
+  <span class="n">path</span> <span class="o">=</span> <span class="no">URI</span><span class="p">(</span><span class="n">request_parts</span><span class="p">[</span><span class="mi">1</span><span class="p">]).</span><span class="nf">path</span>
+  <span class="n">full_path</span> <span class="o">=</span> <span class="no">File</span><span class="p">.</span><span class="nf">join</span><span class="p">(</span><span class="no">SERVER_ROOT_DIR</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>
+  <span class="no">File</span><span class="p">.</span><span class="nf">open</span><span class="p">(</span><span class="n">full_path</span><span class="p">)</span> <span class="k">if</span> <span class="no">File</span><span class="p">.</span><span class="nf">file?</span><span class="p">(</span><span class="n">full_path</span><span class="p">)</span>
 <span class="k">end</span>
 
-<span class="n">server</span> <span class="o">=</span> <span class="no">TCPServer</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="mi">8080</span><span class="p">)</span>
+<span class="n">server</span> <span class="o">=</span> <span class="no">TCPServer</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="mi">8080</span><span class="p">)</span>
 
 <span class="kp">loop</span> <span class="k">do</span>
-  <span class="no">Thread</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">socket</span><span class="o">.</span><span class="n">accept</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">request</span><span class="o">|</span>
-    <span class="n">request_string</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">gets</span>
+  <span class="no">Thread</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="n">socket</span><span class="p">.</span><span class="nf">accept</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">request</span><span class="o">|</span>
+    <span class="n">request_string</span> <span class="o">=</span> <span class="n">request</span><span class="p">.</span><span class="nf">gets</span>
     <span class="n">file_to_return</span> <span class="o">=</span> <span class="n">fetch_file</span><span class="p">(</span><span class="n">request_string</span><span class="p">)</span>
 
-    <span class="k">if</span> <span class="n">file_to_return</span><span class="o">.</span><span class="n">nil?</span>
-      <span class="n">header</span> <span class="o">=</span> <span class="s2">&quot;HTTP/1.1 404 Not Found</span><span class="se">\r\n</span><span class="s2">&quot;</span>
-      <span class="n">response</span> <span class="o">=</span> <span class="s1">&#39;File not found&#39;</span>
+    <span class="k">if</span> <span class="n">file_to_return</span><span class="p">.</span><span class="nf">nil?</span>
+      <span class="n">header</span> <span class="o">=</span> <span class="s2">"HTTP/1.1 404 Not Found</span><span class="se">\r\n</span><span class="s2">"</span>
+      <span class="n">response</span> <span class="o">=</span> <span class="s1">'File not found'</span>
     <span class="k">else</span>
-      <span class="n">header</span> <span class="o">=</span> <span class="s2">&quot;HTTP/1.1 200 OK</span><span class="se">\r\n</span><span class="s2">&quot;</span>
-      <span class="n">response</span> <span class="o">=</span> <span class="n">file_to_return</span><span class="o">.</span><span class="n">read</span>
+      <span class="n">header</span> <span class="o">=</span> <span class="s2">"HTTP/1.1 200 OK</span><span class="se">\r\n</span><span class="s2">"</span>
+      <span class="n">response</span> <span class="o">=</span> <span class="n">file_to_return</span><span class="p">.</span><span class="nf">read</span>
     <span class="k">end</span>
 
-    <span class="n">header</span> <span class="o">+=</span> <span class="s2">&quot;Content-Type: text/plain</span><span class="se">\r\n</span><span class="s2">&quot;</span>
-    <span class="n">header</span> <span class="o">+=</span> <span class="s2">&quot;Content-Length: </span><span class="si">#{</span> <span class="n">response</span><span class="o">.</span><span class="n">bytesize</span> <span class="si">}</span><span class="se">\r\n</span><span class="s2">&quot;</span>
-    <span class="n">header</span> <span class="o">+=</span> <span class="s2">&quot;Connection: close</span><span class="se">\r\n</span><span class="s2">&quot;</span>
+    <span class="n">header</span> <span class="o">+=</span> <span class="s2">"Content-Type: text/plain</span><span class="se">\r\n</span><span class="s2">"</span>
+    <span class="n">header</span> <span class="o">+=</span> <span class="s2">"Content-Length: </span><span class="si">#{</span> <span class="n">response</span><span class="p">.</span><span class="nf">bytesize</span> <span class="si">}</span><span class="se">\r\n</span><span class="s2">"</span>
+    <span class="n">header</span> <span class="o">+=</span> <span class="s2">"Connection: close</span><span class="se">\r\n</span><span class="s2">"</span>
 
-    <span class="n">request</span><span class="o">.</span><span class="n">puts</span> <span class="n">header</span>
-    <span class="n">request</span><span class="o">.</span><span class="n">puts</span> <span class="s2">&quot;</span><span class="se">\r\n</span><span class="s2">&quot;</span>
-    <span class="n">request</span><span class="o">.</span><span class="n">puts</span> <span class="n">response</span>
+    <span class="n">request</span><span class="p">.</span><span class="nf">puts</span> <span class="n">header</span>
+    <span class="n">request</span><span class="p">.</span><span class="nf">puts</span> <span class="s2">"</span><span class="se">\r\n</span><span class="s2">"</span>
+    <span class="n">request</span><span class="p">.</span><span class="nf">puts</span> <span class="n">response</span>
 
-    <span class="n">request</span><span class="o">.</span><span class="n">close</span>
+    <span class="n">request</span><span class="p">.</span><span class="nf">close</span>
   <span class="k">end</span>
 <span class="k">end</span>
-</code></pre></div>
-<p>Now, a curl request for an invalid file produces a <code>404</code>:</p>
-<div class="highlight"><pre><code class="language-sh" data-lang="sh">curl localhost:8080/bad_file.html -I
+</code></pre>
+</div>
 
-HTTP/1.1 <span class="m">404</span> Not Found
+<p>Now, a curl request for an invalid file produces a <code class="highlighter-rouge">404</code>:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>curl localhost:8080/bad_file.html -I
+
+HTTP/1.1 404 Not Found
 Content-Type: text/plain
 Content-Length: 14
 Connection: close
-</code></pre></div>
-<h2>More Logic, More Problems</h2>
+</code></pre>
+</div>
 
-<p>A few problems are immediately evident with this code. One is that any file that exists on the system can be requested. For instance, the file <code>/etc/passwd</code> is a common target for immature web servers to accidentally expose.</p>
+<h2 id="more-logic-more-problems">More Logic, More Problems</h2>
 
-<p>To combat this, the <code>fetch_file</code> method can throw out all directory movement inducing path parts:</p>
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">def</span> <span class="nf">fetch_file</span><span class="p">(</span><span class="n">request_string</span><span class="p">)</span>
-  <span class="n">request_parts</span> <span class="o">=</span> <span class="n">request_string</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)</span>
+<p>A few problems are immediately evident with this code. One is that any file that exists on the system can be requested. For instance, the file <code class="highlighter-rouge">/etc/passwd</code> is a common target for immature web servers to accidentally expose.</p>
+
+<p>To combat this, the <code class="highlighter-rouge">fetch_file</code> method can throw out all directory movement inducing path parts:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">def</span> <span class="nf">fetch_file</span><span class="p">(</span><span class="n">request_string</span><span class="p">)</span>
+  <span class="n">request_parts</span> <span class="o">=</span> <span class="n">request_string</span><span class="p">.</span><span class="nf">split</span><span class="p">(</span><span class="s1">' '</span><span class="p">)</span>
   <span class="n">path</span> <span class="o">=</span> <span class="k">begin</span>
-    <span class="n">insecure_path</span> <span class="o">=</span> <span class="no">URI</span><span class="p">(</span><span class="n">request_parts</span><span class="o">[</span><span class="mi">1</span><span class="o">]</span><span class="p">)</span><span class="o">.</span><span class="n">path</span>
+    <span class="n">insecure_path</span> <span class="o">=</span> <span class="no">URI</span><span class="p">(</span><span class="n">request_parts</span><span class="p">[</span><span class="mi">1</span><span class="p">]).</span><span class="nf">path</span>
 
-    <span class="n">secure_request_parts</span> <span class="o">=</span> <span class="n">insecure_path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">reject</span> <span class="k">do</span> <span class="o">|</span><span class="n">part</span><span class="o">|</span>
-      <span class="n">part</span> <span class="o">==</span> <span class="s1">&#39;..&#39;</span> <span class="o">||</span> <span class="n">part</span> <span class="o">==</span> <span class="s1">&#39;.&#39;</span> <span class="o">||</span> <span class="n">part</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span>
+    <span class="n">secure_request_parts</span> <span class="o">=</span> <span class="n">insecure_path</span><span class="p">.</span><span class="nf">split</span><span class="p">(</span><span class="s1">'/'</span><span class="p">).</span><span class="nf">reject</span> <span class="k">do</span> <span class="o">|</span><span class="n">part</span><span class="o">|</span>
+      <span class="n">part</span> <span class="o">==</span> <span class="s1">'..'</span> <span class="o">||</span> <span class="n">part</span> <span class="o">==</span> <span class="s1">'.'</span> <span class="o">||</span> <span class="n">part</span> <span class="o">==</span> <span class="s1">''</span>
     <span class="k">end</span>
 
-    <span class="n">secure_request_parts</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)</span>
+    <span class="n">secure_request_parts</span><span class="p">.</span><span class="nf">join</span><span class="p">(</span><span class="s1">'/'</span><span class="p">)</span>
   <span class="k">end</span>
 
-  <span class="n">full_path</span> <span class="o">=</span> <span class="no">File</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="no">SERVER_ROOT_DIR</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>
+  <span class="n">full_path</span> <span class="o">=</span> <span class="no">File</span><span class="p">.</span><span class="nf">join</span><span class="p">(</span><span class="no">SERVER_ROOT_DIR</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>
 
-  <span class="no">File</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">full_path</span><span class="p">)</span> <span class="k">if</span> <span class="no">File</span><span class="o">.</span><span class="n">file?</span><span class="p">(</span><span class="n">full_path</span><span class="p">)</span>
+  <span class="no">File</span><span class="p">.</span><span class="nf">open</span><span class="p">(</span><span class="n">full_path</span><span class="p">)</span> <span class="k">if</span> <span class="no">File</span><span class="p">.</span><span class="nf">file?</span><span class="p">(</span><span class="n">full_path</span><span class="p">)</span>
 <span class="k">end</span>
-</code></pre></div>
-<p>This will change a path from <code>/../../../my/hidden/file</code> to <code>/my/hidden/file</code>, nullifying the attempt to expose private files.</p>
+</code></pre>
+</div>
 
-<h2>Speaking the Same Language</h2>
+<p>This will change a path from <code class="highlighter-rouge">/../../../my/hidden/file</code> to <code class="highlighter-rouge">/my/hidden/file</code>, nullifying the attempt to expose private files.</p>
 
-<p>A second issue with our new and improved tiny web server is in the response type. Currently, all responses indicate that the type of the file returned is <code>text/plain</code>. Instead, the response type can be extracted from the file returned. To determine a file&#39;s type, a good place to start is by examining the extension.</p>
+<h2 id="speaking-the-same-language">Speaking the Same Language</h2>
 
-<p>For the request <code>/path/to/my_file.html?query=params&amp;are=cool</code>, the server must be able to identify that the <code>.html</code> extension maps to the content type <code>text/html</code>.</p>
+<p>A second issue with our new and improved tiny web server is in the response type. Currently, all responses indicate that the type of the file returned is <code class="highlighter-rouge">text/plain</code>. Instead, the response type can be extracted from the file returned. To determine a file’s type, a good place to start is by examining the extension.</p>
+
+<p>For the request <code class="highlighter-rouge">/path/to/my_file.html?query=params&amp;are=cool</code>, the server must be able to identify that the <code class="highlighter-rouge">.html</code> extension maps to the content type <code class="highlighter-rouge">text/html</code>.</p>
 
 <p>With the addition of a simple mapping method, the server can respond more intelligently:</p>
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">def</span> <span class="nf">content_type</span><span class="p">(</span><span class="n">file_extension</span><span class="p">)</span>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">def</span> <span class="nf">content_type</span><span class="p">(</span><span class="n">file_extension</span><span class="p">)</span>
   <span class="p">{</span>
-    <span class="ss">html</span><span class="p">:</span> <span class="s1">&#39;text/html&#39;</span><span class="p">,</span>
-    <span class="ss">txt</span><span class="p">:</span> <span class="s1">&#39;text/plain&#39;</span><span class="p">,</span>
-    <span class="ss">json</span><span class="p">:</span> <span class="s1">&#39;application/json&#39;</span>
-  <span class="p">}</span><span class="o">[</span><span class="n">file_extension</span><span class="o">]</span> <span class="o">||</span> <span class="s1">&#39;text/plain&#39;</span>
+    <span class="ss">html: </span><span class="s1">'text/html'</span><span class="p">,</span>
+    <span class="ss">txt: </span><span class="s1">'text/plain'</span><span class="p">,</span>
+    <span class="ss">json: </span><span class="s1">'application/json'</span>
+  <span class="p">}[</span><span class="n">file_extension</span><span class="p">]</span> <span class="o">||</span> <span class="s1">'text/plain'</span>
 <span class="k">end</span>
-</code></pre></div>
-<p>This method accepts an extension (like <code>.html</code>) and maps it to a <code>Content-Type</code>. If no mapping can be found, it assumes that the file is in plain text.</p>
+</code></pre>
+</div>
 
-<p>Using some additional <code>File.extname</code> extraction, using this <code>content_type</code> method is simple:</p>
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="nb">require</span> <span class="s1">&#39;socket&#39;</span>
-<span class="nb">require</span> <span class="s1">&#39;uri&#39;</span>
+<p>This method accepts an extension (like <code class="highlighter-rouge">.html</code>) and maps it to a <code class="highlighter-rouge">Content-Type</code>. If no mapping can be found, it assumes that the file is in plain text.</p>
 
-<span class="no">SERVER_ROOT_DIR</span> <span class="o">=</span> <span class="s1">&#39;/var/www&#39;</span>
+<p>Using some additional <code class="highlighter-rouge">File.extname</code> extraction, using this <code class="highlighter-rouge">content_type</code> method is simple:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="nb">require</span> <span class="s1">'socket'</span>
+<span class="nb">require</span> <span class="s1">'uri'</span>
+
+<span class="no">SERVER_ROOT_DIR</span> <span class="o">=</span> <span class="s1">'/var/www'</span>
 
 <span class="k">def</span> <span class="nf">fetch_file</span><span class="p">(</span><span class="n">request_string</span><span class="p">)</span>
-  <span class="n">request_parts</span> <span class="o">=</span> <span class="n">request_string</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)</span>
+  <span class="n">request_parts</span> <span class="o">=</span> <span class="n">request_string</span><span class="p">.</span><span class="nf">split</span><span class="p">(</span><span class="s1">' '</span><span class="p">)</span>
   <span class="n">path</span> <span class="o">=</span> <span class="k">begin</span>
-    <span class="n">insecure_path</span> <span class="o">=</span> <span class="no">URI</span><span class="p">(</span><span class="n">request_parts</span><span class="o">[</span><span class="mi">1</span><span class="o">]</span><span class="p">)</span><span class="o">.</span><span class="n">path</span>
+    <span class="n">insecure_path</span> <span class="o">=</span> <span class="no">URI</span><span class="p">(</span><span class="n">request_parts</span><span class="p">[</span><span class="mi">1</span><span class="p">]).</span><span class="nf">path</span>
 
-    <span class="n">secure_request_parts</span> <span class="o">=</span> <span class="n">insecure_path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">reject</span> <span class="k">do</span> <span class="o">|</span><span class="n">part</span><span class="o">|</span>
-      <span class="n">part</span> <span class="o">==</span> <span class="s1">&#39;..&#39;</span> <span class="o">||</span> <span class="n">part</span> <span class="o">==</span> <span class="s1">&#39;.&#39;</span> <span class="o">||</span> <span class="n">part</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span>
+    <span class="n">secure_request_parts</span> <span class="o">=</span> <span class="n">insecure_path</span><span class="p">.</span><span class="nf">split</span><span class="p">(</span><span class="s1">'/'</span><span class="p">).</span><span class="nf">reject</span> <span class="k">do</span> <span class="o">|</span><span class="n">part</span><span class="o">|</span>
+      <span class="n">part</span> <span class="o">==</span> <span class="s1">'..'</span> <span class="o">||</span> <span class="n">part</span> <span class="o">==</span> <span class="s1">'.'</span> <span class="o">||</span> <span class="n">part</span> <span class="o">==</span> <span class="s1">''</span>
     <span class="k">end</span>
 
-    <span class="n">secure_request_parts</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)</span>
+    <span class="n">secure_request_parts</span><span class="p">.</span><span class="nf">join</span><span class="p">(</span><span class="s1">'/'</span><span class="p">)</span>
   <span class="k">end</span>
 
-  <span class="n">full_path</span> <span class="o">=</span> <span class="no">File</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="no">SERVER_ROOT_DIR</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>
+  <span class="n">full_path</span> <span class="o">=</span> <span class="no">File</span><span class="p">.</span><span class="nf">join</span><span class="p">(</span><span class="no">SERVER_ROOT_DIR</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>
 
-  <span class="no">File</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">full_path</span><span class="p">)</span> <span class="k">if</span> <span class="no">File</span><span class="o">.</span><span class="n">file?</span><span class="p">(</span><span class="n">full_path</span><span class="p">)</span>
+  <span class="no">File</span><span class="p">.</span><span class="nf">open</span><span class="p">(</span><span class="n">full_path</span><span class="p">)</span> <span class="k">if</span> <span class="no">File</span><span class="p">.</span><span class="nf">file?</span><span class="p">(</span><span class="n">full_path</span><span class="p">)</span>
 <span class="k">end</span>
 
 <span class="k">def</span> <span class="nf">content_type</span><span class="p">(</span><span class="n">file_extension</span><span class="p">)</span>
   <span class="p">{</span>
-    <span class="ss">html</span><span class="p">:</span> <span class="s1">&#39;text/html&#39;</span><span class="p">,</span>
-    <span class="ss">txt</span><span class="p">:</span> <span class="s1">&#39;text/plain&#39;</span><span class="p">,</span>
-    <span class="ss">json</span><span class="p">:</span> <span class="s1">&#39;application/json&#39;</span>
-  <span class="p">}</span><span class="o">[</span><span class="n">file_extension</span><span class="o">]</span> <span class="o">||</span> <span class="s1">&#39;text/plain&#39;</span>
+    <span class="ss">html: </span><span class="s1">'text/html'</span><span class="p">,</span>
+    <span class="ss">txt: </span><span class="s1">'text/plain'</span><span class="p">,</span>
+    <span class="ss">json: </span><span class="s1">'application/json'</span>
+  <span class="p">}[</span><span class="n">file_extension</span><span class="p">]</span> <span class="o">||</span> <span class="s1">'text/plain'</span>
 <span class="k">end</span>
 
-<span class="n">socket</span> <span class="o">=</span> <span class="no">TCPServer</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="mi">8080</span><span class="p">)</span>
+<span class="n">socket</span> <span class="o">=</span> <span class="no">TCPServer</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="mi">8080</span><span class="p">)</span>
 
 <span class="kp">loop</span> <span class="k">do</span>
-  <span class="no">Thread</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">socket</span><span class="o">.</span><span class="n">accept</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">request</span><span class="o">|</span>
-    <span class="n">request_string</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">gets</span>
+  <span class="no">Thread</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="n">socket</span><span class="p">.</span><span class="nf">accept</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">request</span><span class="o">|</span>
+    <span class="n">request_string</span> <span class="o">=</span> <span class="n">request</span><span class="p">.</span><span class="nf">gets</span>
 
     <span class="n">file_to_return</span> <span class="o">=</span> <span class="n">fetch_file</span><span class="p">(</span><span class="n">request_string</span><span class="p">)</span>
 
-    <span class="k">if</span> <span class="n">file_to_return</span><span class="o">.</span><span class="n">nil?</span>
-      <span class="n">header</span> <span class="o">=</span> <span class="s2">&quot;HTTP/1.1 404 Not Found</span><span class="se">\r\n</span><span class="s2">&quot;</span>
-      <span class="n">response</span> <span class="o">=</span> <span class="s1">&#39;File not found&#39;</span>
+    <span class="k">if</span> <span class="n">file_to_return</span><span class="p">.</span><span class="nf">nil?</span>
+      <span class="n">header</span> <span class="o">=</span> <span class="s2">"HTTP/1.1 404 Not Found</span><span class="se">\r\n</span><span class="s2">"</span>
+      <span class="n">response</span> <span class="o">=</span> <span class="s1">'File not found'</span>
       <span class="n">extension</span> <span class="o">=</span> <span class="kp">nil</span>
     <span class="k">else</span>
-      <span class="n">header</span> <span class="o">=</span> <span class="s2">&quot;HTTP/1.1 200 OK</span><span class="se">\r\n</span><span class="s2">&quot;</span>
-      <span class="n">response</span> <span class="o">=</span> <span class="n">file_to_return</span><span class="o">.</span><span class="n">read</span>
-      <span class="n">extension</span> <span class="o">=</span> <span class="no">File</span><span class="o">.</span><span class="n">extname</span><span class="p">(</span><span class="n">file_to_return</span><span class="o">.</span><span class="n">to_path</span><span class="p">)</span>
-                      <span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">last</span><span class="o">.</span><span class="n">to_sym</span>
+      <span class="n">header</span> <span class="o">=</span> <span class="s2">"HTTP/1.1 200 OK</span><span class="se">\r\n</span><span class="s2">"</span>
+      <span class="n">response</span> <span class="o">=</span> <span class="n">file_to_return</span><span class="p">.</span><span class="nf">read</span>
+      <span class="n">extension</span> <span class="o">=</span> <span class="no">File</span><span class="p">.</span><span class="nf">extname</span><span class="p">(</span><span class="n">file_to_return</span><span class="p">.</span><span class="nf">to_path</span><span class="p">)</span>
+                      <span class="p">.</span><span class="nf">split</span><span class="p">(</span><span class="s1">'.'</span><span class="p">).</span><span class="nf">last</span><span class="p">.</span><span class="nf">to_sym</span>
     <span class="k">end</span>
 
-    <span class="n">header</span> <span class="o">+=</span> <span class="s2">&quot;Content-Type: </span><span class="si">#{</span> <span class="n">content_type</span><span class="p">(</span><span class="n">extension</span><span class="p">)</span> <span class="si">}</span><span class="se">\r\n</span><span class="s2">&quot;</span>
-    <span class="n">header</span> <span class="o">+=</span> <span class="s2">&quot;Content-Length: </span><span class="si">#{</span> <span class="n">response</span><span class="o">.</span><span class="n">bytesize</span> <span class="si">}</span><span class="se">\r\n</span><span class="s2">&quot;</span>
-    <span class="n">header</span> <span class="o">+=</span> <span class="s2">&quot;Connection: close</span><span class="se">\r\n</span><span class="s2">&quot;</span>
+    <span class="n">header</span> <span class="o">+=</span> <span class="s2">"Content-Type: </span><span class="si">#{</span> <span class="n">content_type</span><span class="p">(</span><span class="n">extension</span><span class="p">)</span> <span class="si">}</span><span class="se">\r\n</span><span class="s2">"</span>
+    <span class="n">header</span> <span class="o">+=</span> <span class="s2">"Content-Length: </span><span class="si">#{</span> <span class="n">response</span><span class="p">.</span><span class="nf">bytesize</span> <span class="si">}</span><span class="se">\r\n</span><span class="s2">"</span>
+    <span class="n">header</span> <span class="o">+=</span> <span class="s2">"Connection: close</span><span class="se">\r\n</span><span class="s2">"</span>
 
-    <span class="n">request</span><span class="o">.</span><span class="n">puts</span> <span class="n">header</span>
-    <span class="n">request</span><span class="o">.</span><span class="n">puts</span> <span class="s2">&quot;</span><span class="se">\r\n</span><span class="s2">&quot;</span>
-    <span class="n">request</span><span class="o">.</span><span class="n">puts</span> <span class="n">response</span>
+    <span class="n">request</span><span class="p">.</span><span class="nf">puts</span> <span class="n">header</span>
+    <span class="n">request</span><span class="p">.</span><span class="nf">puts</span> <span class="s2">"</span><span class="se">\r\n</span><span class="s2">"</span>
+    <span class="n">request</span><span class="p">.</span><span class="nf">puts</span> <span class="n">response</span>
 
-    <span class="n">request</span><span class="o">.</span><span class="n">close</span>
+    <span class="n">request</span><span class="p">.</span><span class="nf">close</span>
   <span class="k">end</span>
 <span class="k">end</span>
-</code></pre></div>
+</code></pre>
+</div>
+
 <p>The important line is:</p>
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">extension</span> <span class="o">=</span> <span class="no">File</span><span class="o">.</span><span class="n">extname</span><span class="p">(</span><span class="n">file_to_return</span><span class="o">.</span><span class="n">to_path</span><span class="p">)</span>
-                <span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">last</span><span class="o">.</span><span class="n">to_sym</span>
-</code></pre></div>
-<p>This code results in a symbol to pass to <code>content_type</code> that returns a meaningful content type for the client.</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="n">extension</span> <span class="o">=</span> <span class="no">File</span><span class="p">.</span><span class="nf">extname</span><span class="p">(</span><span class="n">file_to_return</span><span class="p">.</span><span class="nf">to_path</span><span class="p">)</span>
+                <span class="p">.</span><span class="nf">split</span><span class="p">(</span><span class="s1">'.'</span><span class="p">).</span><span class="nf">last</span><span class="p">.</span><span class="nf">to_sym</span>
+</code></pre>
+</div>
+
+<p>This code results in a symbol to pass to <code class="highlighter-rouge">content_type</code> that returns a meaningful content type for the client.</p>
 
 <p>The results of a request using this new content type parsing are just as expected:</p>
-<div class="highlight"><pre><code class="language-sh" data-lang="sh">curl localhost:8080/path/to/my_file.html -I
 
-HTTP/1.1 <span class="m">200</span> OK
+<div class="highlighter-rouge"><pre class="highlight"><code>curl localhost:8080/path/to/my_file.html -I
+
+HTTP/1.1 200 OK
 Content-Type: text/html
 Content-Length: 79
 Connection: close
-</code></pre></div>
-<p>There it is! The <code>text/html</code> content type returned correctly by the server when an html file was requested.</p>
+</code></pre>
+</div>
 
-<h2>Good Progress but Far from Perfect</h2>
+<p>There it is! The <code class="highlighter-rouge">text/html</code> content type returned correctly by the server when an html file was requested.</p>
+
+<h2 id="good-progress-but-far-from-perfect">Good Progress but Far from Perfect</h2>
 
 <p>This new iteration has added some good depth to the server; however, a plethora of issues remain. This server still has no concept of thread pooling for memory management, no authentication for restricted access files, and can only fetch basic files.</p>
 

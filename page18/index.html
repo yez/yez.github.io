@@ -113,68 +113,86 @@
 
     <p>People need companions. We are a social species that enjoys surrounding itself with family and friends. But sometimes, and maybe more often than just sometimes, people crave companionship from something that cannot talk back. This is probably one of the reasons so many people like pets. A pet cannot disagree with you or say judgmental remarks as you fill up that wine glass for a fourth time. No, a good pet will simply exist near you, occasionally asking for pets and food. Pets can be obtained from breeders for huge stacks of cash, or they can be adopted for significantly cheaper.</p>
 
-<h2>The Adoption Option</h2>
+<h2 id="the-adoption-option">The Adoption Option</h2>
 
 <p>About 2.7 million animals are euthanized each year in animal shelters across the United States. That is some sad stuff right there. These animals could be hanging out with you at your house, clawing up the couch or barking at nothing. Does that not sound like just the best time? If only there was a Ruby library that some super awesome Software Artisans could use to make discoverable pet data a reality. Well now, there is! Over the past few months, as part of the <a href="http://jakeyesbeck.com/2015/04/23/a-year-of-commits/">Year of Commits</a> initiative, I have built a <a href="https://github.com/yez/rescue_groups">wrapper for the RescueGroups.org API</a>.</p>
 
-<h2>0. Sign up for an API key</h2>
+<h2 id="sign-up-for-an-api-key">0. Sign up for an API key</h2>
 
 <p>The RescueGroups API is free to use, but requires signing up for an API key. To do that, fill out <a href="https://www.rescuegroups.org/services/request-an-api-key/">this form</a> and they will email you an API key for you to use.</p>
 
-<h2>1. Install the <code>rescue_groups</code> Gem</h2>
+<h2 id="install-the-rescuegroups-gem">1. Install the <code class="highlighter-rouge">rescue_groups</code> Gem</h2>
 
-<p>To install the gem, simply add <code>rescue_groups</code> to a ruby project&#39;s Gemfile:</p>
+<p>To install the gem, simply add <code class="highlighter-rouge">rescue_groups</code> to a ruby project’s Gemfile:</p>
 
 <p><strong>Gemfile</strong></p>
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">source</span> <span class="s1">&#39;rubygems&#39;</span>
 
-<span class="n">gem</span> <span class="s1">&#39;rescue_groups&#39;</span>
-</code></pre></div>
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="n">source</span> <span class="s1">'rubygems'</span>
+
+<span class="n">gem</span> <span class="s1">'rescue_groups'</span>
+</code></pre>
+</div>
+
 <p>Then in an initializer or at the beginning of the execution flow for using the library, add your new fancy API key to the configuration.</p>
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="no">RescueGroups</span><span class="o">.</span><span class="n">configuration</span> <span class="k">do</span> <span class="o">|</span><span class="n">config</span><span class="o">|</span>
-  <span class="n">config</span><span class="o">.</span><span class="n">apikey</span> <span class="o">=</span> <span class="s1">&#39;your api key&#39;</span>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="no">RescueGroups</span><span class="p">.</span><span class="nf">configuration</span> <span class="k">do</span> <span class="o">|</span><span class="n">config</span><span class="o">|</span>
+  <span class="n">config</span><span class="p">.</span><span class="nf">apikey</span> <span class="o">=</span> <span class="s1">'your api key'</span>
 <span class="k">end</span>
-</code></pre></div>
-<h2>2. Use the Gem!</h2>
+</code></pre>
+</div>
 
-<p>After the gem is installed, some handy dandy search functionality is right at your fingertips. Call me biased but I rather like the ActiveRecord <code>find</code> and <code>where</code> API. In fact, I like it so much that the <code>rescue_groups</code> gem implemented its own version of both.</p>
+<h2 id="use-the-gem">2. Use the Gem!</h2>
 
-<h3>Searching</h3>
+<p>After the gem is installed, some handy dandy search functionality is right at your fingertips. Call me biased but I rather like the ActiveRecord <code class="highlighter-rouge">find</code> and <code class="highlighter-rouge">where</code> API. In fact, I like it so much that the <code class="highlighter-rouge">rescue_groups</code> gem implemented its own version of both.</p>
 
-<p>If an ID is known for an animal, simply pass it to <code>find</code> and it will return an <code>Animal</code> object. If an <code>Array</code> is given to <code>find</code>, it will return an <code>Array</code> of <code>Animal</code>s.</p>
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="no">Animal</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-<span class="c1">#=&gt; &lt;Animal id: 1, name: &#39;Fluffy&#39; ...&gt;</span>
+<h3 id="searching">Searching</h3>
 
-<span class="no">Animal</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="o">[</span><span class="mi">20</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">40</span><span class="o">]</span><span class="p">)</span>
-<span class="c1">#=&gt; [&lt;Animal id: 20, name: &#39;Mittens&#39; ...&gt;, &lt;Animal id: 30, name: &#39;Mr. Doom&#39; ...&gt;, &lt;Animal id: 40, name: &#39;CatDog&#39; ...&gt;]</span>
-</code></pre></div>
-<p><code>Where</code> is very similar, any of the supported fields for <a href="https://github.com/yez/rescue_groups/blob/master/docs/animal_field.md">Animals</a>, <a href="https://github.com/yez/rescue_groups/blob/master/docs/organization_field.md">Organizations</a>, and <a href="https://github.com/yez/rescue_groups/blob/master/docs/event_field.md">Events</a> can be used to find the matching records.</p>
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="no">Organization</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="nb">name</span><span class="p">:</span> <span class="s1">&#39;Pets-R-Us&#39;</span><span class="p">)</span>
-<span class="c1"># =&gt; [&lt;Organization id: 1, name: &#39;Pets-R-Us&#39; ...&gt;]</span>
+<p>If an ID is known for an animal, simply pass it to <code class="highlighter-rouge">find</code> and it will return an <code class="highlighter-rouge">Animal</code> object. If an <code class="highlighter-rouge">Array</code> is given to <code class="highlighter-rouge">find</code>, it will return an <code class="highlighter-rouge">Array</code> of <code class="highlighter-rouge">Animal</code>s.</p>
 
-<span class="no">Animal</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="ss">color</span><span class="p">:</span> <span class="o">[</span><span class="s1">&#39;black&#39;</span><span class="p">,</span> <span class="s1">&#39;brown&#39;</span><span class="o">]</span><span class="p">)</span>
-<span class="c1"># =&gt; [&lt;Animal id: 1, color: &#39;black&#39; ..&gt;, &lt;Animal id: 5, color: &#39;brown&#39; ..&gt;]</span>
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="no">Animal</span><span class="p">.</span><span class="nf">find</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="c1">#=&gt; &lt;Animal id: 1, name: 'Fluffy' ...&gt;</span>
 
-<span class="no">Animal</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="ss">location_postal_code</span><span class="p">:</span> <span class="mi">94117</span><span class="p">)</span>
-</code></pre></div>
-<p>The default behavior asserts that the fields are equal, i.e. An animal that is brown will be returned when <code>Animal.where(color: &#39;brown&#39;)</code> is used. Other comparisons are possible for more complex queries.</p>
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="no">Animal</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="ss">general_age</span><span class="p">:</span> <span class="p">{</span> <span class="ss">less_than</span><span class="p">:</span> <span class="mi">5</span><span class="p">})</span>
+<span class="no">Animal</span><span class="p">.</span><span class="nf">find</span><span class="p">([</span><span class="mi">20</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">40</span><span class="p">])</span>
+<span class="c1">#=&gt; [&lt;Animal id: 20, name: 'Mittens' ...&gt;, &lt;Animal id: 30, name: 'Mr. Doom' ...&gt;, &lt;Animal id: 40, name: 'CatDog' ...&gt;]</span>
+</code></pre>
+</div>
+
+<p><code class="highlighter-rouge">Where</code> is very similar, any of the supported fields for <a href="https://github.com/yez/rescue_groups/blob/master/docs/animal_field.md">Animals</a>, <a href="https://github.com/yez/rescue_groups/blob/master/docs/organization_field.md">Organizations</a>, and <a href="https://github.com/yez/rescue_groups/blob/master/docs/event_field.md">Events</a> can be used to find the matching records.</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="no">Organization</span><span class="p">.</span><span class="nf">where</span><span class="p">(</span><span class="ss">name: </span><span class="s1">'Pets-R-Us'</span><span class="p">)</span>
+<span class="c1"># =&gt; [&lt;Organization id: 1, name: 'Pets-R-Us' ...&gt;]</span>
+
+<span class="no">Animal</span><span class="p">.</span><span class="nf">where</span><span class="p">(</span><span class="ss">color: </span><span class="p">[</span><span class="s1">'black'</span><span class="p">,</span> <span class="s1">'brown'</span><span class="p">])</span>
+<span class="c1"># =&gt; [&lt;Animal id: 1, color: 'black' ..&gt;, &lt;Animal id: 5, color: 'brown' ..&gt;]</span>
+
+<span class="no">Animal</span><span class="p">.</span><span class="nf">where</span><span class="p">(</span><span class="ss">location_postal_code: </span><span class="mi">94117</span><span class="p">)</span>
+</code></pre>
+</div>
+
+<p>The default behavior asserts that the fields are equal, i.e. An animal that is brown will be returned when <code class="highlighter-rouge">Animal.where(color: 'brown')</code> is used. Other comparisons are possible for more complex queries.</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="no">Animal</span><span class="p">.</span><span class="nf">where</span><span class="p">(</span><span class="ss">general_age: </span><span class="p">{</span> <span class="ss">less_than: </span><span class="mi">5</span><span class="p">})</span>
 <span class="c1"># =&gt; [&lt;Animal id: 1, age: 2 ..&gt;, &lt;Animal id: 3, age: 1 ..&gt;]</span>
 
-<span class="no">Organization</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="nb">name</span><span class="p">:</span> <span class="p">{</span> <span class="ss">contains</span><span class="p">:</span> <span class="s1">&#39;shelter&#39;</span><span class="p">},</span> <span class="ss">location</span><span class="p">:</span> <span class="mi">90210</span><span class="p">)</span>
-<span class="c1"># =&gt; [&lt;Organization id: 1, name: &#39;Big Animal Shelter&#39;, location: 90210 ...&gt;, &lt;Organization id: 2, name: &#39;Small Animal Shelter&#39;, location: 90210 ...&gt;,]</span>
-</code></pre></div>
-<h2>Relationships</h2>
+<span class="no">Organization</span><span class="p">.</span><span class="nf">where</span><span class="p">(</span><span class="ss">name: </span><span class="p">{</span> <span class="ss">contains: </span><span class="s1">'shelter'</span><span class="p">},</span> <span class="ss">location: </span><span class="mi">90210</span><span class="p">)</span>
+<span class="c1"># =&gt; [&lt;Organization id: 1, name: 'Big Animal Shelter', location: 90210 ...&gt;, &lt;Organization id: 2, name: 'Small Animal Shelter', location: 90210 ...&gt;,]</span>
+</code></pre>
+</div>
 
-<p>While I was in the spirit of borrowing, I did so with Ruby on Rails style relationships. In the <code>rescue_groups</code> gem Animals and Events <code>belongs_to</code> Organizations and, inversely, Organizations <code>has_many</code> Animals and Events. When one of these models&#39; relationship is called, the respective relationship is automagically fetched from the RescueGroups.org API.</p>
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">organization</span> <span class="o">=</span> <span class="no">Organization</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-<span class="c1"># =&gt; &lt;Organization id: 1, name: &#39;Pets&#39;, city: &#39;Dallas&#39; ...&gt;</span>
+<h2 id="relationships">Relationships</h2>
+
+<p>While I was in the spirit of borrowing, I did so with Ruby on Rails style relationships. In the <code class="highlighter-rouge">rescue_groups</code> gem Animals and Events <code class="highlighter-rouge">belongs_to</code> Organizations and, inversely, Organizations <code class="highlighter-rouge">has_many</code> Animals and Events. When one of these models’ relationship is called, the respective relationship is automagically fetched from the RescueGroups.org API.</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="n">organization</span> <span class="o">=</span> <span class="no">Organization</span><span class="p">.</span><span class="nf">find</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="c1"># =&gt; &lt;Organization id: 1, name: 'Pets', city: 'Dallas' ...&gt;</span>
 
 <span class="c1"># This will issue a remote call that is equivalent to Animal.where(organization_id: 1)</span>
-<span class="n">organization</span><span class="o">.</span><span class="n">animals</span>
+<span class="n">organization</span><span class="p">.</span><span class="nf">animals</span>
 <span class="c1"># =&gt; [&lt;Animal id: 1, organization_id: 1 ...&gt;, &lt;Animal id: 2, organization_id: 1 ...&gt;, ...]</span>
-</code></pre></div>
-<h2>3. Make a Pet Project</h2>
+</code></pre>
+</div>
+
+<h2 id="make-a-pet-project">3. Make a Pet Project</h2>
 
 <p>Now with all this pet data available, put it to work. I have really enjoyed making this library but am always looking for feedback. If anyone would like to know more or help contribute to this project please feel free! Github PRs and issues are always welcome.</p>
 

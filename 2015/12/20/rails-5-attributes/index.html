@@ -102,61 +102,71 @@
   </li>
 </ul>
 </span>
-  <p>Shortly after the tenth anniversary of Ruby on Rails 1.0, Rails 5.0 Beta has been announced. While the main character of this release was without a doubt <code>ActionCable</code>, other really great features have made their debut.</p>
+  <p>Shortly after the tenth anniversary of Ruby on Rails 1.0, Rails 5.0 Beta has been announced. While the main character of this release was without a doubt <code class="highlighter-rouge">ActionCable</code>, other really great features have made their debut.</p>
 
-<h2>Types of Changes</h2>
+<h2 id="types-of-changes">Types of Changes</h2>
 
-<p>One feature that particularly stood out is the introduction of <code>ActiveRecord Attributes</code>. This feature allows a developer to assert a specific type for a given attribute and an optional default value. It is not strict type validation (<a href="http://jakeyesbeck.com/2015/11/29/updated-validates-type/">which I have a very strong affinity for</a>), but it does define explicit type coercion that can be very useful.</p>
+<p>One feature that particularly stood out is the introduction of <code class="highlighter-rouge">ActiveRecord Attributes</code>. This feature allows a developer to assert a specific type for a given attribute and an optional default value. It is not strict type validation (<a href="http://jakeyesbeck.com/2015/11/29/updated-validates-type/">which I have a very strong affinity for</a>), but it does define explicit type coercion that can be very useful.</p>
 
-<p>Given an example application that deals with <code>Transactions</code>, a single table and model might exist:</p>
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">class</span> <span class="nc">CreateTransactions</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Migration</span>
+<p>Given an example application that deals with <code class="highlighter-rouge">Transactions</code>, a single table and model might exist:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">class</span> <span class="nc">CreateTransactions</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Migration</span>
   <span class="k">def</span> <span class="nf">change</span>
     <span class="n">create_table</span> <span class="ss">:transactions</span> <span class="k">do</span> <span class="o">|</span><span class="n">t</span><span class="o">|</span>
-      <span class="n">t</span><span class="o">.</span><span class="n">integer</span> <span class="ss">:user_id</span>
-      <span class="n">t</span><span class="o">.</span><span class="n">string</span> <span class="ss">:item_name</span>
-      <span class="n">t</span><span class="o">.</span><span class="n">integer</span> <span class="ss">:quantity</span>
-      <span class="n">t</span><span class="o">.</span><span class="n">string</span> <span class="ss">:success</span>
-      <span class="n">t</span><span class="o">.</span><span class="n">decimal</span> <span class="ss">:price</span>
-      <span class="n">t</span><span class="o">.</span><span class="n">timestamps</span><span class="p">(</span><span class="ss">null</span><span class="p">:</span> <span class="kp">false</span><span class="p">)</span>
+      <span class="n">t</span><span class="p">.</span><span class="nf">integer</span> <span class="ss">:user_id</span>
+      <span class="n">t</span><span class="p">.</span><span class="nf">string</span> <span class="ss">:item_name</span>
+      <span class="n">t</span><span class="p">.</span><span class="nf">integer</span> <span class="ss">:quantity</span>
+      <span class="n">t</span><span class="p">.</span><span class="nf">string</span> <span class="ss">:success</span>
+      <span class="n">t</span><span class="p">.</span><span class="nf">decimal</span> <span class="ss">:price</span>
+      <span class="n">t</span><span class="p">.</span><span class="nf">timestamps</span><span class="p">(</span><span class="ss">null: </span><span class="kp">false</span><span class="p">)</span>
     <span class="k">end</span>
   <span class="k">end</span>
 <span class="k">end</span>
 
 <span class="k">class</span> <span class="nc">Transaction</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
 <span class="k">end</span>
-</code></pre></div>
-<p>This structure, like most in the wild, could have been created before all edge cases were thought through. For some reason, <code>success</code> is a <code>String</code> instead of a <code>Boolean</code>. While this problem might seem trivial, imagine a system where hundreds of millions of <code>transactions</code> exist.</p>
+</code></pre>
+</div>
 
-<p>In such a system the entire column might not be able to change without incurring downtime. This is a perfect example problem that <code>Attributes</code> can help remedy.</p>
+<p>This structure, like most in the wild, could have been created before all edge cases were thought through. For some reason, <code class="highlighter-rouge">success</code> is a <code class="highlighter-rouge">String</code> instead of a <code class="highlighter-rouge">Boolean</code>. While this problem might seem trivial, imagine a system where hundreds of millions of <code class="highlighter-rouge">transactions</code> exist.</p>
 
-<p>Starting simple, a single line can be added to the <code>Transaction</code> class definition to coerce <code>success</code> to a <code>boolean</code>:</p>
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">class</span> <span class="nc">Transaction</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
+<p>In such a system the entire column might not be able to change without incurring downtime. This is a perfect example problem that <code class="highlighter-rouge">Attributes</code> can help remedy.</p>
+
+<p>Starting simple, a single line can be added to the <code class="highlighter-rouge">Transaction</code> class definition to coerce <code class="highlighter-rouge">success</code> to a <code class="highlighter-rouge">boolean</code>:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Transaction</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
   <span class="n">attribute</span> <span class="ss">:success</span><span class="p">,</span> <span class="ss">:boolean</span>
 <span class="k">end</span>
-</code></pre></div>
-<p>Using the same logic that <code>ActiveRecord</code> uses for database column coercion, we can see attributes in action!</p>
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">transaction</span> <span class="o">=</span> <span class="no">Transaction</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="ss">success</span><span class="p">:</span> <span class="s1">&#39;yes&#39;</span><span class="p">)</span>
-<span class="n">transaction</span><span class="o">.</span><span class="n">success</span>
+</code></pre>
+</div>
+
+<p>Using the same logic that <code class="highlighter-rouge">ActiveRecord</code> uses for database column coercion, we can see attributes in action!</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="n">transaction</span> <span class="o">=</span> <span class="no">Transaction</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="ss">success: </span><span class="s1">'yes'</span><span class="p">)</span>
+<span class="n">transaction</span><span class="p">.</span><span class="nf">success</span>
 <span class="c1"># =&gt; true</span>
 
-<span class="n">transaction</span> <span class="o">=</span> <span class="no">Transaction</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="ss">success</span><span class="p">:</span> <span class="s1">&#39;f&#39;</span><span class="p">)</span>
-<span class="n">transaction</span><span class="o">.</span><span class="n">success</span>
+<span class="n">transaction</span> <span class="o">=</span> <span class="no">Transaction</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="ss">success: </span><span class="s1">'f'</span><span class="p">)</span>
+<span class="n">transaction</span><span class="p">.</span><span class="nf">success</span>
 <span class="c1"># =&gt; false</span>
 
-<span class="n">transaction</span> <span class="o">=</span> <span class="no">Transaction</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="ss">success</span><span class="p">:</span> <span class="mi">0</span><span class="p">)</span>
-<span class="n">transaction</span><span class="o">.</span><span class="n">success</span>
+<span class="n">transaction</span> <span class="o">=</span> <span class="no">Transaction</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="ss">success: </span><span class="mi">0</span><span class="p">)</span>
+<span class="n">transaction</span><span class="p">.</span><span class="nf">success</span>
 <span class="c1"># =&gt; false</span>
-</code></pre></div>
-<p>Just like that, the schema has been improved. Aside from raw <code>SQL</code> update statements, this code now prevents strings like <code>&quot;maybe&quot;</code> from littering the <code>success</code> column of the <code>transactions</code> table.</p>
+</code></pre>
+</div>
 
-<p>Before <code>Attributes</code>, a callback or custom setter method would have been the preferred way to address this problem. However, with this new built in solution for mismatched database column types, old one-off or ad-hoc solutions can be replaced with this new standard.</p>
+<p>Just like that, the schema has been improved. Aside from raw <code class="highlighter-rouge">SQL</code> update statements, this code now prevents strings like <code class="highlighter-rouge">"maybe"</code> from littering the <code class="highlighter-rouge">success</code> column of the <code class="highlighter-rouge">transactions</code> table.</p>
 
-<h2>The Friendly Type</h2>
+<p>Before <code class="highlighter-rouge">Attributes</code>, a callback or custom setter method would have been the preferred way to address this problem. However, with this new built in solution for mismatched database column types, old one-off or ad-hoc solutions can be replaced with this new standard.</p>
 
-<p>With such a clean DSL, it is obvious that a lot of time and thought went into the design of <code>Attributes</code>. Being able to specify how a model should interact with the persistence layer is a powerful tool.</p>
+<h2 id="the-friendly-type">The Friendly Type</h2>
 
-<p>The full list of supported types that <code>Attributes</code> provides can be found deep in the source code for <code>ActiveRecord</code> or right here:</p>
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="c1">#Supported Types</span>
+<p>With such a clean DSL, it is obvious that a lot of time and thought went into the design of <code class="highlighter-rouge">Attributes</code>. Being able to specify how a model should interact with the persistence layer is a powerful tool.</p>
+
+<p>The full list of supported types that <code class="highlighter-rouge">Attributes</code> provides can be found deep in the source code for <code class="highlighter-rouge">ActiveRecord</code> or right here:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="c1">#Supported Types</span>
 
 <span class="ss">:big_integer</span>
 <span class="ss">:binary</span>
@@ -169,67 +179,84 @@
 <span class="ss">:string</span>
 <span class="ss">:text</span>
 <span class="ss">:time</span>
-</code></pre></div>
+</code></pre>
+</div>
+
 <p>Each of these types has their own place and value in a system. Their purpose is simple: to make the experience between developer and framework fluid.</p>
 
-<p>The <code>Attribute</code> feature is not restricted to database columns. If an attribute is only used during the life cycle of an object, it too can benefit from type coercion.</p>
+<p>The <code class="highlighter-rouge">Attribute</code> feature is not restricted to database columns. If an attribute is only used during the life cycle of an object, it too can benefit from type coercion.</p>
 
-<p>For instance, if a <code>confirmed_at</code> attribute had a useful purpose for a <code>Transaction</code>, but the format of it could vary, the <code>Attribute</code> module can step in and keep things clean.</p>
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">class</span> <span class="nc">Transaction</span>
+<p>For instance, if a <code class="highlighter-rouge">confirmed_at</code> attribute had a useful purpose for a <code class="highlighter-rouge">Transaction</code>, but the format of it could vary, the <code class="highlighter-rouge">Attribute</code> module can step in and keep things clean.</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Transaction</span>
   <span class="n">attribute</span> <span class="ss">:confirmed_at</span><span class="p">,</span> <span class="ss">:date_time</span>
 <span class="k">end</span>
-</code></pre></div>
-<p>Without adding a new column or defining an <code>attr_accessor</code> for the <code>confirmed_at</code> attribute, the <code>:date_time</code> coercion works perfectly:</p>
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">transaction</span> <span class="o">=</span> <span class="no">Transaction</span><span class="o">.</span><span class="n">new</span>
-<span class="n">transaction</span><span class="o">.</span><span class="n">confirmed_at</span> <span class="o">=</span> <span class="s1">&#39;2015-12-12 03:00&#39;</span>
-<span class="n">transaction</span><span class="o">.</span><span class="n">confirmed_at</span>
+</code></pre>
+</div>
+
+<p>Without adding a new column or defining an <code class="highlighter-rouge">attr_accessor</code> for the <code class="highlighter-rouge">confirmed_at</code> attribute, the <code class="highlighter-rouge">:date_time</code> coercion works perfectly:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="n">transaction</span> <span class="o">=</span> <span class="no">Transaction</span><span class="p">.</span><span class="nf">new</span>
+<span class="n">transaction</span><span class="p">.</span><span class="nf">confirmed_at</span> <span class="o">=</span> <span class="s1">'2015-12-12 03:00'</span>
+<span class="n">transaction</span><span class="p">.</span><span class="nf">confirmed_at</span>
 <span class="c1"># =&gt; Sat, 12 Dec 2015 03:00:00 UTC +00:00</span>
 
-<span class="n">transaction</span> <span class="o">=</span> <span class="no">Transaction</span><span class="o">.</span><span class="n">new</span>
-<span class="n">transaction</span><span class="o">.</span><span class="n">confirmed_at</span> <span class="o">=</span> <span class="s1">&#39;2015/12/12&#39;</span>
-<span class="n">transaction</span><span class="o">.</span><span class="n">confirmed_at</span>
+<span class="n">transaction</span> <span class="o">=</span> <span class="no">Transaction</span><span class="p">.</span><span class="nf">new</span>
+<span class="n">transaction</span><span class="p">.</span><span class="nf">confirmed_at</span> <span class="o">=</span> <span class="s1">'2015/12/12'</span>
+<span class="n">transaction</span><span class="p">.</span><span class="nf">confirmed_at</span>
 <span class="c1"># =&gt; Sat, 12 Dec 2015 00:00:00 UTC +00:00</span>
-</code></pre></div>
-<p>Since most Ruby on Rails applications deal with strings via form encoded data, it is easy to see just how valuable the <code>Attribute</code> module can be.</p>
+</code></pre>
+</div>
 
-<h2>Out of the Box Typing</h2>
+<p>Since most Ruby on Rails applications deal with strings via form encoded data, it is easy to see just how valuable the <code class="highlighter-rouge">Attribute</code> module can be.</p>
 
-<p>A fantastic detail about <code>Attributes</code> is that type coercion is not limited to only &quot;supported&quot; types. Any object that adheres to a proper contract may be used.</p>
+<h2 id="out-of-the-box-typing">Out of the Box Typing</h2>
+
+<p>A fantastic detail about <code class="highlighter-rouge">Attributes</code> is that type coercion is not limited to only “supported” types. Any object that adheres to a proper contract may be used.</p>
 
 <p>To help illustrate this feature, we can assume that all prices in the database have been changed to only deal with cents. This helps remove some complexities with floating point math oddities and prevents nefarious <strong>Office Space/Superman III</strong> bugs from creeping up.</p>
 
-<p>Given a <code>MoneyType</code> object:</p>
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">class</span> <span class="nc">MoneyType</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Type</span><span class="o">::</span><span class="nb">Integer</span>
+<p>Given a <code class="highlighter-rouge">MoneyType</code> object:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">class</span> <span class="nc">MoneyType</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Type</span><span class="o">::</span><span class="no">Integer</span>
   <span class="k">def</span> <span class="nf">type_cast</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">value</span><span class="o">.</span><span class="n">include?</span><span class="p">(</span><span class="s1">&#39;$&#39;</span><span class="p">)</span>
-      <span class="n">price_in_dollars</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">gsub</span><span class="p">(</span><span class="sr">/\$/</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">to_f</span>
+    <span class="k">if</span> <span class="n">value</span><span class="p">.</span><span class="nf">include?</span><span class="p">(</span><span class="s1">'$'</span><span class="p">)</span>
+      <span class="n">price_in_dollars</span> <span class="o">=</span> <span class="n">value</span><span class="p">.</span><span class="nf">gsub</span><span class="p">(</span><span class="sr">/\$/</span><span class="p">,</span> <span class="s1">''</span><span class="p">).</span><span class="nf">to_f</span>
       <span class="n">price_in_dollars</span> <span class="o">*</span> <span class="mi">100</span>
     <span class="k">else</span>
-      <span class="n">value</span><span class="o">.</span><span class="n">to_i</span>
+      <span class="n">value</span><span class="p">.</span><span class="nf">to_i</span>
     <span class="k">end</span>
   <span class="k">end</span>
 <span class="k">end</span>
-</code></pre></div>
-<p>An important takeaway here is the inheritance and <code>type_cast</code> method definition. Both elements are necessary to create a custom type that the <code>Attributes</code> module can use effectively.</p>
+</code></pre>
+</div>
 
-<p>To use this new type, an initialized object is passed to the <code>attribute</code> method:</p>
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">class</span> <span class="nc">Transaction</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
-  <span class="n">attribute</span> <span class="ss">:price</span><span class="p">,</span> <span class="no">MoneyType</span><span class="o">.</span><span class="n">new</span>
+<p>An important takeaway here is the inheritance and <code class="highlighter-rouge">type_cast</code> method definition. Both elements are necessary to create a custom type that the <code class="highlighter-rouge">Attributes</code> module can use effectively.</p>
+
+<p>To use this new type, an initialized object is passed to the <code class="highlighter-rouge">attribute</code> method:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Transaction</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
+  <span class="n">attribute</span> <span class="ss">:price</span><span class="p">,</span> <span class="no">MoneyType</span><span class="p">.</span><span class="nf">new</span>
 <span class="k">end</span>
-</code></pre></div>
+</code></pre>
+</div>
+
 <p>Then, if all keystrokes were done with style and grace, the effects should look something like:</p>
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="no">Transaction</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="ss">price</span><span class="p">:</span> <span class="s1">&#39;$10.00&#39;</span><span class="p">)</span>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="no">Transaction</span><span class="p">.</span><span class="nf">where</span><span class="p">(</span><span class="ss">price: </span><span class="s1">'$10.00'</span><span class="p">)</span>
 <span class="c1"># =&gt; SELECT * FROM transactions WHERE price = 1000</span>
-</code></pre></div>
-<p>The observed behaviour here is very interesting. A string representing a money amount can be coerced to an <code>Integer</code> value representing the same data. Instead of the <code>MoneyType</code>&#39;s <code>type_cast</code> method being extracted and used many times in controller or other model methods, it can be centralized to one specific spot.</p>
+</code></pre>
+</div>
+
+<p>The observed behaviour here is very interesting. A string representing a money amount can be coerced to an <code class="highlighter-rouge">Integer</code> value representing the same data. Instead of the <code class="highlighter-rouge">MoneyType</code>’s <code class="highlighter-rouge">type_cast</code> method being extracted and used many times in controller or other model methods, it can be centralized to one specific spot.</p>
 
 <p>Like the previous example, this solution is not the only way to achieve the desired result; however, it is unique enough to inspire new ways of thinking about these problems.</p>
 
-<h2>Type Validation</h2>
+<h2 id="type-validation">Type Validation</h2>
 
-<p>Avoiding hidden type coercion was a driving force when I created the <a href="https://github.com/yez/validates_type">validates_type</a> gem. With <code>Attributes</code>, that coercion is still there but can be explicitly specified in a model&#39;s definition. While this is a great step forward, I still find value in rejecting data of the wrong type. As a previous example can illustrate: why does the string <code>&quot;yes&quot;</code> map to the boolean value <code>true</code>? It does make some sense but <code>&quot;yes&quot;</code> is not a boolean.</p>
+<p>Avoiding hidden type coercion was a driving force when I created the <a href="https://github.com/yez/validates_type">validates_type</a> gem. With <code class="highlighter-rouge">Attributes</code>, that coercion is still there but can be explicitly specified in a model’s definition. While this is a great step forward, I still find value in rejecting data of the wrong type. As a previous example can illustrate: why does the string <code class="highlighter-rouge">"yes"</code> map to the boolean value <code class="highlighter-rouge">true</code>? It does make some sense but <code class="highlighter-rouge">"yes"</code> is not a boolean.</p>
 
-<p>The addition of <code>Attributes</code> will hopefully promote some new patterns and considerations around dealing with types in Ruby on Rails applications. Data consistency and reliability are important, it is exciting to see people making steps toward it in the Rails community.</p>
+<p>The addition of <code class="highlighter-rouge">Attributes</code> will hopefully promote some new patterns and considerations around dealing with types in Ruby on Rails applications. Data consistency and reliability are important, it is exciting to see people making steps toward it in the Rails community.</p>
 
 </div>
 

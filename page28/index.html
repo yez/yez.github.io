@@ -111,81 +111,97 @@
 </ul>
 </span>
 
-    <p>Currently, one hundred percent of <a href="http://jakeyesbeck.com/2015/04/23/a_year_of_commits/">Year of Commits</a>&#39; commits have been to Ruby repositories. Ruby has many strengths and is a very malleable language. Ruby can be written functionally or object oriented. I tend to lean toward the latter and find myself using a few different patterns regularly. One powerful tool Ruby provides is the use of Modules.</p>
+    <p>Currently, one hundred percent of <a href="http://jakeyesbeck.com/2015/04/23/a_year_of_commits/">Year of Commits</a>’ commits have been to Ruby repositories. Ruby has many strengths and is a very malleable language. Ruby can be written functionally or object oriented. I tend to lean toward the latter and find myself using a few different patterns regularly. One powerful tool Ruby provides is the use of Modules.</p>
 
-<h2>Modules</h2>
+<h2 id="modules">Modules</h2>
 
-<p>When code is to be shared between classes, a <code>Module</code> is created to encapsulate the shared functionality. A very simple module looks something like this:</p>
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">module</span> <span class="nn">Ripe</span>
+<p>When code is to be shared between classes, a <code class="highlighter-rouge">Module</code> is created to encapsulate the shared functionality. A very simple module looks something like this:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">module</span> <span class="nn">Ripe</span>
   <span class="k">def</span> <span class="nf">ripe?</span>
-    <span class="nb">puts</span> <span class="s2">&quot;this is ripe!&quot;</span>
+    <span class="nb">puts</span> <span class="s2">"this is ripe!"</span>
   <span class="k">end</span>
 <span class="k">end</span>
-</code></pre></div>
-<h3><code>extend</code></h3>
+</code></pre>
+</div>
 
-<p>With the <code>Ripe</code> module, there are two ways to include its methods in a class. We can <code>extend</code> the module, which makes the method <code>ripe?</code> a class method on the <code>Banana</code> class:</p>
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">class</span> <span class="nc">Banana</span>
+<h3 id="extend"><code class="highlighter-rouge">extend</code></h3>
+
+<p>With the <code class="highlighter-rouge">Ripe</code> module, there are two ways to include its methods in a class. We can <code class="highlighter-rouge">extend</code> the module, which makes the method <code class="highlighter-rouge">ripe?</code> a class method on the <code class="highlighter-rouge">Banana</code> class:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Banana</span>
   <span class="kp">extend</span> <span class="no">Ripe</span>
 <span class="k">end</span>
 
-<span class="no">Banana</span><span class="o">.</span><span class="n">ripe?</span>
+<span class="no">Banana</span><span class="p">.</span><span class="nf">ripe?</span>
 <span class="c1"># =&gt; this is ripe!</span>
-</code></pre></div>
-<h3><code>include</code></h3>
+</code></pre>
+</div>
 
-<p>Alternatively, we can <code>include</code> the module, making <code>ripe?</code> an instance method:</p>
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">class</span> <span class="nc">Banana</span>
+<h3 id="include"><code class="highlighter-rouge">include</code></h3>
+
+<p>Alternatively, we can <code class="highlighter-rouge">include</code> the module, making <code class="highlighter-rouge">ripe?</code> an instance method:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Banana</span>
   <span class="kp">include</span> <span class="no">Ripe</span>
 <span class="k">end</span>
 
-<span class="n">banana</span> <span class="o">=</span> <span class="no">Banana</span><span class="o">.</span><span class="n">new</span>
-<span class="n">banana</span><span class="o">.</span><span class="n">ripe?</span>
+<span class="n">banana</span> <span class="o">=</span> <span class="no">Banana</span><span class="p">.</span><span class="nf">new</span>
+<span class="n">banana</span><span class="p">.</span><span class="nf">ripe?</span>
 <span class="c1"># =&gt; this is ripe!</span>
-</code></pre></div>
-<p>That&#39;s great right? Right! We have methods on methods on methods. As long as we can make modules for our instance and class methods separately, we will be golden. But, what about all the times that we need to define both class and instance methods in one module? Surely it would be crazy to have <code>RipeClassMethods</code> and <code>RipeInstanceMethods</code> right? That looks like amateur hour. There must be a better way.</p>
+</code></pre>
+</div>
 
-<h3><code>def self.included</code></h3>
+<p>That’s great right? Right! We have methods on methods on methods. As long as we can make modules for our instance and class methods separately, we will be golden. But, what about all the times that we need to define both class and instance methods in one module? Surely it would be crazy to have <code class="highlighter-rouge">RipeClassMethods</code> and <code class="highlighter-rouge">RipeInstanceMethods</code> right? That looks like amateur hour. There must be a better way.</p>
 
-<p>A very helpful method for dealing with included modules is the <code>included</code> class method. This method is built in Ruby and any class has access to it. By using the <code>included</code> method, it is possible to mix class and instance methods within a single module.</p>
+<h3 id="def-selfincluded"><code class="highlighter-rouge">def self.included</code></h3>
 
-<p>When using <code>self.included</code>, we are able to determine which methods are accessible on the instance and on the class. We will use a new inner module named <code>ClassMethods</code> to encapsulate our desired class methods. In our example below, the single parameter <code>base</code> is the class in which the <code>Ripe</code> module is included.</p>
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">module</span> <span class="nn">Ripe</span>
+<p>A very helpful method for dealing with included modules is the <code class="highlighter-rouge">included</code> class method. This method is built in Ruby and any class has access to it. By using the <code class="highlighter-rouge">included</code> method, it is possible to mix class and instance methods within a single module.</p>
+
+<p>When using <code class="highlighter-rouge">self.included</code>, we are able to determine which methods are accessible on the instance and on the class. We will use a new inner module named <code class="highlighter-rouge">ClassMethods</code> to encapsulate our desired class methods. In our example below, the single parameter <code class="highlighter-rouge">base</code> is the class in which the <code class="highlighter-rouge">Ripe</code> module is included.</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">module</span> <span class="nn">Ripe</span>
   <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">included</span><span class="p">(</span><span class="n">base</span><span class="p">)</span>
     <span class="c1"># Just like in normal module extension,</span>
     <span class="c1">#  the extend method is used to make all methods in</span>
     <span class="c1">#  ClassMethods into proper class methods on base</span>
-    <span class="n">base</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="no">ClassMethods</span><span class="p">)</span>
+    <span class="n">base</span><span class="p">.</span><span class="nf">extend</span><span class="p">(</span><span class="no">ClassMethods</span><span class="p">)</span>
   <span class="k">end</span>
 
   <span class="k">module</span> <span class="nn">ClassMethods</span>
     <span class="k">def</span> <span class="nf">ripe?</span>
-      <span class="nb">puts</span> <span class="s1">&#39;this is ripe!&#39;</span>
+      <span class="nb">puts</span> <span class="s1">'this is ripe!'</span>
     <span class="k">end</span>
   <span class="k">end</span>
 <span class="k">end</span>
-</code></pre></div>
-<p>Now, including the functionality from <code>Ripe</code> is the same as the <code>include</code> example above:</p>
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">class</span> <span class="nc">Banana</span>
+</code></pre>
+</div>
+
+<p>Now, including the functionality from <code class="highlighter-rouge">Ripe</code> is the same as the <code class="highlighter-rouge">include</code> example above:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Banana</span>
   <span class="kp">include</span> <span class="no">Ripe</span>
 <span class="k">end</span>
 
-<span class="no">Banana</span><span class="o">.</span><span class="n">ripe?</span>
+<span class="no">Banana</span><span class="p">.</span><span class="nf">ripe?</span>
 <span class="c1"># =&gt; this is ripe!</span>
-</code></pre></div>
-<p>With this new structure, adding instance methods is as simple as adding them outside of the <code>ClassMethods</code> module.</p>
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">module</span> <span class="nn">Ripe</span>
+</code></pre>
+</div>
+
+<p>With this new structure, adding instance methods is as simple as adding them outside of the <code class="highlighter-rouge">ClassMethods</code> module.</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">module</span> <span class="nn">Ripe</span>
   <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">included</span><span class="p">(</span><span class="n">base</span><span class="p">)</span>
-    <span class="n">base</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="no">ClassMethods</span><span class="p">)</span>
+    <span class="n">base</span><span class="p">.</span><span class="nf">extend</span><span class="p">(</span><span class="no">ClassMethods</span><span class="p">)</span>
   <span class="k">end</span>
 
   <span class="k">def</span> <span class="nf">color</span>
-    <span class="s1">&#39;yellow&#39;</span>
+    <span class="s1">'yellow'</span>
   <span class="k">end</span>
 
   <span class="k">module</span> <span class="nn">ClassMethods</span>
     <span class="k">def</span> <span class="nf">ripe?</span>
-      <span class="nb">puts</span> <span class="s1">&#39;this is ripe!&#39;</span>
+      <span class="nb">puts</span> <span class="s1">'this is ripe!'</span>
     <span class="k">end</span>
   <span class="k">end</span>
 <span class="k">end</span>
@@ -194,14 +210,17 @@
   <span class="kp">include</span> <span class="no">Ripe</span>
 <span class="k">end</span>
 
-<span class="no">Banana</span><span class="o">.</span><span class="n">ripe?</span>
+<span class="no">Banana</span><span class="p">.</span><span class="nf">ripe?</span>
 <span class="c1"># =&gt; this is ripe!</span>
 
-<span class="n">banana</span> <span class="o">=</span> <span class="no">Banana</span><span class="o">.</span><span class="n">new</span>
-<span class="n">banana</span><span class="o">.</span><span class="n">color</span>
+<span class="n">banana</span> <span class="o">=</span> <span class="no">Banana</span><span class="p">.</span><span class="nf">new</span>
+<span class="n">banana</span><span class="p">.</span><span class="nf">color</span>
 <span class="c1"># =&gt; yellow</span>
-</code></pre></div>
+</code></pre>
+</div>
+
 <p>Boom, boom, pow, we have some nicely organized shared code. We are now able to easily define instance and class methods for our various important fruit related modules.</p>
+
 
   </div>
   

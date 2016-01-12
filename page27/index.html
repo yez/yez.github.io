@@ -113,54 +113,66 @@
 
     <p>The Internet is wondrous technology. If anyone remembers Geocities and Personal Home Pages, you can appreciate just how much the Internet has evolved. This evolution has recently enabled creating a tech blog completely for free. When I say free, do I mean completely free? Yes, completely free! Even this very blog, my Year of Commits, is hosted for free using the same technologies outlined in this post. You too can have a free tech blog after following these <strong>2 simple steps</strong>.</p>
 
-<h2>Step 1. Use Jekyll</h2>
+<h2 id="step-1-use-jekyll">Step 1. Use Jekyll</h2>
 
 <p><a href="http://jekyllrb.com/">Jekyll</a> is a free open source static site generator. The Jekyll documentation page has some great <a href="http://jekyllrb.com/docs/quickstart/">tutorials</a> that make getting started extremely painless. Jekyll is also a ruby tool. To contribute to Jekyll, check out their <a href="https://github.com/jekyll/jekyll">github page</a>.</p>
 
-<p>Jekyll makes it easy to start creating content without worrying about CSS, page templates, or link architecture. It even generates an RSS feed of your content. All pages can be written in Markdown and automatically converted to HTML upon building or serving the site. The <code>jekyll build</code> command is what this post will focus on, but <code>jekyll serve</code> is worth checking out too.</p>
+<p>Jekyll makes it easy to start creating content without worrying about CSS, page templates, or link architecture. It even generates an RSS feed of your content. All pages can be written in Markdown and automatically converted to HTML upon building or serving the site. The <code class="highlighter-rouge">jekyll build</code> command is what this post will focus on, but <code class="highlighter-rouge">jekyll serve</code> is worth checking out too.</p>
 
 <p>To get started with Jekyll:</p>
-<div class="highlight"><pre><code class="language-text" data-lang="text">$: gem install jekyll
+
+<div class="highlighter-rouge"><pre class="highlight"><code>$: gem install jekyll
 $: jekyll new mytechblog
 $: cd mytechblog/
 $: touch _posts/2015-07-12-my-first-post.markdown
-</code></pre></div>
-<p>This will create a new directory with some default configuration files and subdirectories. Inside this new directory, the example created a <code>2015-07-12-my-first-post.markdown</code> file within the <code>_posts/</code> subdirectory. This file will contain the content for the first blog post.</p>
+</code></pre>
+</div>
+
+<p>This will create a new directory with some default configuration files and subdirectories. Inside this new directory, the example created a <code class="highlighter-rouge">2015-07-12-my-first-post.markdown</code> file within the <code class="highlighter-rouge">_posts/</code> subdirectory. This file will contain the content for the first blog post.</p>
 
 <p>Jekyll Markdown pages require a specific format at the top of the file. This format is called <a href="http://jekyllrb.com/docs/frontmatter/">front matter</a>. It is imperative that all Jekyll posts have proper front matter in order to be converted to HTML.</p>
 
-<h2>Step 2. Use Github Pages</h2>
+<h2 id="step-2-use-github-pages">Step 2. Use Github Pages</h2>
 
-<p>Github has been a great tool for managing version controlled software for years. Now, Github has released an equally awesome tool called <a href="https://pages.github.com/">Github Pages</a>. To get started with Github Pages, simply create a <strong>public</strong> repository with the pattern: <code>&lt;yourusername&gt;.github.io</code> (Remember to replace the <code>&lt;yourusename&gt;</code> with your actual username). Now, every time a commit is pushed to this repository&#39;s master branch, the blog will be automatically updated. Since this repository is required to be public, make sure that no sensitive information is accidentally committed within posts.</p>
+<p>Github has been a great tool for managing version controlled software for years. Now, Github has released an equally awesome tool called <a href="https://pages.github.com/">Github Pages</a>. To get started with Github Pages, simply create a <strong>public</strong> repository with the pattern: <code class="highlighter-rouge">&lt;yourusername&gt;.github.io</code> (Remember to replace the <code class="highlighter-rouge">&lt;yourusename&gt; </code> with your actual username). Now, every time a commit is pushed to this repository’s master branch, the blog will be automatically updated. Since this repository is required to be public, make sure that no sensitive information is accidentally committed within posts.</p>
 
 <p>To set up a directory and point it to the github.io repository:</p>
-<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$:</span> mkdir username.github.io
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="nv">$:</span> mkdir username.github.io
 <span class="nv">$:</span> <span class="nb">cd </span>username.github.io/
 <span class="nv">$:</span> git init .
 <span class="nv">$:</span> git remote add origin git@github.com:username/username.github.io.git
-</code></pre></div>
-<p>The files uploaded to the Github Pages repository should be static HTML. This is where <strong>Step 1</strong> comes in. Since this blog will use <code>jekyll build</code>, the <code>&lt;yourusername&gt;.github.io</code> repository should consist of HTML files generated by Jekyll.</p>
+</code></pre>
+</div>
+
+<p>The files uploaded to the Github Pages repository should be static HTML. This is where <strong>Step 1</strong> comes in. Since this blog will use <code class="highlighter-rouge">jekyll build</code>, the <code class="highlighter-rouge">&lt;yourusername&gt;.github.io</code> repository should consist of HTML files generated by Jekyll.</p>
 
 <p>To generate the HTML files:</p>
-<div class="highlight"><pre><code class="language-text" data-lang="text">$: cd mytechblog
+
+<div class="highlighter-rouge"><pre class="highlight"><code>$: cd mytechblog
 $: jekyll build --destination=~/username.github.io
 $: cd ~/username.github.io
 $: git add .
-$: git commit -m &quot;First blog post&quot;
+$: git commit -m "First blog post"
 $: git push origin HEAD
-</code></pre></div>
+</code></pre>
+</div>
+
 <p>And there you have it! A successful blog created entirely for free. Now, the example blog is accessible at http://username.github.io.</p>
 
-<h2>(Optional) Step 3. Use a custom URL</h2>
+<h2 id="optional-step-3-use-a-custom-url">(Optional) Step 3. Use a custom URL</h2>
 
-<p>To serve a blog at a custom URL, simply add a single file to the root of the <code>&lt;yourusername&gt;.github.io</code> repository. The filename must be <code>CNAME</code> and it should include a single line: the custom URL.</p>
+<p>To serve a blog at a custom URL, simply add a single file to the root of the <code class="highlighter-rouge">&lt;yourusername&gt;.github.io</code> repository. The filename must be <code class="highlighter-rouge">CNAME</code> and it should include a single line: the custom URL.</p>
 
-<p>An example <code>CNAME</code> file:</p>
-<div class="highlight"><pre><code class="language-text" data-lang="text">mytechblog.com
-</code></pre></div>
-<p>Additionally, the DNS provider that <code>mytechblog.com</code>&#39;s DNS is served from must include an <code>ALIAS</code>, <code>ANAME</code>, or <code>A</code> record to the Github IP. More information on setting a custom domain can be found at the <a href="https://help.github.com/articles/tips-for-configuring-an-a-record-with-your-dns-provider/">Github help page</a></p>
+<p>An example <code class="highlighter-rouge">CNAME</code> file:</p>
 
-<h2>Final Step: Blog for free about cool technology</h2>
+<div class="highlighter-rouge"><pre class="highlight"><code>mytechblog.com
+</code></pre>
+</div>
+
+<p>Additionally, the DNS provider that <code class="highlighter-rouge">mytechblog.com</code>’s DNS is served from must include an <code class="highlighter-rouge">ALIAS</code>, <code class="highlighter-rouge">ANAME</code>, or <code class="highlighter-rouge">A</code> record to the Github IP. More information on setting a custom domain can be found at the <a href="https://help.github.com/articles/tips-for-configuring-an-a-record-with-your-dns-provider/">Github help page</a></p>
+
+<h2 id="final-step-blog-for-free-about-cool-technology">Final Step: Blog for free about cool technology</h2>
 
 <p>Now that a completely free blog is newly created, you have the ability to update it as frequently as you choose. Share your knowledge at expeditious paces by simply making commits to a public repository. Never worry about hosting costs, server configuration or deployment again. Simply write Markdown, build static HTML, and commit!</p>
 

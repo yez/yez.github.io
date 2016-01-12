@@ -115,90 +115,118 @@
 
 <p>To demonstrate such a problem, we can assume the following:</p>
 
-<p>A Ruby on Rails application exists with a <code>User</code> class, each with a <code>phone_number</code> attribute.</p>
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
+<p>A Ruby on Rails application exists with a <code class="highlighter-rouge">User</code> class, each with a <code class="highlighter-rouge">phone_number</code> attribute.</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
 
   <span class="n">validates_presence_of</span> <span class="ss">:phone_number</span>
 <span class="k">end</span>
-</code></pre></div>
-<p>The application is relatively popular, which results in 2,000,000 <code>users</code>:</p>
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="no">User</span><span class="o">.</span><span class="n">count</span>
+</code></pre>
+</div>
+
+<p>The application is relatively popular, which results in 2,000,000 <code class="highlighter-rouge">users</code>:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="no">User</span><span class="p">.</span><span class="nf">count</span>
 <span class="c1">#=&gt; 2000000</span>
-</code></pre></div>
+</code></pre>
+</div>
+
 <p>Finally, the requested task:</p>
 
-<p><strong>Add a &quot;+1&quot; to the beginning of all user phone numbers (we are assuming that all phone numbers belong to users in the USA or Canada).</strong></p>
+<p><strong>Add a “+1” to the beginning of all user phone numbers (we are assuming that all phone numbers belong to users in the USA or Canada).</strong></p>
 
-<p><em>Disclaimer: Ruby is probably not the best tool for this kind of data migration but for argument&#39;s sake we can assume it is the only one available.</em></p>
+<p><em>Disclaimer: Ruby is probably not the best tool for this kind of data migration but for argument’s sake we can assume it is the only one available.</em></p>
 
-<h2>Serial scripts at scale are slow</h2>
+<h2 id="serial-scripts-at-scale-are-slow">Serial scripts at scale are slow</h2>
 
 <p>Without giving it too much thought, an approach to solve this problem might look something like:</p>
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="no">User</span><span class="o">.</span><span class="n">find_each</span> <span class="k">do</span> <span class="o">|</span><span class="n">user</span><span class="o">|</span>
-  <span class="n">user</span><span class="o">.</span><span class="n">phone_number</span> <span class="o">=</span> <span class="s2">&quot;+1</span><span class="si">#{</span> <span class="n">user</span><span class="o">.</span><span class="n">phone_number</span> <span class="si">}</span><span class="s2">&quot;</span>
 
-  <span class="n">user</span><span class="o">.</span><span class="n">save!</span>
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="no">User</span><span class="p">.</span><span class="nf">find_each</span> <span class="k">do</span> <span class="o">|</span><span class="n">user</span><span class="o">|</span>
+  <span class="n">user</span><span class="p">.</span><span class="nf">phone_number</span> <span class="o">=</span> <span class="s2">"+1</span><span class="si">#{</span> <span class="n">user</span><span class="p">.</span><span class="nf">phone_number</span> <span class="si">}</span><span class="s2">"</span>
+
+  <span class="n">user</span><span class="p">.</span><span class="nf">save!</span>
 <span class="k">end</span>
-</code></pre></div>
+</code></pre>
+</div>
+
 <p>This approach will work. The <a href="http://guides.rubyonrails.org/active_record_querying.html#find-each">find_each</a> method will make sure the memory footprint of the script stays low (it will not load every user into memory at once) and the phone numbers will be updated.</p>
 
 <p>However, this will be painfully slow. Even if the system is able to update 20 users per second, it will take approximately <strong>27 hours</strong> to complete.</p>
-<div class="highlight"><pre><code class="language-text" data-lang="text">2,000,000 users / 20 users per second
+
+<div class="highlighter-rouge"><pre class="highlight"><code>2,000,000 users / 20 users per second
 = 100,000 seconds to process all users
-</code></pre></div><div class="highlight"><pre><code class="language-text" data-lang="text">100,000 seconds / 60 seconds
+</code></pre>
+</div>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>100,000 seconds / 60 seconds
 ~= 1,666 minutes
-</code></pre></div><div class="highlight"><pre><code class="language-text" data-lang="text">1,666 minutes / 60 minutes
+</code></pre>
+</div>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>1,666 minutes / 60 minutes
 ~= 27 hours
-</code></pre></div>
-<h2>Resque to the Rescue</h2>
+</code></pre>
+</div>
+
+<h2 id="resque-to-the-rescue">Resque to the Rescue</h2>
 
 <p><a href="https://github.com/resque/resque">Resque</a> is a very useful Ruby library for creating background jobs. Redis is utilized as the storage for these jobs and individual Resque workers pick one job off each queue at a time.</p>
 
 <p>With a small amount of code reorganization, Resque enables processing multiple users <strong>at the same time</strong>. The basic idea behind this approach is divide and conquer.</p>
 
-<h3>0. Install Resque and <a href="http://redis.io/topics/quickstart">Redis</a></h3>
+<h3 id="install-resque-and-redishttpredisiotopicsquickstart">0. Install Resque and <a href="http://redis.io/topics/quickstart">Redis</a></h3>
 
-<h3>1. Extract phone number updates into a new class</h3>
+<h3 id="extract-phone-number-updates-into-a-new-class">1. Extract phone number updates into a new class</h3>
 
-<p>This new class will accept a single <code>user</code> and update all associated <code>phone_numbers</code>.</p>
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">class</span> <span class="nc">PhoneUpdater</span>
+<p>This new class will accept a single <code class="highlighter-rouge">user</code> and update all associated <code class="highlighter-rouge">phone_numbers</code>.</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">class</span> <span class="nc">PhoneUpdater</span>
   <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
     <span class="vi">@user</span> <span class="o">=</span> <span class="n">user</span>
   <span class="k">end</span>
 
   <span class="k">def</span> <span class="nf">update_phone!</span>
-    <span class="vi">@user</span><span class="o">.</span><span class="n">phone_number</span> <span class="o">=</span> <span class="s2">&quot;+1</span><span class="si">#{</span> <span class="vi">@user</span><span class="o">.</span><span class="n">phone_number</span> <span class="si">}</span><span class="s2">&quot;</span>
+    <span class="vi">@user</span><span class="p">.</span><span class="nf">phone_number</span> <span class="o">=</span> <span class="s2">"+1</span><span class="si">#{</span> <span class="vi">@user</span><span class="p">.</span><span class="nf">phone_number</span> <span class="si">}</span><span class="s2">"</span>
 
-    <span class="vi">@user</span><span class="o">.</span><span class="n">save!</span>
+    <span class="vi">@user</span><span class="p">.</span><span class="nf">save!</span>
   <span class="k">end</span>
 <span class="k">end</span>
-</code></pre></div>
-<h3>2. Create a Resque Job to use this logic</h3>
+</code></pre>
+</div>
 
-<p>A Resque Job class needs to conform to a simple API. A <code>queue</code> must be defined and the class must have a class method named <code>perform</code>. The parameter given to <code>perform</code> is the same that is passed to Resque when a job is enqueued.</p>
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">class</span> <span class="nc">PhoneUpdaterJob</span>
+<h3 id="create-a-resque-job-to-use-this-logic">2. Create a Resque Job to use this logic</h3>
+
+<p>A Resque Job class needs to conform to a simple API. A <code class="highlighter-rouge">queue</code> must be defined and the class must have a class method named <code class="highlighter-rouge">perform</code>. The parameter given to <code class="highlighter-rouge">perform</code> is the same that is passed to Resque when a job is enqueued.</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">class</span> <span class="nc">PhoneUpdaterJob</span>
   <span class="vi">@queue</span> <span class="o">=</span> <span class="ss">:phone_updates</span>
 
   <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">perform</span><span class="p">(</span><span class="n">user_id</span><span class="p">)</span>
-    <span class="n">user</span> <span class="o">=</span> <span class="no">User</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">user_id</span><span class="p">)</span>
-    <span class="n">updater</span> <span class="o">=</span> <span class="no">PhoneUpdater</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
-    <span class="n">updater</span><span class="o">.</span><span class="n">update_phone!</span>
+    <span class="n">user</span> <span class="o">=</span> <span class="no">User</span><span class="p">.</span><span class="nf">find</span><span class="p">(</span><span class="n">user_id</span><span class="p">)</span>
+    <span class="n">updater</span> <span class="o">=</span> <span class="no">PhoneUpdater</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
+    <span class="n">updater</span><span class="p">.</span><span class="nf">update_phone!</span>
   <span class="k">end</span>
 <span class="k">end</span>
-</code></pre></div>
-<h3>3. Create script to enqueue ResqueJobs</h3>
+</code></pre>
+</div>
 
-<p>Iterate over the user set and enqueue a job per user. The second argument is the <code>id</code> of the user to process.</p>
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="no">User</span><span class="o">.</span><span class="n">find_each</span> <span class="k">do</span> <span class="o">|</span><span class="n">user</span><span class="o">|</span>
-  <span class="no">Resque</span><span class="o">.</span><span class="n">enqueue</span><span class="p">(</span>
+<h3 id="create-script-to-enqueue-resquejobs">3. Create script to enqueue ResqueJobs</h3>
+
+<p>Iterate over the user set and enqueue a job per user. The second argument is the <code class="highlighter-rouge">id</code> of the user to process.</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="no">User</span><span class="p">.</span><span class="nf">find_each</span> <span class="k">do</span> <span class="o">|</span><span class="n">user</span><span class="o">|</span>
+  <span class="no">Resque</span><span class="p">.</span><span class="nf">enqueue</span><span class="p">(</span>
     <span class="no">PhoneUpdaterJob</span><span class="p">,</span>
-    <span class="n">user</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+    <span class="n">user</span><span class="p">.</span><span class="nf">id</span><span class="p">)</span>
 <span class="k">end</span>
-</code></pre></div>
-<h3>4. Run many parallel Resque workers</h3>
+</code></pre>
+</div>
 
-<p>This is where the fun happens. By initializing many different Resque worker processes, they all will read from the <code>phone_updates</code> queue and process users in parallel. The <code>QUEUE</code> specified matches what was defined in <code>PhoneUpdaterJob</code>.</p>
-<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="c"># Open a terminal in the root of your project...</span>
+<h3 id="run-many-parallel-resque-workers">4. Run many parallel Resque workers</h3>
+
+<p>This is where the fun happens. By initializing many different Resque worker processes, they all will read from the <code class="highlighter-rouge">phone_updates</code> queue and process users in parallel. The <code class="highlighter-rouge">QUEUE</code> specified matches what was defined in <code class="highlighter-rouge">PhoneUpdaterJob</code>.</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="c"># Open a terminal in the root of your project...</span>
 <span class="nv">QUEUE</span><span class="o">=</span>phone_updates rake resque:work
 
 <span class="c"># Open another terminal in the root of your project...</span>
@@ -208,14 +236,16 @@
 <span class="c"># Open another terminal in the root of your project...</span>
 
 <span class="c"># etc.</span>
-</code></pre></div>
-<h3>5. Try not to overload the system</h3>
+</code></pre>
+</div>
+
+<h3 id="try-not-to-overload-the-system">5. Try not to overload the system</h3>
 
 <p>Now with 2,000,000 queued Resque jobs, each Resque worker will drastically decrease the execution time of the overall task. However, system constraints should not be ignored. Database connection saturation, CPU usage and memory usage should be used in calculation of how many Resque workers to run at once.</p>
 
-<h2>Parallelism is awesome</h2>
+<h2 id="parallelism-is-awesome">Parallelism is awesome</h2>
 
-<p>Although the parallel solution is not as simple as its serial counterpart, the benefits are extremely apparent. The parallel solution is not without its weaknesses, but they do not make it invalid. It iterates over the entire user set twice, but parallelizing the slow <code>phone_number</code> update queries makes up for that inefficiency ten-fold.</p>
+<p>Although the parallel solution is not as simple as its serial counterpart, the benefits are extremely apparent. The parallel solution is not without its weaknesses, but they do not make it invalid. It iterates over the entire user set twice, but parallelizing the slow <code class="highlighter-rouge">phone_number</code> update queries makes up for that inefficiency ten-fold.</p>
 
   </div>
   

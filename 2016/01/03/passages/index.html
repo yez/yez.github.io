@@ -104,49 +104,49 @@
 </span>
   <p>Routing in the Ruby on Rails world can, at times, be a tad confusing. The <a href="http://guides.rubyonrails.org/routing.html">official Rails guide</a> is very helpful for the basics; but, as an application grows, it can become hard to remember specific details about every single route.</p>
 
-<h2>Existing Routing Tools</h2>
+<h2 id="existing-routing-tools">Existing Routing Tools</h2>
 
-<p>To remedy the issue of route complexity, a few helpful tools already exist. The most useful one is <code>rake routes</code>, which can be executed in the working directory of a Rails application. This tool requires that the application be on the developer&#39;s local system, which is fine for applications that a developer owns, but what about services that the developer does not own?</p>
+<p>To remedy the issue of route complexity, a few helpful tools already exist. The most useful one is <code class="highlighter-rouge">rake routes</code>, which can be executed in the working directory of a Rails application. This tool requires that the application be on the developer’s local system, which is fine for applications that a developer owns, but what about services that the developer does not own?</p>
 
-<p>While this problem might not exist for everyone, chances are at least one poor software engineer has been slapped in the face with a <code>404</code> page and shouted: <em>&quot;I know that route exists! Why doesn&#39;t this work?&quot;</em></p>
+<p>While this problem might not exist for everyone, chances are at least one poor software engineer has been slapped in the face with a <code class="highlighter-rouge">404</code> page and shouted: <em>“I know that route exists! Why doesn’t this work?”</em></p>
 
 <p>Another helpful tool in development mode is this screen:</p>
 
-<p><img src="/assets/images/no_route_page.png" alt="Default Rails Dev No Route"></p>
+<p><img src="/assets/images/no_route_page.png" alt="Default Rails Dev No Route" /></p>
 
-<p>This page provides the ability to enter search terms that match words in the <code>paths</code> of specfic routes. However, similarly to <code>rake routes</code>, this screen is only accessible in development mode. While this tool is still extremely useful, there could be cases when route inspection would be helpful without running the server locally.</p>
+<p>This page provides the ability to enter search terms that match words in the <code class="highlighter-rouge">paths</code> of specfic routes. However, similarly to <code class="highlighter-rouge">rake routes</code>, this screen is only accessible in development mode. While this tool is still extremely useful, there could be cases when route inspection would be helpful without running the server locally.</p>
 
-<h2>New Hotness</h2>
+<h2 id="new-hotness">New Hotness</h2>
 
 <p><a href="https://github.com/yez/passages">The Passages Rails Engine</a> was created to fulfill two main purposes:</p>
 
 <p><strong>1.</strong> To expose routes of a Ruby on Rails application either during or outside development mode.</p>
 
-<p><strong>2.</strong> Enable searching on multiple pieces of a route&#39;s information (HTTP verb, controller, path, etc).</p>
+<p><strong>2.</strong> Enable searching on multiple pieces of a route’s information (HTTP verb, controller, path, etc).</p>
 
 <p>Some might wonder by <strong>1</strong> would even be valuable. Imagine for a moment that a team of engineers decides that they need an internal API to power their various applications. Perhaps while developing this API, some basic documentation is written but never actually kept up to date. Maybe the API changes so fast that documentation just falls behind.</p>
 
 <p>Whatever the reason, it becomes laborious for the consumers of that internal API to constantly ask which route does what and which parameters are expected in each URL.</p>
 
-<p>Internal APIs are not the only candidate for <code>Passages</code>. An external API can also benefit from discoverable routing in lieu of or in addition to documentation. Since <code>Passages</code> has the option to use HTTP Basic Authentication, securing <code>Passages</code> is as simple as setting two <code>ENV</code> variables.</p>
+<p>Internal APIs are not the only candidate for <code class="highlighter-rouge">Passages</code>. An external API can also benefit from discoverable routing in lieu of or in addition to documentation. Since <code class="highlighter-rouge">Passages</code> has the option to use HTTP Basic Authentication, securing <code class="highlighter-rouge">Passages</code> is as simple as setting two <code class="highlighter-rouge">ENV</code> variables.</p>
 
-<p>Purpose <strong>2</strong> is an attempt to reduce a large application&#39;s route pile by expanding each route&#39;s search surface area. A user of <code>Passages</code> might want to know of all the <code>PUT</code> routes or routes that map to a <code>destroy</code> action. Like its predecessor, <code>Passages&#39;</code> route path search is also extremely valuable.</p>
+<p>Purpose <strong>2</strong> is an attempt to reduce a large application’s route pile by expanding each route’s search surface area. A user of <code class="highlighter-rouge">Passages</code> might want to know of all the <code class="highlighter-rouge">PUT</code> routes or routes that map to a <code class="highlighter-rouge">destroy</code> action. Like its predecessor, <code class="highlighter-rouge">Passages'</code> route path search is also extremely valuable.</p>
 
-<p>With (hopefully) the help of the open source community, the types of useful search features for <code>Passages</code> will expand from these very humble beginnings.</p>
+<p>With (hopefully) the help of the open source community, the types of useful search features for <code class="highlighter-rouge">Passages</code> will expand from these very humble beginnings.</p>
 
-<h2>Demo</h2>
+<h2 id="demo">Demo</h2>
 
-<p>After following the <a href="https://github.com/yez/passages#install">installation guide from the project&#39;s README</a>, A very basic use of <code>Passages</code> would look like:</p>
+<p>After following the <a href="https://github.com/yez/passages#install">installation guide from the project’s README</a>, A very basic use of <code class="highlighter-rouge">Passages</code> would look like:</p>
 
-<p><img src="/assets/images/passages_demo.gif" alt="Passages Demo"></p>
+<p><img src="/assets/images/passages_demo.gif" alt="Passages Demo" /></p>
 
-<h2>Contributing</h2>
+<h2 id="contributing">Contributing</h2>
 
-<p>Like most Open Source projects, <code>Passages</code> has many areas that welcome modification. Specifically, the design and search functionalities are suitable candidates for enhancement.</p>
+<p>Like most Open Source projects, <code class="highlighter-rouge">Passages</code> has many areas that welcome modification. Specifically, the design and search functionalities are suitable candidates for enhancement.</p>
 
 <p>Please feel free to <a href="https://github.com/yez/passages">fork the repository</a> or create an issue on Github if something seems wrong or out of place.</p>
 
-<p>Currently, <code>Passages</code> only supports Ruby on Rails 4. It will most likely be upgraded when Ruby on Rails 5 is released but there are no plans to support Ruby on Rails 3 or older.</p>
+<p>Currently, <code class="highlighter-rouge">Passages</code> only supports Ruby on Rails 4. It will most likely be upgraded when Ruby on Rails 5 is released but there are no plans to support Ruby on Rails 3 or older.</p>
 
 </div>
 

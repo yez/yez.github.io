@@ -111,92 +111,104 @@
 </ul>
 </span>
 
-    <p>Automated testing is important. Fast, exhaustive automated testing is even more important. Tests are responsible for ensuring the code you spend hours creating actually works. A great test suite can be a safeguard against bugs, a directional guide towards extending the code, and an accurate measurement of the codebase&#39;s health. The key to writing good tests is understanding where pieces of responsibility begin and end. Maintaining small concise automated tests can make all the difference.</p>
+    <p>Automated testing is important. Fast, exhaustive automated testing is even more important. Tests are responsible for ensuring the code you spend hours creating actually works. A great test suite can be a safeguard against bugs, a directional guide towards extending the code, and an accurate measurement of the codebase’s health. The key to writing good tests is understanding where pieces of responsibility begin and end. Maintaining small concise automated tests can make all the difference.</p>
 
-<h2>Speed is King</h2>
+<h2 id="speed-is-king">Speed is King</h2>
 
 <p>Aside from the general importance of <a href="http://jakeyesbeck.com/2015/06/07/short-feedback-cycles/">short feedback cycles</a>, a fast test suite will greatly improve your work-flow and mood. Conversely, a slow test suite can make your development cycle a living nightmare. How many unfortunate software artisans have dealt with something like:</p>
 
-<p><img src="/assets/images/slow_tests.png" alt="slow test suite screenshot"></p>
+<p><img src="/assets/images/slow_tests.png" alt="slow test suite screenshot" /></p>
 
 <p>Bleh! What a horrible thing to deal with. What, am I supposed to just wait 5 whole minutes every time I want to test my system? A test suite this slow is simply unacceptable.</p>
 
-<p>So what could be causing this slowness? More than likely, a number of tests in this application are doing too much. To try and replicate and solve this problem, let&#39;s assume we have a Ruby on Rails application we test using RSpec.</p>
+<p>So what could be causing this slowness? More than likely, a number of tests in this application are doing too much. To try and replicate and solve this problem, let’s assume we have a Ruby on Rails application we test using RSpec.</p>
 
-<h2>Testing Database Models is Slow</h2>
+<h2 id="testing-database-models-is-slow">Testing Database Models is Slow</h2>
 
-<p>We can assume that there exists a very important class called <code>MyAwesomeClass</code>:</p>
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">class</span> <span class="nc">MyAwesomeClass</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
+<p>We can assume that there exists a very important class called <code class="highlighter-rouge">MyAwesomeClass</code>:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">class</span> <span class="nc">MyAwesomeClass</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
   <span class="k">def</span> <span class="nf">assign_and_save!</span>
     <span class="n">saved_on_the_weekend</span> <span class="o">=</span> <span class="n">weekend?</span>
-    <span class="nb">self</span><span class="o">.</span><span class="n">save!</span>
+    <span class="nb">self</span><span class="p">.</span><span class="nf">save!</span>
   <span class="k">end</span>
 
   <span class="k">def</span> <span class="nf">weekend?</span>
-    <span class="no">Time</span><span class="o">.</span><span class="n">now</span><span class="o">.</span><span class="n">saturday?</span> <span class="o">||</span> <span class="no">Time</span><span class="o">.</span><span class="n">now</span><span class="o">.</span><span class="n">sunday?</span>
+    <span class="no">Time</span><span class="p">.</span><span class="nf">now</span><span class="p">.</span><span class="nf">saturday?</span> <span class="o">||</span> <span class="no">Time</span><span class="p">.</span><span class="nf">now</span><span class="p">.</span><span class="nf">sunday?</span>
   <span class="k">end</span>
 <span class="k">end</span>
-</code></pre></div>
-<p>If we wanted to test that the <code>assign_and_save!</code> method works correctly, we might write a test like:</p>
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">describe</span> <span class="s1">&#39;#assign_and_save!&#39;</span> <span class="k">do</span>
-  <span class="n">it</span> <span class="s1">&#39;assigns and saves&#39;</span> <span class="k">do</span>
-    <span class="n">awesome_test</span> <span class="o">=</span> <span class="no">MyAwesomeClass</span><span class="o">.</span><span class="n">new</span>
+</code></pre>
+</div>
+
+<p>If we wanted to test that the <code class="highlighter-rouge">assign_and_save!</code> method works correctly, we might write a test like:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="n">describe</span> <span class="s1">'#assign_and_save!'</span> <span class="k">do</span>
+  <span class="n">it</span> <span class="s1">'assigns and saves'</span> <span class="k">do</span>
+    <span class="n">awesome_test</span> <span class="o">=</span> <span class="no">MyAwesomeClass</span><span class="p">.</span><span class="nf">new</span>
 
     <span class="n">expect</span> <span class="k">do</span>
-      <span class="n">awesome_test</span><span class="o">.</span><span class="n">assign_and_save!</span>
-    <span class="k">end</span><span class="o">.</span><span class="n">to</span> <span class="n">change</span><span class="p">(</span><span class="no">MyAwesomeClass</span><span class="p">,</span> <span class="ss">:count</span><span class="p">)</span><span class="o">.</span><span class="n">by</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+      <span class="n">awesome_test</span><span class="p">.</span><span class="nf">assign_and_save!</span>
+    <span class="k">end</span><span class="p">.</span><span class="nf">to</span> <span class="n">change</span><span class="p">(</span><span class="no">MyAwesomeClass</span><span class="p">,</span> <span class="ss">:count</span><span class="p">).</span><span class="nf">by</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
 
-    <span class="n">expect</span><span class="p">(</span><span class="n">awesome_test</span><span class="o">.</span><span class="n">saved_on_the_weekend</span><span class="p">)</span><span class="o">.</span><span class="n">to_not</span> <span class="n">be_nil</span>
+    <span class="n">expect</span><span class="p">(</span><span class="n">awesome_test</span><span class="p">.</span><span class="nf">saved_on_the_weekend</span><span class="p">).</span><span class="nf">to_not</span> <span class="n">be_nil</span>
   <span class="k">end</span>
 <span class="k">end</span>
-</code></pre></div>
-<p>These tests make sure that the model is saved correctly to the database and a value is assigned to <code>saved_on_the_weekend</code>. However, the test code is overstepping the boundaries of the method it is testing. The <code>assign_and_save!</code> method&#39;s job is to simply assign a value to an object and then save it. It does not care about how the actual saving works, that is the job of other validations on the model and <code>ActiveRecord</code>.</p>
+</code></pre>
+</div>
 
-<p>To avoid this, we can assert that the <code>save!</code> method is called, which will not actually write to our database:</p>
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">describe</span> <span class="s1">&#39;#assign_and_save!&#39;</span> <span class="k">do</span>
-  <span class="n">it</span> <span class="s1">&#39;assigns and saves&#39;</span> <span class="k">do</span>
-    <span class="n">awesome_test</span> <span class="o">=</span> <span class="no">MyAwesomeClass</span><span class="o">.</span><span class="n">new</span>
-    <span class="n">expect</span><span class="p">(</span><span class="n">awesome_test</span><span class="p">)</span><span class="o">.</span><span class="n">to</span> <span class="n">receive</span><span class="p">(</span><span class="ss">:save!</span><span class="p">)</span>
-    <span class="n">awesome_test</span><span class="o">.</span><span class="n">assign_and_save!</span>
-    <span class="n">expect</span><span class="p">(</span><span class="n">awesome_test</span><span class="o">.</span><span class="n">saved_on_the_weekend</span><span class="p">)</span><span class="o">.</span><span class="n">to_not</span> <span class="n">be_nil</span>
+<p>These tests make sure that the model is saved correctly to the database and a value is assigned to <code class="highlighter-rouge">saved_on_the_weekend</code>. However, the test code is overstepping the boundaries of the method it is testing. The <code class="highlighter-rouge">assign_and_save!</code> method’s job is to simply assign a value to an object and then save it. It does not care about how the actual saving works, that is the job of other validations on the model and <code class="highlighter-rouge">ActiveRecord</code>.</p>
+
+<p>To avoid this, we can assert that the <code class="highlighter-rouge">save!</code> method is called, which will not actually write to our database:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="n">describe</span> <span class="s1">'#assign_and_save!'</span> <span class="k">do</span>
+  <span class="n">it</span> <span class="s1">'assigns and saves'</span> <span class="k">do</span>
+    <span class="n">awesome_test</span> <span class="o">=</span> <span class="no">MyAwesomeClass</span><span class="p">.</span><span class="nf">new</span>
+    <span class="n">expect</span><span class="p">(</span><span class="n">awesome_test</span><span class="p">).</span><span class="nf">to</span> <span class="n">receive</span><span class="p">(</span><span class="ss">:save!</span><span class="p">)</span>
+    <span class="n">awesome_test</span><span class="p">.</span><span class="nf">assign_and_save!</span>
+    <span class="n">expect</span><span class="p">(</span><span class="n">awesome_test</span><span class="p">.</span><span class="nf">saved_on_the_weekend</span><span class="p">).</span><span class="nf">to_not</span> <span class="n">be_nil</span>
   <span class="k">end</span>
 <span class="k">end</span>
-</code></pre></div>
+</code></pre>
+</div>
+
 <p>Voila! We have made the same assertions about our code and did not do any slow input/output operations.</p>
 
-<p>Now I know what some of the more detail oriented Software Artisans reading this will initially think: <em>&quot;What about validation concerns with the model?&quot;</em> and <em>&quot;If you stub out <code>save!</code> like that you can&#39;t be sure it worked&quot;</em>. While these are totally valid points, there exists a simple solution for dealing with the uncertainty of the save:</p>
+<p>Now I know what some of the more detail oriented Software Artisans reading this will initially think: <em>“What about validation concerns with the model?”</em> and <em>“If you stub out <code class="highlighter-rouge">save!</code> like that you can’t be sure it worked”</em>. While these are totally valid points, there exists a simple solution for dealing with the uncertainty of the save:</p>
 
-<h2>The <code>valid?</code> method</h2>
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">describe</span> <span class="s1">&#39;#assign_and_save!&#39;</span> <span class="k">do</span>
-  <span class="n">it</span> <span class="s1">&#39;assigns and saves&#39;</span> <span class="k">do</span>
-    <span class="n">awesome_test</span> <span class="o">=</span> <span class="no">MyAwesomeClass</span><span class="o">.</span><span class="n">new</span>
-    <span class="n">expect</span><span class="p">(</span><span class="n">awesome_test</span><span class="p">)</span><span class="o">.</span><span class="n">to</span> <span class="n">receive</span><span class="p">(</span><span class="ss">:save!</span><span class="p">)</span>
-    <span class="n">awesome_test</span><span class="o">.</span><span class="n">assign_and_save!</span>
-    <span class="n">expect</span><span class="p">(</span><span class="n">awesome_test</span><span class="o">.</span><span class="n">saved_on_the_weekend</span><span class="p">)</span><span class="o">.</span><span class="n">to_not</span> <span class="n">be_nil</span>
+<h2 id="the-valid-method">The <code class="highlighter-rouge">valid?</code> method</h2>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="n">describe</span> <span class="s1">'#assign_and_save!'</span> <span class="k">do</span>
+  <span class="n">it</span> <span class="s1">'assigns and saves'</span> <span class="k">do</span>
+    <span class="n">awesome_test</span> <span class="o">=</span> <span class="no">MyAwesomeClass</span><span class="p">.</span><span class="nf">new</span>
+    <span class="n">expect</span><span class="p">(</span><span class="n">awesome_test</span><span class="p">).</span><span class="nf">to</span> <span class="n">receive</span><span class="p">(</span><span class="ss">:save!</span><span class="p">)</span>
+    <span class="n">awesome_test</span><span class="p">.</span><span class="nf">assign_and_save!</span>
+    <span class="n">expect</span><span class="p">(</span><span class="n">awesome_test</span><span class="p">.</span><span class="nf">saved_on_the_weekend</span><span class="p">).</span><span class="nf">to_not</span> <span class="n">be_nil</span>
   <span class="k">end</span>
 
-  <span class="n">it</span> <span class="s1">&#39;is save-able&#39;</span> <span class="k">do</span>
-    <span class="n">awesome_test</span> <span class="o">=</span> <span class="no">MyAwesomeClass</span><span class="o">.</span><span class="n">new</span>
-    <span class="n">allow</span><span class="p">(</span><span class="n">awesome_test</span><span class="p">)</span><span class="o">.</span><span class="n">to</span> <span class="n">receive</span><span class="p">(</span><span class="ss">:save!</span><span class="p">)</span>
+  <span class="n">it</span> <span class="s1">'is save-able'</span> <span class="k">do</span>
+    <span class="n">awesome_test</span> <span class="o">=</span> <span class="no">MyAwesomeClass</span><span class="p">.</span><span class="nf">new</span>
+    <span class="n">allow</span><span class="p">(</span><span class="n">awesome_test</span><span class="p">).</span><span class="nf">to</span> <span class="n">receive</span><span class="p">(</span><span class="ss">:save!</span><span class="p">)</span>
 
-    <span class="n">awesome_test</span><span class="o">.</span><span class="n">assign_and_save!</span>
-    <span class="n">expect</span><span class="p">(</span><span class="n">awesome_test</span><span class="p">)</span><span class="o">.</span><span class="n">to</span> <span class="n">be_valid</span>
+    <span class="n">awesome_test</span><span class="p">.</span><span class="nf">assign_and_save!</span>
+    <span class="n">expect</span><span class="p">(</span><span class="n">awesome_test</span><span class="p">).</span><span class="nf">to</span> <span class="n">be_valid</span>
   <span class="k">end</span>
 <span class="k">end</span>
-</code></pre></div>
-<p>With the new test assertion, we make sure that the model&#39;s <code>valid?</code> method returns true, ensuring the model will be saved properly.</p>
+</code></pre>
+</div>
 
-<p>The <code>valid?</code> method is what <code>ActiveRecord</code> uses before saving the model to the database. This method returns either <code>true</code> or <code>false</code> and writes the data to the database if <code>true</code> was returned. Now the code is tested and <code>ActiveRecord</code>&#39;s&#39; validation errors are considered.</p>
+<p>With the new test assertion, we make sure that the model’s <code class="highlighter-rouge">valid?</code> method returns true, ensuring the model will be saved properly.</p>
 
-<h2>Not Perfect, but Good Enough</h2>
+<p>The <code class="highlighter-rouge">valid?</code> method is what <code class="highlighter-rouge">ActiveRecord</code> uses before saving the model to the database. This method returns either <code class="highlighter-rouge">true</code> or <code class="highlighter-rouge">false</code> and writes the data to the database if <code class="highlighter-rouge">true</code> was returned. Now the code is tested and <code class="highlighter-rouge">ActiveRecord</code>’s’ validation errors are considered.</p>
 
-<p>However, there is one more thing that this test will not catch: database specific uniqueness constraints. If your application uses a database to enforce uniqueness and not in <code>ActiveRecord</code> validations, this testing method will fail. For that you will need a more robust integration tests which guard against duplicate data.</p>
+<h2 id="not-perfect-but-good-enough">Not Perfect, but Good Enough</h2>
+
+<p>However, there is one more thing that this test will not catch: database specific uniqueness constraints. If your application uses a database to enforce uniqueness and not in <code class="highlighter-rouge">ActiveRecord</code> validations, this testing method will fail. For that you will need a more robust integration tests which guard against duplicate data.</p>
 
 <p>All that aside, not actually saving data will be fine for the 90% case which is most codebases.</p>
 
-<h2>Only Test What Matters</h2>
+<h2 id="only-test-what-matters">Only Test What Matters</h2>
 
-<p>In this example, removing the testing of <code>save!</code> resulted in a speed increase. However, the idea of only testing the crucial parts of a method is not only about speed, <strong>it is about encapsulation</strong>. If a method&#39;s only responsibility is to call helper methods, that is the only thing that should be tested. The test should simply assert that the helper methods are called, not the logic within them. Following this pattern will help keep test code small, concise, readable, and input/output operations to a minimum.</p>
+<p>In this example, removing the testing of <code class="highlighter-rouge">save!</code> resulted in a speed increase. However, the idea of only testing the crucial parts of a method is not only about speed, <strong>it is about encapsulation</strong>. If a method’s only responsibility is to call helper methods, that is the only thing that should be tested. The test should simply assert that the helper methods are called, not the logic within them. Following this pattern will help keep test code small, concise, readable, and input/output operations to a minimum.</p>
 
   </div>
   

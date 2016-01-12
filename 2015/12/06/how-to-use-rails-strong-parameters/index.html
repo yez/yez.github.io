@@ -106,135 +106,155 @@
 
 <p>However, knowing when to use Strong Parameters and how to use them correctly is very important. After all, what good is parameter validation if it is in the wrong place or conveys the wrong message?</p>
 
-<h2>Hit the Books</h2>
+<h2 id="hit-the-books">Hit the Books</h2>
 
-<p>The trusty <em>&quot;booksandreviews.com&quot;</em> will serve as a good example application.</p>
+<p>The trusty <em>“booksandreviews.com”</em> will serve as a good example application.</p>
 
-<p>Given a controller that can create <code>Authors</code>, a default pattern without Strong Parameters could look like:</p>
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">class</span> <span class="nc">AuthorsController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
+<p>Given a controller that can create <code class="highlighter-rouge">Authors</code>, a default pattern without Strong Parameters could look like:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">class</span> <span class="nc">AuthorsController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
   <span class="c1"># POST /authors</span>
   <span class="k">def</span> <span class="nf">create</span>
-    <span class="vi">@author</span> <span class="o">=</span> <span class="no">Author</span><span class="o">.</span><span class="n">create!</span><span class="p">(</span><span class="n">author_params</span><span class="p">)</span>
+    <span class="vi">@author</span> <span class="o">=</span> <span class="no">Author</span><span class="p">.</span><span class="nf">create!</span><span class="p">(</span><span class="n">author_params</span><span class="p">)</span>
 
-    <span class="n">redirect_to</span> <span class="vi">@author</span><span class="p">,</span> <span class="ss">notice</span><span class="p">:</span> <span class="s1">&#39;Author was successfully created.&#39;</span>
+    <span class="n">redirect_to</span> <span class="vi">@author</span><span class="p">,</span> <span class="ss">notice: </span><span class="s1">'Author was successfully created.'</span>
   <span class="k">end</span>
 
   <span class="kp">private</span>
 
   <span class="k">def</span> <span class="nf">author_params</span>
-    <span class="n">params</span><span class="o">[</span><span class="ss">:author</span><span class="o">]</span>
+    <span class="n">params</span><span class="p">[</span><span class="ss">:author</span><span class="p">]</span>
   <span class="k">end</span>
 <span class="k">end</span>
-</code></pre></div>
-<p>Assuming that there are no presence validations on the <code>Author</code> class itself (or in the form view creating this model), this code has no check to make sure that anything about an <code>Author</code> is passed in to create.</p>
+</code></pre>
+</div>
 
-<p>This means that any <code>POST</code> request is made to <code>/authors</code> will create a new <code>Author</code>. While this kind of problem would most likely not make it to production, let us assume that the poor people over at &quot;booksandreviews.com&quot; came from such humble code beginnings that this <strong>was</strong> the first iteration of the <code>AuthorsController</code>.</p>
+<p>Assuming that there are no presence validations on the <code class="highlighter-rouge">Author</code> class itself (or in the form view creating this model), this code has no check to make sure that anything about an <code class="highlighter-rouge">Author</code> is passed in to create.</p>
 
-<p>To make the <code>AuthorsController</code> more robust, the <code>require</code> method can be used on the <code>params</code> hash:</p>
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">class</span> <span class="nc">AuthorsController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
+<p>This means that any <code class="highlighter-rouge">POST</code> request is made to <code class="highlighter-rouge">/authors</code> will create a new <code class="highlighter-rouge">Author</code>. While this kind of problem would most likely not make it to production, let us assume that the poor people over at “booksandreviews.com” came from such humble code beginnings that this <strong>was</strong> the first iteration of the <code class="highlighter-rouge">AuthorsController</code>.</p>
+
+<p>To make the <code class="highlighter-rouge">AuthorsController</code> more robust, the <code class="highlighter-rouge">require</code> method can be used on the <code class="highlighter-rouge">params</code> hash:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">class</span> <span class="nc">AuthorsController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
   <span class="c1"># ...</span>
 
   <span class="kp">private</span>
 
   <span class="k">def</span> <span class="nf">author_params</span>
-    <span class="n">params</span><span class="o">.</span><span class="n">require</span><span class="p">(</span><span class="ss">:author</span><span class="p">)</span>
+    <span class="n">params</span><span class="p">.</span><span class="nf">require</span><span class="p">(</span><span class="ss">:author</span><span class="p">)</span>
   <span class="k">end</span>
 <span class="k">end</span>
-</code></pre></div>
-<p>Now if a <code>POST</code> to <code>/authors</code> does not contain a payload with an <code>:author</code> key in the body, the request will error:</p>
+</code></pre>
+</div>
 
-<p><code>ActionController::ParameterMissing</code></p>
+<p>Now if a <code class="highlighter-rouge">POST</code> to <code class="highlighter-rouge">/authors</code> does not contain a payload with an <code class="highlighter-rouge">:author</code> key in the body, the request will error:</p>
 
-<p>However, a request with the <code>:author</code> attribute will...</p>
+<p><code class="highlighter-rouge">ActionController::ParameterMissing</code></p>
 
-<p><code>ActiveModel::ForbiddenAttributesError</code> <em>Also</em> cause an error, apparently.</p>
+<p>However, a request with the <code class="highlighter-rouge">:author</code> attribute will…</p>
 
-<p>This is another feature of Strong Parameters. The reason an error occurs is that the <code>author_params</code> method did not specify which parameters could be mass assigned to the <code>Author</code> class. Passing the result of <code>require</code> directly to <code>Author.create</code> will trip this safety measure.</p>
+<p><code class="highlighter-rouge">ActiveModel::ForbiddenAttributesError</code> <em>Also</em> cause an error, apparently.</p>
 
-<h2>Shut &#39;em Down</h2>
+<p>This is another feature of Strong Parameters. The reason an error occurs is that the <code class="highlighter-rouge">author_params</code> method did not specify which parameters could be mass assigned to the <code class="highlighter-rouge">Author</code> class. Passing the result of <code class="highlighter-rouge">require</code> directly to <code class="highlighter-rouge">Author.create</code> will trip this safety measure.</p>
 
-<p>To correct the <code>ForbiddenAttributesError</code> and add some much needed structure to the <code>AuthorsController</code>, the <code>permit</code> method needs to be used in conjunction with <code>require</code>.</p>
+<h2 id="shut-em-down">Shut ‘em Down</h2>
 
-<p>Adding a list of attributes as individual symbols will make sure that only those attributes can be passed through to <code>Author.create!</code></p>
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">class</span> <span class="nc">AuthorsController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
+<p>To correct the <code class="highlighter-rouge">ForbiddenAttributesError</code> and add some much needed structure to the <code class="highlighter-rouge">AuthorsController</code>, the <code class="highlighter-rouge">permit</code> method needs to be used in conjunction with <code class="highlighter-rouge">require</code>.</p>
+
+<p>Adding a list of attributes as individual symbols will make sure that only those attributes can be passed through to <code class="highlighter-rouge">Author.create!</code></p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">class</span> <span class="nc">AuthorsController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
   <span class="c1"># ...</span>
 
   <span class="kp">private</span>
 
   <span class="k">def</span> <span class="nf">author_params</span>
-    <span class="n">params</span><span class="o">.</span><span class="n">require</span><span class="p">(</span><span class="ss">:author</span><span class="p">)</span><span class="o">.</span><span class="n">permit</span><span class="p">(</span><span class="ss">:name</span><span class="p">,</span> <span class="ss">:country</span><span class="p">,</span> <span class="ss">:email</span><span class="p">)</span>
+    <span class="n">params</span><span class="p">.</span><span class="nf">require</span><span class="p">(</span><span class="ss">:author</span><span class="p">).</span><span class="nf">permit</span><span class="p">(</span><span class="ss">:name</span><span class="p">,</span> <span class="ss">:country</span><span class="p">,</span> <span class="ss">:email</span><span class="p">)</span>
   <span class="k">end</span>
 <span class="k">end</span>
-</code></pre></div>
-<p>Great! Now a properly formatted <code>POST</code> containing only the correct attributes will create an <code>Author</code> appropriately.</p>
+</code></pre>
+</div>
+
+<p>Great! Now a properly formatted <code class="highlighter-rouge">POST</code> containing only the correct attributes will create an <code class="highlighter-rouge">Author</code> appropriately.</p>
 
 <p>But, why go through all the hassle? There should be a way to let all attributes pass, regardless of how crazy harmful they could be to our application we use to pay bills.</p>
 
-<p>The <code>permit!</code> method is a completely permissive way to allow all attributes to be mass assigned to a model:</p>
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">class</span> <span class="nc">AuthorsController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
+<p>The <code class="highlighter-rouge">permit!</code> method is a completely permissive way to allow all attributes to be mass assigned to a model:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">class</span> <span class="nc">AuthorsController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
   <span class="c1"># ...</span>
 
   <span class="kp">private</span>
 
   <span class="k">def</span> <span class="nf">author_params</span>
-    <span class="n">params</span><span class="o">.</span><span class="n">require</span><span class="p">(</span><span class="ss">:author</span><span class="p">)</span><span class="o">.</span><span class="n">permit!</span>
+    <span class="n">params</span><span class="p">.</span><span class="nf">require</span><span class="p">(</span><span class="ss">:author</span><span class="p">).</span><span class="nf">permit!</span>
   <span class="k">end</span>
 <span class="k">end</span>
-</code></pre></div>
-<p>This will allow any attributes nested under <code>:author</code> to be set on an <code>Author</code>. A solution like this requires no declaration of attributes, but is this better?</p>
+</code></pre>
+</div>
 
-<p>The short answer is <em>&quot;no&quot;</em>.</p>
+<p>This will allow any attributes nested under <code class="highlighter-rouge">:author</code> to be set on an <code class="highlighter-rouge">Author</code>. A solution like this requires no declaration of attributes, but is this better?</p>
+
+<p>The short answer is <em>“no”</em>.</p>
 
 <p>The reason why being completely permissive with parameters is a bad idea is because not all attributes were created equally.</p>
 
-<p>If <em>&quot;booksandreviews.com&quot;</em> had an <code>admin</code> or <code>superuser</code> column on their <code>authors</code> table, any <code>POST</code> with <code>admin: true</code> would create not a normal <code>Author</code>, but an all-mighty <code>Author</code>.</p>
+<p>If <em>“booksandreviews.com”</em> had an <code class="highlighter-rouge">admin</code> or <code class="highlighter-rouge">superuser</code> column on their <code class="highlighter-rouge">authors</code> table, any <code class="highlighter-rouge">POST</code> with <code class="highlighter-rouge">admin: true</code> would create not a normal <code class="highlighter-rouge">Author</code>, but an all-mighty <code class="highlighter-rouge">Author</code>.</p>
 
-<p>Specifying the attributes that can be mass assigned to an <code>ActiveRecord</code> model is not a new concept, with Strong Parameters this pattern is just too easy not to do.</p>
+<p>Specifying the attributes that can be mass assigned to an <code class="highlighter-rouge">ActiveRecord</code> model is not a new concept, with Strong Parameters this pattern is just too easy not to do.</p>
 
-<h2>Open Up Shop</h2>
+<h2 id="open-up-shop">Open Up Shop</h2>
 
-<p>Another great feature of using Strong Parameters is type assertion. Regardless of <code>ActiveRecord</code>&#39;s type coercion, ensuring that data is as valid as early as possible is important.</p>
+<p>Another great feature of using Strong Parameters is type assertion. Regardless of <code class="highlighter-rouge">ActiveRecord</code>’s type coercion, ensuring that data is as valid as early as possible is important.</p>
 
-<p>Consider that an <code>Author</code> can have an array of <code>genres</code> which summarize their bodies of work. To ensure that this list of <code>genres</code> is an array, a hash syntax can be used:</p>
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">class</span> <span class="nc">AuthorsController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
+<p>Consider that an <code class="highlighter-rouge">Author</code> can have an array of <code class="highlighter-rouge">genres</code> which summarize their bodies of work. To ensure that this list of <code class="highlighter-rouge">genres</code> is an array, a hash syntax can be used:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">class</span> <span class="nc">AuthorsController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
   <span class="c1"># ...</span>
 
   <span class="kp">private</span>
 
   <span class="k">def</span> <span class="nf">author_params</span>
-    <span class="n">params</span><span class="o">.</span><span class="n">require</span><span class="p">(</span><span class="ss">:author</span><span class="p">)</span>
-          <span class="o">.</span><span class="n">permit</span><span class="p">(</span><span class="ss">:name</span><span class="p">,</span> <span class="ss">:country</span><span class="p">,</span> <span class="ss">:email</span><span class="p">,</span> <span class="p">{</span> <span class="ss">genres</span><span class="p">:</span> <span class="o">[]</span> <span class="p">})</span>
+    <span class="n">params</span><span class="p">.</span><span class="nf">require</span><span class="p">(</span><span class="ss">:author</span><span class="p">)</span>
+          <span class="p">.</span><span class="nf">permit</span><span class="p">(</span><span class="ss">:name</span><span class="p">,</span> <span class="ss">:country</span><span class="p">,</span> <span class="ss">:email</span><span class="p">,</span> <span class="p">{</span> <span class="ss">genres: </span><span class="p">[]</span> <span class="p">})</span>
   <span class="k">end</span>
 <span class="k">end</span>
-</code></pre></div>
-<p>By adding <code>{ genres: [] }</code> to the end of the <code>permit</code> call, it ensures that the <code>genres</code> value is always an array. This prevents random nonsense or a malformed request from compromising the <code>Author</code> class&#39; data integrity. If something other than an array is passed as the <code>genres</code> attribute, it will disregard it.</p>
+</code></pre>
+</div>
 
-<p>Alternatively, when a parameter is a hash (like <code>preferences</code>), all the keys in the hash need to be present in the <code>permit</code> call.</p>
-<div class="highlight"><pre><code class="language-JSON" data-lang="JSON"><span class="p">{</span>
-  <span class="nt">&quot;preferences&quot;</span><span class="p">:</span> <span class="p">{</span>
-    <span class="nt">&quot;time_zone&quot;</span><span class="p">:</span> <span class="s2">&quot;GMT&quot;</span><span class="p">,</span>
-    <span class="nt">&quot;subscribed&quot;</span><span class="p">:</span> <span class="kc">true</span>
-  <span class="p">}</span>
-<span class="p">}</span>
-</code></pre></div><div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">class</span> <span class="nc">AuthorsController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
+<p>By adding <code class="highlighter-rouge"><span class="p">{</span><span class="w"> </span><span class="err">genres:</span><span class="w"> </span><span class="err">[]</span><span class="w"> </span><span class="p">}</span></code> to the end of the <code class="highlighter-rouge">permit</code> call, it ensures that the <code class="highlighter-rouge">genres</code> value is always an array. This prevents random nonsense or a malformed request from compromising the <code class="highlighter-rouge">Author</code> class’ data integrity. If something other than an array is passed as the <code class="highlighter-rouge">genres</code> attribute, it will disregard it.</p>
+
+<p>Alternatively, when a parameter is a hash (like <code class="highlighter-rouge">preferences</code>), all the keys in the hash need to be present in the <code class="highlighter-rouge">permit</code> call.</p>
+
+<pre><code class="language-JSON">{
+  "preferences": {
+    "time_zone": "GMT",
+    "subscribed": true
+  }
+}
+</code></pre>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">class</span> <span class="nc">AuthorsController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
   <span class="c1"># ...</span>
 
   <span class="kp">private</span>
 
   <span class="k">def</span> <span class="nf">author_params</span>
-    <span class="n">params</span><span class="o">.</span><span class="n">require</span><span class="p">(</span><span class="ss">:author</span><span class="p">)</span>
-          <span class="o">.</span><span class="n">permit</span><span class="p">(</span><span class="ss">:name</span><span class="p">,</span>
+    <span class="n">params</span><span class="p">.</span><span class="nf">require</span><span class="p">(</span><span class="ss">:author</span><span class="p">)</span>
+          <span class="p">.</span><span class="nf">permit</span><span class="p">(</span><span class="ss">:name</span><span class="p">,</span>
                   <span class="ss">:country</span><span class="p">,</span>
                   <span class="ss">:email</span><span class="p">,</span>
-                  <span class="p">{</span> <span class="ss">preferences</span><span class="p">:</span> <span class="o">[</span><span class="ss">:time_zone</span><span class="p">,</span> <span class="ss">:subscribed</span><span class="o">]</span> <span class="p">})</span>
+                  <span class="p">{</span> <span class="ss">preferences: </span><span class="p">[</span><span class="ss">:time_zone</span><span class="p">,</span> <span class="ss">:subscribed</span><span class="p">]</span> <span class="p">})</span>
   <span class="k">end</span>
 <span class="k">end</span>
-</code></pre></div>
+</code></pre>
+</div>
+
 <p>If this is a tad confusing, check out more examples at the <a href="http://edgeguides.rubyonrails.org/action_controller_overview.html#strong-parameters">official guide for Strong Parameters</a>.</p>
 
-<h2>Everything in Moderation</h2>
+<h2 id="everything-in-moderation">Everything in Moderation</h2>
 
-<p>Strong Parameters is not appropriate for every situation. In the case that a certain number of parameters must be present, or if one parameter must only be present when not accompanied by another specific parameter, Strong Parameters will fall short. The time and place to use Strong Parameters is when creating or updating an <code>ActiveRecord</code> object.</p>
+<p>Strong Parameters is not appropriate for every situation. In the case that a certain number of parameters must be present, or if one parameter must only be present when not accompanied by another specific parameter, Strong Parameters will fall short. The time and place to use Strong Parameters is when creating or updating an <code class="highlighter-rouge">ActiveRecord</code> object.</p>
 
 <p>Additionally, if the Ruby on Rails application in question was an API, Strong Parameters would only be effective in very specific circumstances. Since the feedback given by Strong Parameters is not as granular as an API would like to be, it could be hard to find many uses of it.</p>
 

@@ -10,3 +10,7 @@ ul.share-buttons li a img, ul.share-buttons li{
 ul.share-buttons li a:hover {
   text-decoration: none;
 }
+
+.small-example pre code{
+  font-size: 14px;
+}

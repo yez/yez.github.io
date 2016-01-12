@@ -111,52 +111,55 @@
 </ul>
 </span>
 
-    <p>Ruby gems can seem magical. Usually, one (or more accurately: thirty) solution to a problem exists in the form of a gem. Using gems is easy and intuitive. Simply add a line in the project root&#39;s <code>Gemfile</code> and run <code>bundle install</code>. Then, either <code>require</code> the name of the gem or, if using Ruby on Rails, start using the gem&#39;s code immediately anywhere in the project. What could possibly go wrong?</p>
+    <p>Ruby gems can seem magical. Usually, one (or more accurately: thirty) solution to a problem exists in the form of a gem. Using gems is easy and intuitive. Simply add a line in the project root’s <code class="highlighter-rouge">Gemfile</code> and run <code class="highlighter-rouge">bundle install</code>. Then, either <code class="highlighter-rouge">require</code> the name of the gem or, if using Ruby on Rails, start using the gem’s code immediately anywhere in the project. What could possibly go wrong?</p>
 
-<h2>Gems on gems on gems</h2>
+<h2 id="gems-on-gems-on-gems">Gems on gems on gems</h2>
 
-<p>Unchecked and unmanaged, a project&#39;s <code>Gemfile</code> might turn into something that looks like:</p>
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">source</span> <span class="s1">&#39;http://rubygems.org&#39;</span>
+<p>Unchecked and unmanaged, a project’s <code class="highlighter-rouge">Gemfile</code> might turn into something that looks like:</p>
 
-<span class="n">gem</span> <span class="s1">&#39;linkbuilder&#39;</span>
-<span class="n">gem</span> <span class="s1">&#39;http_helper&#39;</span>
-<span class="n">gem</span> <span class="s1">&#39;the-color-red&#39;</span>
-<span class="n">gem</span> <span class="s1">&#39;devise&#39;</span>
-<span class="n">gem</span> <span class="s1">&#39;cancancancancan&#39;</span>
-<span class="n">gem</span> <span class="s1">&#39;nokogiri&#39;</span>
-<span class="n">gem</span> <span class="s1">&#39;crack&#39;</span>
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="n">source</span> <span class="s1">'http://rubygems.org'</span>
+
+<span class="n">gem</span> <span class="s1">'linkbuilder'</span>
+<span class="n">gem</span> <span class="s1">'http_helper'</span>
+<span class="n">gem</span> <span class="s1">'the-color-red'</span>
+<span class="n">gem</span> <span class="s1">'devise'</span>
+<span class="n">gem</span> <span class="s1">'cancancancancan'</span>
+<span class="n">gem</span> <span class="s1">'nokogiri'</span>
+<span class="n">gem</span> <span class="s1">'crack'</span>
 <span class="c1"># ...</span>
 <span class="c1"># ....</span>
 <span class="c1"># .....</span>
-<span class="n">gem</span> <span class="s1">&#39;cucumber&#39;</span>
-<span class="n">gem</span> <span class="s1">&#39;avacado&#39;</span>
-<span class="n">gem</span> <span class="s1">&#39;you-get-the-idea&#39;</span>
-<span class="n">gem</span> <span class="s1">&#39;these-are-too-many-gems&#39;</span>
-<span class="n">gem</span> <span class="s1">&#39;really&#39;</span>
-</code></pre></div>
-<p>It is very possible that all these gems do not have any adverse side effects. They might not even have any horrible monkey patches to <code>String</code> or <code>Object</code>. <a href="http://www.nateberkopec.com/2015/07/22/secrets-to-speedy-ruby-apps-on-heroku.html">This post</a> has more information on <em>&quot;Why do most Rails apps use so much memory per process?&quot;</em>.</p>
+<span class="n">gem</span> <span class="s1">'cucumber'</span>
+<span class="n">gem</span> <span class="s1">'avacado'</span>
+<span class="n">gem</span> <span class="s1">'you-get-the-idea'</span>
+<span class="n">gem</span> <span class="s1">'these-are-too-many-gems'</span>
+<span class="n">gem</span> <span class="s1">'really'</span>
+</code></pre>
+</div>
+
+<p>It is very possible that all these gems do not have any adverse side effects. They might not even have any horrible monkey patches to <code class="highlighter-rouge">String</code> or <code class="highlighter-rouge">Object</code>. <a href="http://www.nateberkopec.com/2015/07/22/secrets-to-speedy-ruby-apps-on-heroku.html">This post</a> has more information on <em>“Why do most Rails apps use so much memory per process?”</em>.</p>
 
 <p>Without being able to see inside of them, intrusive gems might be mixed into this mass and we would have no idea. At a glance, it is not immediately obvious how to differentiate between benign and malignant gems. It becomes infinitely easier to understand how gems interact if we remember that gems are not magic.</p>
 
-<h2>Gems are just Libraries</h2>
+<h2 id="gems-are-just-libraries">Gems are just Libraries</h2>
 
 <p>There it is! The rabbit is out of the hat. Somewhere, some amount of cats have been released from their respective bags. Gems are not magic silver bullets injected into a codebase. Instead <strong>they are nothing more than libraries of code</strong>. Gems are <em>(hopefully)</em> well encapsulated groups of files that amount to a <em>(again hopefully)</em> few pieces of helpful functionality. With this new understanding of what gems really are, it means that parsing, modifying, and creating gems is within reach. All that is left is to figure out how to pry them open.</p>
 
-<h2>Opening gems</h2>
+<h2 id="opening-gems">Opening gems</h2>
 
-<p>Understanding gems is a great way to learn different design patterns and idiomatic Ruby conventions. Good gems have <a href="https://github.com/jnunemaker/httparty/blob/master/lib/httparty.rb#L29">in-line documentation</a>, great gems have <a href="https://github.com/apotonick/trailblazer#trailblazer">comprehensive Github documentation</a>. Github is the most common place to find the source code for gems and a large number of them have really great method and API documentation. This level of detail might be all that is required; however, for the more opaque gems, the <code>bundle open</code> command is extremely helpful.</p>
+<p>Understanding gems is a great way to learn different design patterns and idiomatic Ruby conventions. Good gems have <a href="https://github.com/jnunemaker/httparty/blob/master/lib/httparty.rb#L29">in-line documentation</a>, great gems have <a href="https://github.com/apotonick/trailblazer#trailblazer">comprehensive Github documentation</a>. Github is the most common place to find the source code for gems and a large number of them have really great method and API documentation. This level of detail might be all that is required; however, for the more opaque gems, the <code class="highlighter-rouge">bundle open</code> command is extremely helpful.</p>
 
-<p><code>bundle open &lt;gemname&gt;</code> will use the system default text editor to open the contents of a gem. Since all gems are installed locally on the system, they should be available to open from a project&#39;s root. If a default editor is not set, or the default is not desired, one can be added to the beginning of the command: <code>EDITOR=vim bundle open &lt;gemname&gt;</code>.</p>
+<p><code class="highlighter-rouge">bundle open &lt;gemname&gt;</code> will use the system default text editor to open the contents of a gem. Since all gems are installed locally on the system, they should be available to open from a project’s root. If a default editor is not set, or the default is not desired, one can be added to the beginning of the command: <code class="highlighter-rouge">EDITOR=vim bundle open &lt;gemname&gt;</code>.</p>
 
-<p>A common starting place for a gem&#39;s logic is in a file with the same name as the gem. Since most gems need to encapsulate their logic, a namespace or wrapper class is usually created with the same name as the gem. In this file it is equally common to find a list of required files or the entry point for the underlying logic. This file is usually in the root of the gem&#39;s source or in a <code>lib</code> directory.</p>
+<p>A common starting place for a gem’s logic is in a file with the same name as the gem. Since most gems need to encapsulate their logic, a namespace or wrapper class is usually created with the same name as the gem. In this file it is equally common to find a list of required files or the entry point for the underlying logic. This file is usually in the root of the gem’s source or in a <code class="highlighter-rouge">lib</code> directory.</p>
 
 <p>In the <a href="http://jakeyesbeck.com/2015/05/10/validates-type/">validates_type</a> root file:</p>
 
-<p><img src="/assets/images/validates_type_dir_list.png" alt="validates_type dir list"></p>
+<p><img src="/assets/images/validates_type_dir_list.png" alt="validates_type dir list" /></p>
 
-<h2>Great! Now what?</h2>
+<h2 id="great-now-what">Great! Now what?</h2>
 
-<p>Now, go out there and open up all the gems in the entire world! Read them, understand them, be one with the gems. Get a flavor for the different types of Ruby code that can exist. Then, after complete code nirvana has been achieved, submit a pull request to the gem&#39;s source with some great additions. Or, place a few bindings in a few obscure methods to see how the code flows in and out of the gem. A master craftsman understands all of the tools in his toolbox, the same should be true for software.</p>
+<p>Now, go out there and open up all the gems in the entire world! Read them, understand them, be one with the gems. Get a flavor for the different types of Ruby code that can exist. Then, after complete code nirvana has been achieved, submit a pull request to the gem’s source with some great additions. Or, place a few bindings in a few obscure methods to see how the code flows in and out of the gem. A master craftsman understands all of the tools in his toolbox, the same should be true for software.</p>
 
   </div>
   

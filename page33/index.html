@@ -115,142 +115,187 @@
 
 <p>For the uninitiated, an <strong>A</strong>pplication <strong>P</strong>rogram <strong>I</strong>nterface (<strong>API</strong>) is an avenue for one piece of software to speak to another. This could be a remote, web-based, HTTP API. Or, the API might be an internal interface for one portion of a software system to talk to another. Designing an API that is simple and maintainable is crucial if it is intended to be used and quickly adopted by colleagues or 3rd party developers.</p>
 
-<p>Being one of those 3rd party developers, I find myself using and writing wrappers to these APIs. Here, I will explain what makes a good API wrapper. Let&#39;s postulate about some example wrapper designs.</p>
+<p>Being one of those 3rd party developers, I find myself using and writing wrappers to these APIs. Here, I will explain what makes a good API wrapper. Let’s postulate about some example wrapper designs.</p>
 
-<h2>The Barely Abstractor</h2>
+<h2 id="the-barely-abstractor">The Barely Abstractor</h2>
 
-<p>The mantra of this design is: &quot;I will take away that annoying HTTP element and you do literally all the rest.&quot;</p>
+<p>The mantra of this design is: “I will take away that annoying HTTP element and you do literally all the rest.”</p>
 
-<p>We can assume that a library called <code>api_requester</code> exists to wrap our very important 3rd party remote API (Which we will also assume is a <a href="http://en.wikipedia.org/wiki/Representational_state_transfer">RESTful API</a>).</p>
+<p>We can assume that a library called <code class="highlighter-rouge">api_requester</code> exists to wrap our very important 3rd party remote API (Which we will also assume is a <a href="http://en.wikipedia.org/wiki/Representational_state_transfer">RESTful API</a>).</p>
 
 <p>If we wanted to retrieve an object our code might look something like:</p>
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="nb">require</span> <span class="s1">&#39;api_requester&#39;</span>
 
-<span class="n">params</span> <span class="o">=</span> <span class="p">{</span> <span class="nb">object_id</span><span class="p">:</span> <span class="mi">1</span> <span class="p">}</span>
-<span class="n">headers</span> <span class="o">=</span> <span class="p">{</span> <span class="s1">&#39;Content-Type&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;application/json&#39;</span> <span class="p">}</span>
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="nb">require</span> <span class="s1">'api_requester'</span>
 
-<span class="n">object_wanted</span> <span class="o">=</span> <span class="no">APIWrapper</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
-                  <span class="s1">&#39;relative/path/to/object/&#39;</span><span class="p">,</span>
+<span class="n">params</span> <span class="o">=</span> <span class="p">{</span> <span class="ss">object_id: </span><span class="mi">1</span> <span class="p">}</span>
+<span class="n">headers</span> <span class="o">=</span> <span class="p">{</span> <span class="s1">'Content-Type'</span> <span class="o">=&gt;</span> <span class="s1">'application/json'</span> <span class="p">}</span>
+
+<span class="n">object_wanted</span> <span class="o">=</span> <span class="no">APIWrapper</span><span class="p">.</span><span class="nf">get</span><span class="p">(</span>
+                  <span class="s1">'relative/path/to/object/'</span><span class="p">,</span>
                   <span class="n">params</span><span class="p">,</span>
                   <span class="n">headers</span><span class="p">)</span>
 
 <span class="c1"># =&gt; { big: :hash, of: :attributes}</span>
-</code></pre></div>
+</code></pre>
+</div>
+
 <p>To post an object via this wrapper:</p>
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="nb">require</span> <span class="s1">&#39;api_requester&#39;</span>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="nb">require</span> <span class="s1">'api_requester'</span>
 
 <span class="n">params</span> <span class="o">=</span> <span class="p">{</span>
-  <span class="nb">object_id</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
-  <span class="ss">object_name</span><span class="p">:</span> <span class="ss">:foo</span><span class="p">,</span>
-  <span class="ss">object_type</span><span class="p">:</span> <span class="ss">:bar</span><span class="p">,</span>
-  <span class="ss">object_description</span><span class="p">:</span> <span class="s1">&#39;I am an object&#39;</span>
+  <span class="ss">object_id: </span><span class="mi">1</span><span class="p">,</span>
+  <span class="ss">object_name: :foo</span><span class="p">,</span>
+  <span class="ss">object_type: :bar</span><span class="p">,</span>
+  <span class="ss">object_description: </span><span class="s1">'I am an object'</span>
 <span class="p">}</span>
-<span class="n">headers</span> <span class="o">=</span> <span class="p">{</span> <span class="s1">&#39;Content-Type&#39;</span> <span class="o">=&gt;</span> <span class="s1">&#39;application/json&#39;</span> <span class="p">}</span>
+<span class="n">headers</span> <span class="o">=</span> <span class="p">{</span> <span class="s1">'Content-Type'</span> <span class="o">=&gt;</span> <span class="s1">'application/json'</span> <span class="p">}</span>
 
-<span class="no">APIWrapper</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
-  <span class="s1">&#39;relative/path/to/object/&#39;</span><span class="p">,</span>
+<span class="no">APIWrapper</span><span class="p">.</span><span class="nf">post</span><span class="p">(</span>
+  <span class="s1">'relative/path/to/object/'</span><span class="p">,</span>
   <span class="n">params</span><span class="p">,</span>
   <span class="n">headers</span><span class="p">)</span>
 <span class="c1"># =&gt; { big: :hash, of: :attributes}</span>
-</code></pre></div>
+</code></pre>
+</div>
+
 <p>So, you get the idea. That idea is verbosity. However, this approach is not all negative.</p>
 
-<h3>Pros:</h3>
+<h3 id="pros">Pros:</h3>
 
 <ol>
-<li><p><strong>Resilient to API changes</strong></p>
-
-<p>A big problem with wrapping APIs outside of your own control is endpoint churn, change, and deprecation. With such a verbose wrapper, the consumer is in complete control of the request. From URL changes to parameter addition and deletion, a consumer of <code>api_requester</code> is able to adapt without updating their library (just their own source code).</p></li>
-<li><p><strong>Transparent</strong></p>
-
-<p>Since <code>api_requester</code> does attempt to abstract out the intricacies of our 3rd party API, the consumer of <code>api_requester</code> knows exactly how the underlying API works. Understanding the nuances of the API being &quot;wrapped&quot; might influence the consumer&#39;s system architecture positively.</p></li>
+  <li><strong>Resilient to API changes</strong></li>
 </ol>
 
-<h3>Cons:</h3>
+<div class="highlighter-rouge"><pre class="highlight"><code>A big problem with wrapping APIs outside of your own control is endpoint churn, change, and deprecation. With such a verbose wrapper, the consumer is in complete control of the request. From URL changes to parameter addition and deletion, a consumer of `api_requester` is able to adapt without updating their library (just their own source code).
+</code></pre>
+</div>
 
 <ol>
-<li><p><strong>No abstraction</strong></p>
-
-<p>Without abstraction, a consumer of <code>api_requester</code> must be one with the 3rd party API&#39;s documentation. To ensure competent use, the consumer must become familiar with all possible endpoints and usage patterns. This nearly completely defeats the purpose of providing a wrapper.</p></li>
-<li><p><strong>Does not minimize 3rd party surface area</strong></p>
-
-<p>One of the main purposes of wrapping a 3rd party API is to minimize its overall surface area. Making small, distinct interaction points is important for the consumer of <code>api_requester</code>. Fewer moving pieces means fewer points of failure. It is probably not necessary for every single end point and function to be exposed by <code>api_requester</code>.</p></li>
+  <li><strong>Transparent</strong></li>
 </ol>
 
-<h2>The Over-abstraction contraption</h2>
+<div class="highlighter-rouge"><pre class="highlight"><code>Since `api_requester` does attempt to abstract out the intricacies of our 3rd party API, the consumer of `api_requester` knows exactly how the underlying API works. Understanding the nuances of the API being "wrapped" might influence the consumer's system architecture positively.
+</code></pre>
+</div>
 
-<p>Unlike our <code>api_requester</code>, the mindset behind this pattern is: &quot;Make sure no one can actually understand what is going on behind the scenes&quot;.</p>
+<h3 id="cons">Cons:</h3>
 
-<p>Wrapping the same RESTful 3rd party API, <code>api_contraption</code>, will be our next library. Its code might be used in the following way:</p>
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="nb">require</span> <span class="s1">&#39;api_contraption&#39;</span>
+<ol>
+  <li><strong>No abstraction</strong></li>
+</ol>
 
-<span class="n">object_wanted</span> <span class="o">=</span> <span class="no">APIWrapper</span><span class="o">.</span><span class="n">fetch_an_object</span>
+<div class="highlighter-rouge"><pre class="highlight"><code>Without abstraction, a consumer of `api_requester` must be one with the 3rd party API's documentation. To ensure competent use, the consumer must become familiar with all possible endpoints and usage patterns. This nearly completely defeats the purpose of providing a wrapper.
+</code></pre>
+</div>
+
+<ol>
+  <li><strong>Does not minimize 3rd party surface area</strong></li>
+</ol>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>One of the main purposes of wrapping a 3rd party API is to minimize its overall surface area. Making small, distinct interaction points is important for the consumer of `api_requester`. Fewer moving pieces means fewer points of failure. It is probably not necessary for every single end point and function to be exposed by `api_requester`.
+</code></pre>
+</div>
+
+<h2 id="the-over-abstraction-contraption">The Over-abstraction contraption</h2>
+
+<p>Unlike our <code class="highlighter-rouge">api_requester</code>, the mindset behind this pattern is: “Make sure no one can actually understand what is going on behind the scenes”.</p>
+
+<p>Wrapping the same RESTful 3rd party API, <code class="highlighter-rouge">api_contraption</code>, will be our next library. Its code might be used in the following way:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="nb">require</span> <span class="s1">'api_contraption'</span>
+
+<span class="n">object_wanted</span> <span class="o">=</span> <span class="no">APIWrapper</span><span class="p">.</span><span class="nf">fetch_an_object</span>
 <span class="c1"># =&gt; &lt;Object @variable=:thing, @other_variable=:other_thing&gt;</span>
-</code></pre></div>
+</code></pre>
+</div>
+
 <p>To post an object via this wrapper:</p>
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="nb">require</span> <span class="s1">&#39;api_contraption&#39;</span>
 
-<span class="n">object_wanted</span> <span class="o">=</span> <span class="no">APIWrapper</span><span class="o">.</span><span class="n">fetch_an_object</span>
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="nb">require</span> <span class="s1">'api_contraption'</span>
 
-<span class="n">object_wanted</span><span class="o">.</span><span class="n">update_object_attribute!</span>
+<span class="n">object_wanted</span> <span class="o">=</span> <span class="no">APIWrapper</span><span class="p">.</span><span class="nf">fetch_an_object</span>
+
+<span class="n">object_wanted</span><span class="p">.</span><span class="nf">update_object_attribute!</span>
 <span class="c1"># =&gt; &lt;Object @variable=:updated, @other_variable=:also_magically_updated&gt;</span>
-</code></pre></div>
-<p>As demonstrated, this library is nearly 100% magic. <code>APIWrapper</code> exposes arbitrary methods like <code>fetch_an_object</code> and returns a magical object with instance variables set.</p>
+</code></pre>
+</div>
 
-<h3>Pros:</h3>
+<p>As demonstrated, this library is nearly 100% magic. <code class="highlighter-rouge">APIWrapper</code> exposes arbitrary methods like <code class="highlighter-rouge">fetch_an_object</code> and returns a magical object with instance variables set.</p>
 
-<ol>
-<li><p><strong>Actual abstraction</strong></p>
-
-<p>Consumers of <code>api_contraption</code> do not need to understand the underlying API&#39;s full functionality. The wrapper has provided (hopefully) a small handful of useful methods and classes to expose the heart of the API it wraps.</p></li>
-</ol>
-
-<h3>Cons:</h3>
+<h3 id="pros-1">Pros:</h3>
 
 <ol>
-<li><p><strong>Inflexible</strong></p>
-
-<p>Whenever the underlying API needs to change a response or request contract, the <code>api_contraption</code> has to change. This can be a very tiring exercise for its consumers. However, if the API being wrapped is very stable, this inflexibility might not be noticed as greatly.</p></li>
-<li><p><strong>Makes the underlying API a black box</strong></p>
-
-<p>While the <code>api_requester</code> above did not do enough abstraction, this <code>api_contraption</code> does too much. It prevents developers from discovering useful features of the 3rd party API that might be helpful to them. Granted, a consumer could refer to the service&#39;s own documentation for feature discovery but who says that they should be forced to?</p></li>
+  <li><strong>Actual abstraction</strong></li>
 </ol>
 
-<h2>So which is better?</h2>
+<div class="highlighter-rouge"><pre class="highlight"><code>Consumers of `api_contraption` do not need to understand the underlying API's full functionality. The wrapper has provided (hopefully) a small handful of useful methods and classes to expose the heart of the API it wraps.
+</code></pre>
+</div>
+
+<h3 id="cons-1">Cons:</h3>
+
+<ol>
+  <li><strong>Inflexible</strong></li>
+</ol>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>Whenever the underlying API needs to change a response or request contract, the `api_contraption` has to change. This can be a very tiring exercise for its consumers. However, if the API being wrapped is very stable, this inflexibility might not be noticed as greatly.
+</code></pre>
+</div>
+
+<ol>
+  <li><strong>Makes the underlying API a black box</strong></li>
+</ol>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>While the `api_requester` above did not do enough abstraction, this `api_contraption` does too much. It prevents developers from discovering useful features of the 3rd party API that might be helpful to them. Granted, a consumer could refer to the service's own documentation for feature discovery but who says that they should be forced to?
+</code></pre>
+</div>
+
+<h2 id="so-which-is-better">So which is better?</h2>
 
 <p>The answer is neither. A desirable solution exists somewhere between these two examples. An API wrapper should be terse yet flexible, simple yet sophisticated. Making a consumer of your wrapper upgrade with every API change is not scalable and will drive people away from it. At the same time, if a consumer cannot see the value your library gives them, why would they bother to use it?</p>
 
 <p>A good abstraction, a positive value add piece of software can be defined by a few key features:</p>
 
 <ul>
-<li>Flexibility</li>
-<li>Usefulness</li>
-<li>Readability</li>
+  <li>Flexibility</li>
+  <li>Usefulness</li>
+  <li>Readability</li>
 </ul>
 
-<p>Each of our example libraries had one or two of these features but not all three. To make up for what was lacking let&#39;s try and make a hybrid of the two: an <code>api_wrapper</code>.</p>
+<p>Each of our example libraries had one or two of these features but not all three. To make up for what was lacking let’s try and make a hybrid of the two: an <code class="highlighter-rouge">api_wrapper</code>.</p>
 
-<h2>The middle ground</h2>
+<h2 id="the-middle-ground">The middle ground</h2>
 
 <p>Requesting an Object</p>
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="nb">require</span> <span class="s1">&#39;api_wrapper&#39;</span>
 
-<span class="n">object_wanted</span> <span class="o">=</span> <span class="no">APIWrapper</span><span class="o">::</span><span class="no">DesiredObject</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="mi">123</span><span class="p">)</span>
-<span class="c1">#=&gt; &lt;DesiredObject @id=123, @name=&#39;The One&#39;, @author=&#39;The Architect&#39;&gt;</span>
-</code></pre></div>
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="nb">require</span> <span class="s1">'api_wrapper'</span>
+
+<span class="n">object_wanted</span> <span class="o">=</span> <span class="no">APIWrapper</span><span class="o">::</span><span class="no">DesiredObject</span><span class="p">.</span><span class="nf">find</span><span class="p">(</span><span class="mi">123</span><span class="p">)</span>
+<span class="c1">#=&gt; &lt;DesiredObject @id=123, @name='The One', @author='The Architect'&gt;</span>
+</code></pre>
+</div>
+
 <p>Updating an object</p>
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="nb">require</span> <span class="s1">&#39;api_wrapper&#39;</span>
 
-<span class="n">object_wanted</span> <span class="o">=</span> <span class="no">APIWrapper</span><span class="o">::</span><span class="no">DesiredObject</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="mi">123</span><span class="p">)</span>
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="nb">require</span> <span class="s1">'api_wrapper'</span>
 
-<span class="n">object_wanted</span><span class="o">.</span><span class="n">update!</span><span class="p">(</span><span class="ss">author</span><span class="p">:</span> <span class="s1">&#39;Mr. Smith&#39;</span><span class="p">)</span>
-<span class="c1">#=&gt; &lt;DesiredObject @id=123, @name=&#39;The One&#39;, @author=&#39;Mr. Smith&#39;&gt;</span>
-</code></pre></div>
+<span class="n">object_wanted</span> <span class="o">=</span> <span class="no">APIWrapper</span><span class="o">::</span><span class="no">DesiredObject</span><span class="p">.</span><span class="nf">find</span><span class="p">(</span><span class="mi">123</span><span class="p">)</span>
+
+<span class="n">object_wanted</span><span class="p">.</span><span class="nf">update!</span><span class="p">(</span><span class="ss">author: </span><span class="s1">'Mr. Smith'</span><span class="p">)</span>
+<span class="c1">#=&gt; &lt;DesiredObject @id=123, @name='The One', @author='Mr. Smith'&gt;</span>
+</code></pre>
+</div>
+
 <p>At first glance it might not seem like all too much is different between this solution and the previous two. However, a few key differences are present.</p>
 
 <ol>
-<li><p>We no longer have a generic superclass <code>APIWrapper</code> to interact with, it has become a namespace. With this namespace, clients can freely inherit their own objects from our <code>DesiredObject</code> class and make modifications as they see fit.</p></li>
-<li><p>Abstraction is still very much in play. URL structures, HTTP payloads and other small minutia about the request is abstracted away from our consumers and they are given very logical methods <code>find</code> and <code>update</code>. These methods enable our consumer to interact with their resources in a familiar and pleasant way.</p></li>
+  <li>
+    <p>We no longer have a generic superclass <code class="highlighter-rouge">APIWrapper</code> to interact with, it has become a namespace. With this namespace, clients can freely inherit their own objects from our <code class="highlighter-rouge">DesiredObject</code> class and make modifications as they see fit.</p>
+  </li>
+  <li>
+    <p>Abstraction is still very much in play. URL structures, HTTP payloads and other small minutia about the request is abstracted away from our consumers and they are given very logical methods <code class="highlighter-rouge">find</code> and <code class="highlighter-rouge">update</code>. These methods enable our consumer to interact with their resources in a familiar and pleasant way.</p>
+  </li>
 </ol>
 
 <p>I am not saying this solution is perfect, but it is objectively better than the other two. A lot of factors go into making a great API wrapper. Adhering to the three ideal attributes: <strong>Flexibility</strong>, <strong>Usefulness</strong> and <strong>Readability</strong> will at least point your projects in the right direction.</p>

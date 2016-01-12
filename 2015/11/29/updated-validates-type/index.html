@@ -102,77 +102,96 @@
   </li>
 </ul>
 </span>
-  <p>One of the first projects that I worked on during this Year of Commits was <a href="https://github.com/yez/validates_type">validates_type</a>. In case that name is too obscure, <code>validates_type</code> is a gem for validating that a specific value is exactly the type it is expected to be. The <code>validates_type</code> library is compatible to <code>ActiveModel</code> style validations.</p>
+  <p>One of the first projects that I worked on during this Year of Commits was <a href="https://github.com/yez/validates_type">validates_type</a>. In case that name is too obscure, <code class="highlighter-rouge">validates_type</code> is a gem for validating that a specific value is exactly the type it is expected to be. The <code class="highlighter-rouge">validates_type</code> library is compatible to <code class="highlighter-rouge">ActiveModel</code> style validations.</p>
 
-<p>Originally, the <code>validates_type</code> gem was very strict with what it validated against. It started with basic included Ruby types like <code>Integer</code>, <code>Float</code>, and <code>String</code>. This was a fine first step but proved too restrictive for basically any use case.</p>
+<p>Originally, the <code class="highlighter-rouge">validates_type</code> gem was very strict with what it validated against. It started with basic included Ruby types like <code class="highlighter-rouge">Integer</code>, <code class="highlighter-rouge">Float</code>, and <code class="highlighter-rouge">String</code>. This was a fine first step but proved too restrictive for basically any use case.</p>
 
-<p>In a recent update, the <code>validates_type</code> gem has been extended to validate against any defined type in a system. With this update, the uses of this gem greatly increased. They increased so much that it is possible more than 2 people will use it, and that would be pretty awesome.</p>
+<p>In a recent update, the <code class="highlighter-rouge">validates_type</code> gem has been extended to validate against any defined type in a system. With this update, the uses of this gem greatly increased. They increased so much that it is possible more than 2 people will use it, and that would be pretty awesome.</p>
 
-<h2>Still Valid</h2>
+<h2 id="still-valid">Still Valid</h2>
 
-<p>The <code>validates_type</code> gem can be useful for a system that cares about exact types at save time. For instance, a model that has an incorrect database column type (because of legacy or other reasons) can still control validation over its data just the same.</p>
+<p>The <code class="highlighter-rouge">validates_type</code> gem can be useful for a system that cares about exact types at save time. For instance, a model that has an incorrect database column type (because of legacy or other reasons) can still control validation over its data just the same.</p>
 
-<p>If a &quot;junior developer who is now somehow the CTO&quot; created the original system. And if that developer did something like create an  <code>is_published</code> column on the <code>authors</code> table set as a <code>varchar</code>, <code>validates_type</code> makes that less of an issue.</p>
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">class</span> <span class="nc">Author</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
+<p>If a “junior developer who is now somehow the CTO” created the original system. And if that developer did something like create an  <code class="highlighter-rouge">is_published</code> column on the <code class="highlighter-rouge">authors</code> table set as a <code class="highlighter-rouge">varchar</code>, <code class="highlighter-rouge">validates_type</code> makes that less of an issue.</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Author</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
   <span class="n">validates_type</span> <span class="ss">:is_published</span><span class="p">,</span> <span class="ss">:boolean</span>
 <span class="k">end</span>
-</code></pre></div>
-<p>If someone tries to assign a nonsense value to the <code>is_published</code> attribute, <code>validates_type</code> will ensure it does not save.</p>
+</code></pre>
+</div>
 
-<p><em>Note: callback skipping methods will still save bad values, just like any other <code>ActiveRecord</code> validators.</em></p>
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="o">&gt;</span> <span class="n">author</span> <span class="o">=</span> <span class="no">Author</span><span class="o">.</span><span class="n">new</span>
+<p>If someone tries to assign a nonsense value to the <code class="highlighter-rouge">is_published</code> attribute, <code class="highlighter-rouge">validates_type</code> will ensure it does not save.</p>
+
+<p><em>Note: callback skipping methods will still save bad values, just like any other <code class="highlighter-rouge">ActiveRecord</code> validators.</em></p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="o">&gt;</span> <span class="n">author</span> <span class="o">=</span> <span class="no">Author</span><span class="p">.</span><span class="nf">new</span>
 <span class="c1"># =&gt; #&lt;Author id: nil, name: nil, created_at: nil, updated_at: nil, is_published: nil&gt;</span>
-<span class="o">&gt;</span> <span class="n">author</span><span class="o">.</span><span class="n">is_published</span> <span class="o">=</span> <span class="s1">&#39;foo&#39;</span>
-<span class="c1"># =&gt; &quot;foo&quot;</span>
-<span class="o">&gt;</span> <span class="n">author</span><span class="o">.</span><span class="n">save!</span>
+<span class="o">&gt;</span> <span class="n">author</span><span class="p">.</span><span class="nf">is_published</span> <span class="o">=</span> <span class="s1">'foo'</span>
+<span class="c1"># =&gt; "foo"</span>
+<span class="o">&gt;</span> <span class="n">author</span><span class="p">.</span><span class="nf">save!</span>
 <span class="c1"># =&gt; ActiveRecord::RecordInvalid: Validation failed: is_published is expected to be a Boolean and is not.</span>
-</code></pre></div>
-<p>This way, there is not a bunch of random data in the <code>authors</code> table because of a bad decision made a while ago. More examples on how this gem can be used are found at the <a href="http://jakeyesbeck.com/2015/05/10/validates-type/">prequel to this post</a> and the <a href="https://github.com/yez/validates_type/blob/master/README.md">project&#39;s README</a>.</p>
+</code></pre>
+</div>
 
-<h2>The New Hotness</h2>
+<p>This way, there is not a bunch of random data in the <code class="highlighter-rouge">authors</code> table because of a bad decision made a while ago. More examples on how this gem can be used are found at the <a href="http://jakeyesbeck.com/2015/05/10/validates-type/">prequel to this post</a> and the <a href="https://github.com/yez/validates_type/blob/master/README.md">project’s README</a>.</p>
 
-<p>The 2.0 update brought flexibility to <code>validates_type</code>. This enables greater control over serialized attributes on <code>ActiveRecord</code> objects.</p>
+<h2 id="the-new-hotness">The New Hotness</h2>
+
+<p>The 2.0 update brought flexibility to <code class="highlighter-rouge">validates_type</code>. This enables greater control over serialized attributes on <code class="highlighter-rouge">ActiveRecord</code> objects.</p>
 
 <p>In a system with an intermediary class inserted between the column assignment and the column serialization, this extension can show its true value.</p>
 
-<p>In an application that deals with <code>Books</code>, each book must store information regarding how it was published:</p>
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">class</span> <span class="nc">Book</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
+<p>In an application that deals with <code class="highlighter-rouge">Books</code>, each book must store information regarding how it was published:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Book</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
   <span class="n">serialize</span> <span class="ss">:publishing_info</span><span class="p">,</span> <span class="no">PublishingInformation</span>
 <span class="k">end</span>
-</code></pre></div>
-<p>Perhaps each book can have such a variety of publishing information, or the data present can vary widely between each book. Whatever the reason, we can assume that the <code>PublishingInformation</code> class handles the input and extraction of the <code>JSON</code> data pertinent to a specific <code>Book</code>.</p>
+</code></pre>
+</div>
 
-<p>With that assumption, an issue could arise if another type of object was assigned to a <code>Book</code>&#39;s <code>publishing_information</code> column.</p>
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="o">&gt;</span> <span class="n">book</span> <span class="o">=</span> <span class="no">Book</span><span class="o">.</span><span class="n">new</span>
-<span class="o">&gt;</span> <span class="n">book</span><span class="o">.</span><span class="n">publishing_information</span> <span class="o">=</span> <span class="p">{</span> <span class="ss">foo</span><span class="p">:</span> <span class="ss">:bar</span> <span class="p">}</span>
-<span class="o">&gt;</span> <span class="n">book</span><span class="o">.</span><span class="n">save!</span>
-<span class="c1"># =&gt; UPDATE &quot;books&quot; SET &quot;publishing_information&quot; = $1, &quot;updated_at&quot; = $2 WHERE &quot;books&quot;.&quot;id&quot; = $3  [[&quot;publishing_information&quot;, &quot;{}&quot;], [&quot;updated_at&quot;, &quot;2015-11-30 05:04:09.480707&quot;], [&quot;id&quot;, 3]]</span>
-</code></pre></div>
-<p>If, like the above example, the <code>PublishingInformation</code> class is forgiving, this will silently fail. The <code>book.publishing_information</code> will not be set to the correct value.</p>
+<p>Perhaps each book can have such a variety of publishing information, or the data present can vary widely between each book. Whatever the reason, we can assume that the <code class="highlighter-rouge">PublishingInformation</code> class handles the input and extraction of the <code class="highlighter-rouge">JSON</code> data pertinent to a specific <code class="highlighter-rouge">Book</code>.</p>
 
-<p>On the other hand, if the <code>PublishingInformation</code> does fail, it might not do so in an obvious way.</p>
+<p>With that assumption, an issue could arise if another type of object was assigned to a <code class="highlighter-rouge">Book</code>’s <code class="highlighter-rouge">publishing_information</code> column.</p>
 
-<p>However, with <code>validates_type</code>, this issue becomes explicit.</p>
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="o">&gt;</span> <span class="n">book</span> <span class="o">=</span> <span class="no">Book</span><span class="p">.</span><span class="nf">new</span>
+<span class="o">&gt;</span> <span class="n">book</span><span class="p">.</span><span class="nf">publishing_information</span> <span class="o">=</span> <span class="p">{</span> <span class="ss">foo: :bar</span> <span class="p">}</span>
+<span class="o">&gt;</span> <span class="n">book</span><span class="p">.</span><span class="nf">save!</span>
+<span class="c1"># =&gt; UPDATE "books" SET "publishing_information" = $1, "updated_at" = $2 WHERE "books"."id" = $3  [["publishing_information", "{}"], ["updated_at", "2015-11-30 05:04:09.480707"], ["id", 3]]</span>
+</code></pre>
+</div>
+
+<p>If, like the above example, the <code class="highlighter-rouge">PublishingInformation</code> class is forgiving, this will silently fail. The <code class="highlighter-rouge">book.publishing_information</code> will not be set to the correct value.</p>
+
+<p>On the other hand, if the <code class="highlighter-rouge">PublishingInformation</code> does fail, it might not do so in an obvious way.</p>
+
+<p>However, with <code class="highlighter-rouge">validates_type</code>, this issue becomes explicit.</p>
 
 <p>Adding the type validation to the book model:</p>
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">class</span> <span class="nc">Book</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Book</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
   <span class="n">serialize</span> <span class="ss">:publishing_info</span><span class="p">,</span> <span class="no">PublishingInformation</span>
   <span class="n">validates_type</span> <span class="ss">:publishing_info</span><span class="p">,</span> <span class="no">PublishingInformation</span>
 <span class="k">end</span>
-</code></pre></div>
-<p>Then the same <code>save!</code> call gives a different error:</p>
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="o">&gt;</span> <span class="n">b</span> <span class="o">=</span> <span class="no">Book</span><span class="o">.</span><span class="n">new</span>
-<span class="o">&gt;</span> <span class="n">b</span><span class="o">.</span><span class="n">publishing_information</span> <span class="o">=</span> <span class="p">{</span> <span class="ss">a</span><span class="p">:</span> <span class="ss">:b</span> <span class="p">}</span>
-<span class="o">&gt;</span> <span class="n">b</span><span class="o">.</span><span class="n">save!</span>
+</code></pre>
+</div>
+
+<p>Then the same <code class="highlighter-rouge">save!</code> call gives a different error:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="o">&gt;</span> <span class="n">b</span> <span class="o">=</span> <span class="no">Book</span><span class="p">.</span><span class="nf">new</span>
+<span class="o">&gt;</span> <span class="n">b</span><span class="p">.</span><span class="nf">publishing_information</span> <span class="o">=</span> <span class="p">{</span> <span class="ss">a: :b</span> <span class="p">}</span>
+<span class="o">&gt;</span> <span class="n">b</span><span class="p">.</span><span class="nf">save!</span>
 <span class="c1"># =&gt; ActiveRecord::RecordInvalid: Validation failed: publishing_information is expected to be a PublishingInformation and is not.</span>
-</code></pre></div>
+</code></pre>
+</div>
+
 <p>Now, a readable error is produced and nothing is left to the imagination.</p>
 
-<h2>A Reasonable Start</h2>
+<h2 id="a-reasonable-start">A Reasonable Start</h2>
 
-<p>Was the used example extremely specific? Yes. But, I would wager that at least one application out there has had a problem similar to this and <code>validates_type</code> can ensure that it never happens again. Hopefully, this example and the problem it did end up solving with at least act as inspiration for this library&#39;s other uses out in the wild.</p>
+<p>Was the used example extremely specific? Yes. But, I would wager that at least one application out there has had a problem similar to this and <code class="highlighter-rouge">validates_type</code> can ensure that it never happens again. Hopefully, this example and the problem it did end up solving with at least act as inspiration for this library’s other uses out in the wild.</p>
 
 <p>I have found a use for this type of validation and hope others can as well. If a use case arises that this gem does not support but could easily, <a href="https://github.com/yez/validates_type">I invite everyone to contribute to it</a>.</p>
+
 
 </div>
 

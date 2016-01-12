@@ -111,156 +111,186 @@
 </ul>
 </span>
 
-    <p>The Ruby language can be utilized for a variety of different purposes. The most popular of these is as a web scripting language. The entry point to these applications, the web server, is not something that is usually built from the ground up. Most applications have the lines <code>gem &#39;puma&#39;</code> or <code>gem &#39;unicorn&#39;</code> in their <code>Gemfile</code>. Those are high quality web servers that were built and are maintained by very talented people, but how do they work?</p>
+    <p>The Ruby language can be utilized for a variety of different purposes. The most popular of these is as a web scripting language. The entry point to these applications, the web server, is not something that is usually built from the ground up. Most applications have the lines <code class="highlighter-rouge">gem 'puma'</code> or <code class="highlighter-rouge">gem 'unicorn'</code> in their <code class="highlighter-rouge">Gemfile</code>. Those are high quality web servers that were built and are maintained by very talented people, but how do they work?</p>
 
 <p>The aforementioned web servers are just Ruby gems written by Rubyists. While they are awesome gems, <a href="http://jakeyesbeck.com/2015/08/16/gems-are-not-magic/">they are not magic</a>. A basic web server can be written to satisfy some very simple requests.</p>
 
-<h2><code>GET</code> Basic</h2>
+<h2 id="get-basic"><code class="highlighter-rouge">GET</code> Basic</h2>
 
-<p>The job of a web server is to take an incoming request, decide what it means and respond accordingly. Essentially, we want to read some text, process it, and send some other text as response. To create a very simple server, the built in <code>Socket</code> library will be utilized.</p>
+<p>The job of a web server is to take an incoming request, decide what it means and respond accordingly. Essentially, we want to read some text, process it, and send some other text as response. To create a very simple server, the built in <code class="highlighter-rouge">Socket</code> library will be utilized.</p>
 
-<p>The goal of this tiny server will be to listen to <code>localhost</code> requests on port <code>8080</code>.</p>
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="nb">require</span> <span class="s1">&#39;socket&#39;</span>
+<p>The goal of this tiny server will be to listen to <code class="highlighter-rouge">localhost</code> requests on port <code class="highlighter-rouge">8080</code>.</p>
 
-<span class="n">server</span> <span class="o">=</span> <span class="no">TCPServer</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="mi">8080</span><span class="p">)</span>
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="nb">require</span> <span class="s1">'socket'</span>
+
+<span class="n">server</span> <span class="o">=</span> <span class="no">TCPServer</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="mi">8080</span><span class="p">)</span>
 
 <span class="kp">loop</span> <span class="k">do</span>
-  <span class="n">request</span> <span class="o">=</span> <span class="n">server</span><span class="o">.</span><span class="n">accept</span>
-  <span class="n">request</span><span class="o">.</span><span class="n">puts</span> <span class="s1">&#39;hello world&#39;</span>
-  <span class="n">request</span><span class="o">.</span><span class="n">close</span>
+  <span class="n">request</span> <span class="o">=</span> <span class="n">server</span><span class="p">.</span><span class="nf">accept</span>
+  <span class="n">request</span><span class="p">.</span><span class="nf">puts</span> <span class="s1">'hello world'</span>
+  <span class="n">request</span><span class="p">.</span><span class="nf">close</span>
 <span class="k">end</span>
-</code></pre></div>
-<p>And there it is! A ridiculously tiny web server written in Ruby. Dissecting this code, we see how simple the <code>Socket</code> library makes this task.</p>
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">server</span> <span class="o">=</span> <span class="no">TCPServer</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="mi">8080</span><span class="p">)</span>
-</code></pre></div>
-<p>This line makes a new <code>TCPServer</code> instance that will accept requests to port <code>8080</code> and defaults to <code>localhost</code> as the host. The important method on the <code>TCPServer</code> instance is <code>accept</code>.</p>
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="kp">loop</span> <span class="k">do</span>
-</code></pre></div>
-<p>Since this server is meant to respond to any request on port <code>8080</code>, an infinite loop is created so that more than one request can be fulfilled before the process exits.</p>
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">request</span> <span class="o">=</span> <span class="n">server</span><span class="o">.</span><span class="n">accept</span>
-<span class="n">request</span><span class="o">.</span><span class="n">puts</span> <span class="s1">&#39;hello world&#39;</span>
-<span class="n">request</span><span class="o">.</span><span class="n">close</span>
-</code></pre></div>
-<p>Here is the real logic of the server. The <code>accept</code> method returns a new instance of <code>TCPSocket</code> which can be used to communicate with a client. A response string, <code>&#39;hello world&#39;</code>, is then printed to the client and the connection is closed.</p>
+</code></pre>
+</div>
 
-<p>Saving this code to <code>example_server.rb</code>, the server can be started with <code>ruby example_server.rb</code> in a console.</p>
+<p>And there it is! A ridiculously tiny web server written in Ruby. Dissecting this code, we see how simple the <code class="highlighter-rouge">Socket</code> library makes this task.</p>
 
-<p>Using <code>curl</code> to test this server results in:</p>
-<div class="highlight"><pre><code class="language-sh" data-lang="sh"><span class="nv">$:</span> curl localhost:8080
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="n">server</span> <span class="o">=</span> <span class="no">TCPServer</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="mi">8080</span><span class="p">)</span>
+</code></pre>
+</div>
+
+<p>This line makes a new <code class="highlighter-rouge">TCPServer</code> instance that will accept requests to port <code class="highlighter-rouge">8080</code> and defaults to <code class="highlighter-rouge">localhost</code> as the host. The important method on the <code class="highlighter-rouge">TCPServer</code> instance is <code class="highlighter-rouge">accept</code>.</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="kp">loop</span> <span class="k">do</span>
+</code></pre>
+</div>
+
+<p>Since this server is meant to respond to any request on port <code class="highlighter-rouge">8080</code>, an infinite loop is created so that more than one request can be fulfilled before the process exits.</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="n">request</span> <span class="o">=</span> <span class="n">server</span><span class="p">.</span><span class="nf">accept</span>
+<span class="n">request</span><span class="p">.</span><span class="nf">puts</span> <span class="s1">'hello world'</span>
+<span class="n">request</span><span class="p">.</span><span class="nf">close</span>
+</code></pre>
+</div>
+
+<p>Here is the real logic of the server. The <code class="highlighter-rouge">accept</code> method returns a new instance of <code class="highlighter-rouge">TCPSocket</code> which can be used to communicate with a client. A response string, <code class="highlighter-rouge">'hello world'</code>, is then printed to the client and the connection is closed.</p>
+
+<p>Saving this code to <code class="highlighter-rouge">example_server.rb</code>, the server can be started with <code class="highlighter-rouge">ruby example_server.rb</code> in a console.</p>
+
+<p>Using <code class="highlighter-rouge">curl</code> to test this server results in:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="nv">$:</span> curl localhost:8080
 hello world
 curl: <span class="o">(</span>56<span class="o">)</span> Recv failure: Connection reset by peer
-</code></pre></div>
-<p>Alright, alright, the <code>&#39;hello world&#39;</code> has been printed to the console but it looks like there might be an issue. <code>Connection reset by peer</code>, what the heck does that mean? It means that the server did not send enough information to the client, particularly about when to close the connection. The client is expecting more data than this very naive server is providing. The client expects header data.</p>
+</code></pre>
+</div>
 
-<h2>Look Ma, no Head(er)!</h2>
+<p>Alright, alright, the <code class="highlighter-rouge">'hello world'</code> has been printed to the console but it looks like there might be an issue. <code class="highlighter-rouge">Connection reset by peer</code>, what the heck does that mean? It means that the server did not send enough information to the client, particularly about when to close the connection. The client is expecting more data than this very naive server is providing. The client expects header data.</p>
+
+<h2 id="look-ma-no-header">Look Ma, no Head(er)!</h2>
 
 <p>An HTTP header consists of many colon-separated key-value pairs deliminated by a return and newline combination. Everything from a status code to response size can be returned in an HTTP header.</p>
 
-<p>For this simple example, a status code, <code>Content-Type</code>, <code>Content-Length</code>, and <code>Connection</code> will be added to the response header.</p>
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="nb">require</span> <span class="s1">&#39;socket&#39;</span>
+<p>For this simple example, a status code, <code class="highlighter-rouge">Content-Type</code>, <code class="highlighter-rouge">Content-Length</code>, and <code class="highlighter-rouge">Connection</code> will be added to the response header.</p>
 
-<span class="n">server</span> <span class="o">=</span> <span class="no">TCPServer</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="mi">8080</span><span class="p">)</span>
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="nb">require</span> <span class="s1">'socket'</span>
+
+<span class="n">server</span> <span class="o">=</span> <span class="no">TCPServer</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="mi">8080</span><span class="p">)</span>
 
 <span class="kp">loop</span> <span class="k">do</span>
-  <span class="n">request</span> <span class="o">=</span> <span class="n">server</span><span class="o">.</span><span class="n">accept</span>
+  <span class="n">request</span> <span class="o">=</span> <span class="n">server</span><span class="p">.</span><span class="nf">accept</span>
 
-  <span class="n">response</span> <span class="o">=</span> <span class="s1">&#39;hello world&#39;</span>
+  <span class="n">response</span> <span class="o">=</span> <span class="s1">'hello world'</span>
 
-  <span class="n">header</span> <span class="o">=</span> <span class="s2">&quot;HTTP/1.1 200 OK</span><span class="se">\r\n</span><span class="s2">&quot;</span>
-  <span class="n">header</span> <span class="o">+=</span> <span class="s2">&quot;Content-Type: text/plain</span><span class="se">\r\n</span><span class="s2">&quot;</span>
-  <span class="n">header</span> <span class="o">+=</span> <span class="s2">&quot;Content-Length: </span><span class="si">#{</span> <span class="n">response</span><span class="o">.</span><span class="n">bytesize</span> <span class="si">}</span><span class="se">\r\n</span><span class="s2">&quot;</span>
-  <span class="n">header</span> <span class="o">+=</span> <span class="s2">&quot;Connection: close</span><span class="se">\r\n</span><span class="s2">&quot;</span>
+  <span class="n">header</span> <span class="o">=</span> <span class="s2">"HTTP/1.1 200 OK</span><span class="se">\r\n</span><span class="s2">"</span>
+  <span class="n">header</span> <span class="o">+=</span> <span class="s2">"Content-Type: text/plain</span><span class="se">\r\n</span><span class="s2">"</span>
+  <span class="n">header</span> <span class="o">+=</span> <span class="s2">"Content-Length: </span><span class="si">#{</span> <span class="n">response</span><span class="p">.</span><span class="nf">bytesize</span> <span class="si">}</span><span class="se">\r\n</span><span class="s2">"</span>
+  <span class="n">header</span> <span class="o">+=</span> <span class="s2">"Connection: close</span><span class="se">\r\n</span><span class="s2">"</span>
 
-  <span class="n">request</span><span class="o">.</span><span class="n">puts</span> <span class="n">header</span>
-  <span class="n">request</span><span class="o">.</span><span class="n">puts</span> <span class="s2">&quot;</span><span class="se">\r\n</span><span class="s2">&quot;</span>
-  <span class="n">request</span><span class="o">.</span><span class="n">puts</span> <span class="n">response</span>
+  <span class="n">request</span><span class="p">.</span><span class="nf">puts</span> <span class="n">header</span>
+  <span class="n">request</span><span class="p">.</span><span class="nf">puts</span> <span class="s2">"</span><span class="se">\r\n</span><span class="s2">"</span>
+  <span class="n">request</span><span class="p">.</span><span class="nf">puts</span> <span class="n">response</span>
 
-  <span class="n">request</span><span class="o">.</span><span class="n">close</span>
+  <span class="n">request</span><span class="p">.</span><span class="nf">close</span>
 <span class="k">end</span>
-</code></pre></div>
+</code></pre>
+</div>
+
 <p>With this additional information, a client using this server will know the type, size, and connection status of its request. This will enable the client to respect the content type, parse the result intelligently and close the connection.</p>
 
-<p>An interesting detail about HTTP headers is the way they end. A single line consisting of a return newline, <code>request.puts &quot;\r\n&quot;</code>, is how the client knows that the HTTP header is finished.</p>
+<p>An interesting detail about HTTP headers is the way they end. A single line consisting of a return newline, <code class="highlighter-rouge">request.puts "\r\n"</code>, is how the client knows that the HTTP header is finished.</p>
 
 <p><strong>Note: If a server like this is created for any real requests, hard-coded response headers is not the best idea</strong>.</p>
 
-<h2>Head&#39;s up</h2>
+<h2 id="heads-up">Head’s up</h2>
 
-<p>Now, the same <code>curl localhost:8080</code> test to the new and improved server returns no error:</p>
-<div class="highlight"><pre><code class="language-sh" data-lang="sh"><span class="nv">$:</span> curl localhost:8080
+<p>Now, the same <code class="highlighter-rouge">curl localhost:8080</code> test to the new and improved server returns no error:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="nv">$:</span> curl localhost:8080
 hello world
-</code></pre></div>
-<p>The new headers are visible via <code>curl localhost:8080 -I</code>:</p>
-<div class="highlight"><pre><code class="language-sh" data-lang="sh"><span class="nv">$:</span> curl localhost:8080 -I
-HTTP/1.1 <span class="m">200</span> OK
+</code></pre>
+</div>
+
+<p>The new headers are visible via <code class="highlighter-rouge">curl localhost:8080 -I</code>:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="nv">$:</span> curl localhost:8080 -I
+HTTP/1.1 200 OK
 Content-Type: text/plain
 Content-Length: 11
 Connection: close
-</code></pre></div>
+</code></pre>
+</div>
+
 <p>The server is now responding in a sensible way, but a problem still exists. If more than one request is made, the first request will be processed and all others will wait.</p>
 
 <p>This implementation is not adequate for concurrent request handling, but another built in solution is readily available.</p>
 
-<h2>Threads the Needle</h2>
+<h2 id="threads-the-needle">Threads the Needle</h2>
 
-<p>An easy way to achieve basic concurrency with this server is via <code>Threads</code>. Out of the box Ruby uses the Matz&#39;s Ruby Interpreter or MRI. MRI is not capable of true concurrency (due to the Global Interpreter Lock) but built in threads will be just fine for this small server.</p>
+<p>An easy way to achieve basic concurrency with this server is via <code class="highlighter-rouge">Threads</code>. Out of the box Ruby uses the Matz’s Ruby Interpreter or MRI. MRI is not capable of true concurrency (due to the Global Interpreter Lock) but built in threads will be just fine for this small server.</p>
 
 <p>This example can be extended to use threads by wrapping the responsibility of the request in a block:</p>
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="nb">require</span> <span class="s1">&#39;socket&#39;</span>
 
-<span class="n">server</span> <span class="o">=</span> <span class="no">TCPServer</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="mi">8080</span><span class="p">)</span>
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="nb">require</span> <span class="s1">'socket'</span>
+
+<span class="n">server</span> <span class="o">=</span> <span class="no">TCPServer</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="mi">8080</span><span class="p">)</span>
 
 <span class="kp">loop</span> <span class="k">do</span>
-  <span class="no">Thread</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">server</span><span class="o">.</span><span class="n">accept</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">request</span><span class="o">|</span>
-    <span class="n">response</span> <span class="o">=</span> <span class="s1">&#39;hello world&#39;</span>
+  <span class="no">Thread</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="n">server</span><span class="p">.</span><span class="nf">accept</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">request</span><span class="o">|</span>
+    <span class="n">response</span> <span class="o">=</span> <span class="s1">'hello world'</span>
 
-    <span class="n">header</span> <span class="o">=</span> <span class="s2">&quot;HTTP/1.1 200 OK</span><span class="se">\r\n</span><span class="s2">&quot;</span>
-    <span class="n">header</span> <span class="o">+=</span> <span class="s2">&quot;Content-Type: text/plain</span><span class="se">\r\n</span><span class="s2">&quot;</span>
-    <span class="n">header</span> <span class="o">+=</span> <span class="s2">&quot;Content-Length: </span><span class="si">#{</span> <span class="n">response</span><span class="o">.</span><span class="n">bytesize</span> <span class="si">}</span><span class="se">\r\n</span><span class="s2">&quot;</span>
-    <span class="n">header</span> <span class="o">+=</span> <span class="s2">&quot;Connection: close</span><span class="se">\r\n</span><span class="s2">&quot;</span>
+    <span class="n">header</span> <span class="o">=</span> <span class="s2">"HTTP/1.1 200 OK</span><span class="se">\r\n</span><span class="s2">"</span>
+    <span class="n">header</span> <span class="o">+=</span> <span class="s2">"Content-Type: text/plain</span><span class="se">\r\n</span><span class="s2">"</span>
+    <span class="n">header</span> <span class="o">+=</span> <span class="s2">"Content-Length: </span><span class="si">#{</span> <span class="n">response</span><span class="p">.</span><span class="nf">bytesize</span> <span class="si">}</span><span class="se">\r\n</span><span class="s2">"</span>
+    <span class="n">header</span> <span class="o">+=</span> <span class="s2">"Connection: close</span><span class="se">\r\n</span><span class="s2">"</span>
 
-    <span class="n">request</span><span class="o">.</span><span class="n">puts</span> <span class="n">header</span>
-    <span class="n">request</span><span class="o">.</span><span class="n">puts</span> <span class="s2">&quot;</span><span class="se">\r\n</span><span class="s2">&quot;</span>
-    <span class="n">request</span><span class="o">.</span><span class="n">puts</span> <span class="n">response</span>
+    <span class="n">request</span><span class="p">.</span><span class="nf">puts</span> <span class="n">header</span>
+    <span class="n">request</span><span class="p">.</span><span class="nf">puts</span> <span class="s2">"</span><span class="se">\r\n</span><span class="s2">"</span>
+    <span class="n">request</span><span class="p">.</span><span class="nf">puts</span> <span class="n">response</span>
 
-    <span class="n">request</span><span class="o">.</span><span class="n">close</span>
+    <span class="n">request</span><span class="p">.</span><span class="nf">close</span>
   <span class="k">end</span>
 <span class="k">end</span>
-</code></pre></div>
+</code></pre>
+</div>
+
 <p>Voila! A simple threaded Ruby server!</p>
 
 <p><strong>Note: As with the previous solution, this might not be fit for a production environment since every single request spawns a new thread within a single process</strong>.</p>
 
-<h2>What now?</h2>
+<h2 id="what-now">What now?</h2>
 
-<p>Now, this simple server will fulfill concurrent requests in a way that will make sense to its consumers. However, it always responds with <code>&#39;hello world&#39;</code>, regardless of the request data. To fetch and parse the incoming data, <code>request.gets</code> is available:</p>
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="nb">require</span> <span class="s1">&#39;socket&#39;</span>
+<p>Now, this simple server will fulfill concurrent requests in a way that will make sense to its consumers. However, it always responds with <code class="highlighter-rouge">'hello world'</code>, regardless of the request data. To fetch and parse the incoming data, <code class="highlighter-rouge">request.gets</code> is available:</p>
 
-<span class="n">server</span> <span class="o">=</span> <span class="no">TCPServer</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="mi">8080</span><span class="p">)</span>
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="nb">require</span> <span class="s1">'socket'</span>
+
+<span class="n">server</span> <span class="o">=</span> <span class="no">TCPServer</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="mi">8080</span><span class="p">)</span>
 
 <span class="kp">loop</span> <span class="k">do</span>
-  <span class="no">Thread</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">server</span><span class="o">.</span><span class="n">accept</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">request</span><span class="o">|</span>
-    <span class="n">response</span> <span class="o">=</span> <span class="s1">&#39;hello world&#39;</span>
+  <span class="no">Thread</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="n">server</span><span class="p">.</span><span class="nf">accept</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">request</span><span class="o">|</span>
+    <span class="n">response</span> <span class="o">=</span> <span class="s1">'hello world'</span>
 
-    <span class="n">request_input</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">gets</span>
+    <span class="n">request_input</span> <span class="o">=</span> <span class="n">request</span><span class="p">.</span><span class="nf">gets</span>
     <span class="c1"># handle request information</span>
 
-    <span class="n">header</span> <span class="o">=</span> <span class="s2">&quot;HTTP/1.1 200 OK</span><span class="se">\r\n</span><span class="s2">&quot;</span>
-    <span class="n">header</span> <span class="o">+=</span> <span class="s2">&quot;Content-Type: text/plain</span><span class="se">\r\n</span><span class="s2">&quot;</span>
-    <span class="n">header</span> <span class="o">+=</span> <span class="s2">&quot;Content-Length: </span><span class="si">#{</span> <span class="n">response</span><span class="o">.</span><span class="n">bytesize</span> <span class="si">}</span><span class="se">\r\n</span><span class="s2">&quot;</span>
-    <span class="n">header</span> <span class="o">+=</span> <span class="s2">&quot;Connection: close</span><span class="se">\r\n</span><span class="s2">&quot;</span>
+    <span class="n">header</span> <span class="o">=</span> <span class="s2">"HTTP/1.1 200 OK</span><span class="se">\r\n</span><span class="s2">"</span>
+    <span class="n">header</span> <span class="o">+=</span> <span class="s2">"Content-Type: text/plain</span><span class="se">\r\n</span><span class="s2">"</span>
+    <span class="n">header</span> <span class="o">+=</span> <span class="s2">"Content-Length: </span><span class="si">#{</span> <span class="n">response</span><span class="p">.</span><span class="nf">bytesize</span> <span class="si">}</span><span class="se">\r\n</span><span class="s2">"</span>
+    <span class="n">header</span> <span class="o">+=</span> <span class="s2">"Connection: close</span><span class="se">\r\n</span><span class="s2">"</span>
 
-    <span class="n">request</span><span class="o">.</span><span class="n">puts</span> <span class="n">header</span>
-    <span class="n">request</span><span class="o">.</span><span class="n">puts</span> <span class="s2">&quot;</span><span class="se">\r\n</span><span class="s2">&quot;</span>
-    <span class="n">request</span><span class="o">.</span><span class="n">puts</span> <span class="n">response</span>
+    <span class="n">request</span><span class="p">.</span><span class="nf">puts</span> <span class="n">header</span>
+    <span class="n">request</span><span class="p">.</span><span class="nf">puts</span> <span class="s2">"</span><span class="se">\r\n</span><span class="s2">"</span>
+    <span class="n">request</span><span class="p">.</span><span class="nf">puts</span> <span class="n">response</span>
 
-    <span class="n">request</span><span class="o">.</span><span class="n">close</span>
+    <span class="n">request</span><span class="p">.</span><span class="nf">close</span>
   <span class="k">end</span>
 <span class="k">end</span>
-</code></pre></div>
+</code></pre>
+</div>
+
 <p>Other improvements would be header configuration, incoming request parsing, and thread pooling.</p>
 
-<p>Spending a thousand hours iterating on this code will certainly improve its quality, but it still might not allow this simple server stack up to the leaders in the space. I would recommend using a more battle tested web server for an actual production application. At least some of those awesome servers&#39; mysteries have been explained.</p>
+<p>Spending a thousand hours iterating on this code will certainly improve its quality, but it still might not allow this simple server stack up to the leaders in the space. I would recommend using a more battle tested web server for an actual production application. At least some of those awesome servers’ mysteries have been explained.</p>
 
 <p>To see even more improvements, check out <a href="http://jakeyesbeck.com/2015/10/18/building-a-simple-web-server-with-ruby-2-part-2/">part 2!</a></p>
 

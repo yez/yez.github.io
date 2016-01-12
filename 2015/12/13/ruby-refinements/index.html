@@ -102,110 +102,132 @@
   </li>
 </ul>
 </span>
-  <p>The Ruby language provides many powerful tools for software engineers to utilize. For instance, classes that have been previously defined and evaluated can be reopened and changed. This is commonly referred to as <em>&quot;monkey patching&quot;</em>, a term which elicits almost universal disdain among Ruby developers.</p>
+  <p>The Ruby language provides many powerful tools for software engineers to utilize. For instance, classes that have been previously defined and evaluated can be reopened and changed. This is commonly referred to as <em>“monkey patching”</em>, a term which elicits almost universal disdain among Ruby developers.</p>
 
-<h2>The Problem</h2>
+<h2 id="the-problem">The Problem</h2>
 
 <p>A reason that monkey patched code has issues lies in the scope of the changed code. If previously defined code is changed at an arbitrary time, all other parts of the application suffer from those changes.</p>
 
-<p>Why would someone need to change an existing class? Perhaps an included <code>gem</code> needs to be altered in a small way to behave correctly in a very specific system. Or maybe, there exists a very dark area of a codebase that must not be touched directly for fear that the entire application will go under.</p>
+<p>Why would someone need to change an existing class? Perhaps an included <code class="highlighter-rouge">gem</code> needs to be altered in a small way to behave correctly in a very specific system. Or maybe, there exists a very dark area of a codebase that must not be touched directly for fear that the entire application will go under.</p>
 
 <p>Whatever the case, patching code that has been already defined happens, and it usually happens poorly.</p>
 
-<p>These problems can be especially nefarious if the patches are not in automatically loaded files. For example, say we have a <code>Dog</code> class:</p>
+<p>These problems can be especially nefarious if the patches are not in automatically loaded files. For example, say we have a <code class="highlighter-rouge">Dog</code> class:</p>
 
 <p><strong>dog.rb</strong></p>
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">class</span> <span class="nc">Dog</span>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Dog</span>
   <span class="kp">attr_accessor</span> <span class="ss">:trained</span>
 
   <span class="k">def</span> <span class="nf">bark</span>
-    <span class="s2">&quot;woof woof&quot;</span>
+    <span class="s2">"woof woof"</span>
   <span class="k">end</span>
 <span class="k">end</span>
-</code></pre></div>
-<p>Then in file loaded later, the <code>bark</code> method changes to be much more formal:</p>
+</code></pre>
+</div>
+
+<p>Then in file loaded later, the <code class="highlighter-rouge">bark</code> method changes to be much more formal:</p>
 
 <p><strong>training.rb</strong></p>
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">class</span> <span class="nc">Training</span>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Training</span>
   <span class="k">def</span> <span class="nf">train</span><span class="p">(</span><span class="n">dog</span><span class="p">)</span>
-    <span class="n">dog</span><span class="o">.</span><span class="n">trained</span> <span class="o">=</span> <span class="kp">true</span>
-    <span class="n">dog</span><span class="o">.</span><span class="n">bark</span>
+    <span class="n">dog</span><span class="p">.</span><span class="nf">trained</span> <span class="o">=</span> <span class="kp">true</span>
+    <span class="n">dog</span><span class="p">.</span><span class="nf">bark</span>
   <span class="k">end</span>
 <span class="k">end</span>
 
 <span class="k">class</span> <span class="nc">Dog</span>
   <span class="k">def</span> <span class="nf">bark</span>
-    <span class="s2">&quot;Woof woof, good sir.&quot;</span>
+    <span class="s2">"Woof woof, good sir."</span>
   <span class="k">end</span>
 <span class="k">end</span>
-</code></pre></div>
-<p>After the <code>Traning</code> class is loaded, any consumers of the <code>Dog</code> class will be in for a surprise whenever the <code>bark</code> method is called. Even worse, when a confused developer opens the <code>dog.rb</code> class to check <code>bark</code>&#39;s functionality, they will not see the patched version.</p>
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">dog</span> <span class="o">=</span> <span class="no">Dog</span><span class="o">.</span><span class="n">new</span>
-<span class="n">dog</span><span class="o">.</span><span class="n">bark</span>
+</code></pre>
+</div>
+
+<p>After the <code class="highlighter-rouge">Traning</code> class is loaded, any consumers of the <code class="highlighter-rouge">Dog</code> class will be in for a surprise whenever the <code class="highlighter-rouge">bark</code> method is called. Even worse, when a confused developer opens the <code class="highlighter-rouge">dog.rb</code> class to check <code class="highlighter-rouge">bark</code>’s functionality, they will not see the patched version.</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="n">dog</span> <span class="o">=</span> <span class="no">Dog</span><span class="p">.</span><span class="nf">new</span>
+<span class="n">dog</span><span class="p">.</span><span class="nf">bark</span>
 <span class="c1"># =&gt; woof woof</span>
 
-<span class="nb">require</span> <span class="s1">&#39;./training&#39;</span>
-<span class="n">training</span> <span class="o">=</span> <span class="no">Training</span><span class="o">.</span><span class="n">new</span>
-<span class="n">training</span><span class="o">.</span><span class="n">train</span><span class="p">(</span><span class="n">dog</span><span class="p">)</span>
+<span class="nb">require</span> <span class="s1">'./training'</span>
+<span class="n">training</span> <span class="o">=</span> <span class="no">Training</span><span class="p">.</span><span class="nf">new</span>
+<span class="n">training</span><span class="p">.</span><span class="nf">train</span><span class="p">(</span><span class="n">dog</span><span class="p">)</span>
 <span class="c1"># =&gt; Woof woof, good sir.</span>
 
-<span class="n">dog</span> <span class="o">=</span> <span class="no">Dog</span><span class="o">.</span><span class="n">new</span>
-<span class="n">dog</span><span class="o">.</span><span class="n">bark</span>
+<span class="n">dog</span> <span class="o">=</span> <span class="no">Dog</span><span class="p">.</span><span class="nf">new</span>
+<span class="n">dog</span><span class="p">.</span><span class="nf">bark</span>
 <span class="c1"># =&gt; Woof woof, good sir.</span>
-</code></pre></div>
-<p>As shown, the second initialized <code>Dog</code> barks the same way as the trained <code>Dog</code>. Globally, the way a <code>Dog</code> barks has been changed after the <code>training</code> file has been included.</p>
+</code></pre>
+</div>
 
-<h2>Enter Refinements</h2>
+<p>As shown, the second initialized <code class="highlighter-rouge">Dog</code> barks the same way as the trained <code class="highlighter-rouge">Dog</code>. Globally, the way a <code class="highlighter-rouge">Dog</code> barks has been changed after the <code class="highlighter-rouge">training</code> file has been included.</p>
 
-<p>An alternative way to extend a class&#39; functionality is by using the built in ruby construct: <code>Refinements</code>. Refinements are context specific alterations to a class&#39; methods.</p>
+<h2 id="enter-refinements">Enter Refinements</h2>
 
-<p>To refine the <code>Dog</code> class, a <code>module</code> needs to be written:</p>
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">module</span> <span class="nn">SophisticatedDog</span>
+<p>An alternative way to extend a class’ functionality is by using the built in ruby construct: <code class="highlighter-rouge">Refinements</code>. Refinements are context specific alterations to a class’ methods.</p>
+
+<p>To refine the <code class="highlighter-rouge">Dog</code> class, a <code class="highlighter-rouge">module</code> needs to be written:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">module</span> <span class="nn">SophisticatedDog</span>
   <span class="n">refine</span> <span class="no">Dog</span> <span class="k">do</span>
     <span class="k">def</span> <span class="nf">bark</span>
-      <span class="s2">&quot;Woof woof, good sir.&quot;</span>
+      <span class="s2">"Woof woof, good sir."</span>
     <span class="k">end</span>
   <span class="k">end</span>
 <span class="k">end</span>
-</code></pre></div>
-<p>The interesting piece here is the <code>refine</code> method. This method returns an overlaid module specific to the class passed into it, allowing a very small scoped change of the <code>Dog</code> class.</p>
+</code></pre>
+</div>
 
-<p>To include this Refinement in the place where it is needed, the <code>using</code> method can be added to the <code>Training</code> class.</p>
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">class</span> <span class="nc">Training</span>
+<p>The interesting piece here is the <code class="highlighter-rouge">refine</code> method. This method returns an overlaid module specific to the class passed into it, allowing a very small scoped change of the <code class="highlighter-rouge">Dog</code> class.</p>
+
+<p>To include this Refinement in the place where it is needed, the <code class="highlighter-rouge">using</code> method can be added to the <code class="highlighter-rouge">Training</code> class.</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Training</span>
   <span class="n">using</span> <span class="no">SophisticatedDog</span>
 
   <span class="k">def</span> <span class="nf">train</span><span class="p">(</span><span class="n">dog</span><span class="p">)</span>
-    <span class="n">dog</span><span class="o">.</span><span class="n">trained</span> <span class="o">=</span> <span class="kp">true</span>
-    <span class="n">dog</span><span class="o">.</span><span class="n">bark</span>
+    <span class="n">dog</span><span class="p">.</span><span class="nf">trained</span> <span class="o">=</span> <span class="kp">true</span>
+    <span class="n">dog</span><span class="p">.</span><span class="nf">bark</span>
   <span class="k">end</span>
 <span class="k">end</span>
-</code></pre></div>
-<p>Now, the changes to the <code>Dog</code> method are contained within the <code>Training</code> class:</p>
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">dog</span> <span class="o">=</span> <span class="no">Dog</span><span class="o">.</span><span class="n">new</span>
-<span class="n">dog</span><span class="o">.</span><span class="n">bark</span>
+</code></pre>
+</div>
+
+<p>Now, the changes to the <code class="highlighter-rouge">Dog</code> method are contained within the <code class="highlighter-rouge">Training</code> class:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="n">dog</span> <span class="o">=</span> <span class="no">Dog</span><span class="p">.</span><span class="nf">new</span>
+<span class="n">dog</span><span class="p">.</span><span class="nf">bark</span>
 <span class="c1"># =&gt; woof woof</span>
 
-<span class="nb">require</span> <span class="s1">&#39;./training&#39;</span>
-<span class="n">training</span> <span class="o">=</span> <span class="no">Training</span><span class="o">.</span><span class="n">new</span>
-<span class="n">training</span><span class="o">.</span><span class="n">train</span><span class="p">(</span><span class="n">dog</span><span class="p">)</span>
+<span class="nb">require</span> <span class="s1">'./training'</span>
+<span class="n">training</span> <span class="o">=</span> <span class="no">Training</span><span class="p">.</span><span class="nf">new</span>
+<span class="n">training</span><span class="p">.</span><span class="nf">train</span><span class="p">(</span><span class="n">dog</span><span class="p">)</span>
 <span class="c1"># =&gt; Woof woof, good sir.</span>
-</code></pre></div>
-<p>Neither the passed in dog, nor newly created dogs&#39; bark method has been permanently changed:</p>
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">dog</span><span class="o">.</span><span class="n">bark</span>
+</code></pre>
+</div>
+
+<p>Neither the passed in dog, nor newly created dogs’ bark method has been permanently changed:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="n">dog</span><span class="p">.</span><span class="nf">bark</span>
 <span class="c1"># =&gt; woof woof</span>
 
-<span class="n">dog</span> <span class="o">=</span> <span class="no">Dog</span><span class="o">.</span><span class="n">new</span>
-<span class="n">dog</span><span class="o">.</span><span class="n">bark</span>
+<span class="n">dog</span> <span class="o">=</span> <span class="no">Dog</span><span class="p">.</span><span class="nf">new</span>
+<span class="n">dog</span><span class="p">.</span><span class="nf">bark</span>
 <span class="c1"># =&gt; woof woof</span>
-</code></pre></div>
-<p>No more surprise behaviour! Each new <code>Dog</code> is created just as unrefined and unsophisticated as ever.</p>
+</code></pre>
+</div>
 
-<h2>Super Cool</h2>
+<p>No more surprise behaviour! Each new <code class="highlighter-rouge">Dog</code> is created just as unrefined and unsophisticated as ever.</p>
+
+<h2 id="super-cool">Super Cool</h2>
 
 <p>Another problem with traditional monkey patching is that the patched method is no longer accessible.</p>
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">class</span> <span class="nc">Dog</span>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Dog</span>
   <span class="k">def</span> <span class="nf">bark</span>
-    <span class="s1">&#39;woof woof&#39;</span>
+    <span class="s1">'woof woof'</span>
   <span class="k">end</span>
 <span class="k">end</span>
 
@@ -213,26 +235,29 @@
 
 <span class="k">class</span> <span class="nc">Dog</span>
   <span class="k">def</span> <span class="nf">bark</span>
-    <span class="k">super</span> <span class="o">+</span> <span class="s1">&#39;, good sir.&#39;</span>
+    <span class="k">super</span> <span class="o">+</span> <span class="s1">', good sir.'</span>
   <span class="k">end</span>
 <span class="k">end</span>
 
-<span class="no">Dog</span><span class="o">.</span><span class="n">new</span><span class="o">.</span><span class="n">bark</span>
-<span class="c1"># =&gt; NoMethodError: super: no superclass method `bark&#39; for Dog</span>
-</code></pre></div>
-<p>The original implementation of <code>Dog</code> had a very specific string that might not want to be duplicated. When the class is monkey patched, the original method is replaced and <code>super</code> is not accessible.</p>
+<span class="no">Dog</span><span class="p">.</span><span class="nf">new</span><span class="p">.</span><span class="nf">bark</span>
+<span class="c1"># =&gt; NoMethodError: super: no superclass method `bark' for Dog</span>
+</code></pre>
+</div>
 
-<p>In a less silly example, maybe the method being patched had some valuable code a patch could have used. Since Refinements are not strict code overwrites, they maintain the <code>super</code> functionality found in inheritance:</p>
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">class</span> <span class="nc">Dog</span>
+<p>The original implementation of <code class="highlighter-rouge">Dog</code> had a very specific string that might not want to be duplicated. When the class is monkey patched, the original method is replaced and <code class="highlighter-rouge">super</code> is not accessible.</p>
+
+<p>In a less silly example, maybe the method being patched had some valuable code a patch could have used. Since Refinements are not strict code overwrites, they maintain the <code class="highlighter-rouge">super</code> functionality found in inheritance:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Dog</span>
   <span class="k">def</span> <span class="nf">bark</span>
-    <span class="s1">&#39;woof woof&#39;</span>
+    <span class="s1">'woof woof'</span>
   <span class="k">end</span>
 <span class="k">end</span>
 
 <span class="k">module</span> <span class="nn">SubWoofer</span>
   <span class="n">refine</span> <span class="no">Dog</span> <span class="k">do</span>
     <span class="k">def</span> <span class="nf">bark</span>
-      <span class="k">super</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)</span><span class="o">.</span><span class="n">first</span>
+      <span class="k">super</span><span class="p">.</span><span class="nf">split</span><span class="p">(</span><span class="s1">' '</span><span class="p">).</span><span class="nf">first</span>
     <span class="k">end</span>
   <span class="k">end</span>
 <span class="k">end</span>
@@ -241,18 +266,20 @@
   <span class="n">using</span> <span class="no">SubWoofer</span>
 
   <span class="k">def</span> <span class="nf">call</span>
-    <span class="n">dog</span> <span class="o">=</span> <span class="no">Dog</span><span class="o">.</span><span class="n">new</span>
-    <span class="n">dog</span><span class="o">.</span><span class="n">bark</span>
+    <span class="n">dog</span> <span class="o">=</span> <span class="no">Dog</span><span class="p">.</span><span class="nf">new</span>
+    <span class="n">dog</span><span class="p">.</span><span class="nf">bark</span>
   <span class="k">end</span>
 <span class="k">end</span>
 
-<span class="no">DogTest</span><span class="o">.</span><span class="n">new</span><span class="o">.</span><span class="n">call</span>
-<span class="c1"># =&gt; &#39;woof&#39;</span>
+<span class="no">DogTest</span><span class="p">.</span><span class="nf">new</span><span class="p">.</span><span class="nf">call</span>
+<span class="c1"># =&gt; 'woof'</span>
 
-<span class="no">Dog</span><span class="o">.</span><span class="n">new</span><span class="o">.</span><span class="n">bark</span>
-<span class="c1"># =&gt; &#39;woof woof&#39;</span>
-</code></pre></div>
-<p>The <code>SubWoofer</code> Refinement was able to call the existing <code>Dog#bark</code> method and change it how it saw fit. This keeps the code around barking DRY. Since Refinements are intended to extend or refine existing code, it makes sense that they could use the existing code to their benefit. When that existing code is changed, it would be arduous to make every single Refinement aware.</p>
+<span class="no">Dog</span><span class="p">.</span><span class="nf">new</span><span class="p">.</span><span class="nf">bark</span>
+<span class="c1"># =&gt; 'woof woof'</span>
+</code></pre>
+</div>
+
+<p>The <code class="highlighter-rouge">SubWoofer</code> Refinement was able to call the existing <code class="highlighter-rouge">Dog#bark</code> method and change it how it saw fit. This keeps the code around barking DRY. Since Refinements are intended to extend or refine existing code, it makes sense that they could use the existing code to their benefit. When that existing code is changed, it would be arduous to make every single Refinement aware.</p>
 
 <p>Using Refinements is a nice alternative to the sledgehammer that is monkey patching. Bending a class to fit a very specific need in an encapsulated manner can mean the difference between a stable system and one riddled with hard to track down bugs. While Refinements still have their own drawbacks, they are much less intrusive than the alternative.</p>
 

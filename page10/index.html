@@ -113,121 +113,142 @@
 
     <p>Objects are a big deal in Ruby. A <a href="http://jakeyesbeck.com/2015/08/23/ruby-objects/">previous post about Ruby Objects</a> can corroborate: Ruby Objects are pretty cool.</p>
 
-<p>There are many ways to work with Ruby Objects. Standard inheritance, module inheritance, decorators, and composition are all commonly found in a codebase. One class in particular seems almost universal across applications: the <code>User</code> class.</p>
+<p>There are many ways to work with Ruby Objects. Standard inheritance, module inheritance, decorators, and composition are all commonly found in a codebase. One class in particular seems almost universal across applications: the <code class="highlighter-rouge">User</code> class.</p>
 
-<p>From social networks to online retails stores, web applications most always have a <code>user</code>. Additionally, the <code>User</code> class might interact with nearly all other classes. This can make the relationship and responsibilities of that <code>User</code> awkward or unwieldy over time.</p>
+<p>From social networks to online retails stores, web applications most always have a <code class="highlighter-rouge">user</code>. Additionally, the <code class="highlighter-rouge">User</code> class might interact with nearly all other classes. This can make the relationship and responsibilities of that <code class="highlighter-rouge">User</code> awkward or unwieldy over time.</p>
 
-<p>As an example, assume that an application <em>&quot;booksandreviews.com&quot;</em> exists. This application serves both authors and critics, each representing a <code>User</code>. These <code>User</code> types have different responsibilities and privileges.</p>
+<p>As an example, assume that an application <em>“booksandreviews.com”</em> exists. This application serves both authors and critics, each representing a <code class="highlighter-rouge">User</code>. These <code class="highlighter-rouge">User</code> types have different responsibilities and privileges.</p>
 
 <p>Assuming a Rails application, the basic user model will look most likely like:</p>
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
 <span class="k">end</span>
-</code></pre></div>
-<p>One approach to extend this class and make <code>Author</code> and <code>Critic</code> classes is to use the Single Table Inheritance pattern. STI is a common pattern in Rails applications to share responsibilities between classes and store all records in the same place. This approach can work and might fit current needs just fine, but it might be beneficial to think outside the single table for a second.</p>
+</code></pre>
+</div>
 
-<p>After all, no one said a <code>User</code> had to be either an <code>Author</code> or a <code>Critic</code>, what if they were both?</p>
+<p>One approach to extend this class and make <code class="highlighter-rouge">Author</code> and <code class="highlighter-rouge">Critic</code> classes is to use the Single Table Inheritance pattern. STI is a common pattern in Rails applications to share responsibilities between classes and store all records in the same place. This approach can work and might fit current needs just fine, but it might be beneficial to think outside the single table for a second.</p>
 
-<h2>Delegators, Mount Up!</h2>
+<p>After all, no one said a <code class="highlighter-rouge">User</code> had to be either an <code class="highlighter-rouge">Author</code> or a <code class="highlighter-rouge">Critic</code>, what if they were both?</p>
+
+<h2 id="delegators-mount-up">Delegators, Mount Up!</h2>
 
 <p>An alternative way to architect a system like the one described is by using delegation. Object delegation is a way of composing objects to achieve flexibility and maintain encapsulation.</p>
 
-<p>Ruby provides a few ways to delegate objects. An interesting option that will nicely serve this application&#39;s needs is <a href="http://ruby-doc.org/stdlib-2.2.1/libdoc/delegate/rdoc/Object.html#method-i-DelegateClass"><code>DelegateClass</code></a>. The <code>DelegateClass</code> method accepts a class and returns a new class. The returned class takes the passed in class&#39;s instance methods and defines delegating methods.</p>
+<p>Ruby provides a few ways to delegate objects. An interesting option that will nicely serve this application’s needs is <a href="http://ruby-doc.org/stdlib-2.2.1/libdoc/delegate/rdoc/Object.html#method-i-DelegateClass"><code class="highlighter-rouge">DelegateClass</code></a>. The <code class="highlighter-rouge">DelegateClass</code> method accepts a class and returns a new class. The returned class takes the passed in class’s instance methods and defines delegating methods.</p>
 
-<p>Defining <code>Author</code> and <code>Critic</code> classes:</p>
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">class</span> <span class="nc">Author</span> <span class="o">&lt;</span> <span class="no">DelegateClass</span><span class="p">(</span><span class="no">User</span><span class="p">)</span>
+<p>Defining <code class="highlighter-rouge">Author</code> and <code class="highlighter-rouge">Critic</code> classes:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Author</span> <span class="o">&lt;</span> <span class="no">DelegateClass</span><span class="p">(</span><span class="no">User</span><span class="p">)</span>
 <span class="k">end</span>
 
 <span class="k">class</span> <span class="nc">Critic</span> <span class="o">&lt;</span> <span class="no">DelegateClass</span><span class="p">(</span><span class="no">User</span><span class="p">)</span>
 <span class="k">end</span>
-</code></pre></div>
-<p>These classes both expect to be initialized with an instance of <code>User</code>, then will delegate methods to the passed in <code>user</code> by default. This allows each class to define their own logic for determining what an <code>Author</code> or a <code>Critic</code> has access to.</p>
+</code></pre>
+</div>
 
-<p>Initializing these classes is as simple as loading the <code>user</code> then passing it in:</p>
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">user</span> <span class="o">=</span> <span class="no">User</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="mi">8</span><span class="p">)</span>
-<span class="n">critic</span> <span class="o">=</span> <span class="no">Critic</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
-<span class="n">critic</span><span class="o">.</span><span class="n">id</span>
+<p>These classes both expect to be initialized with an instance of <code class="highlighter-rouge">User</code>, then will delegate methods to the passed in <code class="highlighter-rouge">user</code> by default. This allows each class to define their own logic for determining what an <code class="highlighter-rouge">Author</code> or a <code class="highlighter-rouge">Critic</code> has access to.</p>
+
+<p>Initializing these classes is as simple as loading the <code class="highlighter-rouge">user</code> then passing it in:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="n">user</span> <span class="o">=</span> <span class="no">User</span><span class="p">.</span><span class="nf">find</span><span class="p">(</span><span class="mi">8</span><span class="p">)</span>
+<span class="n">critic</span> <span class="o">=</span> <span class="no">Critic</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
+<span class="n">critic</span><span class="p">.</span><span class="nf">id</span>
 <span class="c1"># =&gt; 8</span>
-</code></pre></div>
-<h2>Business Logic</h2>
+</code></pre>
+</div>
 
-<p>Assuming that <code>Book</code> and <code>Review</code> records exist in this same application, related to a user by a <code>user_id</code>, both new classes can handle those resources independently.</p>
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">class</span> <span class="nc">Author</span> <span class="o">&lt;</span> <span class="no">DelegateClass</span><span class="p">(</span><span class="no">User</span><span class="p">)</span>
+<h2 id="business-logic">Business Logic</h2>
+
+<p>Assuming that <code class="highlighter-rouge">Book</code> and <code class="highlighter-rouge">Review</code> records exist in this same application, related to a user by a <code class="highlighter-rouge">user_id</code>, both new classes can handle those resources independently.</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Author</span> <span class="o">&lt;</span> <span class="no">DelegateClass</span><span class="p">(</span><span class="no">User</span><span class="p">)</span>
   <span class="k">def</span> <span class="nf">written_books</span>
-    <span class="vi">@written_books</span> <span class="o">||=</span> <span class="no">Book</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="ss">user_id</span><span class="p">:</span> <span class="nb">id</span><span class="p">)</span>
+    <span class="vi">@written_books</span> <span class="o">||=</span> <span class="no">Book</span><span class="p">.</span><span class="nf">where</span><span class="p">(</span><span class="ss">user_id: </span><span class="nb">id</span><span class="p">)</span>
   <span class="k">end</span>
 
   <span class="k">def</span> <span class="nf">has_written_books?</span>
-    <span class="n">written_books</span><span class="o">.</span><span class="n">present?</span>
+    <span class="n">written_books</span><span class="p">.</span><span class="nf">present?</span>
   <span class="k">end</span>
 
   <span class="k">def</span> <span class="nf">top_selling_book</span>
-    <span class="n">written_books</span><span class="o">.</span><span class="n">max_by</span><span class="p">(</span><span class="o">&amp;</span><span class="ss">:revenue</span><span class="p">)</span>
+    <span class="n">written_books</span><span class="p">.</span><span class="nf">max_by</span><span class="p">(</span><span class="o">&amp;</span><span class="ss">:revenue</span><span class="p">)</span>
   <span class="k">end</span>
 <span class="k">end</span>
 
 <span class="k">class</span> <span class="nc">Critic</span> <span class="o">&lt;</span> <span class="no">DelegateClass</span><span class="p">(</span><span class="no">User</span><span class="p">)</span>
   <span class="k">def</span> <span class="nf">written_reviews</span>
-    <span class="vi">@written_reviews</span> <span class="o">||=</span> <span class="no">Review</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="ss">user_id</span><span class="p">:</span> <span class="nb">id</span><span class="p">)</span>
+    <span class="vi">@written_reviews</span> <span class="o">||=</span> <span class="no">Review</span><span class="p">.</span><span class="nf">where</span><span class="p">(</span><span class="ss">user_id: </span><span class="nb">id</span><span class="p">)</span>
   <span class="k">end</span>
 
   <span class="k">def</span> <span class="nf">has_reviewed_book?</span><span class="p">(</span><span class="n">book_id</span><span class="p">)</span>
-    <span class="n">written_reviews</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="ss">book_id</span><span class="p">:</span> <span class="n">book_id</span><span class="p">)</span><span class="o">.</span><span class="n">present?</span>
+    <span class="n">written_reviews</span><span class="p">.</span><span class="nf">where</span><span class="p">(</span><span class="ss">book_id: </span><span class="n">book_id</span><span class="p">).</span><span class="nf">present?</span>
   <span class="k">end</span>
 
   <span class="k">def</span> <span class="nf">top_viewed_review</span>
-    <span class="n">written_reviews</span><span class="o">.</span><span class="n">max_by</span><span class="p">(</span><span class="o">&amp;</span><span class="ss">:views</span><span class="p">)</span>
+    <span class="n">written_reviews</span><span class="p">.</span><span class="nf">max_by</span><span class="p">(</span><span class="o">&amp;</span><span class="ss">:views</span><span class="p">)</span>
   <span class="k">end</span>
 <span class="k">end</span>
-</code></pre></div>
-<p>See how nice it is with the <code>User</code> class responsible only for standard <code>User</code> information? That leaves the <code>Author</code> and <code>Critic</code> classes available to house business logic the <code>User</code> should not have to concern itself with.</p>
+</code></pre>
+</div>
 
-<p>The <code>User</code> class can keep caring about things like <code>updated_at</code> timestamps, important booleans like <code>is_a_confirmed_user?</code>, and any other methods that indicate how a general <code>user</code> interacts with the software. Also, it remains the sole responsibility of the <code>user</code> to interact with the persistence layer. The <code>Author</code> and <code>Critic</code> classes will delegate instance methods like <code>save</code> and <code>update</code> to the underlying <code>user</code>.</p>
+<p>See how nice it is with the <code class="highlighter-rouge">User</code> class responsible only for standard <code class="highlighter-rouge">User</code> information? That leaves the <code class="highlighter-rouge">Author</code> and <code class="highlighter-rouge">Critic</code> classes available to house business logic the <code class="highlighter-rouge">User</code> should not have to concern itself with.</p>
 
-<h2>Adding Yet Another Type</h2>
+<p>The <code class="highlighter-rouge">User</code> class can keep caring about things like <code class="highlighter-rouge">updated_at</code> timestamps, important booleans like <code class="highlighter-rouge">is_a_confirmed_user?</code>, and any other methods that indicate how a general <code class="highlighter-rouge">user</code> interacts with the software. Also, it remains the sole responsibility of the <code class="highlighter-rouge">user</code> to interact with the persistence layer. The <code class="highlighter-rouge">Author</code> and <code class="highlighter-rouge">Critic</code> classes will delegate instance methods like <code class="highlighter-rouge">save</code> and <code class="highlighter-rouge">update</code> to the underlying <code class="highlighter-rouge">user</code>.</p>
 
-<p>Imagine some time passes and <em>&quot;booksandreviews.com&quot;</em>&#39;s membership is popping off like gangbusters. Then one day, Tim from sales comes down and says: <em>&quot;We are literally making no money, we need to sell these books or something&quot;</em>.</p>
+<h2 id="adding-yet-another-type">Adding Yet Another Type</h2>
 
-<p>Tim is asking for a new use case for the product, a new type of <code>User</code> will be needed: the <code>Consumer</code>. As before, a <code>Consumer</code> could be an <code>Author</code>, <code>Critic</code>, both, or neither.</p>
+<p>Imagine some time passes and <em>“booksandreviews.com”</em>’s membership is popping off like gangbusters. Then one day, Tim from sales comes down and says: <em>“We are literally making no money, we need to sell these books or something”</em>.</p>
+
+<p>Tim is asking for a new use case for the product, a new type of <code class="highlighter-rouge">User</code> will be needed: the <code class="highlighter-rouge">Consumer</code>. As before, a <code class="highlighter-rouge">Consumer</code> could be an <code class="highlighter-rouge">Author</code>, <code class="highlighter-rouge">Critic</code>, both, or neither.</p>
 
 <p>Had this application been built with STI, I would wager some spaghetti code would form trying, to shoehorn the same user into three roles.</p>
 
-<p>However, with the <code>DelegateClass</code> pattern we have used, it becomes trivial:</p>
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="k">class</span> <span class="nc">Consumer</span> <span class="o">&lt;</span> <span class="no">DelegateClass</span><span class="p">(</span><span class="no">User</span><span class="p">)</span>
+<p>However, with the <code class="highlighter-rouge">DelegateClass</code> pattern we have used, it becomes trivial:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Consumer</span> <span class="o">&lt;</span> <span class="no">DelegateClass</span><span class="p">(</span><span class="no">User</span><span class="p">)</span>
   <span class="k">def</span> <span class="nf">transactions</span>
-    <span class="vi">@purchased_books</span> <span class="o">||=</span> <span class="no">Transaction</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="ss">user_id</span><span class="p">:</span> <span class="nb">id</span><span class="p">)</span>
+    <span class="vi">@purchased_books</span> <span class="o">||=</span> <span class="no">Transaction</span><span class="p">.</span><span class="nf">where</span><span class="p">(</span><span class="ss">user_id: </span><span class="nb">id</span><span class="p">)</span>
   <span class="k">end</span>
 
   <span class="k">def</span> <span class="nf">purchaed_books</span>
-    <span class="n">transactions</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="o">&amp;</span><span class="ss">:book</span><span class="p">)</span>
+    <span class="n">transactions</span><span class="p">.</span><span class="nf">map</span><span class="p">(</span><span class="o">&amp;</span><span class="ss">:book</span><span class="p">)</span>
   <span class="k">end</span>
 
   <span class="k">def</span> <span class="nf">needs_marketing_email?</span>
-    <span class="c1"># Tim says we need to email people to &quot;encourage&quot;</span>
+    <span class="c1"># Tim says we need to email people to "encourage"</span>
     <span class="c1">#  them into buying things.</span>
-    <span class="n">transactions</span><span class="o">.</span><span class="n">length</span> <span class="o">==</span> <span class="mi">0</span>
+    <span class="n">transactions</span><span class="p">.</span><span class="nf">length</span> <span class="o">==</span> <span class="mi">0</span>
   <span class="k">end</span>
 <span class="k">end</span>
-</code></pre></div>
-<p>Now this new class can be utilized to spam the users of <em>&quot;booksandreviews.com&quot;</em> until Tim is content.</p>
+</code></pre>
+</div>
 
-<p>An important note is that instances of <code>Author</code>, <code>Critic</code>, and <code>Consumer</code> are not instances of <code>User</code>.</p>
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">user</span> <span class="o">=</span> <span class="no">User</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="mi">9</span><span class="p">)</span>
-<span class="n">author</span> <span class="o">=</span> <span class="no">Author</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
-<span class="n">author</span><span class="o">.</span><span class="n">is_a?</span><span class="p">(</span><span class="no">User</span><span class="p">)</span>
+<p>Now this new class can be utilized to spam the users of <em>“booksandreviews.com”</em> until Tim is content.</p>
+
+<p>An important note is that instances of <code class="highlighter-rouge">Author</code>, <code class="highlighter-rouge">Critic</code>, and <code class="highlighter-rouge">Consumer</code> are not instances of <code class="highlighter-rouge">User</code>.</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="n">user</span> <span class="o">=</span> <span class="no">User</span><span class="p">.</span><span class="nf">find</span><span class="p">(</span><span class="mi">9</span><span class="p">)</span>
+<span class="n">author</span> <span class="o">=</span> <span class="no">Author</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
+<span class="n">author</span><span class="p">.</span><span class="nf">is_a?</span><span class="p">(</span><span class="no">User</span><span class="p">)</span>
 <span class="c1"># =&gt; false</span>
-</code></pre></div>
-<h2>Keeping it Closed</h2>
+</code></pre>
+</div>
 
-<p>The <code>DelegateClass</code> approach keeps the <code>User</code> class <a href="https://en.wikipedia.org/wiki/Open/closed_principle">open to extension but closed for modification</a>. Adhering to this principle becomes very beneficial if the backing of the <code>User</code> model changes.</p>
+<h2 id="keeping-it-closed">Keeping it Closed</h2>
 
-<p>Maybe in the future, <em>&quot;booksandreviews.com&quot;</em> experiences astronomical growth, resulting in a huge service oriented architecture overhaul. Suddenly, a <code>UserService</code> exists which communicates with an internal API. If that happens, our code is safe.</p>
+<p>The <code class="highlighter-rouge">DelegateClass</code> approach keeps the <code class="highlighter-rouge">User</code> class <a href="https://en.wikipedia.org/wiki/Open/closed_principle">open to extension but closed for modification</a>. Adhering to this principle becomes very beneficial if the backing of the <code class="highlighter-rouge">User</code> model changes.</p>
 
-<p>The <code>Author</code>, <code>Critic</code>, and <code>Consumer</code> classes need not change:</p>
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">user</span> <span class="o">=</span> <span class="no">UserService</span><span class="o">.</span><span class="n">find_user_by_id</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
-<span class="n">consumer</span> <span class="o">=</span> <span class="no">Consumer</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
-<span class="n">consumer</span><span class="o">.</span><span class="n">id</span>
+<p>Maybe in the future, <em>“booksandreviews.com”</em> experiences astronomical growth, resulting in a huge service oriented architecture overhaul. Suddenly, a <code class="highlighter-rouge">UserService</code> exists which communicates with an internal API. If that happens, our code is safe.</p>
+
+<p>The <code class="highlighter-rouge">Author</code>, <code class="highlighter-rouge">Critic</code>, and <code class="highlighter-rouge">Consumer</code> classes need not change:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="n">user</span> <span class="o">=</span> <span class="no">UserService</span><span class="p">.</span><span class="nf">find_user_by_id</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+<span class="n">consumer</span> <span class="o">=</span> <span class="no">Consumer</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
+<span class="n">consumer</span><span class="p">.</span><span class="nf">id</span>
 <span class="c1"># =&gt; 10</span>
-</code></pre></div>
+</code></pre>
+</div>
+
 <p>As previously stated, there are many ways to solve this particular problem. Arguments for module inheritance or single table inheritance could be made and might result in just as valid solutions.</p>
 
   </div>
