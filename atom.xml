@@ -4,13 +4,126 @@
  <title>A Year of Commits</title>
  <link href="/atom.xml" rel="self"/>
  <link href="/"/>
- <updated>2016-01-10T22:02:41-08:00</updated>
+ <updated>2016-01-17T23:21:48-08:00</updated>
  <id></id>
  <author>
    <name>Jake Yesbeck</name>
    <email></email>
  </author>
 
+ 
+ <entry>
+   <title>Contributing to Open Source in 7 Steps</title>
+   <link href="/2016/01/17/contributing-to-open-source-in-7-steps/"/>
+   <updated>2016-01-17T04:00:00-08:00</updated>
+   <id>/2016/01/17/contributing-to-open-source-in-7-steps</id>
+   <content type="html">&lt;p&gt;Making contributions to open source repositories is a great way to give back to the community. Open source software has a rich history and is a crucial component in many successful software applications. Most open source projects are maintained by either one or many developers for free. Since “free” is not usually the price of food and shelter, these maintainers are not available to work on their projects at all hours, most of them have day jobs so they can eat and buy clothing.&lt;/p&gt;
+
+&lt;p&gt;To help keep open source projects up to date and bug free, members of the community regularly contribute a portion of their own free time. Since the start of the &lt;a href=&quot;http://jakeyesbeck.com/2015/04/23/a-year-of-commits/&quot;&gt;Year of Commits&lt;/a&gt; project, I have made quite a few contributes to open source software and distilled the process down to these seven basic steps.&lt;/p&gt;
+
+&lt;h2 id=&quot;find-a-repository-that-has-some-issues&quot;&gt;1. Find a repository that has some issues&lt;/h2&gt;
+
+&lt;p&gt;A great way to get a foot in the door in an open source repository is by solving one if its open issues. A project is much more likely to accept code that addresses an open issue as opposed to code that is added “just because”. Open issues are either bugs or feature requests and are tracked on Github.&lt;/p&gt;
+
+&lt;p&gt;Some really great tools exist for exploring Github’s vast index of repositories for relevant projects. &lt;a href=&quot;http://www.codetriage.com/&quot;&gt;CodeTriage&lt;/a&gt; is one of these &lt;strong&gt;awesome&lt;/strong&gt; tools. CodeTriage enables a user to narrow down Github’s list of repositories by programming language. CodeTriage has a very nice UI, ordering a very large amount of Github projects in descending count of open issues.&lt;/p&gt;
+
+&lt;p&gt;Alternatively, Github has their own tooling around discovering projects with their &lt;a href=&quot;https://github.com/explore&quot;&gt;explore feature&lt;/a&gt;. Trending repositories from this week or this month are available on a per programming language basis. The explore feature is great for popular projects but exposes far fewer projects than CodeTriage.&lt;/p&gt;
+
+&lt;p&gt;To demonstrate a typical contribution’s life cycle, the &lt;a href=&quot;https://github.com/covermymeds/fetching-gem&quot;&gt;fetching-gem&lt;/a&gt; project has been chosen.&lt;/p&gt;
+
+&lt;p&gt;The &lt;code class=&quot;highlighter-rouge&quot;&gt;fetching-gem&lt;/code&gt; library is a convenience Ruby library for accessing elements of nested hashes and arrays with dot notation and noisy feedback.&lt;/p&gt;
+
+&lt;p&gt;Recently, the &lt;code class=&quot;highlighter-rouge&quot;&gt;fetching-gem&#39;s&lt;/code&gt; issues page had a feature request: “Make the library compatible with the &lt;a href=&quot;http://ruby-doc.org/core-2.3.0/Enumerable.html#method-i-first&quot;&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;Enumerable#first(n)&lt;/code&gt; behaviour&lt;/a&gt;”:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/find_issue.png&quot; alt=&quot;Find Issue&quot; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;fork-it&quot;&gt;2. Fork it&lt;/h2&gt;
+
+&lt;p&gt;Obtaining a copy of a project’s code is crucial when trying to make a contribution. In Github, the act of &lt;a href=&quot;https://help.github.com/articles/fork-a-repo/&quot;&gt;forking a repository&lt;/a&gt; creates a copy of the repository. This copy may be altered until the feature is built or bug is fixed without disrupting the original project. The &lt;code class=&quot;highlighter-rouge&quot;&gt;Fork&lt;/code&gt; button can be found at the top of a repository’s Github page.&lt;/p&gt;
+
+&lt;p&gt;After the &lt;code class=&quot;highlighter-rouge&quot;&gt;Fork&lt;/code&gt; has been made, the next step is to clone the &lt;strong&gt;forked&lt;/strong&gt; copy locally:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$ &lt;/span&gt;git clone git@github.com:&amp;lt;username&amp;gt;/fetching-gem.git
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Cloning the repository locally will automatically add the &lt;code class=&quot;highlighter-rouge&quot;&gt;origin&lt;/code&gt; git remote URL to the code directory. Additionally, adding the source remote URL right away is a great way to make sure that local code and the master remote code can easily stay in sync.&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;cd &lt;/span&gt;fetching-gem/
+&lt;span class=&quot;gp&quot;&gt;$ &lt;/span&gt;git remote add upstream git@github.com:covermymeds/fetching-gem.git
+&lt;span class=&quot;gp&quot;&gt;$ &lt;/span&gt;git remote -v
+
+origin git@github.com:yez/fetching-gem.git &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;fetch&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+origin  git@github.com:yez/fetching-gem.git &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;push&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+upstream  git@github.com:covermymeds/fetching-gem.git &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;fetch&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+upstream  git@github.com:covermymeds/fetching-gem.git &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;push&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;The above command adds a new remote, &lt;code class=&quot;highlighter-rouge&quot;&gt;upstream&lt;/code&gt;, to the directory. With this remote in place, a &lt;code class=&quot;highlighter-rouge&quot;&gt;git fetch upstream&lt;/code&gt; command will grab the latest updates from the original repository.&lt;/p&gt;
+
+&lt;h2 id=&quot;reproduce-the-issue&quot;&gt;3. Reproduce the issue&lt;/h2&gt;
+
+&lt;p&gt;With the fork cloned locally and remote pointers all set up, it is time to reproduce and address the issue. Since this particular issue was a feature enhancement ask, “reproducing” the issue consisted of calling a method with the wrong arguments and expecting it to fail:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;require&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;fetching-gem&#39;&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;fetching_array&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Fetching&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;([&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;fetching_array&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;first&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;no&quot;&gt;ArgumentError&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;wrong&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;number&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;of&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;arguments&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Success! The code definitely does not support the &lt;code class=&quot;highlighter-rouge&quot;&gt;Enumerable#first(n)&lt;/code&gt; behaviour, so there is indeed work to be done.&lt;/p&gt;
+
+&lt;h2 id=&quot;fix-the-issue&quot;&gt;4. Fix the issue&lt;/h2&gt;
+
+&lt;p&gt;Both when adding code and altering existing code, it is important to make sure it is tested. In most cases, the project under revision will have chosen a particular testing library and have some amount of tests. Adding the appropriate tests at the same time as the patched code will boost the library’s maintainer(s) confidence in the patch.&lt;/p&gt;
+
+&lt;p&gt;Adhering to the style of the code under manipulation is also important. From test example descriptions to variable declaration styling, consistency is a complexity reducing concept that is extremely valuable later on.&lt;/p&gt;
+
+&lt;p&gt;For brevity’s sake, the finer details surrounding my example &lt;code class=&quot;highlighter-rouge&quot;&gt;fetching-gem&lt;/code&gt; patch can be found &lt;a href=&quot;https://github.com/covermymeds/fetching-gem/commit/749624e89100066e514b0521ea69f2e91a226309&quot;&gt;on Github&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h2 id=&quot;read-the-contributing-guidelines&quot;&gt;5. Read the contributing guidelines&lt;/h2&gt;
+
+&lt;p&gt;Before a patch is added for review, make sure that the contribution guidelines of the project have been met. Some more popular repositories have very explicit rules about the number of commits per patch, the logical grouping of those commits, and even commit message style concerns.&lt;/p&gt;
+
+&lt;p&gt;The &lt;a href=&quot;https://github.com/covermymeds/fetching-gem#contributing&quot;&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;fetching-gem&#39;s&lt;/code&gt; contribution guidelines&lt;/a&gt; are very simple, it merely instructs that a fork should be made and then a pull request from the forked repository should be made.&lt;/p&gt;
+
+&lt;h2 id=&quot;submit-a-pr&quot;&gt;6. Submit a PR&lt;/h2&gt;
+
+&lt;p&gt;With the contribution guidelines adhered to, the code altered, and the issue taken care of, it is time to submit the long anticipated patch.&lt;/p&gt;
+
+&lt;p&gt;A well crafted pull request (PR) message consists of a few key elements:&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;It is concise. Too much explination will be glossed over and ends up doing more harm than good.&lt;/li&gt;
+  &lt;li&gt;A special “Resolved #&lt;issue number=&quot;&quot;&gt;&quot; text exists, allowing Github to automatically reference and resolve the issue upon a successul merge.&lt;/issue&gt;&lt;/li&gt;
+  &lt;li&gt;If applicable, an example of the new behaviour is given.&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;The pull request that I recently added to &lt;code class=&quot;highlighter-rouge&quot;&gt;fetching-gem&lt;/code&gt; looked like this:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/submit_pr.png&quot; alt=&quot;Submit a PR&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Another possible check when submitting a PR involves continuous integrations. If a project automatically builds its test suite with a service like &lt;a href=&quot;https://travis-ci.org&quot;&gt;Travis&lt;/a&gt;, Github will supply some checks at the bottom of the PR:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/make_sure_ci_passes.png&quot; alt=&quot;Check CI&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;If, for some reason, this status is not green and the tests did not pass, use the &lt;code class=&quot;highlighter-rouge&quot;&gt;Details&lt;/code&gt; link to find out more information why.&lt;/p&gt;
+
+&lt;h2 id=&quot;feel-awesome&quot;&gt;7. Feel Awesome!&lt;/h2&gt;
+
+&lt;p&gt;Pending continuous integration passing and the repository’s maintainer(s) signing off on the change, a patch will be accepted into the project. What a fantastic feeling that is! Awesome maintainers (like the &lt;code class=&quot;highlighter-rouge&quot;&gt;fetching-gem&lt;/code&gt; maintainer &lt;code class=&quot;highlighter-rouge&quot;&gt;mikegee&lt;/code&gt;) will show their appreciation directly on the PR, immortalizing your contribution for all days to come.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/images/feel_great.png&quot; alt=&quot;Feel Great&quot; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;b-repeat-4---6&quot;&gt;7b. Repeat 4 - 6&lt;/h2&gt;
+
+&lt;p&gt;In the case that the submitted code is not &lt;em&gt;exactly&lt;/em&gt; what the maintainer(s) is looking for, some additional work might be warranted. This back and forth could be thought of as frustrating, but it is also a great learning opportunity. When else is feedback so easily received about one’s code from people they would have probably never met otherwise?&lt;/p&gt;
+
+&lt;p&gt;Open source projects have tremendous value and a strong presence in the technology ecosystem. Contributing to these projects is an easy way to show appreciation and feel like a valued member of the open source community.&lt;/p&gt;
+</content>
+ </entry>
  
  <entry>
    <title>How To Parallelize Ruby HTTP Requests</title>
