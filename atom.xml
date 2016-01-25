@@ -4,13 +4,187 @@
  <title>A Year of Commits</title>
  <link href="/atom.xml" rel="self"/>
  <link href="/"/>
- <updated>2016-01-17T23:21:48-08:00</updated>
+ <updated>2016-01-24T19:14:57-08:00</updated>
  <id></id>
  <author>
    <name>Jake Yesbeck</name>
    <email></email>
  </author>
 
+ 
+ <entry>
+   <title>Ruby Private Class Methods</title>
+   <link href="/2016/01/24/ruby-private-class-methods/"/>
+   <updated>2016-01-24T04:00:00-08:00</updated>
+   <id>/2016/01/24/ruby-private-class-methods</id>
+   <content type="html">&lt;p&gt;In the Ruby programming language, defined methods come in two variants: instance methods and class methods. Instance methods are available after an object has been initialized, creating an instance. Class methods, on the other hand, are available without creating an instance of the class they are defined upon.&lt;/p&gt;
+
+&lt;p&gt;Ruby methods can vary in visibility. Public methods are available in any context, while private methods’ availability is restricted within the instance of a class and its descendants. A third visibility scope, protected, behaves similarly to private methods with a few subtle differences not relevant to this post.&lt;/p&gt;
+
+&lt;p&gt;For a quick refresher, public and private instance methods look like this:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Dog&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;do_trick&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;bark&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+  &lt;span class=&quot;kp&quot;&gt;private&lt;/span&gt;
+
+  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;bark&lt;/span&gt;
+    &lt;span class=&quot;nb&quot;&gt;puts&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;woof woof&#39;&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;When the public method is called:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;dog&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Dog&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;new&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;dog&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;do_trick&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# =&amp;gt; woof woof&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;And the private method:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;dog&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Dog&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;new&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;dog&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;bark&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# =&amp;gt; NoMethodError: private method `bark&#39; called for &amp;lt;Dog&amp;gt;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Private class methods might not be as common as private instance methods, but they still have their place. For instance, a class method may require internal helper methods to complete its function. Whatever the reason, defining private class methods has value but is not always intuitive.&lt;/p&gt;
+
+&lt;p&gt;This example &lt;code class=&quot;highlighter-rouge&quot;&gt;Dog&lt;/code&gt; class needs to maintain a list of &lt;code class=&quot;highlighter-rouge&quot;&gt;tricks&lt;/code&gt; that will be used &lt;strong&gt;within&lt;/strong&gt; the other public class methods. This list should not be accessible to any callers outside the &lt;code class=&quot;highlighter-rouge&quot;&gt;Dog&lt;/code&gt; class.&lt;/p&gt;
+
+&lt;h2 id=&quot;the-wrong-way&quot;&gt;The wrong way&lt;/h2&gt;
+
+&lt;p&gt;A first pass at writing the private &lt;code class=&quot;highlighter-rouge&quot;&gt;tricks&lt;/code&gt; method could look like:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Dog&lt;/span&gt;
+  &lt;span class=&quot;kp&quot;&gt;private&lt;/span&gt;
+
+  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;tricks&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:bark&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:roll_over&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:fetch&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;However, when testing the visibility of the &lt;code class=&quot;highlighter-rouge&quot;&gt;tricks&lt;/code&gt; method:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Dog&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;tricks&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# =&amp;gt; [:bark, :roll_over, :fetch]&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Uh oh, no error was thrown indicating a that a private method was called, this method is completely public.&lt;/p&gt;
+
+&lt;h2 id=&quot;why&quot;&gt;Why?&lt;/h2&gt;
+
+&lt;p&gt;The reason that the above code did not produce a private method has to do with Ruby’s object hierarchy, interactions amongst  internal classes, instances of those classes, and eigenclasses. A detailed write up about how Ruby’s objects work with one another can be found in a &lt;a href=&quot;http://jakeyesbeck.com/2015/08/23/ruby-objects/&quot;&gt;previous post&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;When defining methods in a class, the default context and the context introduced by the &lt;code class=&quot;highlighter-rouge&quot;&gt;self.&lt;/code&gt; method declaration are distinct.&lt;/p&gt;
+
+&lt;p&gt;The private method scope can not be used in the above way as it does not handle the context change between methods defined on the &lt;code class=&quot;highlighter-rouge&quot;&gt;Dog&lt;/code&gt; class and defined within &lt;code class=&quot;highlighter-rouge&quot;&gt;self&lt;/code&gt; context.&lt;/p&gt;
+
+&lt;p&gt;So what are the alternatives?&lt;/p&gt;
+
+&lt;h2 id=&quot;class--self&quot;&gt;1. &lt;code class=&quot;highlighter-rouge&quot;&gt;class &amp;lt;&amp;lt; self&lt;/code&gt;&lt;/h2&gt;
+
+&lt;p&gt;One alternative way to define class methods on an object is to use the &lt;code class=&quot;highlighter-rouge&quot;&gt;class &amp;lt;&amp;lt; self&lt;/code&gt; syntax. This syntax opens an eigenclass for the supplied argument. In this example, &lt;code class=&quot;highlighter-rouge&quot;&gt;self&lt;/code&gt; within the &lt;code class=&quot;highlighter-rouge&quot;&gt;Dog&lt;/code&gt; class will open the &lt;code class=&quot;highlighter-rouge&quot;&gt;Dog&#39;s&lt;/code&gt; eigenclass.&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Dog&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;self&lt;/span&gt;
+    &lt;span class=&quot;kp&quot;&gt;private&lt;/span&gt;
+
+    &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;tricks&lt;/span&gt;
+      &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:bark&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:roll_over&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:fetch&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;One thing to note is that when defining methods like this, the declaration has changed from &lt;code class=&quot;highlighter-rouge&quot;&gt;def self.tricks&lt;/code&gt; to simply &lt;code class=&quot;highlighter-rouge&quot;&gt;def tricks&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;Now, the private scope is preserved and expected behaviour is achieved:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Dog&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;tricks&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# =&amp;gt; NoMethodError: private method `tricks&#39; called for Dog:Class&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h2 id=&quot;modules&quot;&gt;2. Modules&lt;/h2&gt;
+
+&lt;p&gt;Modules in ruby are collections of methods and constants. These collections can be used as encapsulation tools or, in this case, alternatives to defining class methods.&lt;/p&gt;
+
+&lt;p&gt;When a class &lt;code class=&quot;highlighter-rouge&quot;&gt;extends&lt;/code&gt; a module, all the the methods within that module become class methods on the subject class*. This pattern can be used to define the &lt;code class=&quot;highlighter-rouge&quot;&gt;tricks&lt;/code&gt; method on &lt;code class=&quot;highlighter-rouge&quot;&gt;Dog&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;*Note: This only pertains to methods defined in a “typical sense” any &lt;code class=&quot;highlighter-rouge&quot;&gt;def self.&lt;/code&gt; or &lt;code class=&quot;highlighter-rouge&quot;&gt;def Object.&lt;/code&gt; method definitions in a module do not automatically become class methods in the same way when &lt;code class=&quot;highlighter-rouge&quot;&gt;extended&lt;/code&gt;.&lt;/em&gt;&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Dog&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;module&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;ClassMethods&lt;/span&gt;
+    &lt;span class=&quot;kp&quot;&gt;private&lt;/span&gt;
+
+    &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;tricks&lt;/span&gt;
+      &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:bark&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:roll_over&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:fetch&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+  &lt;span class=&quot;kp&quot;&gt;extend&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;ClassMethods&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Dog&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;tricks&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# =&amp;gt; NoMethodError: private method `tricks&#39; called for Dog:Class&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;A benefit of this approach is readability. The module named &lt;code class=&quot;highlighter-rouge&quot;&gt;ClassMethods&lt;/code&gt;, which is contained and thus encapsulated by the &lt;code class=&quot;highlighter-rouge&quot;&gt;Dog&lt;/code&gt; class, is the clear home for all desired class methods.&lt;/p&gt;
+
+&lt;p&gt;Visibility modifiers like &lt;code class=&quot;highlighter-rouge&quot;&gt;private&lt;/code&gt; behave accordingly and a simple &lt;code class=&quot;highlighter-rouge&quot;&gt;extend&lt;/code&gt; at the bottom of the module definition brings it all together.&lt;/p&gt;
+
+&lt;h2 id=&quot;privateclassmethod&quot;&gt;3. &lt;code class=&quot;highlighter-rouge&quot;&gt;private_class_method&lt;/code&gt;&lt;/h2&gt;
+
+&lt;p&gt;A third approach is to use the built in method &lt;code class=&quot;highlighter-rouge&quot;&gt;Module#private_class_method&lt;/code&gt;. This method’s purpose is to change the visibility of &lt;strong&gt;existing&lt;/strong&gt; class methods.&lt;/p&gt;
+
+&lt;p&gt;Unlike the other two solutions, this one does not require a different style of method definition from the incorrect solution:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Dog&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;tricks&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:bark&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:roll_over&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:fetch&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+  &lt;span class=&quot;nb&quot;&gt;private_class_method&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:tricks&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Dog&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;tricks&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# =&amp;gt; NoMethodError: private method `tricks&#39; called for Dog:Class&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;This method can also be in-lined during the class’ method definition:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Dog&lt;/span&gt;
+  &lt;span class=&quot;nb&quot;&gt;private_class_method&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;tricks&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:bark&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:roll_over&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:fetch&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Dog&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;tricks&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# =&amp;gt; NoMethodError: private method `tricks&#39; called for Dog:Class&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;If a single method must be public and saving lines is very important, this style might be applicable; but, it certainly sacrifices a level of readability.&lt;/p&gt;
+
+&lt;p&gt;A major strength of &lt;code class=&quot;highlighter-rouge&quot;&gt;private_class_method&lt;/code&gt; is its explicitness. Unlike the other approaches, this one does not require a special module definition or method definition context switching.&lt;/p&gt;
+
+&lt;h2 id=&quot;further-reading&quot;&gt;Further Reading&lt;/h2&gt;
+
+&lt;p&gt;The aforementioned solutions will get the job done but might not answer lingering questions about &lt;em&gt;why&lt;/em&gt; things work the way they do. A few great articles on &lt;a href=&quot;http://madebydna.com/all/code/2011/06/24/eigenclasses-demystified.html&quot;&gt;the ruby eigenclass&lt;/a&gt; and &lt;a href=&quot;http://junichiito.blogspot.com/2012/03/matz-answers-why-ruby-lets-sub-classes.html&quot;&gt;Matz’s thoughts on Ruby method design&lt;/a&gt; should help paint a more concise picture of why Ruby works the way that it does.&lt;/p&gt;
+</content>
+ </entry>
  
  <entry>
    <title>Contributing to Open Source in 7 Steps</title>

@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta http-equiv="content-type" content="text/html; charset=utf-8">
   
-    <meta name="description" content="A technology blog about a Year of Commits to Open Source projects.">
+    <meta name="description" content="Common pitfalls when defining private class methods and solutions. How to define private class methods in ruby to ensure your object API remains what you think it is.">
   
 
   <!-- Enable responsiveness on mobile devices-->
@@ -14,7 +14,7 @@
 
   <title>
     
-      A Year of Commits
+      Ruby Private Class Methods
     
   </title>
 
@@ -63,19 +63,11 @@
 
 
     <div class="content container">
-      <div class="posts">
+      <div class="post">
+  <h1 class="post-title">Ruby Private Class Methods</h1>
+  <span class="post-date">24 Jan 2016</span>
   
-  <div class="post">
-    <h1 class="post-title">
-      <a href="/2016/01/24/ruby-private-class-methods/">
-        Ruby Private Class Methods
-      </a>
-    </h1>
-
-    
-
-    <span class="post-date">24 Jan 2016</span>
-    <span class='share-container'><ul class="share-buttons">
+  <span class='share-container'><ul class="share-buttons">
   <li>
     <a href="https://www.facebook.com/sharer/sharer.php?u=http://jakeyesbeck.com/2016/01/24/ruby-private-class-methods/&t=Ruby Private Class Methods" title="Share on Facebook" target="_blank">
       <img src="http://jakeyesbeck.com/assets/images/facebook.svg">
@@ -110,8 +102,7 @@
   </li>
 </ul>
 </span>
-
-    <p>In the Ruby programming language, defined methods come in two variants: instance methods and class methods. Instance methods are available after an object has been initialized, creating an instance. Class methods, on the other hand, are available without creating an instance of the class they are defined upon.</p>
+  <p>In the Ruby programming language, defined methods come in two variants: instance methods and class methods. Instance methods are available after an object has been initialized, creating an instance. Class methods, on the other hand, are available without creating an instance of the class they are defined upon.</p>
 
 <p>Ruby methods can vary in visibility. Public methods are available in any context, while private methods’ availability is restricted within the instance of a class and its descendants. A third visibility scope, protected, behaves similarly to private methods with a few subtle differences not relevant to this post.</p>
 
@@ -278,17 +269,40 @@
 
 <p>The aforementioned solutions will get the job done but might not answer lingering questions about <em>why</em> things work the way they do. A few great articles on <a href="http://madebydna.com/all/code/2011/06/24/eigenclasses-demystified.html">the ruby eigenclass</a> and <a href="http://junichiito.blogspot.com/2012/03/matz-answers-why-ruby-lets-sub-classes.html">Matz’s thoughts on Ruby method design</a> should help paint a more concise picture of why Ruby works the way that it does.</p>
 
-  </div>
-  
 </div>
 
-<div class="pagination">
-  
-    <a class="pagination-item older" href="http://jakeyesbeck.com/page2">Older</a>
-  
-  
-    <span class="pagination-item newer">Newer</span>
-  
+<div class="related">
+  <h2>Related Posts</h2>
+  <ul class="related-posts">
+    
+      <li>
+        <h3>
+          <a href="/2015/12/13/ruby-refinements/">
+            Ruby Refinements
+            <small>13 Dec 2015</small>
+          </a>
+        </h3>
+      </li>
+    
+      <li>
+        <h3>
+          <a href="/2015/09/27/how-to-create-a-custom-enumerable/">
+            How to Create a Custom Enumerable
+            <small>27 Sep 2015</small>
+          </a>
+        </h3>
+      </li>
+    
+      <li>
+        <h3>
+          <a href="/2015/07/05/composition-in-ruby/">
+            Modules in Ruby
+            <small>05 Jul 2015</small>
+          </a>
+        </h3>
+      </li>
+    
+  </ul>
 </div>
 
     </div>

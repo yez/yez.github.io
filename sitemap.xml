@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>/2016/01/24/ruby-private-class-methods/</loc>
+    <lastmod>2016-01-24T04:00:00-08:00</lastmod>
+  </url>
+  <url>
     <loc>/2016/01/17/contributing-to-open-source-in-7-steps/</loc>
     <lastmod>2016-01-17T04:00:00-08:00</lastmod>
   </url>
@@ -167,116 +171,5 @@
   </url>
   <url>
     <loc>/</loc>
-  </url>
-  <url>
-    <loc>/page2/</loc>
-  </url>
-  <url>
-    <loc>/page3/</loc>
-  </url>
-  <url>
-    <loc>/page4/</loc>
-  </url>
-  <url>
-    <loc>/page5/</loc>
-  </url>
-  <url>
-    <loc>/page6/</loc>
-  </url>
-  <url>
-    <loc>/page7/</loc>
-  </url>
-  <url>
-    <loc>/page8/</loc>
-  </url>
-  <url>
-    <loc>/page9/</loc>
-  </url>
-  <url>
-    <loc>/page10/</loc>
-  </url>
-  <url>
-    <loc>/page11/</loc>
-  </url>
-  <url>
-    <loc>/page12/</loc>
-  </url>
-  <url>
-    <loc>/page13/</loc>
-  </url>
-  <url>
-    <loc>/page14/</loc>
-  </url>
-  <url>
-    <loc>/page15/</loc>
-  </url>
-  <url>
-    <loc>/page16/</loc>
-  </url>
-  <url>
-    <loc>/page17/</loc>
-  </url>
-  <url>
-    <loc>/page18/</loc>
-  </url>
-  <url>
-    <loc>/page19/</loc>
-  </url>
-  <url>
-    <loc>/page20/</loc>
-  </url>
-  <url>
-    <loc>/page21/</loc>
-  </url>
-  <url>
-    <loc>/page22/</loc>
-  </url>
-  <url>
-    <loc>/page23/</loc>
-  </url>
-  <url>
-    <loc>/page24/</loc>
-  </url>
-  <url>
-    <loc>/page25/</loc>
-  </url>
-  <url>
-    <loc>/page26/</loc>
-  </url>
-  <url>
-    <loc>/page27/</loc>
-  </url>
-  <url>
-    <loc>/page28/</loc>
-  </url>
-  <url>
-    <loc>/page29/</loc>
-  </url>
-  <url>
-    <loc>/page30/</loc>
-  </url>
-  <url>
-    <loc>/page31/</loc>
-  </url>
-  <url>
-    <loc>/page32/</loc>
-  </url>
-  <url>
-    <loc>/page33/</loc>
-  </url>
-  <url>
-    <loc>/page34/</loc>
-  </url>
-  <url>
-    <loc>/page35/</loc>
-  </url>
-  <url>
-    <loc>/page36/</loc>
-  </url>
-  <url>
-    <loc>/page37/</loc>
-  </url>
-  <url>
-    <loc>/page38/</loc>
   </url>
 </urlset>
