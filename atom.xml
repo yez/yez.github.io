@@ -19,7 +19,7 @@
    <id>/2016/01/24/ruby-private-class-methods</id>
    <content type="html">&lt;p&gt;In the Ruby programming language, defined methods come in two variants: instance methods and class methods. Instance methods are available after an object has been initialized, creating an instance. Class methods, on the other hand, are available without creating an instance of the class they are defined upon.&lt;/p&gt;
 
-&lt;p&gt;Ruby methods can vary in visibility. Public methods are available in any context, while private methods’ availability is restricted within the instance of a class and its descendants. A third visibility scope, protected, behaves similarly to private methods with a few subtle differences not relevant to this post.&lt;/p&gt;
+&lt;p&gt;Ruby methods can vary in visibility. Public methods are available in any context, while private methods’ availability is restricted within the instance of a class and its descendants. A third visibility scope, protected, behaves similarly to private methods, but protected methods can be called by other instances of the same class.&lt;/p&gt;
 
 &lt;p&gt;For a quick refresher, public and private instance methods look like this:&lt;/p&gt;
 
@@ -121,7 +121,7 @@
 
 &lt;p&gt;When a class &lt;code class=&quot;highlighter-rouge&quot;&gt;extends&lt;/code&gt; a module, all the the methods within that module become class methods on the subject class*. This pattern can be used to define the &lt;code class=&quot;highlighter-rouge&quot;&gt;tricks&lt;/code&gt; method on &lt;code class=&quot;highlighter-rouge&quot;&gt;Dog&lt;/code&gt;.&lt;/p&gt;
 
-&lt;p&gt;&lt;em&gt;*Note: This only pertains to methods defined in a “typical sense” any &lt;code class=&quot;highlighter-rouge&quot;&gt;def self.&lt;/code&gt; or &lt;code class=&quot;highlighter-rouge&quot;&gt;def Object.&lt;/code&gt; method definitions in a module do not automatically become class methods in the same way when &lt;code class=&quot;highlighter-rouge&quot;&gt;extended&lt;/code&gt;.&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;*Note: This only pertains to methods defined in a “typical sense” any &lt;code class=&quot;highlighter-rouge&quot;&gt;def self.&lt;/code&gt; or &lt;code class=&quot;highlighter-rouge&quot;&gt;def Dog.&lt;/code&gt; method definitions in a module do not automatically become class methods in the same way when &lt;code class=&quot;highlighter-rouge&quot;&gt;extended&lt;/code&gt;.&lt;/em&gt;&lt;/p&gt;
 
 &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Dog&lt;/span&gt;
   &lt;span class=&quot;k&quot;&gt;module&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;ClassMethods&lt;/span&gt;

@@ -113,7 +113,7 @@
 
     <p>In the Ruby programming language, defined methods come in two variants: instance methods and class methods. Instance methods are available after an object has been initialized, creating an instance. Class methods, on the other hand, are available without creating an instance of the class they are defined upon.</p>
 
-<p>Ruby methods can vary in visibility. Public methods are available in any context, while private methods’ availability is restricted within the instance of a class and its descendants. A third visibility scope, protected, behaves similarly to private methods with a few subtle differences not relevant to this post.</p>
+<p>Ruby methods can vary in visibility. Public methods are available in any context, while private methods’ availability is restricted within the instance of a class and its descendants. A third visibility scope, protected, behaves similarly to private methods, but protected methods can be called by other instances of the same class.</p>
 
 <p>For a quick refresher, public and private instance methods look like this:</p>
 
@@ -215,7 +215,7 @@
 
 <p>When a class <code class="highlighter-rouge">extends</code> a module, all the the methods within that module become class methods on the subject class*. This pattern can be used to define the <code class="highlighter-rouge">tricks</code> method on <code class="highlighter-rouge">Dog</code>.</p>
 
-<p><em>*Note: This only pertains to methods defined in a “typical sense” any <code class="highlighter-rouge">def self.</code> or <code class="highlighter-rouge">def Object.</code> method definitions in a module do not automatically become class methods in the same way when <code class="highlighter-rouge">extended</code>.</em></p>
+<p><em>*Note: This only pertains to methods defined in a “typical sense” any <code class="highlighter-rouge">def self.</code> or <code class="highlighter-rouge">def Dog.</code> method definitions in a module do not automatically become class methods in the same way when <code class="highlighter-rouge">extended</code>.</em></p>
 
 <div class="highlighter-rouge"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Dog</span>
   <span class="k">module</span> <span class="nn">ClassMethods</span>
