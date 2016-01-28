@@ -176,7 +176,7 @@
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 
-&lt;p&gt;If a single method must be public and saving lines is very important, this style might be applicable; but, it certainly sacrifices a level of readability.&lt;/p&gt;
+&lt;p&gt;If a single class method must be private and saving lines is very important, this style might be applicable; but, it certainly sacrifices a level of readability.&lt;/p&gt;
 
 &lt;p&gt;A major strength of &lt;code class=&quot;highlighter-rouge&quot;&gt;private_class_method&lt;/code&gt; is its explicitness. Unlike the other approaches, this one does not require a special module definition or method definition context switching.&lt;/p&gt;
 
