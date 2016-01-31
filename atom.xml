@@ -4,13 +4,52 @@
  <title>A Year of Commits</title>
  <link href="/atom.xml" rel="self"/>
  <link href="/"/>
- <updated>2016-01-24T19:14:57-08:00</updated>
+ <updated>2016-01-31T09:38:17-08:00</updated>
  <id></id>
  <author>
    <name>Jake Yesbeck</name>
    <email></email>
  </author>
 
+ 
+ <entry>
+   <title>Nine Months of Commits</title>
+   <link href="/2016/01/30/nine-months-of-commits/"/>
+   <updated>2016-01-30T04:00:00-08:00</updated>
+   <id>/2016/01/30/nine-months-of-commits</id>
+   <content type="html">&lt;p&gt;&lt;img src=&quot;/assets/images/280_day_streak.png&quot; alt=&quot;280 days of commits&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;It is hard to believe that already nine months have passed since the onset of my &lt;a href=&quot;http://jakeyesbeck.com/2015/04/23/a-year-of-commits/&quot;&gt;Year of Commits&lt;/a&gt;. In these past nine months, I have experienced a wide range of new aspects of open source development. This has truly been an eye opening experience, with many facets I doubt I would have experienced otherwise.&lt;/p&gt;
+
+&lt;h2 id=&quot;confidence&quot;&gt;Confidence&lt;/h2&gt;
+
+&lt;p&gt;An unexpected and fortuitous side effect of my Year of Commits has manifested as a significant boost in my overall coding confidence. Confidence is a very important aspect of anyone’s life. Without confidence, a person may place objectives out of reach or deem them too arduous to achieve. Believing in one’s self and having the confidence to stand up when knocked down is a trait that carries a lot of weight, especially when writing software.&lt;/p&gt;
+
+&lt;p&gt;Writing software can be a very subjective endeavor. Especially in languages like Ruby, there are many solutions to the same problem. These subtle differences can spark myriad conversations or criticisms of a person’s code. For those fortunate enough to write code for a living, think back to the times a pull request saw the most attention and accrued the most comments. Chances are, those comments pointed out style choice discrepancies or “we do not do it that way” assertions.&lt;/p&gt;
+
+&lt;p&gt;Maintaining a steady level of confidence in the midst of such feedback is paramount. I am lucky enough to have received feedback from many different people in many different situations. This feedback and perspective help inoculate a developer and encourage them to remember &lt;a href=&quot;http://jakeyesbeck.com/2015/06/14/you-are-not-your-code/&quot;&gt;they are not their code&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h2 id=&quot;github-issues&quot;&gt;Github Issues&lt;/h2&gt;
+
+&lt;p&gt;Another exciting event since my last &lt;a href=&quot;http://jakeyesbeck.com/2015/11/01/six-months-of-commits/&quot;&gt;year of commits update&lt;/a&gt; pertains to Github issues. Github is a fantastic piece of software responsible for managing git repositories and enabling collaboration amongst developers. An issue may be opened by anyone with a Github account on any public repository of their choosing. These issues have been the primary avenue I have used to find which projects need help and what I can do to help them.&lt;/p&gt;
+
+&lt;p&gt;My excitement stems from the fact that, for the first time since I started Year of Commits, other developers have engaged with one of my projects (&lt;a href=&quot;https://github.com/yez/passages&quot;&gt;passages&lt;/a&gt;) and submitted some issues! Having consumers of software one builds is a great feeling. An even greater feeling is when those people care enough to submit issues they think can better the project.&lt;/p&gt;
+
+&lt;p&gt;Becoming part of the open source community was a goal of this endeavor and I am thrilled to have taken my first few steps towards accomplishing that goal.&lt;/p&gt;
+
+&lt;h2 id=&quot;code-discovery&quot;&gt;Code Discovery&lt;/h2&gt;
+
+&lt;p&gt;Practice makes perfect. When reading code you did not write, knowing where to start and identifying patterns in code organization helps a great deal. Since the goal of Year of Commits was to contribute to my own &lt;strong&gt;and&lt;/strong&gt; other people’s code, I have been reading &lt;em&gt;a lot&lt;/em&gt; of code that I did not write. This has been a fantastic learning experience for me. At a typical software engineering job, coworkers’ code starts to blend styles and eventually become fairly homogeneous.&lt;/p&gt;
+
+&lt;p&gt;By reading code written by many different people, new patterns and styles add a level of depth to code grokking that is hard to replicate in other ways. I came to appreciate this accidentally discovered benefit of Year of Commits so much, &lt;a href=&quot;http://jakeyesbeck.com/2015/10/25/how-to-traverse-foreign-ruby-code/&quot;&gt;I wrote a whole post describing the process for foreign code traversal.&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;the-home-stretch&quot;&gt;The Home Stretch&lt;/h2&gt;
+
+&lt;p&gt;Year of Commits ends in April of 2016. Between now and then, I hope to learn even more about the open source software ecosystem and community. This project has had an incredibly positive affect on my life and I would prescribe something similar to anyone interested. My only goal between now and April is to have made a real contribution to a high visibility project.&lt;/p&gt;
+
+&lt;p&gt;The positive feedback I have received about this blog and the work that I have been doing helps make this easy. I would like to say thank you again to everyone on this journey with me.&lt;/p&gt;
+</content>
+ </entry>
  
  <entry>
    <title>Ruby Private Class Methods</title>
