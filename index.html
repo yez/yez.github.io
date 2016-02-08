@@ -334,7 +334,18 @@
 
 <h2 id="unshackled">Unshackled</h2>
 
-<p>While this patch to the Ruby on Rails framework may not make every situation easier, it certainly reduces both cognitive and implementation overhead for many developers. The ability to remove references to a column and remove said column in the same code deployment as opposed to coordinating three deployments is amazing.</p>
+<p>While this patch to the Ruby on Rails framework may not make every situation easier, it certainly reduces both cognitive and implementation overhead for many developers.</p>
+
+<p>For more automated systems utilizing continuous deployment, two deployments may still be necessary since code running on old processes (within some sort of pre loader) will not be able to handle the column removal.</p>
+
+<p>The deployment process for such a system may look more like:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>1. Remove references to column
+2. Deploy
+3. Write migration to drop column
+4. Deploy and migrate
+</code></pre>
+</div>
 
 <p>Databases that power web applications are powerful and oddly fragile beasts. Manipulating these beasts while maintaining superb end user experiences requires one to constantly be learning. Hopefully with this behaviour, one more thing can be crossed off the check list of “things to remember when manipulating the database” and we can all just get back to work.</p>
 
