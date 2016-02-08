@@ -219,9 +219,9 @@
 
 <p>With this new found behaviour, the previous six step incantation comprised of three separate deployments can be reduced to three steps in total and just one deployment:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>1. Remove references to column that will be removed
-2. Write migration to remove column
-3. Deploy
+<div class="highlighter-rouge"><pre class="highlight"><code>1. Remove references to column and write migration
+2. Deploy
+3. Once requests completely use new code, migrate
 </code></pre>
 </div>
 
@@ -233,9 +233,9 @@
 
 <p>After reading through a very large amount of change logs and coming up empty, a <a href="http://jakeyesbeck.com/2015/10/25/how-to-traverse-foreign-ruby-code/">bit of previous wisdom</a> was utilized in order to track down the commit responsible.</p>
 
-<p>Since <code class="highlighter-rouge">git</code> is the ultimate history keeper, it is vital that the offending code identified in 3.2. This way, the 4.0.0 version of the code can be analyzed, the discrepancy identified and the git revision responsible brought to light.</p>
+<p>The first step is to identify the offending code in 3.2. This way, the 4.0.0 version of the code can be analyzed, the discrepancy identified and the git revision responsible brought to light.</p>
 
-<p>After some <code class="highlighter-rouge">binding.pry</code> insertions and utilization of the <code class="highlighter-rouge">caller</code> array, the offending code was traced to <code class="highlighter-rouge">/lib/active_record/attribute_methods.rb</code> line 222 (formatted for readability):</p>
+<p>After some <code class="highlighter-rouge">binding.pry</code> insertions and utilization of the <code class="highlighter-rouge">caller</code> array, the offending code was traced to <a href="https://github.com/rails/rails/blob/v3.2.18/activerecord/lib/active_record/attribute_methods.rb#L244">lib/active_record/attribute_methods.rb:244</a> (formatted for readability):</p>
 
 <div class="highlighter-rouge"><pre class="highlight"><code><span class="k">def</span> <span class="nf">arel_attributes_values</span><span class="p">(</span><span class="n">include_primary_key</span> <span class="o">=</span> <span class="kp">true</span><span class="p">,</span>
                            <span class="n">include_readonly_attributes</span> <span class="o">=</span> <span class="kp">true</span><span class="p">,</span>
@@ -270,9 +270,9 @@
 </code></pre>
 </div>
 
-<p>While a little lengthy, the most obvious thing to note about this method is that its signature is comprised of entirely optional variables. Most notably, the final optional parameter, <code class="highlighter-rouge">attribute_names</code>, defaults to <code class="highlighter-rouge">@attribtutes.keys</code> which is the list of attributes for the given model.</p>
+<p>While a little lengthy, the most obvious thing to note about this method is that its signature is comprised of entirely optional variables. Most notably, the final optional parameter, <code class="highlighter-rouge">attribute_names</code>, defaults to <code class="highlighter-rouge">@attributes.keys</code> which is the list of attributes for the given model.</p>
 
-<p>In this case, the result of <code class="highlighter-rouge">@attribtues.keys</code> is the complete list of keys for a <code class="highlighter-rouge">User</code>: <code class="highlighter-rouge">['id', 'first_name', 'last_name', 'email', 'updated_at', 'created_at']</code>. Most notably, the <code class="highlighter-rouge">email</code> attribute is present, regardless of the fact that it was not specified. This means that by default, any <code class="highlighter-rouge">create</code> call will write to the <code class="highlighter-rouge">email</code> column without hesitation (just as previously observed).</p>
+<p>In this case, the result of <code class="highlighter-rouge">@attributes.keys</code> is the complete list of keys for a <code class="highlighter-rouge">User</code>: <code class="highlighter-rouge">['id', 'first_name', 'last_name', 'email', 'updated_at', 'created_at']</code>. Most notably, the <code class="highlighter-rouge">email</code> attribute is present, regardless of the fact that it was not given a value to insert. This means that by default, any <code class="highlighter-rouge">create</code> call will write to the <code class="highlighter-rouge">email</code> column without hesitation (just as previously observed).</p>
 
 <p>While default behaviour can emit a code smell, it is only dangerous if it is used unknowingly. Since the parameter to determine <code class="highlighter-rouge">attribute_names</code> is available, chances are the caller of this method does indeed specify them, right?</p>
 
@@ -291,15 +291,15 @@
 </code></pre>
 </div>
 
-<p>Here, in <code class="highlighter-rouge">lib/active_record/persistence.rb</code> on line 360 lies the method responsible for calling <code class="highlighter-rouge">arel_attributes_values</code>. Since it does not specify the list of attributes, the default behaviour prevails and all known attributes are returned.</p>
+<p>Here, in <a href="https://github.com/rails/rails/blob/v3.2.18/activerecord/lib/active_record/persistence.rb#L364">lib/active_record/persistence.rb:364</a> lies the method responsible for calling <code class="highlighter-rouge">arel_attributes_values</code>. Since it does not specify the list of attributes, the default behaviour prevails and all known attributes are returned.</p>
 
 <h2 id="the-big-fix">The Big Fix</h2>
 
 <p>On a glorious Friday afternoon (probably) Jon Leighton made <a href="https://github.com/rails/rails/commit/144e8691">the commit</a> which changed how people thought about column removal in Ruby on Rails.</p>
 
-<p>The change enabled the concept of <code class="highlighter-rouge">partial_writes</code>. This pattern used the exiting <code class="highlighter-rouge">changed</code> hash present in every <code class="highlighter-rouge">ActiveRecord</code> model. The <code class="highlighter-rouge">changed</code> hash is manipulated as a model has attributes set upon it.</p>
+<p>The change enabled the concept of <code class="highlighter-rouge">partial_writes</code>. This pattern used the exiting <code class="highlighter-rouge">changed</code> hash present in every <code class="highlighter-rouge">ActiveRecord</code> model. The <code class="highlighter-rouge">changed</code> hash is manipulated as a model has attributes assigned to it.</p>
 
-<p>In <code class="highlighter-rouge">lib/active_record/attribute_methods/dirty.rb</code> on line 77, <code class="highlighter-rouge">partial_writes</code> is used:</p>
+<p>In <a href="https://github.com/rails/rails/blob/v4.0.0/activerecord/lib/active_record/attribute_methods/dirty.rb#L77">lib/active_record/attribute_methods/dirty.rb:77</a>, <code class="highlighter-rouge">partial_writes</code> is used:</p>
 
 <div class="highlighter-rouge"><pre class="highlight"><code><span class="k">def</span> <span class="nf">create_record</span><span class="p">(</span><span class="o">*</span><span class="p">)</span>
   <span class="n">partial_writes?</span> <span class="p">?</span> <span class="k">super</span><span class="p">(</span><span class="n">keys_for_partial_write</span><span class="p">)</span> <span class="p">:</span> <span class="k">super</span>
@@ -327,7 +327,7 @@
 
 <p>While this patch to the Ruby on Rails framework may not make every situation easier, it certainly reduces both cognitive and implementation overhead for many developers. The ability to remove references to a column and remove said column in the same code deployment as opposed to coordinating three deployments is amazing.</p>
 
-<p>Databases that power web applications are powerful and oddly fragile beasts. Manipulating these beasts while maintaining superb end user experiences requires one to constantly be learning. Hopefully with this behaviour, one less thing can be crossed off the check list of “things to remember when manipulating the database” and we can all just get back to work.</p>
+<p>Databases that power web applications are powerful and oddly fragile beasts. Manipulating these beasts while maintaining superb end user experiences requires one to constantly be learning. Hopefully with this behaviour, one more thing can be crossed off the check list of “things to remember when manipulating the database” and we can all just get back to work.</p>
 
 </div>
 
