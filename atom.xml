@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
  <title>A Year of Commits</title>
- <link href="/atom.xml" rel="self"/>
- <link href="/"/>
- <updated>2016-01-31T09:38:17-08:00</updated>
- <id></id>
+ <link href="http://jakeyesbeck.com/atom.xml" rel="self"/>
+ <link href="http://jakeyesbeck.com/"/>
+ <updated>2016-02-07T22:28:33-08:00</updated>
+ <id>http://jakeyesbeck.com</id>
  <author>
    <name>Jake Yesbeck</name>
    <email></email>
@@ -13,11 +13,245 @@
 
  
  <entry>
+   <title>How to Remove a Column with Zero Downtime in Ruby on Rails</title>
+   <link href="http://jakeyesbeck.com/2016/02/07/how-to-remove-a-column-with-zero-downtime-in-ruby-on-rails/"/>
+   <updated>2016-02-07T04:00:00-08:00</updated>
+   <id>http://jakeyesbeck.com/2016/02/07/how-to-remove-a-column-with-zero-downtime-in-ruby-on-rails</id>
+   <content type="html">&lt;p&gt;For a production Ruby on Rails application, uptime is paramount. Altering the structure of an application’s persistence layer is an operation that competes directly with uptime. Specifically, removing a table column within a relational database causes issues with the &lt;code class=&quot;highlighter-rouge&quot;&gt;ActiveRecord&lt;/code&gt; ORM (the default relational mapping within a Ruby on Rails application).&lt;/p&gt;
+
+&lt;p&gt;However, this particular pain point has been removed as of &lt;strong&gt;Ruby on Rails 4.0.0&lt;/strong&gt;, saving developers a lot of headache and greatly reducing the need for structural change coordination.&lt;/p&gt;
+
+&lt;h2 id=&quot;old-and-busted&quot;&gt;Old and Busted&lt;/h2&gt;
+
+&lt;p&gt;To demonstrate the problem, a simple &lt;strong&gt;Ruby on Rails 3.2&lt;/strong&gt; application is created with a &lt;code class=&quot;highlighter-rouge&quot;&gt;User&lt;/code&gt; model:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;User&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;ActiveRecord&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Base&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Supporting the &lt;code class=&quot;highlighter-rouge&quot;&gt;User&lt;/code&gt; model is a PostgreSQL database table created with a migration:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;CreateUsers&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;ActiveRecord&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Migration&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;change&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;create_table&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:users&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;t&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+      &lt;span class=&quot;n&quot;&gt;t&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;string&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:first_name&lt;/span&gt;
+      &lt;span class=&quot;n&quot;&gt;t&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;string&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:last_name&lt;/span&gt;
+      &lt;span class=&quot;n&quot;&gt;t&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;string&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:email&lt;/span&gt;
+      &lt;span class=&quot;n&quot;&gt;t&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;timestamps&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;null: &lt;/span&gt;&lt;span class=&quot;kp&quot;&gt;false&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;To ensure this application has as close to 100% uptime as possible, it can be assumed that it is behind some kind of pre-loader. As in, when code is deployed, existing requests are given time to complete before new requests are shepherded over to the new version of the code.&lt;/p&gt;
+
+&lt;p&gt;In a &lt;strong&gt;Ruby on Rails 3.2&lt;/strong&gt; application, a problem will arise when a column is removed from the database and the ORM does not have time to restart. In this case, even the pre-loader will not save an application from throwing an error about the missing column.&lt;/p&gt;
+
+&lt;p&gt;To emulate this problem, a rails console is run in the &lt;code class=&quot;highlighter-rouge&quot;&gt;production&lt;/code&gt; environment and a &lt;code class=&quot;highlighter-rouge&quot;&gt;User&lt;/code&gt; is created:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;no&quot;&gt;RACK_ENV&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;production&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;rails&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;console&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;User&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;create&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;first_name: &lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39;test&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;last_name: &lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39;test&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# =&amp;gt; #&amp;lt;User id: 1, first_name: &quot;test&quot;, last_name: &quot;test&quot;, email nil, created_at: &quot;2016-02-07 21:03:26&quot;, updated_at: &quot;2016-02-07 21:03:26&quot;&amp;gt;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;In parallel, the &lt;code class=&quot;highlighter-rouge&quot;&gt;psql&lt;/code&gt; command line client is used to connect to the same &lt;code class=&quot;highlighter-rouge&quot;&gt;production&lt;/code&gt; database used by this server, all still running &lt;strong&gt;locally&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;p&gt;Within this &lt;code class=&quot;highlighter-rouge&quot;&gt;psql&lt;/code&gt; prompt, the &lt;code class=&quot;highlighter-rouge&quot;&gt;email&lt;/code&gt; column from the &lt;code class=&quot;highlighter-rouge&quot;&gt;users&lt;/code&gt; table will be removed &lt;em&gt;while&lt;/em&gt; the production console is still running:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;psql&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;app_production&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;psql&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=#&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;ALTER&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;TABLE&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;users&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;DROP&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;COLUMN&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;email&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;ALTER&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;TABLE&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Jumping back to the &lt;code class=&quot;highlighter-rouge&quot;&gt;RACK_ENV=production rails console&lt;/code&gt;, another &lt;code class=&quot;highlighter-rouge&quot;&gt;User&lt;/code&gt; creation attempt results in an error:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;User&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;create&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;first_name: &lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39;test2&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;last_name: &lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39;test2&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# =&amp;gt; PG::UndefinedColumn: ERROR:  column &quot;email&quot; of relation &quot;users&quot; does not exist&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Kaboom! Rails attempts to save a new record to the &lt;code class=&quot;highlighter-rouge&quot;&gt;users&lt;/code&gt; table and populate the &lt;code class=&quot;highlighter-rouge&quot;&gt;email&lt;/code&gt; column even though it was never specified to do so.  Seeing as this is not new behaviour, surely someone has come up with a solution to this problem that does not require downtime.&lt;/p&gt;
+
+&lt;h2 id=&quot;yesterdays-jam&quot;&gt;Yesterday’s Jam&lt;/h2&gt;
+
+&lt;p&gt;As it turns out, &lt;a href=&quot;http://blog.codeship.com/rails-migrations-zero-downtime/&quot;&gt;a few&lt;/a&gt; different &lt;a href=&quot;http://www.codinginthecrease.com/news_article/show/85364?referrer_id=&quot;&gt;blog posts&lt;/a&gt; have been written about the solution to this very problem.&lt;/p&gt;
+
+&lt;p&gt;The TL;DR of these posts is that a multiple phase solution is required under the given circumstances:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;1. Write code that `rejects` the column to remove
+2. Deploy
+3. Write migration to remove the column
+4. Deploy + Migrate
+5. Write code to remove the column `rejection`
+6. Deploy
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Phew! Three deploys and presumably three code reviews later, the column is finally removed. Assuming a system is built with continuous deployment guarded by a continuous integration suite, this whole process could take the better part of a work day in order to accomplish such a simple task.&lt;/p&gt;
+
+&lt;p&gt;Even worse, if an application has scheduled weekly deploys where only one deployment can happen per week, then this column will linger for three whole weeks. That is just absurd, what kind of barbarians can live this way?&lt;/p&gt;
+
+&lt;h2 id=&quot;new-hotness&quot;&gt;New Hotness&lt;/h2&gt;
+
+&lt;p&gt;Luckily, the incredible people who maintain and create features for the Ruby on Rails framework saw this behaviour and decided to correct it. As of a very influential commit during the beta release of &lt;strong&gt;Ruby on Rails 4.0.0&lt;/strong&gt;, the framework does not aggressively attempt to populate attributes not specified during creation or update.&lt;/p&gt;
+
+&lt;p&gt;To prove this, a new &lt;strong&gt;Ruby on Rails 4.0.0&lt;/strong&gt; application is made with the exact same structure as above.&lt;/p&gt;
+
+&lt;p&gt;Then, the same production console is created along with a &lt;code class=&quot;highlighter-rouge&quot;&gt;User&lt;/code&gt;:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;no&quot;&gt;RACK_ENV&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;production&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;rails&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;console&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;User&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;create&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;first_name: &lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39;test&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;last_name: &lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39;test&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# =&amp;gt; #&amp;lt;User id: 1, first_name: &quot;test&quot;, last_name: &quot;test&quot;, email nil, created_at: &quot;2016-02-07 22:09:49&quot;, updated_at: &quot;2016-02-07 22:09:49&quot;&amp;gt;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Again, in parallel, a &lt;code class=&quot;highlighter-rouge&quot;&gt;psql&lt;/code&gt; client is initialized for the &lt;code class=&quot;highlighter-rouge&quot;&gt;production&lt;/code&gt; environment database.&lt;/p&gt;
+
+&lt;p&gt;Within this prompt, the &lt;code class=&quot;highlighter-rouge&quot;&gt;email&lt;/code&gt; column on the &lt;code class=&quot;highlighter-rouge&quot;&gt;users&lt;/code&gt; table is removed:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;psql&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;app_production&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;psql&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=#&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;ALTER&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;TABLE&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;users&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;DROP&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;COLUMN&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;email&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;ALTER&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;TABLE&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;And finally, a new user is created in the still running &lt;code class=&quot;highlighter-rouge&quot;&gt;RACK_ENV=production rails console&lt;/code&gt;:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;User&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;create&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;first_name: &lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39;test2&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;last_name: &lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39;test2&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# =&amp;gt; #&amp;lt;User id: 2, first_name: &quot;test2&quot;, last_name: &quot;test2&quot;, email nil, created_at: &quot;2016-02-07 22:13:18&quot;, updated_at: &quot;2016-02-07 22:13:18&quot;&amp;gt;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Unlike before, the second insertion into the &lt;code class=&quot;highlighter-rouge&quot;&gt;users&lt;/code&gt; table worked wonderfully, despite the &lt;code class=&quot;highlighter-rouge&quot;&gt;email&lt;/code&gt; column’s removal.&lt;/p&gt;
+
+&lt;p&gt;As shown, the in memory representation of the &lt;code class=&quot;highlighter-rouge&quot;&gt;User&lt;/code&gt; class still has the &lt;code class=&quot;highlighter-rouge&quot;&gt;email&lt;/code&gt; attribute. The &lt;code class=&quot;highlighter-rouge&quot;&gt;User&lt;/code&gt; object’s representation has not been reloaded, it simply just does not care about the &lt;code class=&quot;highlighter-rouge&quot;&gt;email&lt;/code&gt; column when writing to the database.&lt;/p&gt;
+
+&lt;p&gt;The fact that the ORM does not specifically reload when writing to a table points out an interesting detail. It means that for this solution to fully work, the &lt;code class=&quot;highlighter-rouge&quot;&gt;email&lt;/code&gt; column must not be referenced at all.&lt;/p&gt;
+
+&lt;p&gt;With this new found behaviour, the previous six step incantation comprised of three separate deployments can be reduced to three steps in total and just one deployment:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;1. Remove references to column that will be removed
+2. Write migration to remove column
+3. Deploy
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Wunderbar! The &lt;code class=&quot;highlighter-rouge&quot;&gt;reject&lt;/code&gt; and deploy pattern is no longer necessary. Further more, development teams suffering within weekly scheduled deploys can achieve their desired results within a single iteration.&lt;/p&gt;
+
+&lt;h2 id=&quot;what-changed&quot;&gt;What Changed?&lt;/h2&gt;
+
+&lt;p&gt;Unfortunately, the amazing change responsible for this vast improvement regarding Ruby on Rails column removal did not receive the attention is deserves. Many blog posts and guides were written about how to circumvent the older 3.2 behaviour, but when looking for information about this modern implementation, resources were scarce.&lt;/p&gt;
+
+&lt;p&gt;After reading through a very large amount of change logs and coming up empty, a &lt;a href=&quot;http://jakeyesbeck.com/2015/10/25/how-to-traverse-foreign-ruby-code/&quot;&gt;bit of previous wisdom&lt;/a&gt; was utilized in order to track down the commit responsible.&lt;/p&gt;
+
+&lt;p&gt;Since &lt;code class=&quot;highlighter-rouge&quot;&gt;git&lt;/code&gt; is the ultimate history keeper, it is vital that the offending code identified in 3.2. This way, the 4.0.0 version of the code can be analyzed, the discrepancy identified and the git revision responsible brought to light.&lt;/p&gt;
+
+&lt;p&gt;After some &lt;code class=&quot;highlighter-rouge&quot;&gt;binding.pry&lt;/code&gt; insertions and utilization of the &lt;code class=&quot;highlighter-rouge&quot;&gt;caller&lt;/code&gt; array, the offending code was traced to &lt;code class=&quot;highlighter-rouge&quot;&gt;/lib/active_record/attribute_methods.rb&lt;/code&gt; line 222 (formatted for readability):&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;arel_attributes_values&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;include_primary_key&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kp&quot;&gt;true&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+                           &lt;span class=&quot;n&quot;&gt;include_readonly_attributes&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kp&quot;&gt;true&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+                           &lt;span class=&quot;n&quot;&gt;attribute_names&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;vi&quot;&gt;@attributes&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;keys&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;attrs&lt;/span&gt;      &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{}&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;klass&lt;/span&gt;      &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;class&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;arel_table&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;klass&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;arel_table&lt;/span&gt;
+
+  &lt;span class=&quot;n&quot;&gt;attribute_names&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;each&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;column&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;column_for_attribute&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt;
+        &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;include_primary_key&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;!&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;column&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;primary&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+      &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;include_readonly_attributes&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt;
+         &lt;span class=&quot;o&quot;&gt;!&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;class&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;readonly_attributes&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;include?&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;value&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;
+          &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;klass&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;serialized_attributes&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;include?&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+            &lt;span class=&quot;vi&quot;&gt;@attributes&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;].&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;serialized_value&lt;/span&gt;
+          &lt;span class=&quot;k&quot;&gt;else&lt;/span&gt;
+            &lt;span class=&quot;c1&quot;&gt;# FIXME: we need @attributes to be used consistently.&lt;/span&gt;
+            &lt;span class=&quot;c1&quot;&gt;# If the values stored in @attributes were already type&lt;/span&gt;
+            &lt;span class=&quot;c1&quot;&gt;# casted, this code could be simplified&lt;/span&gt;
+            &lt;span class=&quot;n&quot;&gt;read_attribute&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+          &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+        &lt;span class=&quot;n&quot;&gt;attrs&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;arel_table&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;value&lt;/span&gt;
+      &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+  &lt;span class=&quot;n&quot;&gt;attrs&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;While a little lengthy, the most obvious thing to note about this method is that its signature is comprised of entirely optional variables. Most notably, the final optional parameter, &lt;code class=&quot;highlighter-rouge&quot;&gt;attribute_names&lt;/code&gt;, defaults to &lt;code class=&quot;highlighter-rouge&quot;&gt;@attribtutes.keys&lt;/code&gt; which is the list of attributes for the given model.&lt;/p&gt;
+
+&lt;p&gt;In this case, the result of &lt;code class=&quot;highlighter-rouge&quot;&gt;@attribtues.keys&lt;/code&gt; is the complete list of keys for a &lt;code class=&quot;highlighter-rouge&quot;&gt;User&lt;/code&gt;: &lt;code class=&quot;highlighter-rouge&quot;&gt;[&#39;id&#39;, &#39;first_name&#39;, &#39;last_name&#39;, &#39;email&#39;, &#39;updated_at&#39;, &#39;created_at&#39;]&lt;/code&gt;. Most notably, the &lt;code class=&quot;highlighter-rouge&quot;&gt;email&lt;/code&gt; attribute is present, regardless of the fact that it was not specified. This means that by default, any &lt;code class=&quot;highlighter-rouge&quot;&gt;create&lt;/code&gt; call will write to the &lt;code class=&quot;highlighter-rouge&quot;&gt;email&lt;/code&gt; column without hesitation (just as previously observed).&lt;/p&gt;
+
+&lt;p&gt;While default behaviour can emit a code smell, it is only dangerous if it is used unknowingly. Since the parameter to determine &lt;code class=&quot;highlighter-rouge&quot;&gt;attribute_names&lt;/code&gt; is available, chances are the caller of this method does indeed specify them, right?&lt;/p&gt;
+
+&lt;p&gt;Unfortunately, no:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;create&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;attributes_values&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;arel_attributes_values&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;!&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;nil?&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;new_id&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;class&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;unscoped&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;insert&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;attributes_values&lt;/span&gt;
+
+  &lt;span class=&quot;nb&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;id&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;||=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;new_id&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;class&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;primary_key&lt;/span&gt;
+
+  &lt;span class=&quot;no&quot;&gt;IdentityMap&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;add&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;IdentityMap&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;enabled?&lt;/span&gt;
+  &lt;span class=&quot;vi&quot;&gt;@new_record&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kp&quot;&gt;false&lt;/span&gt;
+  &lt;span class=&quot;nb&quot;&gt;id&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Here, in &lt;code class=&quot;highlighter-rouge&quot;&gt;lib/active_record/persistence.rb&lt;/code&gt; on line 360 lies the method responsible for calling &lt;code class=&quot;highlighter-rouge&quot;&gt;arel_attributes_values&lt;/code&gt;. Since it does not specify the list of attributes, the default behaviour prevails and all known attributes are returned.&lt;/p&gt;
+
+&lt;h2 id=&quot;the-big-fix&quot;&gt;The Big Fix&lt;/h2&gt;
+
+&lt;p&gt;On a glorious Friday afternoon (probably) Jon Leighton made &lt;a href=&quot;https://github.com/rails/rails/commit/144e8691&quot;&gt;the commit&lt;/a&gt; which changed how people thought about column removal in Ruby on Rails.&lt;/p&gt;
+
+&lt;p&gt;The change enabled the concept of &lt;code class=&quot;highlighter-rouge&quot;&gt;partial_writes&lt;/code&gt;. This pattern used the exiting &lt;code class=&quot;highlighter-rouge&quot;&gt;changed&lt;/code&gt; hash present in every &lt;code class=&quot;highlighter-rouge&quot;&gt;ActiveRecord&lt;/code&gt; model. The &lt;code class=&quot;highlighter-rouge&quot;&gt;changed&lt;/code&gt; hash is manipulated as a model has attributes set upon it.&lt;/p&gt;
+
+&lt;p&gt;In &lt;code class=&quot;highlighter-rouge&quot;&gt;lib/active_record/attribute_methods/dirty.rb&lt;/code&gt; on line 77, &lt;code class=&quot;highlighter-rouge&quot;&gt;partial_writes&lt;/code&gt; is used:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;create_record&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;partial_writes?&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;?&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;super&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;keys_for_partial_write&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;super&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;# Serialized attributes should always be written in case they&#39;ve been&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# changed in place.&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;keys_for_partial_write&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;changed&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;attributes&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;keys&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;class&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;serialized_attributes&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;keys&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Before delegating to the same &lt;code class=&quot;highlighter-rouge&quot;&gt;persistence.rb#create&lt;/code&gt; method, only the attributes present in the &lt;code class=&quot;highlighter-rouge&quot;&gt;changed&lt;/code&gt; hash (along with any serialized attributes) will be used in subsequent insert queries.&lt;/p&gt;
+
+&lt;p&gt;Included in the February 2013 beta release of &lt;strong&gt;Ruby on Rails 4.0.0&lt;/strong&gt;, this code enables a much more pleasant experience than the older work around. In fact, the author even pointed out this behaviour in his commit:&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;When inserting new records, only the fields which have been changed from the defaults will actually be included in the INSERT statement. The other fields will be populated by the database.&lt;/p&gt;
+
+  &lt;p&gt;This is more efficient, and also means that it will be safe to remove database columns without getting subsequent errors in running app processes (so long as the code in those processes doesn’t contain any references to the removed column).&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h2 id=&quot;unshackled&quot;&gt;Unshackled&lt;/h2&gt;
+
+&lt;p&gt;While this patch to the Ruby on Rails framework may not make every situation easier, it certainly reduces both cognitive and implementation overhead for many developers. The ability to remove references to a column and remove said column in the same code deployment as opposed to coordinating three deployments is amazing.&lt;/p&gt;
+
+&lt;p&gt;Databases that power web applications are powerful and oddly fragile beasts. Manipulating these beasts while maintaining superb end user experiences requires one to constantly be learning. Hopefully with this behaviour, one less thing can be crossed off the check list of “things to remember when manipulating the database” and we can all just get back to work.&lt;/p&gt;
+</content>
+ </entry>
+ 
+ <entry>
    <title>Nine Months of Commits</title>
-   <link href="/2016/01/30/nine-months-of-commits/"/>
+   <link href="http://jakeyesbeck.com/2016/01/30/nine-months-of-commits/"/>
    <updated>2016-01-30T04:00:00-08:00</updated>
-   <id>/2016/01/30/nine-months-of-commits</id>
-   <content type="html">&lt;p&gt;&lt;img src=&quot;/assets/images/280_day_streak.png&quot; alt=&quot;280 days of commits&quot; /&gt;&lt;/p&gt;
+   <id>http://jakeyesbeck.com/2016/01/30/nine-months-of-commits</id>
+   <content type="html">&lt;p&gt;&lt;img src=&quot;http://jakeyesbeck.com/assets/images/280_day_streak.png&quot; alt=&quot;280 days of commits&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;It is hard to believe that already nine months have passed since the onset of my &lt;a href=&quot;http://jakeyesbeck.com/2015/04/23/a-year-of-commits/&quot;&gt;Year of Commits&lt;/a&gt;. In these past nine months, I have experienced a wide range of new aspects of open source development. This has truly been an eye opening experience, with many facets I doubt I would have experienced otherwise.&lt;/p&gt;
 
@@ -53,9 +287,9 @@
  
  <entry>
    <title>Ruby Private Class Methods</title>
-   <link href="/2016/01/24/ruby-private-class-methods/"/>
+   <link href="http://jakeyesbeck.com/2016/01/24/ruby-private-class-methods/"/>
    <updated>2016-01-24T04:00:00-08:00</updated>
-   <id>/2016/01/24/ruby-private-class-methods</id>
+   <id>http://jakeyesbeck.com/2016/01/24/ruby-private-class-methods</id>
    <content type="html">&lt;p&gt;In the Ruby programming language, defined methods come in two variants: instance methods and class methods. Instance methods are available after an object has been initialized, creating an instance. Class methods, on the other hand, are available without creating an instance of the class they are defined upon.&lt;/p&gt;
 
 &lt;p&gt;Ruby methods can vary in visibility. Public methods are available in any context, while private methods’ availability is restricted within the instance of a class and its descendants. A third visibility scope, protected, behaves similarly to private methods, but protected methods can be called by other instances of the same class.&lt;/p&gt;
@@ -227,9 +461,9 @@
  
  <entry>
    <title>Contributing to Open Source in 7 Steps</title>
-   <link href="/2016/01/17/contributing-to-open-source-in-7-steps/"/>
+   <link href="http://jakeyesbeck.com/2016/01/17/contributing-to-open-source-in-7-steps/"/>
    <updated>2016-01-17T04:00:00-08:00</updated>
-   <id>/2016/01/17/contributing-to-open-source-in-7-steps</id>
+   <id>http://jakeyesbeck.com/2016/01/17/contributing-to-open-source-in-7-steps</id>
    <content type="html">&lt;p&gt;Making contributions to open source repositories is a great way to give back to the community. Open source software has a rich history and is a crucial component in many successful software applications. Most open source projects are maintained by either one or many developers for free. Since “free” is not usually the price of food and shelter, these maintainers are not available to work on their projects at all hours, most of them have day jobs so they can eat and buy clothing.&lt;/p&gt;
 
 &lt;p&gt;To help keep open source projects up to date and bug free, members of the community regularly contribute a portion of their own free time. Since the start of the &lt;a href=&quot;http://jakeyesbeck.com/2015/04/23/a-year-of-commits/&quot;&gt;Year of Commits&lt;/a&gt; project, I have made quite a few contributes to open source software and distilled the process down to these seven basic steps.&lt;/p&gt;
@@ -248,7 +482,7 @@
 
 &lt;p&gt;Recently, the &lt;code class=&quot;highlighter-rouge&quot;&gt;fetching-gem&#39;s&lt;/code&gt; issues page had a feature request: “Make the library compatible with the &lt;a href=&quot;http://ruby-doc.org/core-2.3.0/Enumerable.html#method-i-first&quot;&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;Enumerable#first(n)&lt;/code&gt; behaviour&lt;/a&gt;”:&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;/assets/images/find_issue.png&quot; alt=&quot;Find Issue&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://jakeyesbeck.com/assets/images/find_issue.png&quot; alt=&quot;Find Issue&quot; /&gt;&lt;/p&gt;
 
 &lt;h2 id=&quot;read-the-contributing-guidelines&quot;&gt;2. Read the contributing guidelines&lt;/h2&gt;
 
@@ -318,11 +552,11 @@ upstream  git@github.com:covermymeds/fetching-gem.git &lt;span class=&quot;o&quo
 
 &lt;p&gt;The pull request that I recently added to &lt;code class=&quot;highlighter-rouge&quot;&gt;fetching-gem&lt;/code&gt; looked like this:&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;/assets/images/submit_pr.png&quot; alt=&quot;Submit a PR&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://jakeyesbeck.com/assets/images/submit_pr.png&quot; alt=&quot;Submit a PR&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;Another possible check when submitting a PR involves continuous integrations. If a project automatically builds its test suite with a service like &lt;a href=&quot;https://travis-ci.org&quot;&gt;Travis&lt;/a&gt;, Github will supply some checks at the bottom of the PR:&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;/assets/images/make_sure_ci_passes.png&quot; alt=&quot;Check CI&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://jakeyesbeck.com/assets/images/make_sure_ci_passes.png&quot; alt=&quot;Check CI&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;If, for some reason, this status is not green and the tests did not pass, use the &lt;code class=&quot;highlighter-rouge&quot;&gt;Details&lt;/code&gt; link to find out more information why.&lt;/p&gt;
 
@@ -330,7 +564,7 @@ upstream  git@github.com:covermymeds/fetching-gem.git &lt;span class=&quot;o&quo
 
 &lt;p&gt;Pending continuous integration passing and the repository’s maintainer(s) signing off on the change, a patch will be accepted into the project. What a fantastic feeling that is! Awesome maintainers (like the &lt;code class=&quot;highlighter-rouge&quot;&gt;fetching-gem&lt;/code&gt; maintainer &lt;code class=&quot;highlighter-rouge&quot;&gt;mikegee&lt;/code&gt;) will show their appreciation directly on the PR, immortalizing your contribution for all days to come.&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;/assets/images/feel_great.png&quot; alt=&quot;Feel Great&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://jakeyesbeck.com/assets/images/feel_great.png&quot; alt=&quot;Feel Great&quot; /&gt;&lt;/p&gt;
 
 &lt;h2 id=&quot;b-repeat-4---6&quot;&gt;7b. Repeat 4 - 6&lt;/h2&gt;
 
@@ -342,9 +576,9 @@ upstream  git@github.com:covermymeds/fetching-gem.git &lt;span class=&quot;o&quo
  
  <entry>
    <title>How To Parallelize Ruby HTTP Requests</title>
-   <link href="/2016/01/10/how-to-parallelize-ruby-http-requests/"/>
+   <link href="http://jakeyesbeck.com/2016/01/10/how-to-parallelize-ruby-http-requests/"/>
    <updated>2016-01-10T04:00:00-08:00</updated>
-   <id>/2016/01/10/how-to-parallelize-ruby-http-requests</id>
+   <id>http://jakeyesbeck.com/2016/01/10/how-to-parallelize-ruby-http-requests</id>
    <content type="html">&lt;p&gt;It turns out that managing web requests is quite important when doing web development. A web application backed by an external or internal API can issue &lt;strong&gt;a lot&lt;/strong&gt; of requests when rendering a seemingly simple web page. How those requests are made and in what order is very important. With improper parallelization, an end user’s entire experience can go from delightful to horrific in a matter of seconds.&lt;/p&gt;
 
 &lt;h2 id=&quot;the-build-up&quot;&gt;The Build Up&lt;/h2&gt;
@@ -537,9 +771,9 @@ upstream  git@github.com:covermymeds/fetching-gem.git &lt;span class=&quot;o&quo
  
  <entry>
    <title>Passages Rails Engine</title>
-   <link href="/2016/01/03/passages/"/>
+   <link href="http://jakeyesbeck.com/2016/01/03/passages/"/>
    <updated>2016-01-03T04:00:00-08:00</updated>
-   <id>/2016/01/03/passages</id>
+   <id>http://jakeyesbeck.com/2016/01/03/passages</id>
    <content type="html">&lt;p&gt;Routing in the Ruby on Rails world can, at times, be a tad confusing. The &lt;a href=&quot;http://guides.rubyonrails.org/routing.html&quot;&gt;official Rails guide&lt;/a&gt; is very helpful for the basics; but, as an application grows, it can become hard to remember specific details about every single route.&lt;/p&gt;
 
 &lt;h2 id=&quot;existing-routing-tools&quot;&gt;Existing Routing Tools&lt;/h2&gt;
@@ -550,7 +784,7 @@ upstream  git@github.com:covermymeds/fetching-gem.git &lt;span class=&quot;o&quo
 
 &lt;p&gt;Another helpful tool in development mode is this screen:&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;/assets/images/no_route_page.png&quot; alt=&quot;Default Rails Dev No Route&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://jakeyesbeck.com/assets/images/no_route_page.png&quot; alt=&quot;Default Rails Dev No Route&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;This page provides the ability to enter search terms that match words in the &lt;code class=&quot;highlighter-rouge&quot;&gt;paths&lt;/code&gt; of specfic routes. However, similarly to &lt;code class=&quot;highlighter-rouge&quot;&gt;rake routes&lt;/code&gt;, this screen is only accessible in development mode. While this tool is still extremely useful, there could be cases when route inspection would be helpful without running the server locally.&lt;/p&gt;
 
@@ -576,7 +810,7 @@ upstream  git@github.com:covermymeds/fetching-gem.git &lt;span class=&quot;o&quo
 
 &lt;p&gt;After following the &lt;a href=&quot;https://github.com/yez/passages#install&quot;&gt;installation guide from the project’s README&lt;/a&gt;, A very basic use of &lt;code class=&quot;highlighter-rouge&quot;&gt;Passages&lt;/code&gt; would look like:&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;/assets/images/passages_demo.gif&quot; alt=&quot;Passages Demo&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://jakeyesbeck.com/assets/images/passages_demo.gif&quot; alt=&quot;Passages Demo&quot; /&gt;&lt;/p&gt;
 
 &lt;h2 id=&quot;contributing&quot;&gt;Contributing&lt;/h2&gt;
 
@@ -590,9 +824,9 @@ upstream  git@github.com:covermymeds/fetching-gem.git &lt;span class=&quot;o&quo
  
  <entry>
    <title>Things I Wish I Knew When I Started Programming</title>
-   <link href="/2015/12/27/what-i-would-tell-myself-when-i-started-programming/"/>
+   <link href="http://jakeyesbeck.com/2015/12/27/what-i-would-tell-myself-when-i-started-programming/"/>
    <updated>2015-12-27T04:00:00-08:00</updated>
-   <id>/2015/12/27/what-i-would-tell-myself-when-i-started-programming</id>
+   <id>http://jakeyesbeck.com/2015/12/27/what-i-would-tell-myself-when-i-started-programming</id>
    <content type="html">&lt;p&gt;If by some magical event I could go back in time to the day before I started my first job as a software engineer, this is what I would say.&lt;/p&gt;
 
 &lt;h2 id=&quot;drive-slow&quot;&gt;Drive Slow&lt;/h2&gt;
@@ -631,9 +865,9 @@ upstream  git@github.com:covermymeds/fetching-gem.git &lt;span class=&quot;o&quo
  
  <entry>
    <title>Introduction to Rails 5 Attributes</title>
-   <link href="/2015/12/20/rails-5-attributes/"/>
+   <link href="http://jakeyesbeck.com/2015/12/20/rails-5-attributes/"/>
    <updated>2015-12-20T04:00:00-08:00</updated>
-   <id>/2015/12/20/rails-5-attributes</id>
+   <id>http://jakeyesbeck.com/2015/12/20/rails-5-attributes</id>
    <content type="html">&lt;p&gt;Shortly after the tenth anniversary of Ruby on Rails 1.0, Rails 5.0 Beta has been announced. While the main character of this release was without a doubt &lt;code class=&quot;highlighter-rouge&quot;&gt;ActionCable&lt;/code&gt;, other really great features have made their debut.&lt;/p&gt;
 
 &lt;h2 id=&quot;types-of-changes&quot;&gt;Types of Changes&lt;/h2&gt;
@@ -794,9 +1028,9 @@ upstream  git@github.com:covermymeds/fetching-gem.git &lt;span class=&quot;o&quo
  
  <entry>
    <title>Ruby Refinements</title>
-   <link href="/2015/12/13/ruby-refinements/"/>
+   <link href="http://jakeyesbeck.com/2015/12/13/ruby-refinements/"/>
    <updated>2015-12-13T04:00:00-08:00</updated>
-   <id>/2015/12/13/ruby-refinements</id>
+   <id>http://jakeyesbeck.com/2015/12/13/ruby-refinements</id>
    <content type="html">&lt;p&gt;The Ruby language provides many powerful tools for software engineers to utilize. For instance, classes that have been previously defined and evaluated can be reopened and changed. This is commonly referred to as &lt;em&gt;“monkey patching”&lt;/em&gt;, a term which elicits almost universal disdain among Ruby developers.&lt;/p&gt;
 
 &lt;h2 id=&quot;the-problem&quot;&gt;The Problem&lt;/h2&gt;
@@ -982,9 +1216,9 @@ upstream  git@github.com:covermymeds/fetching-gem.git &lt;span class=&quot;o&quo
  
  <entry>
    <title>How to use Rails Strong Parameters</title>
-   <link href="/2015/12/06/how-to-use-rails-strong-parameters/"/>
+   <link href="http://jakeyesbeck.com/2015/12/06/how-to-use-rails-strong-parameters/"/>
    <updated>2015-12-06T04:00:00-08:00</updated>
-   <id>/2015/12/06/how-to-use-rails-strong-parameters</id>
+   <id>http://jakeyesbeck.com/2015/12/06/how-to-use-rails-strong-parameters</id>
    <content type="html">&lt;p&gt;In the latest major version of Ruby on Rails, &lt;strong&gt;Strong Parameters&lt;/strong&gt; were introduced. The intent of this addition was to enable consistent and reliable parameter checking. Using Strong Parameters is simple and intuitive. It provides a very clean method API to help keep controllers DRY.&lt;/p&gt;
 
 &lt;p&gt;However, knowing when to use Strong Parameters and how to use them correctly is very important. After all, what good is parameter validation if it is in the wrong place or conveys the wrong message?&lt;/p&gt;
@@ -1145,9 +1379,9 @@ upstream  git@github.com:covermymeds/fetching-gem.git &lt;span class=&quot;o&quo
  
  <entry>
    <title>Validates Type 2.0</title>
-   <link href="/2015/11/29/updated-validates-type/"/>
+   <link href="http://jakeyesbeck.com/2015/11/29/updated-validates-type/"/>
    <updated>2015-11-29T04:00:00-08:00</updated>
-   <id>/2015/11/29/updated-validates-type</id>
+   <id>http://jakeyesbeck.com/2015/11/29/updated-validates-type</id>
    <content type="html">&lt;p&gt;One of the first projects that I worked on during this Year of Commits was &lt;a href=&quot;https://github.com/yez/validates_type&quot;&gt;validates_type&lt;/a&gt;. In case that name is too obscure, &lt;code class=&quot;highlighter-rouge&quot;&gt;validates_type&lt;/code&gt; is a gem for validating that a specific value is exactly the type it is expected to be. The &lt;code class=&quot;highlighter-rouge&quot;&gt;validates_type&lt;/code&gt; library is compatible to &lt;code class=&quot;highlighter-rouge&quot;&gt;ActiveModel&lt;/code&gt; style validations.&lt;/p&gt;
 
 &lt;p&gt;Originally, the &lt;code class=&quot;highlighter-rouge&quot;&gt;validates_type&lt;/code&gt; gem was very strict with what it validated against. It started with basic included Ruby types like &lt;code class=&quot;highlighter-rouge&quot;&gt;Integer&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;Float&lt;/code&gt;, and &lt;code class=&quot;highlighter-rouge&quot;&gt;String&lt;/code&gt;. This was a fine first step but proved too restrictive for basically any use case.&lt;/p&gt;
@@ -1243,9 +1477,9 @@ upstream  git@github.com:covermymeds/fetching-gem.git &lt;span class=&quot;o&quo
  
  <entry>
    <title>How to Write Future-proof Mocks in RSpec 3</title>
-   <link href="/2015/11/22/how-to-write-futureproof-mocks/"/>
+   <link href="http://jakeyesbeck.com/2015/11/22/how-to-write-futureproof-mocks/"/>
    <updated>2015-11-22T04:00:00-08:00</updated>
-   <id>/2015/11/22/how-to-write-futureproof-mocks</id>
+   <id>http://jakeyesbeck.com/2015/11/22/how-to-write-futureproof-mocks</id>
    <content type="html">&lt;p&gt;Tests are an important component in most software applications. Whether tests drive the development, or are strapped on after the fact, tests need to be reliable for future development to progress. An application’s complexity rises with time. During and after this increase, a rock solid test suite is crucial.&lt;/p&gt;
 
 &lt;h2 id=&quot;let-the-dogs-out&quot;&gt;Let the Dogs Out&lt;/h2&gt;
@@ -1404,9 +1638,9 @@ Finished &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;0.0054 seconds &lt;span
  
  <entry>
    <title>Five Active Record Features You Should Be Using</title>
-   <link href="/2015/11/15/five-active-record-features-you-should-be-using/"/>
+   <link href="http://jakeyesbeck.com/2015/11/15/five-active-record-features-you-should-be-using/"/>
    <updated>2015-11-15T04:00:00-08:00</updated>
-   <id>/2015/11/15/five-active-record-features-you-should-be-using</id>
+   <id>http://jakeyesbeck.com/2015/11/15/five-active-record-features-you-should-be-using</id>
    <content type="html">&lt;p&gt;Active Record is responsible for communicating with the persistence layer by default in Ruby on Rails applications. Using Active Record effectively and efficiently can greatly improve an application’s code.&lt;/p&gt;
 
 &lt;p&gt;In Ruby on Rails 4.0, some material changes have been made to Active Record. Understanding these changes, and how they are best utilized is important for any Rails developer.&lt;/p&gt;
@@ -1588,9 +1822,9 @@ Finished &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;0.0054 seconds &lt;span
  
  <entry>
    <title>Ruby DelegateClass</title>
-   <link href="/2015/11/08/ruby-delegate-class/"/>
+   <link href="http://jakeyesbeck.com/2015/11/08/ruby-delegate-class/"/>
    <updated>2015-11-08T04:00:00-08:00</updated>
-   <id>/2015/11/08/ruby-delegate-class</id>
+   <id>http://jakeyesbeck.com/2015/11/08/ruby-delegate-class</id>
    <content type="html">&lt;p&gt;Objects are a big deal in Ruby. A &lt;a href=&quot;http://jakeyesbeck.com/2015/08/23/ruby-objects/&quot;&gt;previous post about Ruby Objects&lt;/a&gt; can corroborate: Ruby Objects are pretty cool.&lt;/p&gt;
 
 &lt;p&gt;There are many ways to work with Ruby Objects. Standard inheritance, module inheritance, decorators, and composition are all commonly found in a codebase. One class in particular seems almost universal across applications: the &lt;code class=&quot;highlighter-rouge&quot;&gt;User&lt;/code&gt; class.&lt;/p&gt;
@@ -1735,10 +1969,10 @@ Finished &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;0.0054 seconds &lt;span
  
  <entry>
    <title>Six Months of Commits</title>
-   <link href="/2015/11/01/six-months-of-commits/"/>
+   <link href="http://jakeyesbeck.com/2015/11/01/six-months-of-commits/"/>
    <updated>2015-11-01T04:00:00-08:00</updated>
-   <id>/2015/11/01/six-months-of-commits</id>
-   <content type="html">&lt;p&gt;&lt;img src=&quot;/assets/images/180_day_streak.png&quot; alt=&quot;180 Days of Commits&quot; /&gt;&lt;/p&gt;
+   <id>http://jakeyesbeck.com/2015/11/01/six-months-of-commits</id>
+   <content type="html">&lt;p&gt;&lt;img src=&quot;http://jakeyesbeck.com/assets/images/180_day_streak.png&quot; alt=&quot;180 Days of Commits&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;Six months ago I started &lt;a href=&quot;http://jakeyesbeck.com/2015/04/23/a-year-of-commits/&quot;&gt;a challenge for myself&lt;/a&gt;. I wanted to contribute to open source software, a task that I had previously thought out of reach and intimidating. A plan that I had devised to overcome this mindset was to achieve consistency. For a full year, I made a commitment to make at least one commit to an open source repository (someone else’s or my own) every single day. Additionally, I decided to write an article every Sunday about either my projects, my journey, or something interesting I encountered along the way.&lt;/p&gt;
 
@@ -1768,9 +2002,9 @@ Finished &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;0.0054 seconds &lt;span
  
  <entry>
    <title>How to Traverse Foreign Ruby Code</title>
-   <link href="/2015/10/25/how-to-traverse-foreign-ruby-code/"/>
+   <link href="http://jakeyesbeck.com/2015/10/25/how-to-traverse-foreign-ruby-code/"/>
    <updated>2015-10-25T05:00:00-07:00</updated>
-   <id>/2015/10/25/how-to-traverse-foreign-ruby-code</id>
+   <id>http://jakeyesbeck.com/2015/10/25/how-to-traverse-foreign-ruby-code</id>
    <content type="html">&lt;p&gt;A Ruby on Rails project will most likely contain large amounts of third party software. Software written by other people can fluctuate greatly in terms of documentation. Even very well documented software might have pieces that are more shrouded than others.&lt;/p&gt;
 
 &lt;p&gt;When these opaque pieces of code start to cause issue or incite curiosity, spelunking through these libraries is easier with simple patterns and the right tools.&lt;/p&gt;
@@ -1944,9 +2178,9 @@ Finished &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;0.0054 seconds &lt;span
  
  <entry>
    <title>Building a Simple Web Server with Ruby 2.0+ (Part 2)</title>
-   <link href="/2015/10/18/building-a-simple-web-server-with-ruby-2-part-2/"/>
+   <link href="http://jakeyesbeck.com/2015/10/18/building-a-simple-web-server-with-ruby-2-part-2/"/>
    <updated>2015-10-18T05:00:00-07:00</updated>
-   <id>/2015/10/18/building-a-simple-web-server-with-ruby-2-part-2</id>
+   <id>http://jakeyesbeck.com/2015/10/18/building-a-simple-web-server-with-ruby-2-part-2</id>
    <content type="html">&lt;p&gt;In &lt;a href=&quot;http://jakeyesbeck.com/2015/10/11/building-a-simple-web-server-with-ruby-2/&quot;&gt;a previous post&lt;/a&gt;, a very simple Ruby server was created to listen to HTTP requests. While great for a first step, this example server does nothing more than respond with “Hello World”. Greetings are nice and polite, but I think we can do better.&lt;/p&gt;
 
 &lt;h2 id=&quot;pro-filing&quot;&gt;Pro-filing&lt;/h2&gt;
@@ -2182,9 +2416,9 @@ Connection: close
  
  <entry>
    <title>Building a Simple Web Server with Ruby 2.0+</title>
-   <link href="/2015/10/11/building-a-simple-web-server-with-ruby-2/"/>
+   <link href="http://jakeyesbeck.com/2015/10/11/building-a-simple-web-server-with-ruby-2/"/>
    <updated>2015-10-11T05:00:00-07:00</updated>
-   <id>/2015/10/11/building-a-simple-web-server-with-ruby-2</id>
+   <id>http://jakeyesbeck.com/2015/10/11/building-a-simple-web-server-with-ruby-2</id>
    <content type="html">&lt;p&gt;The Ruby language can be utilized for a variety of different purposes. The most popular of these is as a web scripting language. The entry point to these applications, the web server, is not something that is usually built from the ground up. Most applications have the lines &lt;code class=&quot;highlighter-rouge&quot;&gt;gem &#39;puma&#39;&lt;/code&gt; or &lt;code class=&quot;highlighter-rouge&quot;&gt;gem &#39;unicorn&#39;&lt;/code&gt; in their &lt;code class=&quot;highlighter-rouge&quot;&gt;Gemfile&lt;/code&gt;. Those are high quality web servers that were built and are maintained by very talented people, but how do they work?&lt;/p&gt;
 
 &lt;p&gt;The aforementioned web servers are just Ruby gems written by Rubyists. While they are awesome gems, &lt;a href=&quot;http://jakeyesbeck.com/2015/08/16/gems-are-not-magic/&quot;&gt;they are not magic&lt;/a&gt;. A basic web server can be written to satisfy some very simple requests.&lt;/p&gt;
@@ -2372,9 +2606,9 @@ Connection: close
  
  <entry>
    <title>Someone Wrote that Code on Purpose</title>
-   <link href="/2015/10/04/someone-wrote-that-code-on-purpose/"/>
+   <link href="http://jakeyesbeck.com/2015/10/04/someone-wrote-that-code-on-purpose/"/>
    <updated>2015-10-04T05:00:00-07:00</updated>
-   <id>/2015/10/04/someone-wrote-that-code-on-purpose</id>
+   <id>http://jakeyesbeck.com/2015/10/04/someone-wrote-that-code-on-purpose</id>
    <content type="html">&lt;p&gt;One of the great misconceptions of software engineering is the belief that &lt;em&gt;“any code written in the past is probably wrong”&lt;/em&gt;. For some reason, an accepted mindset (usually among junior developers) is that older code was written with haste or by someone who did not fully understand the problem at hand, invalidating its existence.&lt;/p&gt;
 
 &lt;p&gt;A multitude of rationalizations may arise when the thought of refactoring software from the ground up is an option. After all, the person who wrote that code may not even be around anymore. They could have just been learning the language, surely that is a valid enough reason to completely decimate their work. What possible justification could there be for the opposite? The code just &lt;strong&gt;feels&lt;/strong&gt; wrong, and I, the new domain expert, will rectify this situation!&lt;/p&gt;
@@ -2411,9 +2645,9 @@ Connection: close
  
  <entry>
    <title>How to Create a Custom Enumerable</title>
-   <link href="/2015/09/27/how-to-create-a-custom-enumerable/"/>
+   <link href="http://jakeyesbeck.com/2015/09/27/how-to-create-a-custom-enumerable/"/>
    <updated>2015-09-27T05:00:00-07:00</updated>
-   <id>/2015/09/27/how-to-create-a-custom-enumerable</id>
+   <id>http://jakeyesbeck.com/2015/09/27/how-to-create-a-custom-enumerable</id>
    <content type="html">&lt;p&gt;Ruby is a wonderfully flexible language. An example of this flexibility is in the ability to define a custom collection class that acts as an &lt;a href=&quot;http://ruby-doc.org/core-2.1.1/Enumerable.html&quot;&gt;Enumerable&lt;/a&gt; object. In Ruby, a collection that acts as an &lt;code class=&quot;highlighter-rouge&quot;&gt;Enumerable&lt;/code&gt; is basically a class which holds a list of objects and exposes helpful methods for iteration and collection. An example of this pattern built into Ruby is the &lt;a href=&quot;http://ruby-doc.org/core-2.2.3/Array.html&quot;&gt;Array&lt;/a&gt; class.&lt;/p&gt;
 
 &lt;p&gt;In keeping with a &lt;a href=&quot;http://jakeyesbeck.com/2015/09/13/rescue-groups/&quot;&gt;theme&lt;/a&gt;, let us assume that an application about dogs exists. In this example, a &lt;code class=&quot;highlighter-rouge&quot;&gt;DogKennel&lt;/code&gt; class exists that will hold information about each dog in the kennel and detailed information about said kennel. We can also assume that this class is meant to be used as a collection of dogs, exposing helper methods for information about the kennel. Why would we use this collection class over a typical &lt;code class=&quot;highlighter-rouge&quot;&gt;Array&lt;/code&gt;? One reason might be that the consumer of this class expects a list of dogs and some additional metadata. That metadata can be easily exposed in this class without having to wrap the class or extract the metadata from an included &lt;code class=&quot;highlighter-rouge&quot;&gt;Hash&lt;/code&gt;.&lt;/p&gt;
@@ -2548,9 +2782,9 @@ Connection: close
  
  <entry>
    <title>Just learn Rails (Part 3) HTTP status codes</title>
-   <link href="/2015/09/20/rails-http-status-codes/"/>
+   <link href="http://jakeyesbeck.com/2015/09/20/rails-http-status-codes/"/>
    <updated>2015-09-20T05:00:00-07:00</updated>
-   <id>/2015/09/20/rails-http-status-codes</id>
+   <id>http://jakeyesbeck.com/2015/09/20/rails-http-status-codes</id>
    <content type="html">&lt;p&gt;So you want to be a Rails superstar? To live large, big servers, requesting tars. Writing code all over the world, gotta make commits constantly. Great, I feel the same way.&lt;/p&gt;
 
 &lt;p&gt;Assuming you have already had that &lt;em&gt;“I should &lt;a href=&quot;http://jakeyesbeck.com/2015/05/17/just-learn-rails/&quot;&gt;just learn Rails&lt;/a&gt;”&lt;/em&gt; moment, the idea of writing an API for a super awesome application might be on the horizon. And, of course, the framework that makes the most sense is Ruby on Rails. Given that is the direction things might naturally evolve, creating an API with Rails can gloss over a few crucial design concepts and considerations.&lt;/p&gt;
@@ -2647,9 +2881,9 @@ Connection: close
  
  <entry>
    <title>Rescue Groups Ruby Wrapper</title>
-   <link href="/2015/09/13/rescue-groups/"/>
+   <link href="http://jakeyesbeck.com/2015/09/13/rescue-groups/"/>
    <updated>2015-09-13T05:00:00-07:00</updated>
-   <id>/2015/09/13/rescue-groups</id>
+   <id>http://jakeyesbeck.com/2015/09/13/rescue-groups</id>
    <content type="html">&lt;p&gt;People need companions. We are a social species that enjoys surrounding itself with family and friends. But sometimes, and maybe more often than just sometimes, people crave companionship from something that cannot talk back. This is probably one of the reasons so many people like pets. A pet cannot disagree with you or say judgmental remarks as you fill up that wine glass for a fourth time. No, a good pet will simply exist near you, occasionally asking for pets and food. Pets can be obtained from breeders for huge stacks of cash, or they can be adopted for significantly cheaper.&lt;/p&gt;
 
 &lt;h2 id=&quot;the-adoption-option&quot;&gt;The Adoption Option&lt;/h2&gt;
@@ -2739,9 +2973,9 @@ Connection: close
  
  <entry>
    <title>Stop and Take a Moment</title>
-   <link href="/2015/09/06/stop-and-take-a-moment/"/>
+   <link href="http://jakeyesbeck.com/2015/09/06/stop-and-take-a-moment/"/>
    <updated>2015-09-06T05:00:00-07:00</updated>
-   <id>/2015/09/06/stop-and-take-a-moment</id>
+   <id>http://jakeyesbeck.com/2015/09/06/stop-and-take-a-moment</id>
    <content type="html">&lt;p&gt;Someone in all our lives has offered up the advice: “Slow down”. It might have happened once or, if we are lucky, many people have said it. Regardless, the words did not sink in. At least not at first. And even to this day, maybe the words are yet to truly be absorbed and understood. But those words do not mean anything, it is just something people say, right? Wrong. These little words carry more weight with them than most conversations in a day.&lt;/p&gt;
 
 &lt;p&gt;&lt;em&gt;“I am just too busy”&lt;/em&gt;, &lt;em&gt;“There is no time to waste, how could I slow down?”&lt;/em&gt;, we say in response. Because in the moment, these phrases make sense. Things that are right in front of our face are the most important. We may plan slightly in the future or be cognizant of a few days in the past, but we stay busy. After all, being busy has become our natural and most comfortable state.&lt;/p&gt;
@@ -2770,9 +3004,9 @@ Connection: close
  
  <entry>
    <title>Active Support and Time</title>
-   <link href="/2015/08/30/active-support-and-time/"/>
+   <link href="http://jakeyesbeck.com/2015/08/30/active-support-and-time/"/>
    <updated>2015-08-30T05:00:00-07:00</updated>
-   <id>/2015/08/30/active-support-and-time</id>
+   <id>http://jakeyesbeck.com/2015/08/30/active-support-and-time</id>
    <content type="html">&lt;p&gt;If a list was compiled of useful Ruby libraries, Active Support would be close to the top. Based on the &lt;a href=&quot;http://api.rubyonrails.org/classes/ActiveSupport.html&quot;&gt;documentation alone&lt;/a&gt;, it is apparent that a very large amount of time went into thinking about the roles Active Support should play and the functionality it should support. From string manipulation to internationalization, Active Support seems to simply do it all. However, even a profoundly useful library like Active Support still has a few inconsistencies with everyone’s favorite subject: &lt;strong&gt;Time Calculation&lt;/strong&gt;.&lt;/p&gt;
 
 &lt;h2 id=&quot;time-wounds-all-heals&quot;&gt;Time wounds all heals&lt;/h2&gt;
@@ -2859,9 +3093,9 @@ Connection: close
  
  <entry>
    <title>I, Object!</title>
-   <link href="/2015/08/23/ruby-objects/"/>
+   <link href="http://jakeyesbeck.com/2015/08/23/ruby-objects/"/>
    <updated>2015-08-23T05:00:00-07:00</updated>
-   <id>/2015/08/23/ruby-objects</id>
+   <id>http://jakeyesbeck.com/2015/08/23/ruby-objects</id>
    <content type="html">&lt;p&gt;&lt;strong&gt;I am lucky enough to work with wonderfully talented people every single day. This is a guest post by one of my magnificent coworkers, &lt;a href=&quot;https://github.com/kristjan&quot;&gt;Kristján Pétursson&lt;/a&gt;. Thank you for allowing me to share this knowledge with everyone!&lt;/strong&gt;&lt;/p&gt;
 
 &lt;p&gt;This post is adapted from my answer to &lt;a href=&quot;http://stackoverflow.com/q/31775576/802618&quot;&gt;this Stack Overflow question&lt;/a&gt;. If you want to start from the beginning of the universe and build out, go read that one. If you prefer to start with something you can touch and work backwards, here we go.&lt;/p&gt;
@@ -3125,9 +3359,9 @@ duck ~~~~&amp;gt; | #&amp;lt;Class:Duck&amp;gt; |
  
  <entry>
    <title>Gems != Magic</title>
-   <link href="/2015/08/16/gems-are-not-magic/"/>
+   <link href="http://jakeyesbeck.com/2015/08/16/gems-are-not-magic/"/>
    <updated>2015-08-16T05:00:00-07:00</updated>
-   <id>/2015/08/16/gems-are-not-magic</id>
+   <id>http://jakeyesbeck.com/2015/08/16/gems-are-not-magic</id>
    <content type="html">&lt;p&gt;Ruby gems can seem magical. Usually, one (or more accurately: thirty) solution to a problem exists in the form of a gem. Using gems is easy and intuitive. Simply add a line in the project root’s &lt;code class=&quot;highlighter-rouge&quot;&gt;Gemfile&lt;/code&gt; and run &lt;code class=&quot;highlighter-rouge&quot;&gt;bundle install&lt;/code&gt;. Then, either &lt;code class=&quot;highlighter-rouge&quot;&gt;require&lt;/code&gt; the name of the gem or, if using Ruby on Rails, start using the gem’s code immediately anywhere in the project. What could possibly go wrong?&lt;/p&gt;
 
 &lt;h2 id=&quot;gems-on-gems-on-gems&quot;&gt;Gems on gems on gems&lt;/h2&gt;
@@ -3182,9 +3416,9 @@ duck ~~~~&amp;gt; | #&amp;lt;Class:Duck&amp;gt; |
  
  <entry>
    <title>How to Process Large Data Sets with Ruby</title>
-   <link href="/2015/08/09/how-to-process-large-data-sets-with-ruby/"/>
+   <link href="http://jakeyesbeck.com/2015/08/09/how-to-process-large-data-sets-with-ruby/"/>
    <updated>2015-08-09T05:00:00-07:00</updated>
-   <id>/2015/08/09/how-to-process-large-data-sets-with-ruby</id>
+   <id>http://jakeyesbeck.com/2015/08/09/how-to-process-large-data-sets-with-ruby</id>
    <content type="html">&lt;p&gt;The need for data migrations in mature systems is real. At times, requests for these migrations can appear at random. One minute, a system is behaving as specified, happily fulfilling requests, and then bam! All the user objects suddenly need an extremely crucial attribute. Well that seems relatively simple, right? All that is needed is a simple ruby script to iterate over all users and update every user with this essential piece of data.&lt;/p&gt;
 
 &lt;p&gt;To demonstrate such a problem, we can assume the following:&lt;/p&gt;
@@ -3325,16 +3559,16 @@ duck ~~~~&amp;gt; | #&amp;lt;Class:Duck&amp;gt; |
  
  <entry>
    <title>Faster Ruby Testing: Only Test What Matters</title>
-   <link href="/2015/08/02/test-only-what-matters/"/>
+   <link href="http://jakeyesbeck.com/2015/08/02/test-only-what-matters/"/>
    <updated>2015-08-02T05:00:00-07:00</updated>
-   <id>/2015/08/02/test-only-what-matters</id>
+   <id>http://jakeyesbeck.com/2015/08/02/test-only-what-matters</id>
    <content type="html">&lt;p&gt;Automated testing is important. Fast, exhaustive automated testing is even more important. Tests are responsible for ensuring the code you spend hours creating actually works. A great test suite can be a safeguard against bugs, a directional guide towards extending the code, and an accurate measurement of the codebase’s health. The key to writing good tests is understanding where pieces of responsibility begin and end. Maintaining small concise automated tests can make all the difference.&lt;/p&gt;
 
 &lt;h2 id=&quot;speed-is-king&quot;&gt;Speed is King&lt;/h2&gt;
 
 &lt;p&gt;Aside from the general importance of &lt;a href=&quot;http://jakeyesbeck.com/2015/06/07/short-feedback-cycles/&quot;&gt;short feedback cycles&lt;/a&gt;, a fast test suite will greatly improve your work-flow and mood. Conversely, a slow test suite can make your development cycle a living nightmare. How many unfortunate software artisans have dealt with something like:&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;/assets/images/slow_tests.png&quot; alt=&quot;slow test suite screenshot&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://jakeyesbeck.com/assets/images/slow_tests.png&quot; alt=&quot;slow test suite screenshot&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;Bleh! What a horrible thing to deal with. What, am I supposed to just wait 5 whole minutes every time I want to test my system? A test suite this slow is simply unacceptable.&lt;/p&gt;
 
@@ -3431,18 +3665,18 @@ duck ~~~~&amp;gt; | #&amp;lt;Class:Duck&amp;gt; |
  
  <entry>
    <title>Ninety Days of Commits</title>
-   <link href="/2015/07/26/ninety-days-of-commits/"/>
+   <link href="http://jakeyesbeck.com/2015/07/26/ninety-days-of-commits/"/>
    <updated>2015-07-26T05:00:00-07:00</updated>
-   <id>/2015/07/26/ninety-days-of-commits</id>
-   <content type="html">&lt;p&gt;&lt;img src=&quot;/assets/images/90_day_streak.png&quot; alt=&quot;90 Days of Commits&quot; /&gt;&lt;/p&gt;
+   <id>http://jakeyesbeck.com/2015/07/26/ninety-days-of-commits</id>
+   <content type="html">&lt;p&gt;&lt;img src=&quot;http://jakeyesbeck.com/assets/images/90_day_streak.png&quot; alt=&quot;90 Days of Commits&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;It has been ninety days since I started the &lt;a href=&quot;http://jakeyesbeck.com/2015/04/23/a-year-of-commits/&quot;&gt;Year of Commits&lt;/a&gt; initiative. The criteria behind this challenge was to make a commit to a public Github repository every day. Technically, a commit like the following satisfies that criteria:&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;/assets/images/example_small_commit.png&quot; alt=&quot;Small daily commit&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://jakeyesbeck.com/assets/images/example_small_commit.png&quot; alt=&quot;Small daily commit&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;However, if I allowed this commit to be my sole contribution for a day, I would be cheating no one except myself. In reality, I have been averaging 3 to 4 decent size commits a day. Spending around an hour or two total per night. Github is an awesome piece of software that tells a visual tale of when I am most productive:&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;/assets/images/time_of_commits.png&quot; alt=&quot;Times of Commits&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;http://jakeyesbeck.com/assets/images/time_of_commits.png&quot; alt=&quot;Times of Commits&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;Over this quarter of a year, I have accrued some interesting learnings about developing open source software.&lt;/p&gt;
 
@@ -3464,9 +3698,9 @@ duck ~~~~&amp;gt; | #&amp;lt;Class:Duck&amp;gt; |
  
  <entry>
    <title>Just learn Rails (Part 2)</title>
-   <link href="/2015/07/19/just-learn-rails-part-2/"/>
+   <link href="http://jakeyesbeck.com/2015/07/19/just-learn-rails-part-2/"/>
    <updated>2015-07-19T05:00:00-07:00</updated>
-   <id>/2015/07/19/just-learn-rails-part-2</id>
+   <id>http://jakeyesbeck.com/2015/07/19/just-learn-rails-part-2</id>
    <content type="html">&lt;p&gt;In a &lt;a href=&quot;http://jakeyesbeck.com/2015/05/17/just-learn-rails/&quot;&gt;previous post&lt;/a&gt; I explained how &lt;em&gt;“just learning Rails”&lt;/em&gt; is not as straight forward as the phrase portrays. Even the novice programmer who learns Ruby on Rails in a methodical progression may still run into hardship. However, this is not entirely the fault of young programmer, he or she was simply enabled into bad habits. &lt;strong&gt;Ruby on Rails enables the complete disregard of encapsulation.&lt;/strong&gt; Notice how I did not say that Ruby on Rails prescribes less encapsulation, it simply enables it.&lt;/p&gt;
 
 &lt;p&gt;This idea, much like any idea posted to the Internet, is not new. Many intelligent people have come to this same realization. One such example is the &lt;a href=&quot;https://github.com/apotonick/trailblazer&quot;&gt;Trailblazer framework&lt;/a&gt;, which aims to help inject some encapsulation and abstraction mechanisms Rails is lacking. (For those interested, &lt;a href=&quot;https://leanpub.com/trailblazer&quot;&gt;a book has been written&lt;/a&gt; to more fully explain this framework).&lt;/p&gt;
@@ -3593,9 +3827,9 @@ duck ~~~~&amp;gt; | #&amp;lt;Class:Duck&amp;gt; |
  
  <entry>
    <title>Create a Free Tech Blog</title>
-   <link href="/2015/07/12/create-a-free-tech-blog/"/>
+   <link href="http://jakeyesbeck.com/2015/07/12/create-a-free-tech-blog/"/>
    <updated>2015-07-12T05:00:00-07:00</updated>
-   <id>/2015/07/12/create-a-free-tech-blog</id>
+   <id>http://jakeyesbeck.com/2015/07/12/create-a-free-tech-blog</id>
    <content type="html">&lt;p&gt;The Internet is wondrous technology. If anyone remembers Geocities and Personal Home Pages, you can appreciate just how much the Internet has evolved. This evolution has recently enabled creating a tech blog completely for free. When I say free, do I mean completely free? Yes, completely free! Even this very blog, my Year of Commits, is hosted for free using the same technologies outlined in this post. You too can have a free tech blog after following these &lt;strong&gt;2 simple steps&lt;/strong&gt;.&lt;/p&gt;
 
 &lt;h2 id=&quot;step-1-use-jekyll&quot;&gt;Step 1. Use Jekyll&lt;/h2&gt;
@@ -3665,9 +3899,9 @@ $: git push origin HEAD
  
  <entry>
    <title>Modules in Ruby</title>
-   <link href="/2015/07/05/composition-in-ruby/"/>
+   <link href="http://jakeyesbeck.com/2015/07/05/composition-in-ruby/"/>
    <updated>2015-07-05T05:00:00-07:00</updated>
-   <id>/2015/07/05/composition-in-ruby</id>
+   <id>http://jakeyesbeck.com/2015/07/05/composition-in-ruby</id>
    <content type="html">&lt;p&gt;Currently, one hundred percent of &lt;a href=&quot;http://jakeyesbeck.com/2015/04/23/a_year_of_commits/&quot;&gt;Year of Commits&lt;/a&gt;’ commits have been to Ruby repositories. Ruby has many strengths and is a very malleable language. Ruby can be written functionally or object oriented. I tend to lean toward the latter and find myself using a few different patterns regularly. One powerful tool Ruby provides is the use of Modules.&lt;/p&gt;
 
 &lt;h2 id=&quot;modules&quot;&gt;Modules&lt;/h2&gt;
@@ -3783,9 +4017,9 @@ $: git push origin HEAD
  
  <entry>
    <title>Staying Motivated</title>
-   <link href="/2015/06/28/staying-motivated/"/>
+   <link href="http://jakeyesbeck.com/2015/06/28/staying-motivated/"/>
    <updated>2015-06-28T05:00:00-07:00</updated>
-   <id>/2015/06/28/staying-motivated</id>
+   <id>http://jakeyesbeck.com/2015/06/28/staying-motivated</id>
    <content type="html">&lt;p&gt;Motivation is the most important thing you can control. Only with proper motivation can one reach their full potential. &lt;a href=&quot;http://jakeyesbeck.com/2015/04/23/a_year_of_commits/&quot;&gt;A Year of Commits&lt;/a&gt; is a project that requires a decent amount of motivation. I, like nearly every human ever, am not always the defintion of a “driven individual”. It takes a large amount of effort to persevere through low points and come out the other side with something to show for it. It has been &lt;strong&gt;63&lt;/strong&gt; days of my Year of Commits initiative and I have found a few helpful ways to keep my motivation up and morale high.&lt;/p&gt;
 
 &lt;h2 id=&quot;make-small-deliverables-for-yourself&quot;&gt;1. Make small deliverables for yourself&lt;/h2&gt;
@@ -3806,9 +4040,9 @@ $: git push origin HEAD
  
  <entry>
    <title>Rails style subset validation</title>
-   <link href="/2015/06/21/validates-subset/"/>
+   <link href="http://jakeyesbeck.com/2015/06/21/validates-subset/"/>
    <updated>2015-06-21T05:00:00-07:00</updated>
-   <id>/2015/06/21/validates-subset</id>
+   <id>http://jakeyesbeck.com/2015/06/21/validates-subset</id>
    <content type="html">&lt;p&gt;Do you suddenly wake up in a cold sweat, wondering if there is &lt;strong&gt;finally&lt;/strong&gt; a way to validate that your data is a proper subset that you desire? I too have experienced this horror, and that is why I made a rails style &lt;a href=&quot;https://github.com/yez/validates_subset&quot;&gt;subset validator&lt;/a&gt;.&lt;/p&gt;
 
 &lt;h2 id=&quot;validations-ber-alles&quot;&gt;Validations über alles&lt;/h2&gt;
@@ -3903,9 +4137,9 @@ $: git push origin HEAD
  
  <entry>
    <title>You are not your code</title>
-   <link href="/2015/06/14/you-are-not-your-code/"/>
+   <link href="http://jakeyesbeck.com/2015/06/14/you-are-not-your-code/"/>
    <updated>2015-06-14T05:00:00-07:00</updated>
-   <id>/2015/06/14/you-are-not-your-code</id>
+   <id>http://jakeyesbeck.com/2015/06/14/you-are-not-your-code</id>
    <content type="html">&lt;p&gt;It may have been a mentor, a colleague, or even a random vagrant on your way to work. One of these people has been wise enough in to let you in on the well known fact that: &lt;em&gt;“You are not your code”&lt;/em&gt;. The words themselves seem so simple, so obvious and straightforward. But simple as it may be, this concept is paramount if you are to survive as a &lt;a href=&quot;http://jakeyesbeck.com/2015/05/17/just_learn_rails/&quot;&gt;Software Artisan&lt;/a&gt; and as a functioning member of society.&lt;/p&gt;
 
 &lt;p&gt;When writing software, having a sizable ego is not always appropriate. In fact, it could become a hindrance that will prevent you from being productive and happy. Software contribution is about coordinating with others to make the best possible software. It is very hard to coordinate if a person is unable to relinquish control of their projects because they feel defined by them.&lt;/p&gt;
@@ -3924,9 +4158,9 @@ $: git push origin HEAD
  
  <entry>
    <title>Short Feedback Cycles</title>
-   <link href="/2015/06/07/short-feedback-cycles/"/>
+   <link href="http://jakeyesbeck.com/2015/06/07/short-feedback-cycles/"/>
    <updated>2015-06-07T05:00:00-07:00</updated>
-   <id>/2015/06/07/short-feedback-cycles</id>
+   <id>http://jakeyesbeck.com/2015/06/07/short-feedback-cycles</id>
    <content type="html">&lt;p&gt;Forty-two days into my &lt;a href=&quot;http://jakeyesbeck.com/2015/04/23/a_year_of_commits/&quot;&gt;year of commits&lt;/a&gt; initiative has come and gone. With it, I have found some great processes for making my contributions efficient and effective. Feedback is extremely important when writing software. After all, the code you write is probably designed to work, right? Right. A good way to verify correctness in your software is through automated tests. These can either be unit tests for specific methods and functions or integration tests; those that make sure a complete code path behaves as expected. Regardless, we write these tests to ensure our code works now and in the future. “In the future” is where I have started to contribute to projects.&lt;/p&gt;
 
 &lt;p&gt;Good projects have test files that the original author(s) provide. Great projects have &lt;em&gt;fast&lt;/em&gt; test files that the original author(s) provide. Fast tests provide short feedback cycles. Short feedback cycles prevent bugs and help make new feature development and refactoring much more painless. Feedback governs our behaviors in and outside the development world. Without it, we would not be as efficient or effective at the tasks that are important to us. From writing software to training for a half marathon, feedback matters a great deal.&lt;/p&gt;
@@ -3974,9 +4208,9 @@ $: git push origin HEAD
  
  <entry>
    <title>Writing good API wrappers</title>
-   <link href="/2015/05/31/wrapping-apis/"/>
+   <link href="http://jakeyesbeck.com/2015/05/31/wrapping-apis/"/>
    <updated>2015-05-31T05:00:00-07:00</updated>
-   <id>/2015/05/31/wrapping-apis</id>
+   <id>http://jakeyesbeck.com/2015/05/31/wrapping-apis</id>
    <content type="html">&lt;p&gt;Both in my day job and in my &lt;a href=&quot;http://jakeyesbeck.com/2015/04/23/a_year_of_commits/&quot;&gt;year of commits&lt;/a&gt;, I spend a lot of time thinking about APIs.&lt;/p&gt;
 
 &lt;p&gt;For the uninitiated, an &lt;strong&gt;A&lt;/strong&gt;pplication &lt;strong&gt;P&lt;/strong&gt;rogram &lt;strong&gt;I&lt;/strong&gt;nterface (&lt;strong&gt;API&lt;/strong&gt;) is an avenue for one piece of software to speak to another. This could be a remote, web-based, HTTP API. Or, the API might be an internal interface for one portion of a software system to talk to another. Designing an API that is simple and maintainable is crucial if it is intended to be used and quickly adopted by colleagues or 3rd party developers.&lt;/p&gt;
@@ -4170,9 +4404,9 @@ $: git push origin HEAD
  
  <entry>
    <title>Contributing</title>
-   <link href="/2015/05/24/finding-projects/"/>
+   <link href="http://jakeyesbeck.com/2015/05/24/finding-projects/"/>
    <updated>2015-05-24T05:00:00-07:00</updated>
-   <id>/2015/05/24/finding-projects</id>
+   <id>http://jakeyesbeck.com/2015/05/24/finding-projects</id>
    <content type="html">&lt;p&gt;Since starting this 365 day adventure, I have done a mixture of contributing to my own projects and to others. At the on-set, I made an assumption that it would be an even distribution of commits between my own projects and existing ones. However, this proved much harder than I originally thought. After a sizable amount of effort, I did find a few projects to contribute to. 28 days into this endeavor and seems like I might actually be able to accomplish my goal.&lt;/p&gt;
 
 &lt;p&gt;One of the existing projects, &lt;a href=&quot;https://github.com/girishso/pluck_to_hash&quot;&gt;pluck to hash&lt;/a&gt;, was a very young project when I found it. The project was released without any test coverage so I attempted to &lt;a href=&quot;https://github.com/girishso/pluck_to_hash/pull/6&quot;&gt;rectify that&lt;/a&gt;. Thankfully my pull request was accepted! It felt great to finally contribute to a project that wasn’t my own. I also learned a few things by doing so.&lt;/p&gt;
@@ -4189,9 +4423,9 @@ $: git push origin HEAD
  
  <entry>
    <title>Just learn Rails</title>
-   <link href="/2015/05/17/just-learn-rails/"/>
+   <link href="http://jakeyesbeck.com/2015/05/17/just-learn-rails/"/>
    <updated>2015-05-17T05:00:00-07:00</updated>
-   <id>/2015/05/17/just-learn-rails</id>
+   <id>http://jakeyesbeck.com/2015/05/17/just-learn-rails</id>
    <content type="html">&lt;p&gt;&lt;strong&gt;Obligatory YoC update: Still going strong, 21 days in a row!&lt;/strong&gt;&lt;/p&gt;
 
 &lt;p&gt;The only real city I have lived in is San Francisco. I assume that in other cities, like New York and Los Angeles, people bring up topics relevant to industries popular there. So I would imagine that in New York, a person could overhear something about: banking, stock trading, fashion, and expensive brunches. While in Los Angeles, you might wander by people having conversations pertaining to: making movies and working at the Cheesecake Factory. I have come to this conclusion because everyone in San Francisco talks about writing software.&lt;/p&gt;
@@ -4216,9 +4450,9 @@ $: git push origin HEAD
  
  <entry>
    <title>validates_type</title>
-   <link href="/2015/05/10/validates-type/"/>
+   <link href="http://jakeyesbeck.com/2015/05/10/validates-type/"/>
    <updated>2015-05-10T05:00:00-07:00</updated>
-   <id>/2015/05/10/validates-type</id>
+   <id>http://jakeyesbeck.com/2015/05/10/validates-type</id>
    <content type="html">&lt;p&gt;In keeping with my apparent obsession with types, I created another &lt;em&gt;helpful&lt;/em&gt; library: &lt;a href=&quot;https://github.com/yez/validates_type&quot;&gt;validates_type&lt;/a&gt;. I wanted a nice, lightweight way to assert that the types of my attributes are exactly what I need them to be once I save them to the database.&lt;/p&gt;
 
 &lt;p&gt;No one is particularly fond of littering their code with &lt;code class=&quot;highlighter-rouge&quot;&gt;try&lt;/code&gt;s and &lt;code class=&quot;highlighter-rouge&quot;&gt;is_a?&lt;/code&gt;s. To remedy this, I make my models assert confidence that the data in my database is what I expect. I’m not talking about type coercion, type casting or any other munging of types that might happen on a typical read/write from your handy dandy ORM of choice. No no, this is the real deal, the bees knees, the elbows of a gazelle: &lt;strong&gt;actual type validation&lt;/strong&gt;.&lt;/p&gt;
@@ -4328,9 +4562,9 @@ $: git push origin HEAD
  
  <entry>
    <title>Ruby Boolean</title>
-   <link href="/2015/05/03/ruby-boolean/"/>
+   <link href="http://jakeyesbeck.com/2015/05/03/ruby-boolean/"/>
    <updated>2015-05-03T05:00:00-07:00</updated>
-   <id>/2015/05/03/ruby-boolean</id>
+   <id>http://jakeyesbeck.com/2015/05/03/ruby-boolean</id>
    <content type="html">&lt;p&gt;Week one of my &lt;a href=&quot;/2015/04/23/a_year_of_commits/&quot;&gt;Year of Commits&lt;/a&gt; initiative is complete, 51 more to go. I did not plan on telling people about this until a few weeks into the task (in case history repeated itself and I gave up 20% in). But that didn’t happen; people found out about it almost immediately, demonstrating yet again just how easy it is to find anything on the Internet. Thanks, Obama.&lt;/p&gt;
 
 &lt;p&gt;So what happened in the first week? Did I change the world of open source forever? Did I contribute a monumental change to one of the most well renown ruby libraries out there? Nope, I made a gem that at its core is 3 lines long. I made a &lt;a href=&quot;https://github.com/yez/ruby-boolean&quot;&gt;boolean gem&lt;/a&gt;.&lt;/p&gt;
@@ -4374,9 +4608,9 @@ $: git push origin HEAD
  
  <entry>
    <title>A Year of Commits</title>
-   <link href="/2015/04/23/a-year-of-commits/"/>
+   <link href="http://jakeyesbeck.com/2015/04/23/a-year-of-commits/"/>
    <updated>2015-04-23T06:15:09-07:00</updated>
-   <id>/2015/04/23/a-year-of-commits</id>
+   <id>http://jakeyesbeck.com/2015/04/23/a-year-of-commits</id>
    <content type="html">&lt;p&gt;Some people have no problem being motivated to be excellent every single day. I am not one of those people. While I love what I do, I think I can do better. It is very easy to make excuses for why I have countless side projects around 20% completion. Maybe people believe me when I say “I just don’t have time right now.” or “I’ve just been slammed at work.”. Those excuses are bullshit. There are plenty of people with may more on their plate than I. That is why I want to embark on a new adventure – “A Year of Commits”.&lt;/p&gt;
 
 &lt;p&gt;For the next year, I will make at least 1 commit per day to a &lt;strong&gt;public&lt;/strong&gt; repository on github. I am counting the commits by the day they are made, not they day they are merged in (in cases of public PRs).&lt;/p&gt;

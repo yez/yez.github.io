@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta http-equiv="content-type" content="text/html; charset=utf-8">
   
-    <meta name="description" content="A technology blog about a Year of Commits to Open Source projects.">
+    <meta name="description" content="As of Ruby on Rails 4.0.0, one does not need to reject columns from the database prior to removing them. Now all occurrences of that column can be removed while the column itself is also removed. Ruby on Rails applications depend greatly on databases, maintaining the proper structure of those databases with zero downtime is important.">
   
 
   <!-- Enable responsiveness on mobile devices-->
@@ -14,7 +14,7 @@
 
   <title>
     
-      A Year of Commits
+      How to Remove a Column with Zero Downtime in Ruby on Rails
     
   </title>
 
@@ -63,19 +63,11 @@
 
 
     <div class="content container">
-      <div class="posts">
+      <div class="post">
+  <h1 class="post-title">How to Remove a Column with Zero Downtime in Ruby on Rails</h1>
+  <span class="post-date">07 Feb 2016</span>
   
-  <div class="post">
-    <h1 class="post-title">
-      <a href="/2016/02/07/how-to-remove-a-column-with-zero-downtime-in-ruby-on-rails/">
-        How to Remove a Column with Zero Downtime in Ruby on Rails
-      </a>
-    </h1>
-
-    
-
-    <span class="post-date">07 Feb 2016</span>
-    <span class='share-container'><ul class="share-buttons">
+  <span class='share-container'><ul class="share-buttons">
   <li>
     <a href="https://www.facebook.com/sharer/sharer.php?u=http://jakeyesbeck.com/2016/02/07/how-to-remove-a-column-with-zero-downtime-in-ruby-on-rails/&t=How to Remove a Column with Zero Downtime in Ruby on Rails" title="Share on Facebook" target="_blank">
       <img src="http://jakeyesbeck.com/assets/images/facebook.svg">
@@ -110,8 +102,7 @@
   </li>
 </ul>
 </span>
-
-    <p>For a production Ruby on Rails application, uptime is paramount. Altering the structure of an application’s persistence layer is an operation that competes directly with uptime. Specifically, removing a table column within a relational database causes issues with the <code class="highlighter-rouge">ActiveRecord</code> ORM (the default relational mapping within a Ruby on Rails application).</p>
+  <p>For a production Ruby on Rails application, uptime is paramount. Altering the structure of an application’s persistence layer is an operation that competes directly with uptime. Specifically, removing a table column within a relational database causes issues with the <code class="highlighter-rouge">ActiveRecord</code> ORM (the default relational mapping within a Ruby on Rails application).</p>
 
 <p>However, this particular pain point has been removed as of <strong>Ruby on Rails 4.0.0</strong>, saving developers a lot of headache and greatly reducing the need for structural change coordination.</p>
 
@@ -338,17 +329,40 @@
 
 <p>Databases that power web applications are powerful and oddly fragile beasts. Manipulating these beasts while maintaining superb end user experiences requires one to constantly be learning. Hopefully with this behaviour, one less thing can be crossed off the check list of “things to remember when manipulating the database” and we can all just get back to work.</p>
 
-  </div>
-  
 </div>
 
-<div class="pagination">
-  
-    <a class="pagination-item older" href="http://jakeyesbeck.com/page2">Older</a>
-  
-  
-    <span class="pagination-item newer">Newer</span>
-  
+<div class="related">
+  <h2>Related Posts</h2>
+  <ul class="related-posts">
+    
+      <li>
+        <h3>
+          <a href="/2015/11/15/five-active-record-features-you-should-be-using/">
+            Five Active Record Features You Should Be Using
+            <small>15 Nov 2015</small>
+          </a>
+        </h3>
+      </li>
+    
+      <li>
+        <h3>
+          <a href="/2015/12/20/rails-5-attributes/">
+            Introduction to Rails 5 Attributes
+            <small>20 Dec 2015</small>
+          </a>
+        </h3>
+      </li>
+    
+      <li>
+        <h3>
+          <a href="/2015/12/06/how-to-use-rails-strong-parameters/">
+            How to use Rails Strong Parameters
+            <small>06 Dec 2015</small>
+          </a>
+        </h3>
+      </li>
+    
+  </ul>
 </div>
 
     </div>

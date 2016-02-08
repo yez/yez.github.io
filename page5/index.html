@@ -67,95 +67,237 @@
   
   <div class="post">
     <h1 class="post-title">
-      <a href="/2016/01/03/passages/">
-        Passages Rails Engine
+      <a href="/2016/01/10/how-to-parallelize-ruby-http-requests/">
+        How To Parallelize Ruby HTTP Requests
       </a>
     </h1>
 
     
 
-    <span class="post-date">03 Jan 2016</span>
+    <span class="post-date">10 Jan 2016</span>
     <span class='share-container'><ul class="share-buttons">
   <li>
-    <a href="https://www.facebook.com/sharer/sharer.php?u=http://jakeyesbeck.com/2016/01/03/passages/&t=Passages Rails Engine" title="Share on Facebook" target="_blank">
+    <a href="https://www.facebook.com/sharer/sharer.php?u=http://jakeyesbeck.com/2016/01/10/how-to-parallelize-ruby-http-requests/&t=How To Parallelize Ruby HTTP Requests" title="Share on Facebook" target="_blank">
       <img src="http://jakeyesbeck.com/assets/images/facebook.svg">
     </a>
   </li>
   <li>
-    <a href="https://twitter.com/intent/tweet?source=http%3A%2F%2Fjakeyesbeck.com&text=Passages Rails Engine%20http://jakeyesbeck.com/2016/01/03/passages/&via=jakeyesbeck" target="_blank" title="Tweet">
+    <a href="https://twitter.com/intent/tweet?source=http%3A%2F%2Fjakeyesbeck.com&text=How To Parallelize Ruby HTTP Requests%20http://jakeyesbeck.com/2016/01/10/how-to-parallelize-ruby-http-requests/&via=jakeyesbeck" target="_blank" title="Tweet">
       <img src="http://jakeyesbeck.com/assets/images/twitter.svg">
     </a>
   </li>
   <li>
-    <a href="https://plus.google.com/share?url=http://jakeyesbeck.com/2016/01/03/passages/" target="_blank" title="Share on Google+">
+    <a href="https://plus.google.com/share?url=http://jakeyesbeck.com/2016/01/10/how-to-parallelize-ruby-http-requests/" target="_blank" title="Share on Google+">
       <img src="http://jakeyesbeck.com/assets/images/google_plus.svg">
     </a>
   </li>
 
   <li>
-    <a href="https://news.ycombinator.com/submitlink?u=http://jakeyesbeck.com/2016/01/03/passages/&t=Passages Rails Engine" target="_blank" title="Share on Hacker News">
+    <a href="https://news.ycombinator.com/submitlink?u=http://jakeyesbeck.com/2016/01/10/how-to-parallelize-ruby-http-requests/&t=How To Parallelize Ruby HTTP Requests" target="_blank" title="Share on Hacker News">
       <img src="http://jakeyesbeck.com/assets/images/ycomb.svg">
     </a>
   </li>
 
   <li>
-    <a href="https://getpocket.com/save?url=http://jakeyesbeck.com/2016/01/03/passages/&title=Passages Rails Engine" target="_blank" title="Add to Pocket">
+    <a href="https://getpocket.com/save?url=http://jakeyesbeck.com/2016/01/10/how-to-parallelize-ruby-http-requests/&title=How To Parallelize Ruby HTTP Requests" target="_blank" title="Add to Pocket">
       <img src="http://jakeyesbeck.com/assets/images/pocket.svg">
     </a>
   </li>
   <li>
-    <a href="http://www.reddit.com/submit?url=http://jakeyesbeck.com/2016/01/03/passages/&title=Passages Rails Engine" target="_blank" title="Submit to Reddit">
+    <a href="http://www.reddit.com/submit?url=http://jakeyesbeck.com/2016/01/10/how-to-parallelize-ruby-http-requests/&title=How To Parallelize Ruby HTTP Requests" target="_blank" title="Submit to Reddit">
       <img src="http://jakeyesbeck.com/assets/images/reddit.svg">
     </a>
   </li>
 </ul>
 </span>
 
-    <p>Routing in the Ruby on Rails world can, at times, be a tad confusing. The <a href="http://guides.rubyonrails.org/routing.html">official Rails guide</a> is very helpful for the basics; but, as an application grows, it can become hard to remember specific details about every single route.</p>
+    <p>It turns out that managing web requests is quite important when doing web development. A web application backed by an external or internal API can issue <strong>a lot</strong> of requests when rendering a seemingly simple web page. How those requests are made and in what order is very important. With improper parallelization, an end user’s entire experience can go from delightful to horrific in a matter of seconds.</p>
 
-<h2 id="existing-routing-tools">Existing Routing Tools</h2>
+<h2 id="the-build-up">The Build Up</h2>
 
-<p>To remedy the issue of route complexity, a few helpful tools already exist. The most useful one is <code class="highlighter-rouge">rake routes</code>, which can be executed in the working directory of a Rails application. This tool requires that the application be on the developer’s local system, which is fine for applications that a developer owns, but what about services that the developer does not own?</p>
+<p>A basic Ruby on Rails application might have the following features:</p>
 
-<p>While this problem might not exist for everyone, chances are at least one poor software engineer has been slapped in the face with a <code class="highlighter-rouge">404</code> page and shouted: <em>“I know that route exists! Why doesn’t this work?”</em></p>
+<ol>
+  <li>A <code class="highlighter-rouge">User</code> can create a favorite of an item, creating a <code class="highlighter-rouge">FavoriteItem</code>.</li>
+  <li>A <code class="highlighter-rouge">User</code> can add an item to their wishlist, creating a <code class="highlighter-rouge">WishlistItem</code>.</li>
+  <li>A <code class="highlighter-rouge">User</code> can buy an item, creating a <code class="highlighter-rouge">TransactionItem</code>.</li>
+</ol>
 
-<p>Another helpful tool in development mode is this screen:</p>
+<p>Each model this system uses is backed by an API. <code class="highlighter-rouge">User</code>, <code class="highlighter-rouge">TransactionItem</code>, <code class="highlighter-rouge">WishlistItem</code>, and <code class="highlighter-rouge">FavoriteItem</code> models all require a remote HTTP request for their information.</p>
 
-<p><img src="/assets/images/no_route_page.png" alt="Default Rails Dev No Route" /></p>
+<p>As a web application experiences growth, this structure is not uncommon. The same API might back a mobile app, website, and any other internal tooling to help this company with its day to day affairs.</p>
 
-<p>This page provides the ability to enter search terms that match words in the <code class="highlighter-rouge">paths</code> of specfic routes. However, similarly to <code class="highlighter-rouge">rake routes</code>, this screen is only accessible in development mode. While this tool is still extremely useful, there could be cases when route inspection would be helpful without running the server locally.</p>
+<p>The API that this application uses works in a two phase manner:</p>
 
-<h2 id="new-hotness">New Hotness</h2>
+<ol>
+  <li>A user can be requested by their <code class="highlighter-rouge">id</code>.
+    <ul>
+      <li><code class="highlighter-rouge">/users/:id</code> returns a <code class="highlighter-rouge">User</code> corresponding to the given <code class="highlighter-rouge">id</code>.</li>
+    </ul>
+  </li>
+  <li>Each supporting model is requested with the same <code class="highlighter-rouge">user_id</code>.
+    <ul>
+      <li><code class="highlighter-rouge">/users/:id/favorite_items</code> will return an array of <code class="highlighter-rouge">FavoriteItems</code> for the specified <code class="highlighter-rouge">User</code>.</li>
+    </ul>
+  </li>
+</ol>
 
-<p><a href="https://github.com/yez/passages">The Passages Rails Engine</a> was created to fulfill two main purposes:</p>
+<p>The contract of this API is for all intents an purposes, non-negotiable. In-lined data or other request saving patterns are not available, the client must use the API as provided.</p>
 
-<p><strong>1.</strong> To expose routes of a Ruby on Rails application either during or outside development mode.</p>
+<h2 id="sequential-approach">Sequential Approach</h2>
 
-<p><strong>2.</strong> Enable searching on multiple pieces of a route’s information (HTTP verb, controller, path, etc).</p>
+<p>Within this example application, the most request intensive page is the <code class="highlighter-rouge">User's</code> history page. The history page consists of everything the user has done. <code class="highlighter-rouge">Items</code> a user has added to their favorites resulting in <code class="highlighter-rouge">FavoriteItems</code>, <code class="highlighter-rouge">Items</code> bought by the user resulting in <code class="highlighter-rouge">TransactionItems</code>, and <code class="highlighter-rouge">Items</code> added to a user’s wish list resulting in <code class="highlighter-rouge">WishListItems</code>.</p>
 
-<p>Some might wonder by <strong>1</strong> would even be valuable. Imagine for a moment that a team of engineers decides that they need an internal API to power their various applications. Perhaps while developing this API, some basic documentation is written but never actually kept up to date. Maybe the API changes so fast that documentation just falls behind.</p>
+<p>To complement the (ex/in)ternal API, two helper methods exist on each model: <code class="highlighter-rouge">remote_find</code> which accepts an <code class="highlighter-rouge">id</code> or array of <code class="highlighter-rouge">ids</code>, returning the matching models, and <code class="highlighter-rouge">remote_find_by_user_id</code> which accepts a <code class="highlighter-rouge">user_id</code> and returns an array of <code class="highlighter-rouge">ids</code> for the corresponding model.</p>
 
-<p>Whatever the reason, it becomes laborious for the consumers of that internal API to constantly ask which route does what and which parameters are expected in each URL.</p>
+<p>Leveraging the API and these two helper methods, a serial version of a <code class="highlighter-rouge">User's</code> pertinent data could look something like:</p>
 
-<p>Internal APIs are not the only candidate for <code class="highlighter-rouge">Passages</code>. An external API can also benefit from discoverable routing in lieu of or in addition to documentation. Since <code class="highlighter-rouge">Passages</code> has the option to use HTTP Basic Authentication, securing <code class="highlighter-rouge">Passages</code> is as simple as setting two <code class="highlighter-rouge">ENV</code> variables.</p>
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">class</span> <span class="nc">UserHistoryController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
+  <span class="k">def</span> <span class="nf">show</span>
+    <span class="vi">@user</span> <span class="o">=</span> <span class="no">User</span><span class="p">.</span><span class="nf">remote_find</span><span class="p">(</span><span class="n">params</span><span class="p">.</span><span class="nf">require</span><span class="p">(</span><span class="ss">:user_id</span><span class="p">]))</span>
 
-<p>Purpose <strong>2</strong> is an attempt to reduce a large application’s route pile by expanding each route’s search surface area. A user of <code class="highlighter-rouge">Passages</code> might want to know of all the <code class="highlighter-rouge">PUT</code> routes or routes that map to a <code class="highlighter-rouge">destroy</code> action. Like its predecessor, <code class="highlighter-rouge">Passages'</code> route path search is also extremely valuable.</p>
+    <span class="vi">@favorite_items</span> <span class="o">=</span>
+      <span class="no">FavoriteItem</span><span class="p">.</span><span class="nf">remote_find_by_user_id</span><span class="p">(</span><span class="vi">@user</span><span class="p">.</span><span class="nf">id</span><span class="p">)</span>
 
-<p>With (hopefully) the help of the open source community, the types of useful search features for <code class="highlighter-rouge">Passages</code> will expand from these very humble beginnings.</p>
+    <span class="vi">@wish_list_items</span> <span class="o">=</span>
+      <span class="no">WishlistItem</span><span class="p">.</span><span class="nf">remote_find_by_user_id</span><span class="p">(</span><span class="vi">@user</span><span class="p">.</span><span class="nf">id</span><span class="p">)</span>
 
-<h2 id="demo">Demo</h2>
+    <span class="vi">@transaction_items</span> <span class="o">=</span>
+      <span class="no">TransactionItem</span><span class="p">.</span><span class="nf">remote_find_by_user_id</span><span class="p">(</span><span class="vi">@user</span><span class="p">.</span><span class="nf">id</span><span class="p">)</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre>
+</div>
 
-<p>After following the <a href="https://github.com/yez/passages#install">installation guide from the project’s README</a>, A very basic use of <code class="highlighter-rouge">Passages</code> would look like:</p>
+<p>However slow it may be, this code will indeed fulfill its duty. First the <code class="highlighter-rouge">User</code> is found, then all the supporting information about a <code class="highlighter-rouge">User's</code> history is retrieved one by one from the API.</p>
 
-<p><img src="/assets/images/passages_demo.gif" alt="Passages Demo" /></p>
+<p>In a worst case scenario, assume the API returns an individual request in about <code class="highlighter-rouge">150ms</code>. With <code class="highlighter-rouge">4</code> requests, this means that <strong>only required page elements will take <code class="highlighter-rouge">600ms</code></strong>.</p>
 
-<h2 id="contributing">Contributing</h2>
+<p>Tacking on view rendering, whatever data processing or formatting that needs to be done at the presentation layer, and finally some amount of Javascript, this page becomes objectively <em>slow</em>.</p>
 
-<p>Like most Open Source projects, <code class="highlighter-rouge">Passages</code> has many areas that welcome modification. Specifically, the design and search functionalities are suitable candidates for enhancement.</p>
+<h2 id="enter-em-synchrony">Enter <code class="highlighter-rouge">EM-Synchrony</code></h2>
 
-<p>Please feel free to <a href="https://github.com/yez/passages">fork the repository</a> or create an issue on Github if something seems wrong or out of place.</p>
+<p>As with most problems, someone smart has had it before and probably done something about it. Luckily, this particular problem has been addressed by <a href="https://github.com/igrigorik/em-synchrony">Ilya Grigorik’s EM-Synchrony library</a>.</p>
 
-<p>Currently, <code class="highlighter-rouge">Passages</code> only supports Ruby on Rails 4. It will most likely be upgraded when Ruby on Rails 5 is released but there are no plans to support Ruby on Rails 3 or older.</p>
+<p>Grigorik’s library leverages the use of Ruby <code class="highlighter-rouge">Fibers</code> to parallelize* code execution.</p>
+
+<p><em>*Note: Because of the Global Interpreter Lock (GIL) present in MRI, true parallelization is not possible.</em></p>
+
+<p>The real benefit of using <code class="highlighter-rouge">EM-Synchrony</code> is the way it handles scheduling the underlying <code class="highlighter-rouge">Fibers</code>. A Ruby <code class="highlighter-rouge">Fiber</code> is basically a <code class="highlighter-rouge">Thread</code> that is not automatically scheduled by the Ruby VM. This means that it is up to the programmer to let the <code class="highlighter-rouge">Fiber</code> know when it should relinquish control to another <code class="highlighter-rouge">Fiber</code>.</p>
+
+<p>Since this example is almost completely bound by <code class="highlighter-rouge">Input/Output</code> (<code class="highlighter-rouge">I/O</code>) operations, it is a perfect candidate for <code class="highlighter-rouge">EM-Synchrony</code>.</p>
+
+<p>To use <code class="highlighter-rouge">EM-Synchrony</code> effectively, existing requests must be broken up into pieces that can accessed independently. A <code class="highlighter-rouge">requests</code> method can be created to extract details surrounding each request. The result of the <code class="highlighter-rouge">requests</code> method must be an enumerable.</p>
+
+<p><em>Note: As explained <a href="#caveats">below</a>, <code class="highlighter-rouge">EM-Synchrony</code> can only be used with supported HTTP clients.</em></p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">class</span> <span class="nc">UserHistoryController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
+  <span class="c1"># ...</span>
+  <span class="c1"># ...</span>
+
+  <span class="kp">private</span>
+
+  <span class="k">def</span> <span class="nf">requests</span>
+    <span class="p">{</span>
+      <span class="no">User</span> <span class="o">=&gt;</span> <span class="p">{</span>
+        <span class="ss">method: :remote_find</span><span class="p">,</span>
+        <span class="ss">arg: </span><span class="vi">@user_id</span><span class="p">,</span>
+        <span class="ss">instance_var: :@user</span>
+      <span class="p">},</span>
+      <span class="no">FavoriteItem</span> <span class="o">=&gt;</span> <span class="p">{</span>
+        <span class="ss">method: :remote_find_by_user_id</span><span class="p">,</span>
+        <span class="ss">arg: </span><span class="vi">@user_id</span><span class="p">,</span>
+        <span class="ss">instance_var: :@favorite_items</span>
+      <span class="p">},</span>
+      <span class="no">WishListItem</span> <span class="o">=&gt;</span> <span class="p">{</span>
+        <span class="ss">method: :remote_find_by_user_id</span><span class="p">,</span>
+        <span class="ss">arg: </span><span class="vi">@user_id</span><span class="p">,</span>
+        <span class="ss">instance_var: :@wish_list_items</span>
+      <span class="p">},</span>
+      <span class="no">TransactionItem</span> <span class="o">=&gt;</span> <span class="p">{</span>
+        <span class="ss">method: :remote_find_by_user_id</span><span class="p">,</span>
+        <span class="ss">arg: </span><span class="vi">@user_id</span><span class="p">,</span>
+        <span class="ss">instance_var: :@transaction_items</span>
+      <span class="p">}</span>
+    <span class="p">}</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre>
+</div>
+
+<p>For the sake of being explicit, this very redundant helper method will be used to iterate over requests and allow <code class="highlighter-rouge">EM-Synchrony</code> to process them in parallel:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">class</span> <span class="nc">UserHistoryController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
+  <span class="no">CONCURRENCY</span> <span class="o">=</span> <span class="mi">4</span>
+
+  <span class="k">def</span> <span class="nf">show</span>
+    <span class="vi">@user_id</span> <span class="o">=</span> <span class="n">params</span><span class="p">.</span><span class="nf">require</span><span class="p">(</span><span class="ss">:user_id</span><span class="p">)</span>
+
+    <span class="no">EM</span><span class="p">.</span><span class="nf">synchrony</span> <span class="k">do</span>
+      <span class="no">EM</span><span class="o">::</span><span class="no">Synchrony</span><span class="o">::</span><span class="no">FiberIterator</span>
+        <span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="n">requests</span><span class="p">,</span> <span class="no">CONCURRENCY</span><span class="p">)</span>
+        <span class="p">.</span><span class="nf">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">key</span><span class="p">,</span> <span class="n">request_hash</span><span class="o">|</span>
+
+        <span class="c1"># Example of below with real values:</span>
+        <span class="c1">#</span>
+        <span class="c1"># key = Transaction</span>
+        <span class="c1"># Transation.remote_find_by_user_id(@user.id)</span>
+
+        <span class="n">result</span> <span class="o">=</span> <span class="n">key</span><span class="p">.</span><span class="nf">send</span><span class="p">(</span><span class="n">request_hash</span><span class="p">[</span><span class="ss">:method</span><span class="p">],</span> <span class="n">request_hash</span><span class="p">[</span><span class="ss">:arg</span><span class="p">])</span>
+        <span class="nb">instance_variable_set</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="ss">:instance_var</span><span class="p">],</span> <span class="n">result</span><span class="p">)</span>
+      <span class="k">end</span>
+
+      <span class="no">EM</span><span class="p">.</span><span class="nf">stop</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre>
+</div>
+
+<p>A few important lines of this solution are worth a closer look:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="no">CONCURRENCY</span> <span class="o">=</span> <span class="mi">4</span>
+</code></pre>
+</div>
+
+<p>This line tells <code class="highlighter-rouge">EM-Synchrony</code> how many <code class="highlighter-rouge">Fibers</code> it is allowed to run at once. Since the example needed to request four remote  resources, the concurrency amount is set to four.</p>
+
+<p>The next line of interest is:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="no">EM</span><span class="o">::</span><span class="no">Synchrony</span><span class="o">::</span><span class="no">FiberIterator</span>
+        <span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="n">requests</span><span class="p">,</span> <span class="no">CONCURRENCY</span><span class="p">)</span>
+        <span class="p">.</span><span class="nf">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">key</span><span class="p">,</span> <span class="n">request_hash</span><span class="o">|</span>
+</code></pre>
+</div>
+
+<p>Here is where the actual work is done. After meticulously crafting the structure of the <code class="highlighter-rouge">requests</code> hash, the <code class="highlighter-rouge">FiberIterator</code> will pick the next element from the list and give it to a <code class="highlighter-rouge">Fiber</code>.</p>
+
+<p>Finally the line stopping of Event Machine can not go unnoticed.</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="no">EM</span><span class="p">.</span><span class="nf">stop</span>
+</code></pre>
+</div>
+
+<p>This method has literally no documentation but is in every example of using Event Machine, so it is probably very crucial.</p>
+
+<p>And that is all there is to it! All four HTTP requests can now be run in parallel, resulting in a major speed up and a much happier user experience.</p>
+
+<h2 id="caveats">Caveats</h2>
+
+<p>A few considerations must be made in order to use <code class="highlighter-rouge">EM-Synchrony</code> effectively.</p>
+
+<ol>
+  <li><strong>A compliant HTTP library must be used.</strong>
+    <ul>
+      <li><a href="https://github.com/igrigorik/em-http-request#extensions">As em-http-client’s the README</a> a compliant HTTP library must be used when making the requests. <a href="https://github.com/lostisland/faraday">Faraday</a> is my favorite compliant library and it has worked great for me so far. Unfortunately, the very popular <code class="highlighter-rouge">HTTParty</code> library is not compliant and therefore no one may “Party Hard” when using <code class="highlighter-rouge">EM-Synchrony</code> and <code class="highlighter-rouge">HTTParty</code>.</li>
+    </ul>
+  </li>
+  <li><strong>One size does not fit all.</strong>
+    <ul>
+      <li>Unlike the described example, not all code can be saved by <code class="highlighter-rouge">EM-Synchrony</code>. If a request depends on the result of another request, sharing those results between <code class="highlighter-rouge">Fibers</code> is neither simple, nor a good idea.</li>
+    </ul>
+  </li>
+</ol>
 
   </div>
   
