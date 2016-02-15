@@ -19,7 +19,7 @@
    <id>http://jakeyesbeck.com/2016/02/14/ruby-threads-and-active-record-connections</id>
    <content type="html">&lt;p&gt;Processing large data sets is a common problem faced by many production web applications. &lt;a href=&quot;http://jakeyesbeck.com/2015/08/09/how-to-process-large-data-sets-with-ruby/&quot;&gt;One solution&lt;/a&gt; is to divide the work amongst multiple processes and have each responsible for a single or significantly smaller batch of data. However, this solution is not without its problems. Machine provisioning limitations or financial barriers may invalidate this solution for a very large N.&lt;/p&gt;
 
-&lt;p&gt;Within the same vein as “divide and conquer” exists another solution, one which requires far fewer parallel processes: &lt;code class=&quot;highlighter-rouge&quot;&gt;Threads&lt;/code&gt;. In the Ruby programming language, a &lt;code class=&quot;highlighter-rouge&quot;&gt;Thread&lt;/code&gt; is a built in implementation for concurrent programming.&lt;/p&gt;
+&lt;p&gt;Within the same vein as “divide and conquer” exists another solution, one which requires far fewer parallel processes: &lt;code class=&quot;highlighter-rouge&quot;&gt;Threads&lt;/code&gt;. In the Ruby programming language, a &lt;code class=&quot;highlighter-rouge&quot;&gt;Thread&lt;/code&gt; is a built-in object for concurrent programming.&lt;/p&gt;
 
 &lt;p&gt;Unlike independent processes, all Ruby &lt;code class=&quot;highlighter-rouge&quot;&gt;Threads&lt;/code&gt; within the same process share memory, enabling each individual &lt;code class=&quot;highlighter-rouge&quot;&gt;Thread&lt;/code&gt; to consume or process objects and elements from the same data store.&lt;/p&gt;
 
@@ -78,7 +78,7 @@
       &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
     &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
 
-    &lt;span class=&quot;n&quot;&gt;threads&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;map&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:join&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;threads&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;each&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:join&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
   &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
 &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;
@@ -103,7 +103,7 @@
 
 &lt;p&gt;However, actually running this code will point out a very serious limitation.&lt;/p&gt;
 
-&lt;p&gt;&lt;em&gt;Note: The GIL in MRI Ruby prevents this code from ever running &lt;strong&gt;truly&lt;/strong&gt; parallel but this is close enough&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;Note: The GIL in MRI Ruby prevents this code from ever running &lt;strong&gt;truly&lt;/strong&gt; parallel but since this code is input/output constrained, it does not make a difference.&lt;/em&gt;&lt;/p&gt;
 
 &lt;h2 id=&quot;connection-accumulation&quot;&gt;Connection Accumulation&lt;/h2&gt;
 
@@ -124,7 +124,7 @@
 
 &lt;p&gt;To help &lt;code class=&quot;highlighter-rouge&quot;&gt;ActiveRecord&lt;/code&gt; handle connection allocation and deallocation, the &lt;a href=&quot;http://api.rubyonrails.org/classes/ActiveRecord/ConnectionAdapters/ConnectionPool.html#method-i-with_connection&quot;&gt;with_connection&lt;/a&gt; block is used. &lt;code class=&quot;highlighter-rouge&quot;&gt;with_connection&lt;/code&gt; is a method that &lt;code class=&quot;highlighter-rouge&quot;&gt;yields&lt;/code&gt; a connection to a block, then returns that same connection to the pool when the block has completed.&lt;/p&gt;
 
-&lt;p&gt;Basically, it ensures that the life cycle for a single database connection is guaranteed to only be active within the block provided.&lt;/p&gt;
+&lt;p&gt;Basically, it ensures that the life cycle for a single database connection is only active within the block provided.&lt;/p&gt;
 
 &lt;p&gt;To make sure this solution will work, it is imperative that the database connection pool in either &lt;code class=&quot;highlighter-rouge&quot;&gt;database.yml&lt;/code&gt; or in a connection initializer is set high enough.&lt;/p&gt;
 
@@ -137,7 +137,7 @@
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 
-&lt;p&gt;With a pool large enough, adding &lt;code class=&quot;highlighter-rouge&quot;&gt;with_connection&lt;/code&gt; is a simple two line addition:&lt;/p&gt;
+&lt;p&gt;With a pool large enough, &lt;code class=&quot;highlighter-rouge&quot;&gt;ActiveRecord::Base.connection_pool.with_connection&lt;/code&gt; is added to the existing solution:&lt;/p&gt;
 
 &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;UserEmailValidator&lt;/span&gt;
   &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;run&lt;/span&gt;
@@ -163,7 +163,7 @@
       &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
     &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
 
-    &lt;span class=&quot;n&quot;&gt;threads&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;map&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:join&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;threads&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;each&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:join&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
   &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
 &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;

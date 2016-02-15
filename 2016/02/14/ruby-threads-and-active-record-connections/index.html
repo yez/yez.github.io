@@ -104,7 +104,7 @@
 </span>
   <p>Processing large data sets is a common problem faced by many production web applications. <a href="http://jakeyesbeck.com/2015/08/09/how-to-process-large-data-sets-with-ruby/">One solution</a> is to divide the work amongst multiple processes and have each responsible for a single or significantly smaller batch of data. However, this solution is not without its problems. Machine provisioning limitations or financial barriers may invalidate this solution for a very large N.</p>
 
-<p>Within the same vein as “divide and conquer” exists another solution, one which requires far fewer parallel processes: <code class="highlighter-rouge">Threads</code>. In the Ruby programming language, a <code class="highlighter-rouge">Thread</code> is a built in implementation for concurrent programming.</p>
+<p>Within the same vein as “divide and conquer” exists another solution, one which requires far fewer parallel processes: <code class="highlighter-rouge">Threads</code>. In the Ruby programming language, a <code class="highlighter-rouge">Thread</code> is a built-in object for concurrent programming.</p>
 
 <p>Unlike independent processes, all Ruby <code class="highlighter-rouge">Threads</code> within the same process share memory, enabling each individual <code class="highlighter-rouge">Thread</code> to consume or process objects and elements from the same data store.</p>
 
@@ -163,7 +163,7 @@
       <span class="k">end</span>
     <span class="k">end</span>
 
-    <span class="n">threads</span><span class="p">.</span><span class="nf">map</span><span class="p">(</span><span class="o">&amp;</span><span class="ss">:join</span><span class="p">)</span>
+    <span class="n">threads</span><span class="p">.</span><span class="nf">each</span><span class="p">(</span><span class="o">&amp;</span><span class="ss">:join</span><span class="p">)</span>
   <span class="k">end</span>
 <span class="k">end</span>
 </code></pre>
@@ -188,7 +188,7 @@
 
 <p>However, actually running this code will point out a very serious limitation.</p>
 
-<p><em>Note: The GIL in MRI Ruby prevents this code from ever running <strong>truly</strong> parallel but this is close enough</em></p>
+<p><em>Note: The GIL in MRI Ruby prevents this code from ever running <strong>truly</strong> parallel but since this code is input/output constrained, it does not make a difference.</em></p>
 
 <h2 id="connection-accumulation">Connection Accumulation</h2>
 
@@ -209,7 +209,7 @@
 
 <p>To help <code class="highlighter-rouge">ActiveRecord</code> handle connection allocation and deallocation, the <a href="http://api.rubyonrails.org/classes/ActiveRecord/ConnectionAdapters/ConnectionPool.html#method-i-with_connection">with_connection</a> block is used. <code class="highlighter-rouge">with_connection</code> is a method that <code class="highlighter-rouge">yields</code> a connection to a block, then returns that same connection to the pool when the block has completed.</p>
 
-<p>Basically, it ensures that the life cycle for a single database connection is guaranteed to only be active within the block provided.</p>
+<p>Basically, it ensures that the life cycle for a single database connection is only active within the block provided.</p>
 
 <p>To make sure this solution will work, it is imperative that the database connection pool in either <code class="highlighter-rouge">database.yml</code> or in a connection initializer is set high enough.</p>
 
@@ -222,7 +222,7 @@
 </code></pre>
 </div>
 
-<p>With a pool large enough, adding <code class="highlighter-rouge">with_connection</code> is a simple two line addition:</p>
+<p>With a pool large enough, <code class="highlighter-rouge">ActiveRecord::Base.connection_pool.with_connection</code> is added to the existing solution:</p>
 
 <div class="highlighter-rouge"><pre class="highlight"><code><span class="k">class</span> <span class="nc">UserEmailValidator</span>
   <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">run</span>
@@ -248,7 +248,7 @@
       <span class="k">end</span>
     <span class="k">end</span>
 
-    <span class="n">threads</span><span class="p">.</span><span class="nf">map</span><span class="p">(</span><span class="o">&amp;</span><span class="ss">:join</span><span class="p">)</span>
+    <span class="n">threads</span><span class="p">.</span><span class="nf">each</span><span class="p">(</span><span class="o">&amp;</span><span class="ss">:join</span><span class="p">)</span>
   <span class="k">end</span>
 <span class="k">end</span>
 </code></pre>
