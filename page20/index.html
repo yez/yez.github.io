@@ -67,179 +67,81 @@
   
   <div class="post">
     <h1 class="post-title">
-      <a href="/2015/09/27/how-to-create-a-custom-enumerable/">
-        How to Create a Custom Enumerable
+      <a href="/2015/10/04/someone-wrote-that-code-on-purpose/">
+        Someone Wrote that Code on Purpose
       </a>
     </h1>
 
     
 
-    <span class="post-date">27 Sep 2015</span>
+    <span class="post-date">04 Oct 2015</span>
     <span class='share-container'><ul class="share-buttons">
   <li>
-    <a href="https://www.facebook.com/sharer/sharer.php?u=http://jakeyesbeck.com/2015/09/27/how-to-create-a-custom-enumerable/&t=How to Create a Custom Enumerable" title="Share on Facebook" target="_blank">
+    <a href="https://www.facebook.com/sharer/sharer.php?u=http://jakeyesbeck.com/2015/10/04/someone-wrote-that-code-on-purpose/&t=Someone Wrote that Code on Purpose" title="Share on Facebook" target="_blank">
       <img src="http://jakeyesbeck.com/assets/images/facebook.svg">
     </a>
   </li>
   <li>
-    <a href="https://twitter.com/intent/tweet?source=http%3A%2F%2Fjakeyesbeck.com&text=How to Create a Custom Enumerable%20http://jakeyesbeck.com/2015/09/27/how-to-create-a-custom-enumerable/&via=jakeyesbeck" target="_blank" title="Tweet">
+    <a href="https://twitter.com/intent/tweet?source=http%3A%2F%2Fjakeyesbeck.com&text=Someone Wrote that Code on Purpose%20http://jakeyesbeck.com/2015/10/04/someone-wrote-that-code-on-purpose/&via=jakeyesbeck" target="_blank" title="Tweet">
       <img src="http://jakeyesbeck.com/assets/images/twitter.svg">
     </a>
   </li>
   <li>
-    <a href="https://plus.google.com/share?url=http://jakeyesbeck.com/2015/09/27/how-to-create-a-custom-enumerable/" target="_blank" title="Share on Google+">
+    <a href="https://plus.google.com/share?url=http://jakeyesbeck.com/2015/10/04/someone-wrote-that-code-on-purpose/" target="_blank" title="Share on Google+">
       <img src="http://jakeyesbeck.com/assets/images/google_plus.svg">
     </a>
   </li>
 
   <li>
-    <a href="https://news.ycombinator.com/submitlink?u=http://jakeyesbeck.com/2015/09/27/how-to-create-a-custom-enumerable/&t=How to Create a Custom Enumerable" target="_blank" title="Share on Hacker News">
+    <a href="https://news.ycombinator.com/submitlink?u=http://jakeyesbeck.com/2015/10/04/someone-wrote-that-code-on-purpose/&t=Someone Wrote that Code on Purpose" target="_blank" title="Share on Hacker News">
       <img src="http://jakeyesbeck.com/assets/images/ycomb.svg">
     </a>
   </li>
 
   <li>
-    <a href="https://getpocket.com/save?url=http://jakeyesbeck.com/2015/09/27/how-to-create-a-custom-enumerable/&title=How to Create a Custom Enumerable" target="_blank" title="Add to Pocket">
+    <a href="https://getpocket.com/save?url=http://jakeyesbeck.com/2015/10/04/someone-wrote-that-code-on-purpose/&title=Someone Wrote that Code on Purpose" target="_blank" title="Add to Pocket">
       <img src="http://jakeyesbeck.com/assets/images/pocket.svg">
     </a>
   </li>
   <li>
-    <a href="http://www.reddit.com/submit?url=http://jakeyesbeck.com/2015/09/27/how-to-create-a-custom-enumerable/&title=How to Create a Custom Enumerable" target="_blank" title="Submit to Reddit">
+    <a href="http://www.reddit.com/submit?url=http://jakeyesbeck.com/2015/10/04/someone-wrote-that-code-on-purpose/&title=Someone Wrote that Code on Purpose" target="_blank" title="Submit to Reddit">
       <img src="http://jakeyesbeck.com/assets/images/reddit.svg">
     </a>
   </li>
 </ul>
 </span>
 
-    <p>Ruby is a wonderfully flexible language. An example of this flexibility is in the ability to define a custom collection class that acts as an <a href="http://ruby-doc.org/core-2.1.1/Enumerable.html">Enumerable</a> object. In Ruby, a collection that acts as an <code class="highlighter-rouge">Enumerable</code> is basically a class which holds a list of objects and exposes helpful methods for iteration and collection. An example of this pattern built into Ruby is the <a href="http://ruby-doc.org/core-2.2.3/Array.html">Array</a> class.</p>
+    <p>One of the great misconceptions of software engineering is the belief that <em>“any code written in the past is probably wrong”</em>. For some reason, an accepted mindset (usually among junior developers) is that older code was written with haste or by someone who did not fully understand the problem at hand, invalidating its existence.</p>
 
-<p>In keeping with a <a href="http://jakeyesbeck.com/2015/09/13/rescue-groups/">theme</a>, let us assume that an application about dogs exists. In this example, a <code class="highlighter-rouge">DogKennel</code> class exists that will hold information about each dog in the kennel and detailed information about said kennel. We can also assume that this class is meant to be used as a collection of dogs, exposing helper methods for information about the kennel. Why would we use this collection class over a typical <code class="highlighter-rouge">Array</code>? One reason might be that the consumer of this class expects a list of dogs and some additional metadata. That metadata can be easily exposed in this class without having to wrap the class or extract the metadata from an included <code class="highlighter-rouge">Hash</code>.</p>
+<p>A multitude of rationalizations may arise when the thought of refactoring software from the ground up is an option. After all, the person who wrote that code may not even be around anymore. They could have just been learning the language, surely that is a valid enough reason to completely decimate their work. What possible justification could there be for the opposite? The code just <strong>feels</strong> wrong, and I, the new domain expert, will rectify this situation!</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">class</span> <span class="nc">DogKennel</span>
+<h2 id="the-devilish-details">The Devilish Details</h2>
 
-  <span class="kp">attr_reader</span> <span class="ss">:dogs</span><span class="p">,</span> <span class="ss">:location</span><span class="p">,</span> <span class="ss">:operating_hours</span>
+<p>A person who stumbles on older code can not possibly have the same level of understanding as its original author. Do not misunderstand, it is completely possible that the original author had an insufficient amount of knowledge when writing the code; however, if details have been lost between code inception and re-discovery, removing that code could have dire consequences. How dire could they be? <a href="http://www.bloombergview.com/articles/2015-09-30/high-speed-trading-firm-deleted-some-code-by-accident">Well according to a recent Bloomberg article</a>, it could be millions of dollars.</p>
 
-  <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="n">dogs</span><span class="p">,</span> <span class="n">location</span><span class="p">,</span> <span class="n">operating_hours</span><span class="p">)</span>
-    <span class="vi">@dogs</span> <span class="o">=</span> <span class="n">dogs</span>
-    <span class="vi">@location</span> <span class="o">=</span> <span class="n">location</span>
-    <span class="vi">@operating_hours</span> <span class="o">=</span> <span class="n">operating_hours</span>
-  <span class="k">end</span>
-<span class="k">end</span>
-</code></pre>
-</div>
+<p>According to the article:</p>
 
-<h2 id="add-include-enumerable">1. Add <code class="highlighter-rouge">include Enumerable</code></h2>
+<p><em>The Core Engineering developer did not understand that the changes he made to the code sequences would affect the directed ISOs generated by Latour’s trading algorithms.</em></p>
 
-<p>To make our <code class="highlighter-rouge">DogKennel</code> into something that can iterate over its dogs easily, we can add the <code class="highlighter-rouge">Enumerable</code> module. The desired functionality will have iterative functions as instance methods, so <code class="highlighter-rouge">include</code> will be used:</p>
+<p>The key words to take away here is that the developer literally <strong>did not understand the code</strong>. The developer that made this mistake needed to simply understand the code that he or she was editing. However, due to time constraints, inexperience, or just plain arrogance, that crucial understanding was never reached. The small yet significant details of how the code worked within itself and with external services were never discovered, leading to a catastrophe.</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">class</span> <span class="nc">DogKennel</span>
-  <span class="kp">include</span> <span class="no">Enumerable</span>
+<h2 id="assume-smart-people-wrote-it">Assume Smart People Wrote It</h2>
 
-  <span class="kp">attr_reader</span> <span class="ss">:dogs</span><span class="p">,</span> <span class="ss">:location</span><span class="p">,</span> <span class="ss">:operating_hours</span>
+<p>A simple rule that may help avoid multi-million dollar code rewrites is to make the assumption that the person who wrote that older piece of software is smart. With some exception, software currently running a business or application was written with care and planning. Time may have passed and the form or shape of the code might not be modern, but in those misplaced curves and edges might lurk the solution to some rarely seen and deadly problems.</p>
 
-  <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="n">dogs</span><span class="p">,</span> <span class="n">location</span><span class="p">,</span> <span class="n">operating_hours</span><span class="p">)</span>
-    <span class="vi">@dogs</span> <span class="o">=</span> <span class="n">dogs</span>
-    <span class="vi">@location</span> <span class="o">=</span> <span class="n">location</span>
-    <span class="vi">@operating_hours</span> <span class="o">=</span> <span class="n">operating_hours</span>
-  <span class="k">end</span>
-<span class="k">end</span>
-</code></pre>
-</div>
+<p>In very lucky situations, the older software might be written by a current employee. This makes that person the obvious best candidate to ask about why the code might <em>“look weird”</em> or <em>“does this obviously wonky thing”</em>. Asking this person about the code or tagging them in the inevitable pull request might just save a few production meltdowns.</p>
 
-<p>This <code class="highlighter-rouge">include</code> will allow the <code class="highlighter-rouge">DogKennel</code> class to inherit a large number of useful methods; however, none of these methods are able to be used until a basic iterative <code class="highlighter-rouge">each</code> method is defined. If a method such as <code class="highlighter-rouge">map</code> is called in this state, the <code class="highlighter-rouge">DogKennel</code> class will throw a <code class="highlighter-rouge">NoMethodError</code> until the <code class="highlighter-rouge">each</code> method is defined.</p>
+<h2 id="take-a-break-and-re-visit">Take a Break and Re-visit</h2>
 
-<h2 id="define-an-each-method">2. Define an <code class="highlighter-rouge">each</code> Method</h2>
+<p>If no resources are present and a full code obliteration seems like the right approach, it would be wise to walk away and think for a short amount of time. Thinking about a rewrite in a relaxed environment could help make sure no bit is left unturned. Remember, the code in question was most likely reviewed, iterated on, and deliberately turned into its current state.</p>
 
-<p>The <code class="highlighter-rouge">each</code> method is the building block for all other iterative methods the <code class="highlighter-rouge">Enumerable</code> module includes. For this example, we can assume that the consumer of <code class="highlighter-rouge">DogKennel</code> will want to iterate over the dogs in the kennel. The <code class="highlighter-rouge">each</code> method must accept a block and either yield or pass the block along to another method:</p>
+<p>If solo breaks do not help get the cognitive juices flowing, try explaining the software design and purpose to an ever attentive <a href="https://en.wikipedia.org/wiki/Rubber_duck_debugging">Rubber Duck</a>. Quackers might not offer the best repartee, but speaking about the code aloud might shine some light onto the darker bytes.</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">class</span> <span class="nc">DogKennel</span>
-  <span class="kp">include</span> <span class="no">Enumerable</span>
+<h2 id="learn-and-burn">Learn and Burn</h2>
 
-  <span class="c1"># ...</span>
+<p>Finally, if the code has been understood and its existence is not longer required, feel free to unleash napalm and build elegant skyscrapers on top of the ruins. Because sometimes, and hopefully only sometimes, that old software hiding under a mountain of neglect really is in need of a phoenix-style rebirth. It is possible that it was written by that intern who only got the job because they were the son or daughter of the CEO’s neighbor. Maybe it was code written by an independent contractor who thought it would be funny to name their variables after famous superheros. Whatever the case may be, stopping to make very deliberate changes will pay dividends.</p>
 
-  <span class="k">def</span> <span class="nf">each</span><span class="p">(</span><span class="o">&amp;</span><span class="n">block</span><span class="p">)</span>
-    <span class="vi">@dogs</span><span class="p">.</span><span class="nf">each</span><span class="p">(</span><span class="o">&amp;</span><span class="n">block</span><span class="p">)</span>
-  <span class="k">end</span>
-<span class="k">end</span>
-</code></pre>
-</div>
-
-<p>Hooray! Now, the <code class="highlighter-rouge">DogKennel</code> class can respond to <code class="highlighter-rouge">each</code>, <code class="highlighter-rouge">map</code>, <code class="highlighter-rouge">select</code> and all the other documented <code class="highlighter-rouge">Enumerable</code> iterative methods.</p>
-
-<p>Some examples of how this class can now be used:</p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="n">dog_kennel</span> <span class="o">=</span> <span class="no">DogKennel</span><span class="p">.</span><span class="nf">new</span><span class="p">([</span><span class="s1">'Fido'</span><span class="p">,</span> <span class="s1">'Spot'</span><span class="p">,</span> <span class="s1">'Bandit'</span><span class="p">],</span> <span class="s1">'Tallahassee'</span><span class="p">,</span> <span class="s1">'09:00 - 18:00'</span><span class="p">)</span>
-
-<span class="n">dog_kennel</span><span class="p">.</span><span class="nf">each</span> <span class="p">{</span> <span class="o">|</span><span class="n">dog</span><span class="o">|</span> <span class="nb">puts</span> <span class="s2">"</span><span class="si">#{</span><span class="n">dog</span><span class="si">}</span><span class="s2"> is here!"</span><span class="p">}</span>
-<span class="c1"># =&gt; Fido is here!</span>
-<span class="c1"># =&gt; Spot is here!</span>
-<span class="c1"># =&gt; Bandit is here!</span>
-
-<span class="n">dog_kennel</span><span class="p">.</span><span class="nf">select</span> <span class="p">{</span> <span class="o">|</span><span class="n">dog</span><span class="o">|</span> <span class="n">dog</span><span class="p">.</span><span class="nf">length</span> <span class="o">==</span> <span class="mi">4</span> <span class="p">}</span>
-<span class="c1">#=&gt; ['Fido', 'Spot']</span>
-</code></pre>
-</div>
-
-<p>As always, this is not the only way to achieve this solution in Ruby. Ruby-ists are blessed with a plethora of tools to do any task. I am of the opinion that for this specific task, making a custom collection class is clean and concise. Delegation might be an attractive option but could prove to be overly verbose for this use case.</p>
-
-<h2 id="consider-comparisons">3. Consider Comparisons</h2>
-
-<p>In this new collection class, the <code class="highlighter-rouge">sort</code> method will default using the <code class="highlighter-rouge">&lt;=&gt;</code> (sometimes called spaceship) operator. This combined comparison operator returns <code class="highlighter-rouge">0</code> if first operand equals the second, <code class="highlighter-rouge">1</code> if first operand is greater than the second and <code class="highlighter-rouge">-1</code> if first operand is less than the second.</p>
-
-<p>This will work fine for strings and other basic object types; however, if a more complex object held the information about each dog, the <code class="highlighter-rouge">&lt;=&gt;</code> method must be defined on that object.</p>
-
-<p>A <code class="highlighter-rouge">Dog</code> class is created to represent a dog’s attributes:</p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Dog</span>
-  <span class="kp">attr_reader</span> <span class="ss">:breed</span><span class="p">,</span> <span class="ss">:name</span><span class="p">,</span> <span class="ss">:color</span>
-
-  <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="n">breed</span><span class="p">,</span> <span class="nb">name</span><span class="p">,</span> <span class="n">color</span><span class="p">)</span>
-    <span class="vi">@breed</span> <span class="o">=</span> <span class="n">breed</span>
-    <span class="vi">@name</span> <span class="o">=</span> <span class="nb">name</span>
-    <span class="vi">@color</span> <span class="o">=</span> <span class="n">color</span>
-  <span class="k">end</span>
-<span class="k">end</span>
-</code></pre>
-</div>
-
-<p>Then, instances of <code class="highlighter-rouge">Dog</code> are then given to <code class="highlighter-rouge">DogKennel</code> on initialization and sorted:</p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="n">fido</span> <span class="o">=</span> <span class="no">Dog</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="s1">'Daschund'</span><span class="p">,</span> <span class="s1">'Fido'</span><span class="p">,</span> <span class="s1">'brown'</span><span class="p">)</span>
-
-<span class="n">bandit</span> <span class="o">=</span> <span class="no">Dog</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="s1">'Labrador'</span><span class="p">,</span> <span class="s1">'Bandit'</span><span class="p">,</span> <span class="s1">'black'</span><span class="p">)</span>
-
-<span class="n">dog_kennel</span> <span class="o">=</span> <span class="no">DogKennel</span><span class="p">.</span><span class="nf">new</span><span class="p">([</span><span class="n">fido</span><span class="p">,</span> <span class="n">bandit</span><span class="p">],</span> <span class="s1">'Tallahassee'</span><span class="p">,</span> <span class="s1">'09:00 - 18:00'</span><span class="p">)</span>
-
-<span class="n">dog_kennel</span><span class="p">.</span><span class="nf">sort</span>
-<span class="c1">#=&gt; ArgumentError: comparison of Dog with Dog failed</span>
-</code></pre>
-</div>
-
-<p>This error is to be expected since the <code class="highlighter-rouge">Dog</code> class has no way to compare one instance of itself against another. To maintain feature parity with the first example, we can define the <code class="highlighter-rouge">&lt;=&gt;</code> method that introspects on each <code class="highlighter-rouge">Dog</code>’s name:</p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Dog</span>
-  <span class="c1"># ...</span>
-
-  <span class="k">def</span> <span class="nf">&lt;</span><span class="o">=&gt;</span><span class="p">(</span><span class="n">other_dog</span><span class="p">)</span>
-    <span class="nb">self</span><span class="p">.</span><span class="nf">name</span> <span class="o">&lt;=&gt;</span> <span class="n">other_dog</span><span class="p">.</span><span class="nf">name</span>
-  <span class="k">end</span>
-<span class="k">end</span>
-</code></pre>
-</div>
-
-<p>Now, we can sort those puppies!</p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="n">dog_kennel</span><span class="p">.</span><span class="nf">sort</span>
-<span class="c1">#=&gt; [#&lt;Dog:0x007fcb4a01c800 @name="Bandit", @breed="Labrador", @color="black"&gt;,</span>
-     <span class="c1">#&lt;Dog:0x007fcb4914b880 @name="Fido", @breed="Daschund", @color="brown"&gt;]</span>
-</code></pre>
-</div>
-
-<h2 id="its-raining-iterators-and-dogs">It’s Raining Iterators and Dogs</h2>
-
-<p>Having the <code class="highlighter-rouge">Enumerable</code> module included and the <code class="highlighter-rouge">&lt;=&gt;</code> comparison operator defined, the <code class="highlighter-rouge">DogKennel</code> class can now be used in the same convenient way as other collection classes.</p>
-
-<p>The strength behind this approach is expressed through its maintainability. Since no long list of methods was defined, and no duplicative code was written, this code can exist alongside active development of the <code class="highlighter-rouge">Enumerable</code> module. For the example in question, this could be an overkill solution. But, in a more complex and sophistiacted system, using the <code class="highlighter-rouge">Enumerable</code> could be the best option.</p>
+<p>Taking time to understand old or opaque code can mean the difference between a healthy face lift to an application and accidentally removing its liver. How are you supposed to have a celebratory drink after a grand refactoring without a liver?</p>
 
   </div>
   
