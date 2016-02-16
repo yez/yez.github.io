@@ -273,17 +273,9 @@
 
 <p>Handling database connections and using raw <code class="highlighter-rouge">Threads</code> this explicitly can make some developers uncomfortable. Luckily, a few great libraries have been written to alleviate this problem.</p>
 
-<ol>
-  <li>
-    <p>In a previous post, <a href="http://jakeyesbeck.com/2016/01/10/how-to-parallelize-ruby-http-requests/#enter-em-synchrony">EM Synchrony</a> was utilized to make parallel HTTP requests. It also has the ability to parallelize <code class="highlighter-rouge">ActiveRecord</code> reading and writing without consuming excess database connections.</p>
-  </li>
-  <li>
-    <p><a href="https://github.com/ruby-concurrency/concurrent-ruby">Concurrent-Ruby</a> is quickly becoming the ruling library in the space of Ruby concurrency. Simple objects such as <code class="highlighter-rouge">Concurrent::Future</code> also help alleviate database connection issues.</p>
+<p>In a previous post, <a href="http://jakeyesbeck.com/2016/01/10/how-to-parallelize-ruby-http-requests/#enter-em-synchrony">EM Synchrony</a> was utilized to make parallel HTTP requests. It also has the ability to parallelize <code class="highlighter-rouge">ActiveRecord</code> reading and writing without consuming excess database connections.</p>
 
-    <p><em>Note: Using the <code class="highlighter-rouge">Executor</code> or <code class="highlighter-rouge">ThreadPool</code> pattern with concurrent Ruby results in the same problem as the one described in this post</em></p>
-  </li>
-</ol>
-
+<p>Additionally, this code has been written for the sake of making a point. There are many ways to solve a problem and this is simply one of them.</p>
 
   </div>
   
