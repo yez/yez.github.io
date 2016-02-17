@@ -275,6 +275,8 @@
 
 <p>In a previous post, <a href="http://jakeyesbeck.com/2016/01/10/how-to-parallelize-ruby-http-requests/#enter-em-synchrony">EM Synchrony</a> was utilized to make parallel HTTP requests. It also has the ability to parallelize <code class="highlighter-rouge">ActiveRecord</code> reading and writing without consuming excess database connections.</p>
 
+<p>Another helpful library quickly becoming the most popular concurrency library is <a href="https://github.com/ruby-concurrency/concurrent-ruby">concurrent-ruby</a>. The <code class="highlighter-rouge">concurrent-ruby</code> library provides convenient models for dealing with futures, promises and other parallelization data structures. However, the same <code class="highlighter-rouge">ActiveRecord</code> connections issues will occur with concurrent ruby objects as with plain old <code class="highlighter-rouge">Threads</code>.</p>
+
 <p>Additionally, this code has been written for the sake of making a point. There are many ways to solve a problem and this is simply one of them.</p>
 
   </div>
