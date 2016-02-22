@@ -67,75 +67,189 @@
   
   <div class="post">
     <h1 class="post-title">
-      <a href="/2015/11/01/six-months-of-commits/">
-        Six Months of Commits
+      <a href="/2015/11/08/ruby-delegate-class/">
+        Ruby DelegateClass
       </a>
     </h1>
 
     
 
-    <span class="post-date">01 Nov 2015</span>
+    <span class="post-date">08 Nov 2015</span>
     <span class='share-container'><ul class="share-buttons">
   <li>
-    <a href="https://www.facebook.com/sharer/sharer.php?u=http://jakeyesbeck.com/2015/11/01/six-months-of-commits/&t=Six Months of Commits" title="Share on Facebook" target="_blank">
+    <a href="https://www.facebook.com/sharer/sharer.php?u=http://jakeyesbeck.com/2015/11/08/ruby-delegate-class/&t=Ruby DelegateClass" title="Share on Facebook" target="_blank">
       <img src="http://jakeyesbeck.com/assets/images/facebook.svg">
     </a>
   </li>
   <li>
-    <a href="https://twitter.com/intent/tweet?source=http%3A%2F%2Fjakeyesbeck.com&text=Six Months of Commits%20http://jakeyesbeck.com/2015/11/01/six-months-of-commits/&via=jakeyesbeck" target="_blank" title="Tweet">
+    <a href="https://twitter.com/intent/tweet?source=http%3A%2F%2Fjakeyesbeck.com&text=Ruby DelegateClass%20http://jakeyesbeck.com/2015/11/08/ruby-delegate-class/&via=jakeyesbeck" target="_blank" title="Tweet">
       <img src="http://jakeyesbeck.com/assets/images/twitter.svg">
     </a>
   </li>
   <li>
-    <a href="https://plus.google.com/share?url=http://jakeyesbeck.com/2015/11/01/six-months-of-commits/" target="_blank" title="Share on Google+">
+    <a href="https://plus.google.com/share?url=http://jakeyesbeck.com/2015/11/08/ruby-delegate-class/" target="_blank" title="Share on Google+">
       <img src="http://jakeyesbeck.com/assets/images/google_plus.svg">
     </a>
   </li>
 
   <li>
-    <a href="https://news.ycombinator.com/submitlink?u=http://jakeyesbeck.com/2015/11/01/six-months-of-commits/&t=Six Months of Commits" target="_blank" title="Share on Hacker News">
+    <a href="https://news.ycombinator.com/submitlink?u=http://jakeyesbeck.com/2015/11/08/ruby-delegate-class/&t=Ruby DelegateClass" target="_blank" title="Share on Hacker News">
       <img src="http://jakeyesbeck.com/assets/images/ycomb.svg">
     </a>
   </li>
 
   <li>
-    <a href="https://getpocket.com/save?url=http://jakeyesbeck.com/2015/11/01/six-months-of-commits/&title=Six Months of Commits" target="_blank" title="Add to Pocket">
+    <a href="https://getpocket.com/save?url=http://jakeyesbeck.com/2015/11/08/ruby-delegate-class/&title=Ruby DelegateClass" target="_blank" title="Add to Pocket">
       <img src="http://jakeyesbeck.com/assets/images/pocket.svg">
     </a>
   </li>
   <li>
-    <a href="http://www.reddit.com/submit?url=http://jakeyesbeck.com/2015/11/01/six-months-of-commits/&title=Six Months of Commits" target="_blank" title="Submit to Reddit">
+    <a href="http://www.reddit.com/submit?url=http://jakeyesbeck.com/2015/11/08/ruby-delegate-class/&title=Ruby DelegateClass" target="_blank" title="Submit to Reddit">
       <img src="http://jakeyesbeck.com/assets/images/reddit.svg">
     </a>
   </li>
 </ul>
 </span>
 
-    <p><img src="http://jakeyesbeck.com/assets/images/180_day_streak.png" alt="180 Days of Commits" /></p>
+    <p>Objects are a big deal in Ruby. A <a href="http://jakeyesbeck.com/2015/08/23/ruby-objects/">previous post about Ruby Objects</a> can corroborate: Ruby Objects are pretty cool.</p>
 
-<p>Six months ago I started <a href="http://jakeyesbeck.com/2015/04/23/a-year-of-commits/">a challenge for myself</a>. I wanted to contribute to open source software, a task that I had previously thought out of reach and intimidating. A plan that I had devised to overcome this mindset was to achieve consistency. For a full year, I made a commitment to make at least one commit to an open source repository (someone else’s or my own) every single day. Additionally, I decided to write an article every Sunday about either my projects, my journey, or something interesting I encountered along the way.</p>
+<p>There are many ways to work with Ruby Objects. Standard inheritance, module inheritance, decorators, and composition are all commonly found in a codebase. One class in particular seems almost universal across applications: the <code class="highlighter-rouge">User</code> class.</p>
 
-<p>To be honest, I did not give my original goal all that much thought. I primarily was making a hypothesis: <em>“If I just keep doing something, chances are that I will improve”</em>.</p>
+<p>From social networks to online retails stores, web applications most always have a <code class="highlighter-rouge">user</code>. Additionally, the <code class="highlighter-rouge">User</code> class might interact with nearly all other classes. This can make the relationship and responsibilities of that <code class="highlighter-rouge">User</code> awkward or unwieldy over time.</p>
 
-<p>Looking back, I believe that I have improved. How much I have improved has been hard to measure, but the journey itself has helped me understand the real value I was gaining. However, only after reflecting on my progress could I really understand that there was an at all.</p>
+<p>As an example, assume that an application <em>“booksandreviews.com”</em> exists. This application serves both authors and critics, each representing a <code class="highlighter-rouge">User</code>. These <code class="highlighter-rouge">User</code> types have different responsibilities and privileges.</p>
 
-<h2 id="re-visit">Re-visit</h2>
+<p>Assuming a Rails application, the basic user model will look most likely like:</p>
 
-<p>Routines and patterns enable unintentional autopilot. The drive to work, the morning coffee run, even the same weekly meeting are examples of every day life patterns. Can one really distinguish between their commute last Wednesday versus the previous? When our brain does the same thing over and over, it automatically optimizes itself. We forget the details about our days and what distinguishes them from one another. This year of commits project has been no different. Since I have been writing software every single day, I find myself with another daily pattern.</p>
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
+<span class="k">end</span>
+</code></pre>
+</div>
 
-<p>I am lucky that this project exists in a world where history is king. From Github to Google, I have the ability to rewind time and watch my journey step by step. While some days have been lighter than others, the overall picture is clear: This has been one of the best things I have done for my professional development and my state of mind. I might have not noticed this development unless I took my own advice: <a href="http://jakeyesbeck.com/2015/09/06/stop-and-take-a-moment/">to stop to take a moment</a>.</p>
+<p>One approach to extend this class and make <code class="highlighter-rouge">Author</code> and <code class="highlighter-rouge">Critic</code> classes is to use the Single Table Inheritance pattern. STI is a common pattern in Rails applications to share responsibilities between classes and store all records in the same place. This approach can work and might fit current needs just fine, but it might be beneficial to think outside the single table for a second.</p>
 
-<h2 id="persevere">Persevere</h2>
+<p>After all, no one said a <code class="highlighter-rouge">User</code> had to be either an <code class="highlighter-rouge">Author</code> or a <code class="highlighter-rouge">Critic</code>, what if they were both?</p>
 
-<p>There have been a number of surprises during the last six months. A few commits were done right at the wire, racing against midnight. Others felt like they took the entire day to complete. Additionally, I have experienced a few very hard times. Days that sapped all motivation for writing code. But so far, I have not missed a single day. I think that if I had missed one day, it would be simple to miss multiple. For now, I am still in a streak which is helpfully demonstrated on Github. Internalizing this perseverance has been crucial.</p>
+<h2 id="delegators-mount-up">Delegators, Mount Up!</h2>
 
-<p>Repeat actions build confidence. I remember at the onset of this project, the first pull request that I did to a new repository had me literally shaking. I must have read each commit message text twenty times before pressing the “Open Pull Request” button. Now, with many pull requests successfully merged, the previous anxiety has vanished. Confidence in the correct quantities can be extremely powerful. This confidence has helped me develop my technical skills and has been instrumental for receiving feedback and criticism.</p>
+<p>An alternative way to architect a system like the one described is by using delegation. Object delegation is a way of composing objects to achieve flexibility and maintain encapsulation.</p>
 
-<h2 id="thanks">Thanks</h2>
+<p>Ruby provides a few ways to delegate objects. An interesting option that will nicely serve this application’s needs is <a href="http://ruby-doc.org/stdlib-2.2.1/libdoc/delegate/rdoc/Object.html#method-i-DelegateClass"><code class="highlighter-rouge">DelegateClass</code></a>. The <code class="highlighter-rouge">DelegateClass</code> method accepts a class and returns a new class. The returned class takes the passed in class’s instance methods and defines delegating methods.</p>
 
-<p>A person who I hold in high regard recently said they found my effort inspiring. I never intended for this endeavor to yield glory or admiration; but, few things are more motivating than hearing kind words of encouragement. To know that I have not been shouting in a dark room and that my effort has meant something feels amazing.</p>
+<p>Defining <code class="highlighter-rouge">Author</code> and <code class="highlighter-rouge">Critic</code> classes:</p>
 
-<p>To all the people who have been supportive and hopefully will continue to do so, you are the reason that I am gaining so much out of this experience. You are the reason I will continue this path forward. You are the reason I will complete a Year of Commits.</p>
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Author</span> <span class="o">&lt;</span> <span class="no">DelegateClass</span><span class="p">(</span><span class="no">User</span><span class="p">)</span>
+<span class="k">end</span>
+
+<span class="k">class</span> <span class="nc">Critic</span> <span class="o">&lt;</span> <span class="no">DelegateClass</span><span class="p">(</span><span class="no">User</span><span class="p">)</span>
+<span class="k">end</span>
+</code></pre>
+</div>
+
+<p>These classes both expect to be initialized with an instance of <code class="highlighter-rouge">User</code>, then will delegate methods to the passed in <code class="highlighter-rouge">user</code> by default. This allows each class to define their own logic for determining what an <code class="highlighter-rouge">Author</code> or a <code class="highlighter-rouge">Critic</code> has access to.</p>
+
+<p>Initializing these classes is as simple as loading the <code class="highlighter-rouge">user</code> then passing it in:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="n">user</span> <span class="o">=</span> <span class="no">User</span><span class="p">.</span><span class="nf">find</span><span class="p">(</span><span class="mi">8</span><span class="p">)</span>
+<span class="n">critic</span> <span class="o">=</span> <span class="no">Critic</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
+<span class="n">critic</span><span class="p">.</span><span class="nf">id</span>
+<span class="c1"># =&gt; 8</span>
+</code></pre>
+</div>
+
+<h2 id="business-logic">Business Logic</h2>
+
+<p>Assuming that <code class="highlighter-rouge">Book</code> and <code class="highlighter-rouge">Review</code> records exist in this same application, related to a user by a <code class="highlighter-rouge">user_id</code>, both new classes can handle those resources independently.</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Author</span> <span class="o">&lt;</span> <span class="no">DelegateClass</span><span class="p">(</span><span class="no">User</span><span class="p">)</span>
+  <span class="k">def</span> <span class="nf">written_books</span>
+    <span class="vi">@written_books</span> <span class="o">||=</span> <span class="no">Book</span><span class="p">.</span><span class="nf">where</span><span class="p">(</span><span class="ss">user_id: </span><span class="nb">id</span><span class="p">)</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">has_written_books?</span>
+    <span class="n">written_books</span><span class="p">.</span><span class="nf">present?</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">top_selling_book</span>
+    <span class="n">written_books</span><span class="p">.</span><span class="nf">max_by</span><span class="p">(</span><span class="o">&amp;</span><span class="ss">:revenue</span><span class="p">)</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="k">class</span> <span class="nc">Critic</span> <span class="o">&lt;</span> <span class="no">DelegateClass</span><span class="p">(</span><span class="no">User</span><span class="p">)</span>
+  <span class="k">def</span> <span class="nf">written_reviews</span>
+    <span class="vi">@written_reviews</span> <span class="o">||=</span> <span class="no">Review</span><span class="p">.</span><span class="nf">where</span><span class="p">(</span><span class="ss">user_id: </span><span class="nb">id</span><span class="p">)</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">has_reviewed_book?</span><span class="p">(</span><span class="n">book_id</span><span class="p">)</span>
+    <span class="n">written_reviews</span><span class="p">.</span><span class="nf">where</span><span class="p">(</span><span class="ss">book_id: </span><span class="n">book_id</span><span class="p">).</span><span class="nf">present?</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">top_viewed_review</span>
+    <span class="n">written_reviews</span><span class="p">.</span><span class="nf">max_by</span><span class="p">(</span><span class="o">&amp;</span><span class="ss">:views</span><span class="p">)</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre>
+</div>
+
+<p>See how nice it is with the <code class="highlighter-rouge">User</code> class responsible only for standard <code class="highlighter-rouge">User</code> information? That leaves the <code class="highlighter-rouge">Author</code> and <code class="highlighter-rouge">Critic</code> classes available to house business logic the <code class="highlighter-rouge">User</code> should not have to concern itself with.</p>
+
+<p>The <code class="highlighter-rouge">User</code> class can keep caring about things like <code class="highlighter-rouge">updated_at</code> timestamps, important booleans like <code class="highlighter-rouge">is_a_confirmed_user?</code>, and any other methods that indicate how a general <code class="highlighter-rouge">user</code> interacts with the software. Also, it remains the sole responsibility of the <code class="highlighter-rouge">user</code> to interact with the persistence layer. The <code class="highlighter-rouge">Author</code> and <code class="highlighter-rouge">Critic</code> classes will delegate instance methods like <code class="highlighter-rouge">save</code> and <code class="highlighter-rouge">update</code> to the underlying <code class="highlighter-rouge">user</code>.</p>
+
+<h2 id="adding-yet-another-type">Adding Yet Another Type</h2>
+
+<p>Imagine some time passes and <em>“booksandreviews.com”</em>’s membership is popping off like gangbusters. Then one day, Tim from sales comes down and says: <em>“We are literally making no money, we need to sell these books or something”</em>.</p>
+
+<p>Tim is asking for a new use case for the product, a new type of <code class="highlighter-rouge">User</code> will be needed: the <code class="highlighter-rouge">Consumer</code>. As before, a <code class="highlighter-rouge">Consumer</code> could be an <code class="highlighter-rouge">Author</code>, <code class="highlighter-rouge">Critic</code>, both, or neither.</p>
+
+<p>Had this application been built with STI, I would wager some spaghetti code would form trying, to shoehorn the same user into three roles.</p>
+
+<p>However, with the <code class="highlighter-rouge">DelegateClass</code> pattern we have used, it becomes trivial:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Consumer</span> <span class="o">&lt;</span> <span class="no">DelegateClass</span><span class="p">(</span><span class="no">User</span><span class="p">)</span>
+  <span class="k">def</span> <span class="nf">transactions</span>
+    <span class="vi">@purchased_books</span> <span class="o">||=</span> <span class="no">Transaction</span><span class="p">.</span><span class="nf">where</span><span class="p">(</span><span class="ss">user_id: </span><span class="nb">id</span><span class="p">)</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">purchaed_books</span>
+    <span class="n">transactions</span><span class="p">.</span><span class="nf">map</span><span class="p">(</span><span class="o">&amp;</span><span class="ss">:book</span><span class="p">)</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">needs_marketing_email?</span>
+    <span class="c1"># Tim says we need to email people to "encourage"</span>
+    <span class="c1">#  them into buying things.</span>
+    <span class="n">transactions</span><span class="p">.</span><span class="nf">length</span> <span class="o">==</span> <span class="mi">0</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre>
+</div>
+
+<p>Now this new class can be utilized to spam the users of <em>“booksandreviews.com”</em> until Tim is content.</p>
+
+<p>An important note is that instances of <code class="highlighter-rouge">Author</code>, <code class="highlighter-rouge">Critic</code>, and <code class="highlighter-rouge">Consumer</code> are not instances of <code class="highlighter-rouge">User</code>.</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="n">user</span> <span class="o">=</span> <span class="no">User</span><span class="p">.</span><span class="nf">find</span><span class="p">(</span><span class="mi">9</span><span class="p">)</span>
+<span class="n">author</span> <span class="o">=</span> <span class="no">Author</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
+<span class="n">author</span><span class="p">.</span><span class="nf">is_a?</span><span class="p">(</span><span class="no">User</span><span class="p">)</span>
+<span class="c1"># =&gt; false</span>
+</code></pre>
+</div>
+
+<h2 id="keeping-it-closed">Keeping it Closed</h2>
+
+<p>The <code class="highlighter-rouge">DelegateClass</code> approach keeps the <code class="highlighter-rouge">User</code> class <a href="https://en.wikipedia.org/wiki/Open/closed_principle">open to extension but closed for modification</a>. Adhering to this principle becomes very beneficial if the backing of the <code class="highlighter-rouge">User</code> model changes.</p>
+
+<p>Maybe in the future, <em>“booksandreviews.com”</em> experiences astronomical growth, resulting in a huge service oriented architecture overhaul. Suddenly, a <code class="highlighter-rouge">UserService</code> exists which communicates with an internal API. If that happens, our code is safe.</p>
+
+<p>The <code class="highlighter-rouge">Author</code>, <code class="highlighter-rouge">Critic</code>, and <code class="highlighter-rouge">Consumer</code> classes need not change:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="n">user</span> <span class="o">=</span> <span class="no">UserService</span><span class="p">.</span><span class="nf">find_user_by_id</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+<span class="n">consumer</span> <span class="o">=</span> <span class="no">Consumer</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
+<span class="n">consumer</span><span class="p">.</span><span class="nf">id</span>
+<span class="c1"># =&gt; 10</span>
+</code></pre>
+</div>
+
+<p>As previously stated, there are many ways to solve this particular problem. Arguments for module inheritance or single table inheritance could be made and might result in just as valid solutions.</p>
 
   </div>
   
@@ -153,7 +267,6 @@
 </div>
 
     </div>
-
     <script>
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
   (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),

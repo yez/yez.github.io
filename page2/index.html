@@ -67,71 +67,74 @@
   
   <div class="post">
     <h1 class="post-title">
-      <a href="/2016/02/07/how-to-remove-a-column-with-zero-downtime-in-ruby-on-rails/">
-        How to Remove a Column with Zero Downtime in Ruby on Rails
+      <a href="/2016/02/14/ruby-threads-and-active-record-connections/">
+        Ruby Threads and ActiveRecord Connections
       </a>
     </h1>
 
     
 
-    <span class="post-date">07 Feb 2016</span>
+    <span class="post-date">14 Feb 2016</span>
     <span class='share-container'><ul class="share-buttons">
   <li>
-    <a href="https://www.facebook.com/sharer/sharer.php?u=http://jakeyesbeck.com/2016/02/07/how-to-remove-a-column-with-zero-downtime-in-ruby-on-rails/&t=How to Remove a Column with Zero Downtime in Ruby on Rails" title="Share on Facebook" target="_blank">
+    <a href="https://www.facebook.com/sharer/sharer.php?u=http://jakeyesbeck.com/2016/02/14/ruby-threads-and-active-record-connections/&t=Ruby Threads and ActiveRecord Connections" title="Share on Facebook" target="_blank">
       <img src="http://jakeyesbeck.com/assets/images/facebook.svg">
     </a>
   </li>
   <li>
-    <a href="https://twitter.com/intent/tweet?source=http%3A%2F%2Fjakeyesbeck.com&text=How to Remove a Column with Zero Downtime in Ruby on Rails%20http://jakeyesbeck.com/2016/02/07/how-to-remove-a-column-with-zero-downtime-in-ruby-on-rails/&via=jakeyesbeck" target="_blank" title="Tweet">
+    <a href="https://twitter.com/intent/tweet?source=http%3A%2F%2Fjakeyesbeck.com&text=Ruby Threads and ActiveRecord Connections%20http://jakeyesbeck.com/2016/02/14/ruby-threads-and-active-record-connections/&via=jakeyesbeck" target="_blank" title="Tweet">
       <img src="http://jakeyesbeck.com/assets/images/twitter.svg">
     </a>
   </li>
   <li>
-    <a href="https://plus.google.com/share?url=http://jakeyesbeck.com/2016/02/07/how-to-remove-a-column-with-zero-downtime-in-ruby-on-rails/" target="_blank" title="Share on Google+">
+    <a href="https://plus.google.com/share?url=http://jakeyesbeck.com/2016/02/14/ruby-threads-and-active-record-connections/" target="_blank" title="Share on Google+">
       <img src="http://jakeyesbeck.com/assets/images/google_plus.svg">
     </a>
   </li>
 
   <li>
-    <a href="https://news.ycombinator.com/submitlink?u=http://jakeyesbeck.com/2016/02/07/how-to-remove-a-column-with-zero-downtime-in-ruby-on-rails/&t=How to Remove a Column with Zero Downtime in Ruby on Rails" target="_blank" title="Share on Hacker News">
+    <a href="https://news.ycombinator.com/submitlink?u=http://jakeyesbeck.com/2016/02/14/ruby-threads-and-active-record-connections/&t=Ruby Threads and ActiveRecord Connections" target="_blank" title="Share on Hacker News">
       <img src="http://jakeyesbeck.com/assets/images/ycomb.svg">
     </a>
   </li>
 
   <li>
-    <a href="https://getpocket.com/save?url=http://jakeyesbeck.com/2016/02/07/how-to-remove-a-column-with-zero-downtime-in-ruby-on-rails/&title=How to Remove a Column with Zero Downtime in Ruby on Rails" target="_blank" title="Add to Pocket">
+    <a href="https://getpocket.com/save?url=http://jakeyesbeck.com/2016/02/14/ruby-threads-and-active-record-connections/&title=Ruby Threads and ActiveRecord Connections" target="_blank" title="Add to Pocket">
       <img src="http://jakeyesbeck.com/assets/images/pocket.svg">
     </a>
   </li>
   <li>
-    <a href="http://www.reddit.com/submit?url=http://jakeyesbeck.com/2016/02/07/how-to-remove-a-column-with-zero-downtime-in-ruby-on-rails/&title=How to Remove a Column with Zero Downtime in Ruby on Rails" target="_blank" title="Submit to Reddit">
+    <a href="http://www.reddit.com/submit?url=http://jakeyesbeck.com/2016/02/14/ruby-threads-and-active-record-connections/&title=Ruby Threads and ActiveRecord Connections" target="_blank" title="Submit to Reddit">
       <img src="http://jakeyesbeck.com/assets/images/reddit.svg">
     </a>
   </li>
 </ul>
 </span>
 
-    <p>For a production Ruby on Rails application, uptime is paramount. Altering the structure of an application’s persistence layer is an operation that competes directly with uptime. Specifically, removing a table column within a relational database causes issues with the <code class="highlighter-rouge">ActiveRecord</code> ORM (the default relational mapping within a Ruby on Rails application).</p>
+    <p>Processing large data sets is a common problem faced by many production web applications. <a href="http://jakeyesbeck.com/2015/08/09/how-to-process-large-data-sets-with-ruby/">One solution</a> is to divide the work amongst multiple processes and have each responsible for a single or significantly smaller batch of data. However, this solution is not without its problems. Machine provisioning limitations or financial barriers may invalidate this solution for a very large N.</p>
 
-<p>However, this particular pain point has been removed as of <strong>Ruby on Rails 4.0.0</strong>, saving developers a lot of headache and greatly reducing the need for structural change coordination.</p>
+<p>Within the same vein as “divide and conquer” exists another solution, one which requires far fewer parallel processes: <code class="highlighter-rouge">Threads</code>. In the Ruby programming language, a <code class="highlighter-rouge">Thread</code> is a built-in object for concurrent programming.</p>
 
-<h2 id="old-and-busted">Old and Busted</h2>
+<p>Unlike independent processes, all Ruby <code class="highlighter-rouge">Threads</code> within the same process share memory, enabling each individual <code class="highlighter-rouge">Thread</code> to consume or process objects and elements from the same data store.</p>
 
-<p>To demonstrate the problem, a simple <strong>Ruby on Rails 3.2</strong> application is created with a <code class="highlighter-rouge">User</code> model:</p>
+<p>For this example, a database will be queried, results manipulated and finally returned to same database via <code class="highlighter-rouge">ActiveRecord</code>.</p>
+
+<h2 id="first-pass">First Pass</h2>
+
+<p>Given a <code class="highlighter-rouge">User</code> model backed by a simple <code class="highlighter-rouge">users</code> table:</p>
 
 <div class="highlighter-rouge"><pre class="highlight"><code><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
 <span class="k">end</span>
 </code></pre>
 </div>
 
-<p>Supporting the <code class="highlighter-rouge">User</code> model is a PostgreSQL database table created with a migration:</p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">class</span> <span class="nc">CreateUsers</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Migration</span>
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">class</span> <span class="nc">CreateUsersTable</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Migration</span>
   <span class="k">def</span> <span class="nf">change</span>
     <span class="n">create_table</span> <span class="ss">:users</span> <span class="k">do</span> <span class="o">|</span><span class="n">t</span><span class="o">|</span>
       <span class="n">t</span><span class="p">.</span><span class="nf">string</span> <span class="ss">:first_name</span>
       <span class="n">t</span><span class="p">.</span><span class="nf">string</span> <span class="ss">:last_name</span>
       <span class="n">t</span><span class="p">.</span><span class="nf">string</span> <span class="ss">:email</span>
+      <span class="n">t</span><span class="p">.</span><span class="nf">boolean</span> <span class="ss">:validated</span><span class="p">,</span> <span class="ss">default: </span><span class="kp">false</span>
       <span class="n">t</span><span class="p">.</span><span class="nf">timestamps</span> <span class="ss">null: </span><span class="kp">false</span>
     <span class="k">end</span>
   <span class="k">end</span>
@@ -139,215 +142,142 @@
 </code></pre>
 </div>
 
-<p>To ensure this application has as close to 100% uptime as possible, it can be assumed that it is behind some kind of pre-loader. As in, when code is deployed, existing requests are given time to complete before new requests are shepherded over to the new version of the code.</p>
-
-<p>In a <strong>Ruby on Rails 3.2</strong> application, a problem will arise when a column is removed from the database and the ORM does not have time to restart. In this case, even the pre-loader will not save an application from throwing an error about the missing column.</p>
-
-<p>To emulate this problem, a rails console is run in the <code class="highlighter-rouge">production</code> environment and a <code class="highlighter-rouge">User</code> is created:</p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="no">RACK_ENV</span><span class="o">=</span><span class="n">production</span> <span class="n">rails</span> <span class="n">console</span>
-<span class="o">&gt;</span> <span class="no">User</span><span class="p">.</span><span class="nf">create</span><span class="p">(</span><span class="ss">first_name: </span><span class="s1">'test'</span><span class="p">,</span> <span class="ss">last_name: </span><span class="s1">'test'</span><span class="p">)</span>
-<span class="c1"># =&gt; #&lt;User id: 1, first_name: "test", last_name: "test", email nil, created_at: "2016-02-07 21:03:26", updated_at: "2016-02-07 21:03:26"&gt;</span>
-</code></pre>
-</div>
-
-<p>In parallel, the <code class="highlighter-rouge">psql</code> command line client is used to connect to the same <code class="highlighter-rouge">production</code> database used by this server, all still running <strong>locally</strong>.</p>
-
-<p>Within this <code class="highlighter-rouge">psql</code> prompt, the <code class="highlighter-rouge">email</code> column from the <code class="highlighter-rouge">users</code> table will be removed <em>while</em> the production console is still running:</p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="n">psql</span> <span class="n">app_production</span>
-<span class="n">psql</span><span class="o">=#</span> <span class="k">ALTER</span> <span class="k">TABLE</span> <span class="n">users</span> <span class="k">DROP</span> <span class="k">COLUMN</span> <span class="n">email</span><span class="p">;</span>
-<span class="k">ALTER</span> <span class="k">TABLE</span>
-</code></pre>
-</div>
-
-<p>Jumping back to the <code class="highlighter-rouge">RACK_ENV=production rails console</code>, another <code class="highlighter-rouge">User</code> creation attempt results in an error:</p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="o">&gt;</span> <span class="no">User</span><span class="p">.</span><span class="nf">create</span><span class="p">(</span><span class="ss">first_name: </span><span class="s1">'test2'</span><span class="p">,</span> <span class="ss">last_name: </span><span class="s1">'test2'</span><span class="p">)</span>
-<span class="c1"># =&gt; PG::UndefinedColumn: ERROR:  column "email" of relation "users" does not exist</span>
-</code></pre>
-</div>
-
-<p>Kaboom! Rails attempts to save a new record to the <code class="highlighter-rouge">users</code> table and populate the <code class="highlighter-rouge">email</code> column even though it was never specified to do so.  Seeing as this is not new behaviour, surely someone has come up with a solution to this problem that does not require downtime.</p>
-
-<h2 id="yesterdays-jam">Yesterday’s Jam</h2>
-
-<p>As it turns out, <a href="http://blog.codeship.com/rails-migrations-zero-downtime/">a few</a> different <a href="http://www.codinginthecrease.com/news_article/show/85364?referrer_id=">blog posts</a> have been written about the solution to this very problem.</p>
-
-<p>The TL;DR of these posts is that a multiple phase solution is required under the given circumstances:</p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code>1. Write code that `rejects` the column to remove
-2. Deploy
-3. Write migration to remove the column
-4. Deploy + Migrate
-5. Write code to remove the column `rejection`
-6. Deploy
-</code></pre>
-</div>
-
-<p>Phew! Three deploys and presumably three code reviews later, the column is finally removed. Assuming a system is built with continuous deployment guarded by a continuous integration suite, this whole process could take the better part of a work day in order to accomplish such a simple task.</p>
-
-<p>Even worse, if an application has scheduled weekly deploys where only one deployment can happen per week, then this column will linger for three whole weeks. That is just absurd, what kind of barbarians can live this way?</p>
-
-<h2 id="new-hotness">New Hotness</h2>
-
-<p>Luckily, the incredible people who maintain and create features for the Ruby on Rails framework saw this behaviour and decided to correct it. As of a very influential commit during the beta release of <strong>Ruby on Rails 4.0.0</strong>, the framework does not aggressively attempt to populate attributes not specified during creation or update.</p>
-
-<p>To prove this, a new <strong>Ruby on Rails 4.0.0</strong> application is made with the exact same structure as above.</p>
-
-<p>Then, the same production console is created along with a <code class="highlighter-rouge">User</code>:</p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="no">RACK_ENV</span><span class="o">=</span><span class="n">production</span> <span class="n">rails</span> <span class="n">console</span>
-<span class="o">&gt;</span> <span class="no">User</span><span class="p">.</span><span class="nf">create</span><span class="p">(</span><span class="ss">first_name: </span><span class="s1">'test'</span><span class="p">,</span> <span class="ss">last_name: </span><span class="s1">'test'</span><span class="p">)</span>
-<span class="c1"># =&gt; #&lt;User id: 1, first_name: "test", last_name: "test", email nil, created_at: "2016-02-07 22:09:49", updated_at: "2016-02-07 22:09:49"&gt;</span>
-</code></pre>
-</div>
-
-<p>Again, in parallel, a <code class="highlighter-rouge">psql</code> client is initialized for the <code class="highlighter-rouge">production</code> environment database.</p>
-
-<p>Within this prompt, the <code class="highlighter-rouge">email</code> column on the <code class="highlighter-rouge">users</code> table is removed:</p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="n">psql</span> <span class="n">app_production</span>
-<span class="n">psql</span><span class="o">=#</span> <span class="k">ALTER</span> <span class="k">TABLE</span> <span class="n">users</span> <span class="k">DROP</span> <span class="k">COLUMN</span> <span class="n">email</span><span class="p">;</span>
-<span class="k">ALTER</span> <span class="k">TABLE</span>
-</code></pre>
-</div>
-
-<p>And finally, a new user is created in the still running <code class="highlighter-rouge">RACK_ENV=production rails console</code>:</p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="o">&gt;</span> <span class="no">User</span><span class="p">.</span><span class="nf">create</span><span class="p">(</span><span class="ss">first_name: </span><span class="s1">'test2'</span><span class="p">,</span> <span class="ss">last_name: </span><span class="s1">'test2'</span><span class="p">)</span>
-<span class="c1"># =&gt; #&lt;User id: 2, first_name: "test2", last_name: "test2", email nil, created_at: "2016-02-07 22:13:18", updated_at: "2016-02-07 22:13:18"&gt;</span>
-</code></pre>
-</div>
-
-<p>Unlike before, the second insertion into the <code class="highlighter-rouge">users</code> table worked wonderfully, despite the <code class="highlighter-rouge">email</code> column’s removal.</p>
-
-<p>As shown, the in memory representation of the <code class="highlighter-rouge">User</code> class still has the <code class="highlighter-rouge">email</code> attribute. The <code class="highlighter-rouge">User</code> object’s representation has not been reloaded, it simply just does not care about the <code class="highlighter-rouge">email</code> column when writing to the database.</p>
-
-<p>The fact that the ORM does not specifically reload when writing to a table points out an interesting detail. It means that for this solution to fully work, the <code class="highlighter-rouge">email</code> column must not be referenced at all.</p>
-
-<p>With this new found behaviour, the previous six step incantation comprised of three separate deployments can be reduced to three steps in total and just one deployment:</p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code>1. Remove references to column and write migration
-2. Deploy
-3. Once requests completely use new code, migrate
-</code></pre>
-</div>
-
-<p>Wunderbar! The <code class="highlighter-rouge">reject</code> and deploy pattern is no longer necessary. Further more, development teams suffering within weekly scheduled deploys can achieve their desired results within a single iteration.</p>
-
-<h2 id="what-changed">What Changed?</h2>
-
-<p>Unfortunately, the amazing change responsible for this vast improvement regarding Ruby on Rails column removal did not receive the attention is deserves. Many blog posts and guides were written about how to circumvent the older 3.2 behaviour, but when looking for information about this modern implementation, resources were scarce.</p>
-
-<p>After reading through a very large amount of change logs and coming up empty, a <a href="http://jakeyesbeck.com/2015/10/25/how-to-traverse-foreign-ruby-code/">bit of previous wisdom</a> was utilized in order to track down the commit responsible.</p>
-
-<p>The first step is to identify the offending code in 3.2. This way, the 4.0.0 version of the code can be analyzed, the discrepancy identified and the git revision responsible brought to light.</p>
-
-<p>After some <code class="highlighter-rouge">binding.pry</code> insertions and utilization of the <code class="highlighter-rouge">caller</code> array, the offending code was traced to <a href="https://github.com/rails/rails/blob/v3.2.18/activerecord/lib/active_record/attribute_methods.rb#L244">lib/active_record/attribute_methods.rb:244</a> (formatted for readability):</p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">def</span> <span class="nf">arel_attributes_values</span><span class="p">(</span><span class="n">include_primary_key</span> <span class="o">=</span> <span class="kp">true</span><span class="p">,</span>
-                           <span class="n">include_readonly_attributes</span> <span class="o">=</span> <span class="kp">true</span><span class="p">,</span>
-                           <span class="n">attribute_names</span> <span class="o">=</span> <span class="vi">@attributes</span><span class="p">.</span><span class="nf">keys</span><span class="p">)</span>
-  <span class="n">attrs</span>      <span class="o">=</span> <span class="p">{}</span>
-  <span class="n">klass</span>      <span class="o">=</span> <span class="nb">self</span><span class="p">.</span><span class="nf">class</span>
-  <span class="n">arel_table</span> <span class="o">=</span> <span class="n">klass</span><span class="p">.</span><span class="nf">arel_table</span>
-
-  <span class="n">attribute_names</span><span class="p">.</span><span class="nf">each</span> <span class="k">do</span> <span class="o">|</span><span class="nb">name</span><span class="o">|</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">column</span> <span class="o">=</span> <span class="n">column_for_attribute</span><span class="p">(</span><span class="nb">name</span><span class="p">))</span> <span class="o">&amp;&amp;</span>
-        <span class="p">(</span><span class="n">include_primary_key</span> <span class="o">||</span> <span class="o">!</span><span class="n">column</span><span class="p">.</span><span class="nf">primary</span><span class="p">)</span>
-
-      <span class="k">if</span> <span class="n">include_readonly_attributes</span> <span class="o">||</span>
-         <span class="o">!</span><span class="nb">self</span><span class="p">.</span><span class="nf">class</span><span class="p">.</span><span class="nf">readonly_attributes</span><span class="p">.</span><span class="nf">include?</span><span class="p">(</span><span class="nb">name</span><span class="p">)</span>
-        <span class="n">value</span> <span class="o">=</span>
-          <span class="k">if</span> <span class="n">klass</span><span class="p">.</span><span class="nf">serialized_attributes</span><span class="p">.</span><span class="nf">include?</span><span class="p">(</span><span class="nb">name</span><span class="p">)</span>
-            <span class="vi">@attributes</span><span class="p">[</span><span class="nb">name</span><span class="p">].</span><span class="nf">serialized_value</span>
-          <span class="k">else</span>
-            <span class="c1"># FIXME: we need @attributes to be used consistently.</span>
-            <span class="c1"># If the values stored in @attributes were already type</span>
-            <span class="c1"># casted, this code could be simplified</span>
-            <span class="n">read_attribute</span><span class="p">(</span><span class="nb">name</span><span class="p">)</span>
-          <span class="k">end</span>
-
-        <span class="n">attrs</span><span class="p">[</span><span class="n">arel_table</span><span class="p">[</span><span class="nb">name</span><span class="p">]]</span> <span class="o">=</span> <span class="n">value</span>
-      <span class="k">end</span>
-    <span class="k">end</span>
-  <span class="k">end</span>
-
-  <span class="n">attrs</span>
-<span class="k">end</span>
-</code></pre>
-</div>
-
-<p>While a little lengthy, the most obvious thing to note about this method is that its signature is comprised of entirely optional variables. Most notably, the final optional parameter, <code class="highlighter-rouge">attribute_names</code>, defaults to <code class="highlighter-rouge">@attributes.keys</code> which is the list of attributes for the given model.</p>
-
-<p>In this case, the result of <code class="highlighter-rouge">@attributes.keys</code> is the complete list of keys for a <code class="highlighter-rouge">User</code>: <code class="highlighter-rouge">['id', 'first_name', 'last_name', 'email', 'updated_at', 'created_at']</code>. Most notably, the <code class="highlighter-rouge">email</code> attribute is present, regardless of the fact that it was not given a value to insert. This means that by default, any <code class="highlighter-rouge">create</code> call will write to the <code class="highlighter-rouge">email</code> column without hesitation (just as previously observed).</p>
-
-<p>While default behaviour can emit a code smell, it is only dangerous if it is used unknowingly. Since the parameter to determine <code class="highlighter-rouge">attribute_names</code> is available, chances are the caller of this method does indeed specify them, right?</p>
-
-<p>Unfortunately, no:</p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">def</span> <span class="nf">create</span>
-  <span class="n">attributes_values</span> <span class="o">=</span> <span class="n">arel_attributes_values</span><span class="p">(</span><span class="o">!</span><span class="nb">id</span><span class="p">.</span><span class="nf">nil?</span><span class="p">)</span>
-  <span class="n">new_id</span> <span class="o">=</span> <span class="nb">self</span><span class="p">.</span><span class="nf">class</span><span class="p">.</span><span class="nf">unscoped</span><span class="p">.</span><span class="nf">insert</span> <span class="n">attributes_values</span>
-
-  <span class="nb">self</span><span class="p">.</span><span class="nf">id</span> <span class="o">||=</span> <span class="n">new_id</span> <span class="k">if</span> <span class="nb">self</span><span class="p">.</span><span class="nf">class</span><span class="p">.</span><span class="nf">primary_key</span>
-
-  <span class="no">IdentityMap</span><span class="p">.</span><span class="nf">add</span><span class="p">(</span><span class="nb">self</span><span class="p">)</span> <span class="k">if</span> <span class="no">IdentityMap</span><span class="p">.</span><span class="nf">enabled?</span>
-  <span class="vi">@new_record</span> <span class="o">=</span> <span class="kp">false</span>
-  <span class="nb">id</span>
-<span class="k">end</span>
-</code></pre>
-</div>
-
-<p>Here, in <a href="https://github.com/rails/rails/blob/v3.2.18/activerecord/lib/active_record/persistence.rb#L364">lib/active_record/persistence.rb:364</a> lies the method responsible for calling <code class="highlighter-rouge">arel_attributes_values</code>. Since it does not specify the list of attributes, the default behaviour prevails and all known attributes are returned.</p>
-
-<h2 id="the-big-fix">The Big Fix</h2>
-
-<p>On a glorious Friday afternoon (probably) Jon Leighton made <a href="https://github.com/rails/rails/commit/144e8691">the commit</a> which changed how people thought about column removal in Ruby on Rails.</p>
-
-<p>The change enabled the concept of <code class="highlighter-rouge">partial_writes</code>. This pattern used the exiting <code class="highlighter-rouge">changed</code> hash present in every <code class="highlighter-rouge">ActiveRecord</code> model. The <code class="highlighter-rouge">changed</code> hash is manipulated as a model has attributes assigned to it.</p>
-
-<p>In <a href="https://github.com/rails/rails/blob/v4.0.0/activerecord/lib/active_record/attribute_methods/dirty.rb#L77">lib/active_record/attribute_methods/dirty.rb:77</a>, <code class="highlighter-rouge">partial_writes</code> is used:</p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">def</span> <span class="nf">create_record</span><span class="p">(</span><span class="o">*</span><span class="p">)</span>
-  <span class="n">partial_writes?</span> <span class="p">?</span> <span class="k">super</span><span class="p">(</span><span class="n">keys_for_partial_write</span><span class="p">)</span> <span class="p">:</span> <span class="k">super</span>
-<span class="k">end</span>
-
-<span class="c1"># Serialized attributes should always be written in case they've been</span>
-<span class="c1"># changed in place.</span>
-<span class="k">def</span> <span class="nf">keys_for_partial_write</span>
-  <span class="n">changed</span> <span class="o">|</span> <span class="p">(</span><span class="n">attributes</span><span class="p">.</span><span class="nf">keys</span> <span class="o">&amp;</span> <span class="nb">self</span><span class="p">.</span><span class="nf">class</span><span class="p">.</span><span class="nf">serialized_attributes</span><span class="p">.</span><span class="nf">keys</span><span class="p">)</span>
-<span class="k">end</span>
-</code></pre>
-</div>
-
-<p>Before delegating to the same <code class="highlighter-rouge">persistence.rb#create</code> method, only the attributes present in the <code class="highlighter-rouge">changed</code> hash (along with any serialized attributes) will be used in subsequent insert queries.</p>
-
-<p>Included in the February 2013 beta release of <strong>Ruby on Rails 4.0.0</strong>, this code enables a much more pleasant experience than the older work around. In fact, the author even pointed out this behaviour in his commit:</p>
+<p>The problem to solve is fairly straight forward:</p>
 
 <blockquote>
-  <p>When inserting new records, only the fields which have been changed from the defaults will actually be included in the INSERT statement. The other fields will be populated by the database.</p>
-
-  <p>This is more efficient, and also means that it will be safe to remove database columns without getting subsequent errors in running app processes (so long as the code in those processes doesn’t contain any references to the removed column).</p>
+  <p>All <code class="highlighter-rouge">User</code> records that are not already validated should be fetched and an external API hit with their email address for validation, then saved. If a <code class="highlighter-rouge">User's</code> email address is not valid, it should be removed.</p>
 </blockquote>
 
-<h2 id="unshackled">Unshackled</h2>
+<p>Fast forwarding through time, it can be assumed that a completely serial solution has been written and deemed unsatisfactory. Then, during a second iteration, a bit of concurrent code was written:</p>
 
-<p>While this patch to the Ruby on Rails framework may not make every situation easier, it certainly reduces both cognitive and implementation overhead for many developers.</p>
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">class</span> <span class="nc">UserEmailValidator</span>
+  <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">run</span>
+    <span class="no">User</span><span class="p">.</span><span class="nf">where</span><span class="p">(</span><span class="ss">validated: </span><span class="kp">false</span><span class="p">)</span>
+        <span class="p">.</span><span class="nf">find_in_batches</span><span class="p">(</span><span class="ss">batch_size: </span><span class="mi">30</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">user_batch</span><span class="o">|</span>
+          <span class="n">validate_emails</span><span class="p">(</span><span class="n">user_batch</span><span class="p">)</span>
+        <span class="k">end</span>
+  <span class="k">end</span>
 
-<p>For more automated systems utilizing continuous deployment, two deployments may still be necessary since code running on old processes (within some sort of pre loader) will not be able to handle the column removal.</p>
+  <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">validate_emails</span><span class="p">(</span><span class="n">user_batch</span><span class="p">)</span>
+    <span class="n">threads</span> <span class="o">=</span> <span class="n">user_batch</span><span class="p">.</span><span class="nf">map</span> <span class="k">do</span> <span class="o">|</span><span class="n">user</span><span class="o">|</span>
+      <span class="no">Thread</span><span class="p">.</span><span class="nf">new</span> <span class="k">do</span>
+        <span class="n">email_validator</span> <span class="o">=</span> <span class="no">EmailService</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="n">user</span><span class="p">.</span><span class="nf">email</span><span class="p">)</span>
+        <span class="n">email_validator</span><span class="p">.</span><span class="nf">validate</span>
 
-<p>The deployment process for such a system may look more like:</p>
+        <span class="n">user</span><span class="p">.</span><span class="nf">email</span> <span class="o">=</span> <span class="kp">nil</span> <span class="k">if</span> <span class="n">email_validator</span><span class="p">.</span><span class="nf">invalid?</span>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>1. Remove references to column
-2. Deploy
-3. Write migration to drop column
-4. Deploy and migrate
+        <span class="n">user</span><span class="p">.</span><span class="nf">validated</span> <span class="o">=</span> <span class="kp">true</span>
+
+        <span class="n">user</span><span class="p">.</span><span class="nf">save!</span>
+      <span class="k">end</span>
+    <span class="k">end</span>
+
+    <span class="n">threads</span><span class="p">.</span><span class="nf">each</span><span class="p">(</span><span class="o">&amp;</span><span class="ss">:join</span><span class="p">)</span>
+  <span class="k">end</span>
+<span class="k">end</span>
 </code></pre>
 </div>
 
-<p>Databases that power web applications are powerful and oddly fragile beasts. Manipulating these beasts while maintaining superb end user experiences requires one to constantly be learning. Hopefully with this behaviour, one more thing can be crossed off the check list of “things to remember when manipulating the database” and we can all just get back to work.</p>
+<p>The important pieces of this code are:</p>
+
+<ol>
+  <li>
+    <p><code class="highlighter-rouge">find_in_batches(batch_size: 30)</code></p>
+
+    <p>To cut down on memory allocation, only 30 <code class="highlighter-rouge">Users</code> are fetched at one time. Each of these <code class="highlighter-rouge">Users</code> have their email address validated in a separate <code class="highlighter-rouge">Thread</code>.</p>
+  </li>
+  <li>
+    <p><code class="highlighter-rouge">threads.map(&amp;:join)</code></p>
+
+    <p>The <code class="highlighter-rouge">join</code> method is used to make the program wait for all <code class="highlighter-rouge">Threads</code> to complete. If one <code class="highlighter-rouge">Thread</code> were to error out, some rescue and retry logic could be added to help.</p>
+  </li>
+</ol>
+
+<p>Functionally adequate, this code should iterate over the entire set of <code class="highlighter-rouge">User</code> records, 30 at a time, and update them in parallel.</p>
+
+<p>However, actually running this code will point out a very serious limitation.</p>
+
+<p><em>Note: The GIL in MRI Ruby prevents this code from ever running <strong>truly</strong> parallel but since this code is input/output constrained, it does not make a difference.</em></p>
+
+<h2 id="connection-accumulation">Connection Accumulation</h2>
+
+<p>Moments after the above code runs for the first time, this error is seen:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="no">ActiveRecord</span><span class="o">::</span><span class="no">ConnectionTimeoutError</span><span class="p">:</span>
+  <span class="n">could</span> <span class="n">not</span> <span class="n">obtain</span> <span class="n">a</span> <span class="n">database</span> <span class="n">connection</span> <span class="n">within</span> <span class="mi">5</span><span class="o">.</span><span class="mo">000</span> <span class="n">seconds</span>
+</code></pre>
+</div>
+
+<p>As it turns out, each <code class="highlighter-rouge">Thread</code> spawned had allocated its own connection to the database via <code class="highlighter-rouge">ActiveRecord</code>. Then, even after the <code class="highlighter-rouge">Thread</code> completed its work, the connection was not relinquished. Stale, idle connections began to accumulate within the Ruby process and before even 1000 <code class="highlighter-rouge">User</code> objects could be processed, the connection pool was empty.</p>
+
+<p>Presumably, right after the <code class="highlighter-rouge">self.validate_emails</code> method completed for a batch of <code class="highlighter-rouge">Users</code>, the process should have released those connections to be used for either the next batch of <code class="highlighter-rouge">Threads</code> or other processes.</p>
+
+<p>Since this liberation of database connections did not happen automatically, it seems that we must intervene.</p>
+
+<h2 id="pool-full-of-connections-then-we-dive-in-it">Pool Full of Connections, then We Dive in it</h2>
+
+<p>To help <code class="highlighter-rouge">ActiveRecord</code> handle connection allocation and deallocation, the <a href="http://api.rubyonrails.org/classes/ActiveRecord/ConnectionAdapters/ConnectionPool.html#method-i-with_connection">with_connection</a> block is used. <code class="highlighter-rouge">with_connection</code> is a method that <code class="highlighter-rouge">yields</code> a connection to a block, then returns that same connection to the pool when the block has completed.</p>
+
+<p>Basically, it ensures that the life cycle for a single database connection is only active within the block provided.</p>
+
+<p>To make sure this solution will work, it is imperative that the database connection pool in either <code class="highlighter-rouge">database.yml</code> or in a connection initializer is set high enough.</p>
+
+<p>An example database.yml:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="s">production</span><span class="pi">:</span>
+  <span class="s">adapter</span><span class="pi">:</span> <span class="s">postgresql</span>
+  <span class="s">database</span><span class="pi">:</span> <span class="s">production_database</span>
+  <span class="s">pool</span><span class="pi">:</span> <span class="s">50</span>
+</code></pre>
+</div>
+
+<p>With a pool large enough, <code class="highlighter-rouge">ActiveRecord::Base.connection_pool.with_connection</code> is added to the existing solution:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">class</span> <span class="nc">UserEmailValidator</span>
+  <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">run</span>
+    <span class="no">User</span><span class="p">.</span><span class="nf">where</span><span class="p">(</span><span class="ss">validated: </span><span class="kp">false</span><span class="p">)</span>
+        <span class="p">.</span><span class="nf">find_in_batches</span><span class="p">(</span><span class="ss">batch_size: </span><span class="mi">30</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">user_batch</span><span class="o">|</span>
+          <span class="n">validate_emails</span><span class="p">(</span><span class="n">user_batch</span><span class="p">)</span>
+        <span class="k">end</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">validate_emails</span><span class="p">(</span><span class="n">user_batch</span><span class="p">)</span>
+    <span class="n">threads</span> <span class="o">=</span> <span class="n">user_batch</span><span class="p">.</span><span class="nf">map</span> <span class="k">do</span> <span class="o">|</span><span class="n">user</span><span class="o">|</span>
+      <span class="no">Thread</span><span class="p">.</span><span class="nf">new</span> <span class="k">do</span>
+        <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span><span class="p">.</span><span class="nf">connection_pool</span><span class="p">.</span><span class="nf">with_connection</span> <span class="k">do</span>
+          <span class="n">email_validator</span> <span class="o">=</span> <span class="no">EmailService</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="n">user</span><span class="p">.</span><span class="nf">email</span><span class="p">)</span>
+          <span class="n">email_validator</span><span class="p">.</span><span class="nf">validate</span>
+
+          <span class="n">user</span><span class="p">.</span><span class="nf">email</span> <span class="o">=</span> <span class="kp">nil</span> <span class="k">if</span> <span class="n">email_validator</span><span class="p">.</span><span class="nf">invalid?</span>
+
+          <span class="n">user</span><span class="p">.</span><span class="nf">validated</span> <span class="o">=</span> <span class="kp">true</span>
+
+          <span class="n">user</span><span class="p">.</span><span class="nf">save!</span>
+        <span class="k">end</span>
+      <span class="k">end</span>
+    <span class="k">end</span>
+
+    <span class="n">threads</span><span class="p">.</span><span class="nf">each</span><span class="p">(</span><span class="o">&amp;</span><span class="ss">:join</span><span class="p">)</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre>
+</div>
+
+<p>Running this very deliberate connection handling process now ensures that no more than 30 connections are claimed. Each <code class="highlighter-rouge">Thread</code> will connect to the database with one single connection and the <code class="highlighter-rouge">with_connection</code> block will return that connection to the predefined pool upon completion.</p>
+
+<p>With the addition of this necessary connection pruning, the great <code class="highlighter-rouge">User</code> email validation effort can complete. Depending on the size of the data set and machines available, the 30 per batch limit could be easily increased, resulting in greater validation speed.</p>
+
+<p>The <code class="highlighter-rouge">database.yml</code> configuration should have a pool size of equal to or greater than the number of <code class="highlighter-rouge">Threads</code> spawned. If 100 <code class="highlighter-rouge">User</code> objects needed to be processed at once, the pool should be <code class="highlighter-rouge">&gt;= 100</code>.</p>
+
+<h2 id="alternatives">Alternatives</h2>
+
+<p>Handling database connections and using raw <code class="highlighter-rouge">Threads</code> this explicitly can make some developers uncomfortable. Luckily, a few great libraries have been written to alleviate this problem.</p>
+
+<p>In a previous post, <a href="http://jakeyesbeck.com/2016/01/10/how-to-parallelize-ruby-http-requests/#enter-em-synchrony">EM Synchrony</a> was utilized to make parallel HTTP requests. It also has the ability to parallelize <code class="highlighter-rouge">ActiveRecord</code> reading and writing without consuming excess database connections.</p>
+
+<p>Another helpful library quickly becoming the most popular concurrency library is <a href="https://github.com/ruby-concurrency/concurrent-ruby">concurrent-ruby</a>. The <code class="highlighter-rouge">concurrent-ruby</code> library provides convenient models for dealing with futures, promises and other parallelization data structures. However, the same <code class="highlighter-rouge">ActiveRecord</code> connections issues will occur with concurrent ruby objects as with plain old <code class="highlighter-rouge">Threads</code>.</p>
+
+<p>Additionally, this code has been written for the sake of making a point. There are many ways to solve a problem and this is simply one of them.</p>
 
   </div>
   
@@ -365,7 +295,6 @@
 </div>
 
     </div>
-
     <script>
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
   (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),

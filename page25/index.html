@@ -67,131 +67,73 @@
   
   <div class="post">
     <h1 class="post-title">
-      <a href="/2015/08/30/active-support-and-time/">
-        Active Support and Time
+      <a href="/2015/09/06/stop-and-take-a-moment/">
+        Stop and Take a Moment
       </a>
     </h1>
 
     
 
-    <span class="post-date">30 Aug 2015</span>
+    <span class="post-date">06 Sep 2015</span>
     <span class='share-container'><ul class="share-buttons">
   <li>
-    <a href="https://www.facebook.com/sharer/sharer.php?u=http://jakeyesbeck.com/2015/08/30/active-support-and-time/&t=Active Support and Time" title="Share on Facebook" target="_blank">
+    <a href="https://www.facebook.com/sharer/sharer.php?u=http://jakeyesbeck.com/2015/09/06/stop-and-take-a-moment/&t=Stop and Take a Moment" title="Share on Facebook" target="_blank">
       <img src="http://jakeyesbeck.com/assets/images/facebook.svg">
     </a>
   </li>
   <li>
-    <a href="https://twitter.com/intent/tweet?source=http%3A%2F%2Fjakeyesbeck.com&text=Active Support and Time%20http://jakeyesbeck.com/2015/08/30/active-support-and-time/&via=jakeyesbeck" target="_blank" title="Tweet">
+    <a href="https://twitter.com/intent/tweet?source=http%3A%2F%2Fjakeyesbeck.com&text=Stop and Take a Moment%20http://jakeyesbeck.com/2015/09/06/stop-and-take-a-moment/&via=jakeyesbeck" target="_blank" title="Tweet">
       <img src="http://jakeyesbeck.com/assets/images/twitter.svg">
     </a>
   </li>
   <li>
-    <a href="https://plus.google.com/share?url=http://jakeyesbeck.com/2015/08/30/active-support-and-time/" target="_blank" title="Share on Google+">
+    <a href="https://plus.google.com/share?url=http://jakeyesbeck.com/2015/09/06/stop-and-take-a-moment/" target="_blank" title="Share on Google+">
       <img src="http://jakeyesbeck.com/assets/images/google_plus.svg">
     </a>
   </li>
 
   <li>
-    <a href="https://news.ycombinator.com/submitlink?u=http://jakeyesbeck.com/2015/08/30/active-support-and-time/&t=Active Support and Time" target="_blank" title="Share on Hacker News">
+    <a href="https://news.ycombinator.com/submitlink?u=http://jakeyesbeck.com/2015/09/06/stop-and-take-a-moment/&t=Stop and Take a Moment" target="_blank" title="Share on Hacker News">
       <img src="http://jakeyesbeck.com/assets/images/ycomb.svg">
     </a>
   </li>
 
   <li>
-    <a href="https://getpocket.com/save?url=http://jakeyesbeck.com/2015/08/30/active-support-and-time/&title=Active Support and Time" target="_blank" title="Add to Pocket">
+    <a href="https://getpocket.com/save?url=http://jakeyesbeck.com/2015/09/06/stop-and-take-a-moment/&title=Stop and Take a Moment" target="_blank" title="Add to Pocket">
       <img src="http://jakeyesbeck.com/assets/images/pocket.svg">
     </a>
   </li>
   <li>
-    <a href="http://www.reddit.com/submit?url=http://jakeyesbeck.com/2015/08/30/active-support-and-time/&title=Active Support and Time" target="_blank" title="Submit to Reddit">
+    <a href="http://www.reddit.com/submit?url=http://jakeyesbeck.com/2015/09/06/stop-and-take-a-moment/&title=Stop and Take a Moment" target="_blank" title="Submit to Reddit">
       <img src="http://jakeyesbeck.com/assets/images/reddit.svg">
     </a>
   </li>
 </ul>
 </span>
 
-    <p>If a list was compiled of useful Ruby libraries, Active Support would be close to the top. Based on the <a href="http://api.rubyonrails.org/classes/ActiveSupport.html">documentation alone</a>, it is apparent that a very large amount of time went into thinking about the roles Active Support should play and the functionality it should support. From string manipulation to internationalization, Active Support seems to simply do it all. However, even a profoundly useful library like Active Support still has a few inconsistencies with everyone’s favorite subject: <strong>Time Calculation</strong>.</p>
+    <p>Someone in all our lives has offered up the advice: “Slow down”. It might have happened once or, if we are lucky, many people have said it. Regardless, the words did not sink in. At least not at first. And even to this day, maybe the words are yet to truly be absorbed and understood. But those words do not mean anything, it is just something people say, right? Wrong. These little words carry more weight with them than most conversations in a day.</p>
 
-<h2 id="time-wounds-all-heals">Time wounds all heals</h2>
+<p><em>“I am just too busy”</em>, <em>“There is no time to waste, how could I slow down?”</em>, we say in response. Because in the moment, these phrases make sense. Things that are right in front of our face are the most important. We may plan slightly in the future or be cognizant of a few days in the past, but we stay busy. After all, being busy has become our natural and most comfortable state.</p>
 
-<p>Personally, the thing that keeps me up at night, the monster in my closet, the beast waiting to grab my foot when I accidentally let it hang over the bed while sleeping, is time calculation in programming. Regardless of the task, however simple it may seem, calculating time offsets or time zone correction continues to be a tremendous pain point. Now, to demonstrate just how crazy things can be, let’s pick on Active Support.</p>
+<h2 id="busyness-is-mindlessness">Busyness is mindlessness</h2>
 
-<p>Active Support grants a myriad of methods for even the most impatient Software Artisan. For example, if one were to ask for this instant in time, a day ago, Active Support makes it possible.</p>
+<p>In an earlier post, I said <a href="http://jakeyesbeck.com/2015/06/28/staying-motivated/">to keep moving, to keep working</a>. The message of this article is not in contradiction to that one, but should be thought of as complementary. Staying still will cause fatigue, muscle atrophy, and many other problems; but, not enjoying the moments we are in can be just as detrimental. Within this world full of stimuli, it is extremely easy to preoccupy ourselves with just about anything. Think about yesterday or the day before, how many tasks or activities flowed into each other? How long did the entire day feel? For me, days do not feel nearly as long as they used to. Moments flow from one to another without even being noticed. It almost feels like a trance, a mindless sea of moments washing over each other.</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="mi">1</span><span class="p">.</span><span class="nf">day</span><span class="p">.</span><span class="nf">ago</span>
-<span class="c1"># =&gt; 2015-08-29 18:44:55 -0700</span>
-</code></pre>
-</div>
+<p>People like to stay busy, to feel valuable and like they have a place in the world. However, this mentality can lead a person to miss out on those special moments that deserve a bit more attention.</p>
 
-<p>Likewise, basic date addition and subtraction is just as easy.</p>
+<h2 id="one-moment-can-mean-a-lifetime">One moment can mean a lifetime</h2>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="n">three_days_from_now</span> <span class="o">=</span> <span class="no">Time</span><span class="p">.</span><span class="nf">now</span> <span class="o">+</span> <span class="mi">3</span><span class="p">.</span><span class="nf">days</span>
-<span class="c1">#=&gt; 2015-09-01 18:46:34 -0700</span>
+<p><strong>“You don’t know what you’ve got until its gone”</strong> is a phrase said a great deal, but not often heard. This concept has recently rang very true for me. Memories that seemed so small and insignificant suddenly have a great deal of meaning. It might have been a 5 minute conversation or a multiple day excursion. Either way, the memories that we have and the moments that we use to define ourselves are happening to us every single day. It is important that they are noticed and appreciated.</p>
 
-<span class="n">three_days_from_now</span> <span class="o">+</span> <span class="mi">12</span><span class="p">.</span><span class="nf">hours</span>
-<span class="c1"># =&gt; 2015-09-03 06:48:28 -0700</span>
-</code></pre>
-</div>
+<p>In times of sadness, reflection is effortless. It is unfortunate that these feelings are most often surfaced due to despondency, but it can serve as a valuable lesson. A lesson to stop and take a moment to appreciate where we are and who is among us.</p>
 
-<p>Great! Very simple, seemingly arbitrary time calculation has never been easier. So what could be the catch? Obviously there isn’t one, if there were then this article would have to continue and I’m sure everyone has had quite enough.</p>
+<h2 id="gone-but-never-forgotten">Gone but never forgotten</h2>
 
-<h2 id="toi-is-not-always-easy"><code class="highlighter-rouge">to_i</code> is not always easy</h2>
+<p>I have lost a friend. Truly, I have a lost a brother. While the same blood did not run through our veins, our experiences and connection made us family. I am lucky to have such fond memories and character defining interactions, but I wish that I had taken more time. More time to understand, to appreciate, and to be in the moment when times were at their best. I believe that we are who we are not only by our own volition, but also the influence and teachings of those around us. Some of those teachers we recognize right away, others are taken for granted.</p>
 
-<p>Had enough? Too bad. The topic of <code class="highlighter-rouge">to_i</code> still has to be discussed with relation to the <code class="highlighter-rouge">Time</code> class. Ruby’s <code class="highlighter-rouge">Time</code> class exposes a method <code class="highlighter-rouge">to_i</code> which can be used to convert a <code class="highlighter-rouge">Time</code> to an <code class="highlighter-rouge">Integer</code>. This <code class="highlighter-rouge">Integer</code>is the sum of seconds passed since <a href="https://en.wikipedia.org/wiki/Unix_time">Epoch</a>. Using Epoch time can be useful for some systems that want to avoid doing timezone conversion. In fact, it might be so attractive an option that a developer’s first instinct might be to save and calculate everything in Epoch time. However, this might not always be the best idea.</p>
+<p>I wish that I had said how much I valued our time together, how much I have learned and what you really meant to me. I would not be who I am today without you. I regret never telling you in person, but feel blessed that I have as many fond memories as I do.</p>
 
-<p>Active Support follows suit with allowing <code class="highlighter-rouge">to_i</code> to be called on its convenience methods. For example, <code class="highlighter-rouge">1.day.to_i</code> calculates the number of seconds in the day.</p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="mi">1</span><span class="p">.</span><span class="nf">day</span><span class="p">.</span><span class="nf">to_i</span>
-<span class="c1"># =&gt; 86400</span>
-</code></pre>
-</div>
-
-<p>And <code class="highlighter-rouge">1.week.to_i</code> calculates the number of seconds in a week.</p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="mi">1</span><span class="p">.</span><span class="nf">week</span><span class="p">.</span><span class="nf">to_i</span>
-<span class="c1"># =&gt; 604800</span>
-</code></pre>
-</div>
-
-<p>Additionally, <code class="highlighter-rouge">1.month.to_i</code> calculates the number of seconds in a month.</p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="mi">1</span><span class="p">.</span><span class="nf">month</span><span class="p">.</span><span class="nf">to_i</span>
-<span class="c1"># =&gt; 2592000</span>
-</code></pre>
-</div>
-
-<p>Wait a second, that only accounts for 30 days. If I learned anything in kindergarten, it was that the teacher really hates it when you teach yourself to whistle during nap-time. Also, I am pretty sure that not all months consist of exactly 30 days.</p>
-
-<h2 id="bad-times">Bad times</h2>
-
-<p>Introducing this inconsistency in time calculation can lead to unintended results. For example, note the difference between subtracting time objects and subtracting <code class="highlighter-rouge">to_i</code> calculated times:</p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="no">Time</span><span class="p">.</span><span class="nf">now</span> <span class="o">-</span> <span class="mi">3</span><span class="p">.</span><span class="nf">months</span>
-<span class="c1"># =&gt; 2015-05-30 19:07:44 -0700</span>
-
-<span class="no">Time</span><span class="p">.</span><span class="nf">now</span> <span class="o">-</span> <span class="mi">3</span><span class="p">.</span><span class="nf">months</span><span class="p">.</span><span class="nf">to_i</span>
-<span class="c1"># =&gt; 2015-06-01 19:07:59 -0700</span>
-</code></pre>
-</div>
-
-<p>So which is it Ruby? Was 3 months ago the 1st of June or the 30th of May? The problem persists even if everything is converted to integers first:</p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="n">epoch_now</span> <span class="o">=</span> <span class="no">Time</span><span class="p">.</span><span class="nf">now</span><span class="p">.</span><span class="nf">to_i</span>
-<span class="c1"># =&gt; 1440986921</span>
-
-<span class="n">epoch_three_months_ago</span> <span class="o">=</span> <span class="n">epoc_now</span> <span class="o">-</span> <span class="mi">3</span><span class="p">.</span><span class="nf">months</span>
-<span class="c1"># =&gt; 1433210921</span>
-
-<span class="no">Time</span><span class="p">.</span><span class="nf">at</span><span class="p">(</span><span class="n">epoch_three_months_ago</span><span class="p">)</span>
-<span class="c1"># =&gt; 2015-06-01 19:08:41 -0700</span>
-</code></pre>
-</div>
-
-<h2 id="ok-but-why">Ok, but why?</h2>
-
-<p>So why does this happen? Why does <code class="highlighter-rouge">1.month</code> return the same integer regardless of which month it is. Because, how could it know? A month is not meant to exist as an abstract concept, there is no canonical “month”, they are either 30 days, 31 days, 28 days, or 29 days long <em>(I didn’t forget about you, leap year!)</em>. This is just a small demonstration of why time calculation is never as simple as it may seem. There is no silver bullet to avoid it all. Even Epoch time conversions can lead to some real bad times.</p>
-
+<p><em>Dedicated to Christopher Adam Bell</em></p>
 
   </div>
   
@@ -209,7 +151,6 @@
 </div>
 
     </div>
-
     <script>
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
   (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),

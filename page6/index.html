@@ -67,237 +67,157 @@
   
   <div class="post">
     <h1 class="post-title">
-      <a href="/2016/01/10/how-to-parallelize-ruby-http-requests/">
-        How To Parallelize Ruby HTTP Requests
+      <a href="/2016/01/17/contributing-to-open-source-in-7-steps/">
+        Contributing to Open Source in 7 Steps
       </a>
     </h1>
 
     
 
-    <span class="post-date">10 Jan 2016</span>
+    <span class="post-date">17 Jan 2016</span>
     <span class='share-container'><ul class="share-buttons">
   <li>
-    <a href="https://www.facebook.com/sharer/sharer.php?u=http://jakeyesbeck.com/2016/01/10/how-to-parallelize-ruby-http-requests/&t=How To Parallelize Ruby HTTP Requests" title="Share on Facebook" target="_blank">
+    <a href="https://www.facebook.com/sharer/sharer.php?u=http://jakeyesbeck.com/2016/01/17/contributing-to-open-source-in-7-steps/&t=Contributing to Open Source in 7 Steps" title="Share on Facebook" target="_blank">
       <img src="http://jakeyesbeck.com/assets/images/facebook.svg">
     </a>
   </li>
   <li>
-    <a href="https://twitter.com/intent/tweet?source=http%3A%2F%2Fjakeyesbeck.com&text=How To Parallelize Ruby HTTP Requests%20http://jakeyesbeck.com/2016/01/10/how-to-parallelize-ruby-http-requests/&via=jakeyesbeck" target="_blank" title="Tweet">
+    <a href="https://twitter.com/intent/tweet?source=http%3A%2F%2Fjakeyesbeck.com&text=Contributing to Open Source in 7 Steps%20http://jakeyesbeck.com/2016/01/17/contributing-to-open-source-in-7-steps/&via=jakeyesbeck" target="_blank" title="Tweet">
       <img src="http://jakeyesbeck.com/assets/images/twitter.svg">
     </a>
   </li>
   <li>
-    <a href="https://plus.google.com/share?url=http://jakeyesbeck.com/2016/01/10/how-to-parallelize-ruby-http-requests/" target="_blank" title="Share on Google+">
+    <a href="https://plus.google.com/share?url=http://jakeyesbeck.com/2016/01/17/contributing-to-open-source-in-7-steps/" target="_blank" title="Share on Google+">
       <img src="http://jakeyesbeck.com/assets/images/google_plus.svg">
     </a>
   </li>
 
   <li>
-    <a href="https://news.ycombinator.com/submitlink?u=http://jakeyesbeck.com/2016/01/10/how-to-parallelize-ruby-http-requests/&t=How To Parallelize Ruby HTTP Requests" target="_blank" title="Share on Hacker News">
+    <a href="https://news.ycombinator.com/submitlink?u=http://jakeyesbeck.com/2016/01/17/contributing-to-open-source-in-7-steps/&t=Contributing to Open Source in 7 Steps" target="_blank" title="Share on Hacker News">
       <img src="http://jakeyesbeck.com/assets/images/ycomb.svg">
     </a>
   </li>
 
   <li>
-    <a href="https://getpocket.com/save?url=http://jakeyesbeck.com/2016/01/10/how-to-parallelize-ruby-http-requests/&title=How To Parallelize Ruby HTTP Requests" target="_blank" title="Add to Pocket">
+    <a href="https://getpocket.com/save?url=http://jakeyesbeck.com/2016/01/17/contributing-to-open-source-in-7-steps/&title=Contributing to Open Source in 7 Steps" target="_blank" title="Add to Pocket">
       <img src="http://jakeyesbeck.com/assets/images/pocket.svg">
     </a>
   </li>
   <li>
-    <a href="http://www.reddit.com/submit?url=http://jakeyesbeck.com/2016/01/10/how-to-parallelize-ruby-http-requests/&title=How To Parallelize Ruby HTTP Requests" target="_blank" title="Submit to Reddit">
+    <a href="http://www.reddit.com/submit?url=http://jakeyesbeck.com/2016/01/17/contributing-to-open-source-in-7-steps/&title=Contributing to Open Source in 7 Steps" target="_blank" title="Submit to Reddit">
       <img src="http://jakeyesbeck.com/assets/images/reddit.svg">
     </a>
   </li>
 </ul>
 </span>
 
-    <p>It turns out that managing web requests is quite important when doing web development. A web application backed by an external or internal API can issue <strong>a lot</strong> of requests when rendering a seemingly simple web page. How those requests are made and in what order is very important. With improper parallelization, an end user’s entire experience can go from delightful to horrific in a matter of seconds.</p>
+    <p>Making contributions to open source repositories is a great way to give back to the community. Open source software has a rich history and is a crucial component in many successful software applications. Most open source projects are maintained by either one or many developers for free. Since “free” is not usually the price of food and shelter, these maintainers are not available to work on their projects at all hours, most of them have day jobs so they can eat and buy clothing.</p>
 
-<h2 id="the-build-up">The Build Up</h2>
+<p>To help keep open source projects up to date and bug free, members of the community regularly contribute a portion of their own free time. Since the start of the <a href="http://jakeyesbeck.com/2015/04/23/a-year-of-commits/">Year of Commits</a> project, I have made quite a few contributes to open source software and distilled the process down to these seven basic steps.</p>
 
-<p>A basic Ruby on Rails application might have the following features:</p>
+<h2 id="find-a-repository-that-has-some-issues">1. Find a repository that has some issues</h2>
+
+<p>A great way to get a foot in the door in an open source repository is by solving one of its open issues. A project is much more likely to accept code that addresses an open issue as opposed to code that is added “just because”. Open issues are either bugs or feature requests and are tracked on Github.</p>
+
+<p>Some really great tools exist for exploring Github’s vast index of repositories for relevant projects. <a href="http://www.codetriage.com/">CodeTriage</a> is one of these <strong>awesome</strong> tools. CodeTriage enables a user to narrow down Github’s list of repositories by programming language. CodeTriage has a very nice UI, ordering a very large amount of Github projects in descending count of open issues.</p>
+
+<p>Alternatively, Github has their own tooling around discovering projects with their <a href="https://github.com/explore">explore feature</a>. Trending repositories from this week or this month are available on a per programming language basis. The explore feature is great for popular projects but exposes far fewer projects than CodeTriage.</p>
+
+<p>To demonstrate a typical contribution’s life cycle, the <a href="https://github.com/covermymeds/fetching-gem">fetching-gem</a> project has been chosen.</p>
+
+<p>The <code class="highlighter-rouge">fetching-gem</code> library is a convenience Ruby library for accessing elements of nested hashes and arrays with dot notation and noisy feedback.</p>
+
+<p>Recently, the <code class="highlighter-rouge">fetching-gem's</code> issues page had a feature request: “Make the library compatible with the <a href="http://ruby-doc.org/core-2.3.0/Enumerable.html#method-i-first"><code class="highlighter-rouge">Enumerable#first(n)</code> behaviour</a>”:</p>
+
+<p><img src="http://jakeyesbeck.com/assets/images/find_issue.png" alt="Find Issue" /></p>
+
+<h2 id="read-the-contributing-guidelines">2. Read the contributing guidelines</h2>
+
+<p>Before starting work on a project, make sure that the contribution guidelines of the project have been met. Some more popular repositories have very explicit rules about the number of commits per patch, the logical grouping of those commits, and even commit message style concerns.</p>
+
+<p>The <a href="https://github.com/covermymeds/fetching-gem#contributing"><code class="highlighter-rouge">fetching-gem's</code> contribution guidelines</a> are very simple, it merely instructs that a fork should be made and then a pull request from the forked repository should be made.</p>
+
+<h2 id="fork-it">3. Fork it</h2>
+
+<p>Obtaining a copy of a project’s code is crucial when trying to make a contribution. In Github, the act of <a href="https://help.github.com/articles/fork-a-repo/">forking a repository</a> creates a copy of the repository. This copy may be altered until the feature is built or bug is fixed without disrupting the original project. The <code class="highlighter-rouge">Fork</code> button can be found at the top of a repository’s Github page.</p>
+
+<p>After the <code class="highlighter-rouge">Fork</code> has been made, the next step is to clone the <strong>forked</strong> copy locally:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="gp">$ </span>git clone git@github.com:&lt;your_username&gt;/fetching-gem.git
+</code></pre>
+</div>
+
+<p>Cloning the repository locally will automatically add the <code class="highlighter-rouge">origin</code> git remote URL to the code directory. Additionally, adding the source remote URL right away is a great way to make sure that local code and the master remote code can easily stay in sync.</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="gp">$ </span><span class="nb">cd </span>fetching-gem/
+<span class="gp">$ </span>git remote add upstream git@github.com:covermymeds/fetching-gem.git
+<span class="gp">$ </span>git remote -v
+
+origin git@github.com:yez/fetching-gem.git <span class="o">(</span>fetch<span class="o">)</span>
+origin  git@github.com:yez/fetching-gem.git <span class="o">(</span>push<span class="o">)</span>
+upstream  git@github.com:covermymeds/fetching-gem.git <span class="o">(</span>fetch<span class="o">)</span>
+upstream  git@github.com:covermymeds/fetching-gem.git <span class="o">(</span>push<span class="o">)</span>
+</code></pre>
+</div>
+
+<p>The above command adds a new remote, <code class="highlighter-rouge">upstream</code>, to the directory. With this remote in place, a <code class="highlighter-rouge">git fetch upstream</code> command will grab the latest updates from the original repository.</p>
+
+<p>Exploring unfamiliar code is not the most intuitive process, but thankfully a number of <a href="http://jakeyesbeck.com/2015/10/25/how-to-traverse-foreign-ruby-code/">blog posts</a> have been written about the topic.</p>
+
+<h2 id="reproduce-the-issue">4. Reproduce the issue</h2>
+
+<p>With the fork cloned locally and remote pointers all set up, it is time to reproduce and address the issue. Since this particular issue was a feature enhancement ask, “reproducing” the issue consisted of calling a method with the wrong arguments and expecting it to fail:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="o">&gt;</span> <span class="nb">require</span> <span class="s1">'fetching-gem'</span>
+<span class="o">&gt;</span> <span class="n">fetching_array</span> <span class="o">=</span> <span class="no">Fetching</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>
+<span class="o">&gt;</span> <span class="n">fetching_array</span><span class="p">.</span><span class="nf">first</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+<span class="no">ArgumentError</span><span class="p">:</span> <span class="n">wrong</span> <span class="n">number</span> <span class="n">of</span> <span class="n">arguments</span> <span class="p">(</span><span class="mi">1</span> <span class="k">for</span> <span class="mi">0</span><span class="p">)</span>
+</code></pre>
+</div>
+
+<p>Success! The code definitely does not support the <code class="highlighter-rouge">Enumerable#first(n)</code> behaviour, so there is indeed work to be done.</p>
+
+<h2 id="fix-the-issue">5. Fix the issue</h2>
+
+<p>Both when adding code and altering existing code, it is important to make sure it is tested. In most cases, the project under revision will have chosen a particular testing library and have some amount of tests. Adding the appropriate tests at the same time as the patched code will boost the library’s maintainer(s) confidence in the patch.</p>
+
+<p>Adhering to the style of the code under manipulation is also important. From test example descriptions to variable declaration styling, consistency is a complexity reducing concept that is extremely valuable later on.</p>
+
+<p>For brevity’s sake, the finer details surrounding my example <code class="highlighter-rouge">fetching-gem</code> patch can be found <a href="https://github.com/covermymeds/fetching-gem/commit/749624e89100066e514b0521ea69f2e91a226309">on Github</a>.</p>
+
+<h2 id="submit-a-pr">6. Submit a PR</h2>
+
+<p>With the contribution guidelines adhered to, the code altered, and the issue taken care of, it is time to submit the long anticipated patch.</p>
+
+<p>A well crafted pull request (PR) message consists of a few key elements:</p>
 
 <ol>
-  <li>A <code class="highlighter-rouge">User</code> can create a favorite of an item, creating a <code class="highlighter-rouge">FavoriteItem</code>.</li>
-  <li>A <code class="highlighter-rouge">User</code> can add an item to their wishlist, creating a <code class="highlighter-rouge">WishlistItem</code>.</li>
-  <li>A <code class="highlighter-rouge">User</code> can buy an item, creating a <code class="highlighter-rouge">TransactionItem</code>.</li>
+  <li>It is concise. Too much explination will be glossed over and ends up doing more harm than good.</li>
+  <li>A special “Resolved #<issue number="">" text exists, allowing Github to automatically reference and resolve the issue upon a successul merge.</issue></li>
+  <li>If applicable, an example of the new behaviour is given.</li>
 </ol>
 
-<p>Each model this system uses is backed by an API. <code class="highlighter-rouge">User</code>, <code class="highlighter-rouge">TransactionItem</code>, <code class="highlighter-rouge">WishlistItem</code>, and <code class="highlighter-rouge">FavoriteItem</code> models all require a remote HTTP request for their information.</p>
+<p>The pull request that I recently added to <code class="highlighter-rouge">fetching-gem</code> looked like this:</p>
 
-<p>As a web application experiences growth, this structure is not uncommon. The same API might back a mobile app, website, and any other internal tooling to help this company with its day to day affairs.</p>
+<p><img src="http://jakeyesbeck.com/assets/images/submit_pr.png" alt="Submit a PR" /></p>
 
-<p>The API that this application uses works in a two phase manner:</p>
+<p>Another possible check when submitting a PR involves continuous integrations. If a project automatically builds its test suite with a service like <a href="https://travis-ci.org">Travis</a>, Github will supply some checks at the bottom of the PR:</p>
 
-<ol>
-  <li>A user can be requested by their <code class="highlighter-rouge">id</code>.
-    <ul>
-      <li><code class="highlighter-rouge">/users/:id</code> returns a <code class="highlighter-rouge">User</code> corresponding to the given <code class="highlighter-rouge">id</code>.</li>
-    </ul>
-  </li>
-  <li>Each supporting model is requested with the same <code class="highlighter-rouge">user_id</code>.
-    <ul>
-      <li><code class="highlighter-rouge">/users/:id/favorite_items</code> will return an array of <code class="highlighter-rouge">FavoriteItems</code> for the specified <code class="highlighter-rouge">User</code>.</li>
-    </ul>
-  </li>
-</ol>
+<p><img src="http://jakeyesbeck.com/assets/images/make_sure_ci_passes.png" alt="Check CI" /></p>
 
-<p>The contract of this API is for all intents an purposes, non-negotiable. In-lined data or other request saving patterns are not available, the client must use the API as provided.</p>
+<p>If, for some reason, this status is not green and the tests did not pass, use the <code class="highlighter-rouge">Details</code> link to find out more information why.</p>
 
-<h2 id="sequential-approach">Sequential Approach</h2>
+<h2 id="feel-awesome">7. Feel Awesome!</h2>
 
-<p>Within this example application, the most request intensive page is the <code class="highlighter-rouge">User's</code> history page. The history page consists of everything the user has done. <code class="highlighter-rouge">Items</code> a user has added to their favorites resulting in <code class="highlighter-rouge">FavoriteItems</code>, <code class="highlighter-rouge">Items</code> bought by the user resulting in <code class="highlighter-rouge">TransactionItems</code>, and <code class="highlighter-rouge">Items</code> added to a user’s wish list resulting in <code class="highlighter-rouge">WishListItems</code>.</p>
+<p>Pending continuous integration passing and the repository’s maintainer(s) signing off on the change, a patch will be accepted into the project. What a fantastic feeling that is! Awesome maintainers (like the <code class="highlighter-rouge">fetching-gem</code> maintainer <code class="highlighter-rouge">mikegee</code>) will show their appreciation directly on the PR, immortalizing your contribution for all days to come.</p>
 
-<p>To complement the (ex/in)ternal API, two helper methods exist on each model: <code class="highlighter-rouge">remote_find</code> which accepts an <code class="highlighter-rouge">id</code> or array of <code class="highlighter-rouge">ids</code>, returning the matching models, and <code class="highlighter-rouge">remote_find_by_user_id</code> which accepts a <code class="highlighter-rouge">user_id</code> and returns an array of <code class="highlighter-rouge">ids</code> for the corresponding model.</p>
+<p><img src="http://jakeyesbeck.com/assets/images/feel_great.png" alt="Feel Great" /></p>
 
-<p>Leveraging the API and these two helper methods, a serial version of a <code class="highlighter-rouge">User's</code> pertinent data could look something like:</p>
+<h2 id="b-repeat-4---6">7b. Repeat 4 - 6</h2>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">class</span> <span class="nc">UserHistoryController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
-  <span class="k">def</span> <span class="nf">show</span>
-    <span class="vi">@user</span> <span class="o">=</span> <span class="no">User</span><span class="p">.</span><span class="nf">remote_find</span><span class="p">(</span><span class="n">params</span><span class="p">.</span><span class="nf">require</span><span class="p">(</span><span class="ss">:user_id</span><span class="p">]))</span>
+<p>In the case that the submitted code is not <em>exactly</em> what the maintainer(s) is looking for, some additional work might be warranted. This back and forth could be thought of as frustrating, but it is also a great learning opportunity. When else is feedback so easily received about one’s code from people they would have probably never met otherwise?</p>
 
-    <span class="vi">@favorite_items</span> <span class="o">=</span>
-      <span class="no">FavoriteItem</span><span class="p">.</span><span class="nf">remote_find_by_user_id</span><span class="p">(</span><span class="vi">@user</span><span class="p">.</span><span class="nf">id</span><span class="p">)</span>
-
-    <span class="vi">@wish_list_items</span> <span class="o">=</span>
-      <span class="no">WishlistItem</span><span class="p">.</span><span class="nf">remote_find_by_user_id</span><span class="p">(</span><span class="vi">@user</span><span class="p">.</span><span class="nf">id</span><span class="p">)</span>
-
-    <span class="vi">@transaction_items</span> <span class="o">=</span>
-      <span class="no">TransactionItem</span><span class="p">.</span><span class="nf">remote_find_by_user_id</span><span class="p">(</span><span class="vi">@user</span><span class="p">.</span><span class="nf">id</span><span class="p">)</span>
-  <span class="k">end</span>
-<span class="k">end</span>
-</code></pre>
-</div>
-
-<p>However slow it may be, this code will indeed fulfill its duty. First the <code class="highlighter-rouge">User</code> is found, then all the supporting information about a <code class="highlighter-rouge">User's</code> history is retrieved one by one from the API.</p>
-
-<p>In a worst case scenario, assume the API returns an individual request in about <code class="highlighter-rouge">150ms</code>. With <code class="highlighter-rouge">4</code> requests, this means that <strong>only required page elements will take <code class="highlighter-rouge">600ms</code></strong>.</p>
-
-<p>Tacking on view rendering, whatever data processing or formatting that needs to be done at the presentation layer, and finally some amount of Javascript, this page becomes objectively <em>slow</em>.</p>
-
-<h2 id="enter-em-synchrony">Enter <code class="highlighter-rouge">EM-Synchrony</code></h2>
-
-<p>As with most problems, someone smart has had it before and probably done something about it. Luckily, this particular problem has been addressed by <a href="https://github.com/igrigorik/em-synchrony">Ilya Grigorik’s EM-Synchrony library</a>.</p>
-
-<p>Grigorik’s library leverages the use of Ruby <code class="highlighter-rouge">Fibers</code> to parallelize* code execution.</p>
-
-<p><em>*Note: Because of the Global Interpreter Lock (GIL) present in MRI, true parallelization is not possible.</em></p>
-
-<p>The real benefit of using <code class="highlighter-rouge">EM-Synchrony</code> is the way it handles scheduling the underlying <code class="highlighter-rouge">Fibers</code>. A Ruby <code class="highlighter-rouge">Fiber</code> is basically a <code class="highlighter-rouge">Thread</code> that is not automatically scheduled by the Ruby VM. This means that it is up to the programmer to let the <code class="highlighter-rouge">Fiber</code> know when it should relinquish control to another <code class="highlighter-rouge">Fiber</code>.</p>
-
-<p>Since this example is almost completely bound by <code class="highlighter-rouge">Input/Output</code> (<code class="highlighter-rouge">I/O</code>) operations, it is a perfect candidate for <code class="highlighter-rouge">EM-Synchrony</code>.</p>
-
-<p>To use <code class="highlighter-rouge">EM-Synchrony</code> effectively, existing requests must be broken up into pieces that can accessed independently. A <code class="highlighter-rouge">requests</code> method can be created to extract details surrounding each request. The result of the <code class="highlighter-rouge">requests</code> method must be an enumerable.</p>
-
-<p><em>Note: As explained <a href="#caveats">below</a>, <code class="highlighter-rouge">EM-Synchrony</code> can only be used with supported HTTP clients.</em></p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">class</span> <span class="nc">UserHistoryController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
-  <span class="c1"># ...</span>
-  <span class="c1"># ...</span>
-
-  <span class="kp">private</span>
-
-  <span class="k">def</span> <span class="nf">requests</span>
-    <span class="p">{</span>
-      <span class="no">User</span> <span class="o">=&gt;</span> <span class="p">{</span>
-        <span class="ss">method: :remote_find</span><span class="p">,</span>
-        <span class="ss">arg: </span><span class="vi">@user_id</span><span class="p">,</span>
-        <span class="ss">instance_var: :@user</span>
-      <span class="p">},</span>
-      <span class="no">FavoriteItem</span> <span class="o">=&gt;</span> <span class="p">{</span>
-        <span class="ss">method: :remote_find_by_user_id</span><span class="p">,</span>
-        <span class="ss">arg: </span><span class="vi">@user_id</span><span class="p">,</span>
-        <span class="ss">instance_var: :@favorite_items</span>
-      <span class="p">},</span>
-      <span class="no">WishListItem</span> <span class="o">=&gt;</span> <span class="p">{</span>
-        <span class="ss">method: :remote_find_by_user_id</span><span class="p">,</span>
-        <span class="ss">arg: </span><span class="vi">@user_id</span><span class="p">,</span>
-        <span class="ss">instance_var: :@wish_list_items</span>
-      <span class="p">},</span>
-      <span class="no">TransactionItem</span> <span class="o">=&gt;</span> <span class="p">{</span>
-        <span class="ss">method: :remote_find_by_user_id</span><span class="p">,</span>
-        <span class="ss">arg: </span><span class="vi">@user_id</span><span class="p">,</span>
-        <span class="ss">instance_var: :@transaction_items</span>
-      <span class="p">}</span>
-    <span class="p">}</span>
-  <span class="k">end</span>
-<span class="k">end</span>
-</code></pre>
-</div>
-
-<p>For the sake of being explicit, this very redundant helper method will be used to iterate over requests and allow <code class="highlighter-rouge">EM-Synchrony</code> to process them in parallel:</p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">class</span> <span class="nc">UserHistoryController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
-  <span class="no">CONCURRENCY</span> <span class="o">=</span> <span class="mi">4</span>
-
-  <span class="k">def</span> <span class="nf">show</span>
-    <span class="vi">@user_id</span> <span class="o">=</span> <span class="n">params</span><span class="p">.</span><span class="nf">require</span><span class="p">(</span><span class="ss">:user_id</span><span class="p">)</span>
-
-    <span class="no">EM</span><span class="p">.</span><span class="nf">synchrony</span> <span class="k">do</span>
-      <span class="no">EM</span><span class="o">::</span><span class="no">Synchrony</span><span class="o">::</span><span class="no">FiberIterator</span>
-        <span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="n">requests</span><span class="p">,</span> <span class="no">CONCURRENCY</span><span class="p">)</span>
-        <span class="p">.</span><span class="nf">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">key</span><span class="p">,</span> <span class="n">request_hash</span><span class="o">|</span>
-
-        <span class="c1"># Example of below with real values:</span>
-        <span class="c1">#</span>
-        <span class="c1"># key = Transaction</span>
-        <span class="c1"># Transation.remote_find_by_user_id(@user.id)</span>
-
-        <span class="n">result</span> <span class="o">=</span> <span class="n">key</span><span class="p">.</span><span class="nf">send</span><span class="p">(</span><span class="n">request_hash</span><span class="p">[</span><span class="ss">:method</span><span class="p">],</span> <span class="n">request_hash</span><span class="p">[</span><span class="ss">:arg</span><span class="p">])</span>
-        <span class="nb">instance_variable_set</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="ss">:instance_var</span><span class="p">],</span> <span class="n">result</span><span class="p">)</span>
-      <span class="k">end</span>
-
-      <span class="no">EM</span><span class="p">.</span><span class="nf">stop</span>
-    <span class="k">end</span>
-  <span class="k">end</span>
-<span class="k">end</span>
-</code></pre>
-</div>
-
-<p>A few important lines of this solution are worth a closer look:</p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="no">CONCURRENCY</span> <span class="o">=</span> <span class="mi">4</span>
-</code></pre>
-</div>
-
-<p>This line tells <code class="highlighter-rouge">EM-Synchrony</code> how many <code class="highlighter-rouge">Fibers</code> it is allowed to run at once. Since the example needed to request four remote  resources, the concurrency amount is set to four.</p>
-
-<p>The next line of interest is:</p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="no">EM</span><span class="o">::</span><span class="no">Synchrony</span><span class="o">::</span><span class="no">FiberIterator</span>
-        <span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="n">requests</span><span class="p">,</span> <span class="no">CONCURRENCY</span><span class="p">)</span>
-        <span class="p">.</span><span class="nf">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">key</span><span class="p">,</span> <span class="n">request_hash</span><span class="o">|</span>
-</code></pre>
-</div>
-
-<p>Here is where the actual work is done. After meticulously crafting the structure of the <code class="highlighter-rouge">requests</code> hash, the <code class="highlighter-rouge">FiberIterator</code> will pick the next element from the list and give it to a <code class="highlighter-rouge">Fiber</code>.</p>
-
-<p>Finally the line stopping of Event Machine can not go unnoticed.</p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="no">EM</span><span class="p">.</span><span class="nf">stop</span>
-</code></pre>
-</div>
-
-<p>This method has literally no documentation but is in every example of using Event Machine, so it is probably very crucial.</p>
-
-<p>And that is all there is to it! All four HTTP requests can now be run in parallel, resulting in a major speed up and a much happier user experience.</p>
-
-<h2 id="caveats">Caveats</h2>
-
-<p>A few considerations must be made in order to use <code class="highlighter-rouge">EM-Synchrony</code> effectively.</p>
-
-<ol>
-  <li><strong>A compliant HTTP library must be used.</strong>
-    <ul>
-      <li><a href="https://github.com/igrigorik/em-http-request#extensions">As em-http-client’s the README</a> a compliant HTTP library must be used when making the requests. <a href="https://github.com/lostisland/faraday">Faraday</a> is my favorite compliant library and it has worked great for me so far. Unfortunately, the very popular <code class="highlighter-rouge">HTTParty</code> library is not compliant and therefore no one may “Party Hard” when using <code class="highlighter-rouge">EM-Synchrony</code> and <code class="highlighter-rouge">HTTParty</code>.</li>
-    </ul>
-  </li>
-  <li><strong>One size does not fit all.</strong>
-    <ul>
-      <li>Unlike the described example, not all code can be saved by <code class="highlighter-rouge">EM-Synchrony</code>. If a request depends on the result of another request, sharing those results between <code class="highlighter-rouge">Fibers</code> is neither simple, nor a good idea.</li>
-    </ul>
-  </li>
-</ol>
+<p>Open source projects have tremendous value and a strong presence in the technology ecosystem. Contributing to these projects is an easy way to show appreciation and feel like a valued member of the open source community.</p>
 
   </div>
   
@@ -315,7 +235,6 @@
 </div>
 
     </div>
-
     <script>
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
   (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),

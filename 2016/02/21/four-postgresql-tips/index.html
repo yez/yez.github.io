@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta http-equiv="content-type" content="text/html; charset=utf-8">
   
-    <meta name="description" content="A technology blog about a Year of Commits to Open Source projects.">
+    <meta name="description" content="Four helpful PostgreSQL database tips that might be useful to people running manual queries in a PostgreSQL database. From column aggregation referencing to remote query execution, learn these four helpful tips today.">
   
 
   <!-- Enable responsiveness on mobile devices-->
@@ -14,7 +14,7 @@
 
   <title>
     
-      A Year of Commits
+      Four PostgreSQL Tips
     
   </title>
 
@@ -63,19 +63,11 @@
 
 
     <div class="content container">
-      <div class="posts">
+      <div class="post">
+  <h1 class="post-title">Four PostgreSQL Tips</h1>
+  <span class="post-date">21 Feb 2016</span>
   
-  <div class="post">
-    <h1 class="post-title">
-      <a href="/2016/02/21/four-postgresql-tips/">
-        Four PostgreSQL Tips
-      </a>
-    </h1>
-
-    
-
-    <span class="post-date">21 Feb 2016</span>
-    <span class='share-container'><ul class="share-buttons">
+  <span class='share-container'><ul class="share-buttons">
   <li>
     <a href="https://www.facebook.com/sharer/sharer.php?u=http://jakeyesbeck.com/2016/02/21/four-postgresql-tips/&t=Four PostgreSQL Tips" title="Share on Facebook" target="_blank">
       <img src="http://jakeyesbeck.com/assets/images/facebook.svg">
@@ -110,8 +102,7 @@
   </li>
 </ul>
 </span>
-
-    <p>PostgreSQL is an open source object-relational database used to power many production web applications. While many web applications interact with relational databases through Object Relational Mappers (<strong>ORM</strong>), direct SQL queries via a command line interface or graphical client are still common. When writing these queries, these four tips may come in handy.</p>
+  <p>PostgreSQL is an open source object-relational database used to power many production web applications. While many web applications interact with relational databases through Object Relational Mappers (<strong>ORM</strong>), direct SQL queries via a command line interface or graphical client are still common. When writing these queries, these four tips may come in handy.</p>
 
 <h2 id="referencing-columns-by-select-position">1. Referencing Columns by <code class="highlighter-rouge">SELECT</code> Position</h2>
 
@@ -242,17 +233,40 @@
 
 <p>The <code class="highlighter-rouge">copy</code> command comes in two variants: <code class="highlighter-rouge">copy</code>, which will be run by the PostgreSQL backend (user “postgres”) and <code class="highlighter-rouge">\copy</code> which runs as the current user. Depending on permissions and what <code class="highlighter-rouge">copy</code> is attempting to do, one may be more appropriate than the other.</p>
 
-  </div>
-  
 </div>
 
-<div class="pagination">
-  
-    <a class="pagination-item older" href="http://jakeyesbeck.com/page2">Older</a>
-  
-  
-    <span class="pagination-item newer">Newer</span>
-  
+<div class="related">
+  <h2>Related Posts</h2>
+  <ul class="related-posts">
+    
+      <li>
+        <h3>
+          <a href="/2016/02/07/how-to-remove-a-column-with-zero-downtime-in-ruby-on-rails/">
+            How to Remove a Column with Zero Downtime in Ruby on Rails
+            <small>07 Feb 2016</small>
+          </a>
+        </h3>
+      </li>
+    
+      <li>
+        <h3>
+          <a href="/2015/11/15/five-active-record-features-you-should-be-using/">
+            Five Active Record Features You Should Be Using
+            <small>15 Nov 2015</small>
+          </a>
+        </h3>
+      </li>
+    
+      <li>
+        <h3>
+          <a href="/2016/02/14/ruby-threads-and-active-record-connections/">
+            Ruby Threads and ActiveRecord Connections
+            <small>14 Feb 2016</small>
+          </a>
+        </h3>
+      </li>
+    
+  </ul>
 </div>
 
     </div>
