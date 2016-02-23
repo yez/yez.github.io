@@ -19,9 +19,7 @@
    <id>http://jakeyesbeck.com/2016/02/21/four-postgresql-tips</id>
    <content type="html">&lt;p&gt;PostgreSQL is an open source object-relational database used to power many production web applications. While many web applications interact with relational databases through Object Relational Mappers (&lt;strong&gt;ORM&lt;/strong&gt;), direct SQL queries via a command line interface or graphical client are still common. When writing these queries, these four tips may come in handy.&lt;/p&gt;
 
-&lt;h2 id=&quot;referencing-columns-by-select-position&quot;&gt;1. Referencing Columns by &lt;code class=&quot;highlighter-rouge&quot;&gt;SELECT&lt;/code&gt; Position&lt;/h2&gt;
-
-&lt;p&gt;Given a simple users table:&lt;/p&gt;
+&lt;p&gt;All examples will assume the presence of a simple users table:&lt;/p&gt;
 
 &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;    &lt;span class=&quot;k&quot;&gt;Column&lt;/span&gt;     &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;            &lt;span class=&quot;k&quot;&gt;Type&lt;/span&gt;
 &lt;span class=&quot;c1&quot;&gt;---------------+-----------------------------
@@ -38,6 +36,87 @@
     &lt;span class=&quot;nv&quot;&gt;&quot;users_pkey&quot;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;PRIMARY&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;KEY&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;btree&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
+
+&lt;h2 id=&quot;finding-duplicate-rows&quot;&gt;1. Finding Duplicate Rows&lt;/h2&gt;
+
+&lt;p&gt;A common mechanism for defending against duplicate rows in database tables are unique indexes. However, at the time of table creation, a unique index or two may have been forgotten. Duplicates in a table must be removed before a unique index may be added.&lt;/p&gt;
+
+&lt;p&gt;A great way to detect duplicates in PostgreSQL is by using window functions. Window functions are similar to aggregates; but, instead of grouping rows for the response, it maintains each row’s individuality.&lt;/p&gt;
+
+&lt;p&gt;Desired query: Find all duplicate &lt;code class=&quot;highlighter-rouge&quot;&gt;users&lt;/code&gt; with the same &lt;code class=&quot;highlighter-rouge&quot;&gt;first_name&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;last_name&lt;/code&gt;, and &lt;code class=&quot;highlighter-rouge&quot;&gt;email&lt;/code&gt;, returning duplicate &lt;code class=&quot;highlighter-rouge&quot;&gt;ids&lt;/code&gt; only (do not return the oldest &lt;code class=&quot;highlighter-rouge&quot;&gt;id&lt;/code&gt;).&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;SELECT&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;id&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;from&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;SELECT&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;ROW_NUMBER&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;OVER&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;PARTITION&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;BY&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;first_name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+                 &lt;span class=&quot;n&quot;&gt;last_name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+                 &lt;span class=&quot;n&quot;&gt;email&lt;/span&gt;
+              &lt;span class=&quot;k&quot;&gt;ORDER&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;BY&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;id&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;AS&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;user_row_number&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;FROM&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;users&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;duplicates&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;WHERE&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;duplicates&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;user_row_number&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;This query will identify all the rows of the &lt;code class=&quot;highlighter-rouge&quot;&gt;users&lt;/code&gt; table which share the same defined columns and return the primary key (&lt;code class=&quot;highlighter-rouge&quot;&gt;id&lt;/code&gt;) of rows &lt;em&gt;after&lt;/em&gt; the first via the &lt;code class=&quot;highlighter-rouge&quot;&gt;duplicates.user_row_number &amp;gt; 1&lt;/code&gt; condition. The result of this query can then be fed into a &lt;code class=&quot;highlighter-rouge&quot;&gt;DELETE&lt;/code&gt; query to remove the duplicates.&lt;/p&gt;
+
+&lt;p&gt;The &lt;code class=&quot;highlighter-rouge&quot;&gt;ROW_NUMBER()&lt;/code&gt; built-in function returns an incremented value assigned to each row that matches the criteria in the provided &lt;code class=&quot;highlighter-rouge&quot;&gt;OVER&lt;/code&gt; clause. This &lt;code class=&quot;highlighter-rouge&quot;&gt;OVER&lt;/code&gt; clause is followed by the window function: &lt;code class=&quot;highlighter-rouge&quot;&gt;PARTITION&lt;/code&gt;, which divides matching rows into groups or partitions using the columns or functions which follow it. Learn more about window functions at the &lt;a href=&quot;http://www.postgresql.org/docs/current/static/tutorial-window.html&quot;&gt;official PostgreSQL documentation page&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h2 id=&quot;interval&quot;&gt;2. &lt;code class=&quot;highlighter-rouge&quot;&gt;interval&lt;/code&gt;&lt;/h2&gt;
+
+&lt;p&gt;Ever had to scope the results of a database query to a certain time range? So has every developer ever. Luckily, PostgreSQL provides a very readable convenience function: &lt;code class=&quot;highlighter-rouge&quot;&gt;interval&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;If a rolling count of &lt;code class=&quot;highlighter-rouge&quot;&gt;user&lt;/code&gt; sign ups in the last 24 hours is desired, the following query makes it possible:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;SELECT&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;FROM&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;users&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;WHERE&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;created_at&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;now&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;interval&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;1 day&#39;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;The &lt;code class=&quot;highlighter-rouge&quot;&gt;interval&lt;/code&gt; function accepts a variety of input types. Days, Hours, Minutes, Weeks, and more options &lt;a href=&quot;http://www.postgresql.org/docs/current/interactive/datatype-datetime.html&quot;&gt;are available&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;interval&lt;/code&gt; subtraction can be used on any &lt;code class=&quot;highlighter-rouge&quot;&gt;timestamp&lt;/code&gt;:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;SELECT&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;FROM&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;users&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;WHERE&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;created_at&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;=&lt;/span&gt;
+  &lt;span class=&quot;s1&quot;&gt;&#39;2016-02-19 12:00:00&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;timestamp&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;interval&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;3 weeks&#39;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;The &lt;code class=&quot;highlighter-rouge&quot;&gt;::&lt;/code&gt; notation casts the string &lt;code class=&quot;highlighter-rouge&quot;&gt;2016-02-19 12:00:00&lt;/code&gt; to a &lt;code class=&quot;highlighter-rouge&quot;&gt;timestamp&lt;/code&gt;, a requirement when manipulating time ranges with &lt;code class=&quot;highlighter-rouge&quot;&gt;interval&lt;/code&gt;.&lt;/p&gt;
+
+&lt;h2 id=&quot;remote-query-execution&quot;&gt;3. Remote Query Execution&lt;/h2&gt;
+
+&lt;p&gt;A very powerful feature of PostreSQL, and more specifically the &lt;code class=&quot;highlighter-rouge&quot;&gt;psql&lt;/code&gt; command line interface, is the ability to run remote queries. With the &lt;code class=&quot;highlighter-rouge&quot;&gt;--command&lt;/code&gt; or &lt;code class=&quot;highlighter-rouge&quot;&gt;-c&lt;/code&gt; flag, a query may be passed to any PostgreSQL server and executed.&lt;/p&gt;
+
+&lt;p&gt;A unique use for this feature is the ability to transfer a query’s results directly from one environment to another.&lt;/p&gt;
+
+&lt;p&gt;An extensive analysis of the &lt;code class=&quot;highlighter-rouge&quot;&gt;users&lt;/code&gt; table for all &lt;code class=&quot;highlighter-rouge&quot;&gt;users&lt;/code&gt; that signed up in January is requested. This analysis has the potential to be very taxing on a production database, resulting in adverse effects on end users. Additionally, no follower or read only database exists to alleviate this problem. Production data must be transfered to a local environment so that the analysis can run side effect free.&lt;/p&gt;
+
+&lt;p&gt;To accomplish this, the &lt;code class=&quot;highlighter-rouge&quot;&gt;psql&lt;/code&gt; client has the ability to execute a query and return its result to &lt;code class=&quot;highlighter-rouge&quot;&gt;stdout&lt;/code&gt;. Conversely, file contents or query results from &lt;code class=&quot;highlighter-rouge&quot;&gt;stdin&lt;/code&gt; may also be read within the &lt;code class=&quot;highlighter-rouge&quot;&gt;psql&lt;/code&gt; client.&lt;/p&gt;
+
+&lt;p&gt;Utilizing both aspects of this behaviour could look something like:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;psql &amp;lt;REMOTE POSTGRESQL URL&amp;gt; &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+-c &lt;span class=&quot;s2&quot;&gt;&quot;copy (
+      SELECT *
+      FROM users
+      WHERE date_trunc(&#39;month&#39;, created_at) = &#39;2016-01-01&#39;
+    ) to stdout&quot;&lt;/span&gt; &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+| psql &amp;lt;LOCAL POSTGRESQL DATABASE&amp;gt; &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+-c &lt;span class=&quot;s2&quot;&gt;&quot;copy users from stdin&quot;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;As an alternative to &lt;code class=&quot;highlighter-rouge&quot;&gt;pg_dump&lt;/code&gt;, this pattern is a quick solution for loading specific data from one database to another.&lt;/p&gt;
+
+&lt;p&gt;The &lt;code class=&quot;highlighter-rouge&quot;&gt;copy&lt;/code&gt; command comes in two variants: &lt;code class=&quot;highlighter-rouge&quot;&gt;copy&lt;/code&gt;, which will be run by the PostgreSQL backend (user “postgres”) and &lt;code class=&quot;highlighter-rouge&quot;&gt;\copy&lt;/code&gt; which runs as the current user. Depending on permissions and what &lt;code class=&quot;highlighter-rouge&quot;&gt;copy&lt;/code&gt; is attempting to do, one may be more appropriate than the other.&lt;/p&gt;
+
+&lt;h2 id=&quot;referencing-columns-by-select-position&quot;&gt;4. Referencing Columns by &lt;code class=&quot;highlighter-rouge&quot;&gt;SELECT&lt;/code&gt; Position&lt;/h2&gt;
 
 &lt;p&gt;If one were to issue a &lt;code class=&quot;highlighter-rouge&quot;&gt;SELECT&lt;/code&gt; query with a &lt;code class=&quot;highlighter-rouge&quot;&gt;GROUP BY&lt;/code&gt; or &lt;code class=&quot;highlighter-rouge&quot;&gt;ORDER BY&lt;/code&gt; clause, the columns in these clauses can be referenced by their position in the &lt;code class=&quot;highlighter-rouge&quot;&gt;SELECT&lt;/code&gt; section.&lt;/p&gt;
 
@@ -67,86 +146,11 @@
 
 &lt;p&gt;As queries become more complicated with references or additional aggregate functions, numerical referencing becomes even more valuable.&lt;/p&gt;
 
-&lt;p&gt;&lt;em&gt;Note: With a significantly large number of columns in a &lt;code class=&quot;highlighter-rouge&quot;&gt;SELECT&lt;/code&gt; statement, readability can suffer when referring to them solely by numbers.&lt;/em&gt;&lt;/p&gt;
+&lt;h4 id=&quot;use-with-caution&quot;&gt;Use with Caution&lt;/h4&gt;
 
-&lt;h2 id=&quot;finding-duplicate-rows&quot;&gt;2. Finding Duplicate Rows&lt;/h2&gt;
+&lt;p&gt;While handy, referencing columns by their position is not always appropriate. Adding columns to the &lt;code class=&quot;highlighter-rouge&quot;&gt;SELECT&lt;/code&gt; statement can invalidate previous referencing and cause unwanted behaviour. Additionally, with a significantly large number of columns in a &lt;code class=&quot;highlighter-rouge&quot;&gt;SELECT&lt;/code&gt; statement, readability can suffer when referring to them solely by numbers.&lt;/p&gt;
 
-&lt;p&gt;A common mechanism for defending against duplicate rows in database tables are unique indexes. However, at the time of table creation, a unique index or two may have been forgotten. Duplicates in a table must be removed before a unique index may be added.&lt;/p&gt;
-
-&lt;p&gt;A great way to detect duplicates in PostgreSQL is by using window functions. Window functions are similar to aggregates; but, instead of grouping rows for the response, it maintains each row’s individuality.&lt;/p&gt;
-
-&lt;p&gt;Desired query: Find all duplicate &lt;code class=&quot;highlighter-rouge&quot;&gt;users&lt;/code&gt; with the same &lt;code class=&quot;highlighter-rouge&quot;&gt;first_name&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;last_name&lt;/code&gt;, and &lt;code class=&quot;highlighter-rouge&quot;&gt;email&lt;/code&gt;, returning duplicate &lt;code class=&quot;highlighter-rouge&quot;&gt;ids&lt;/code&gt; only (do not return the oldest &lt;code class=&quot;highlighter-rouge&quot;&gt;id&lt;/code&gt;).&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;SELECT&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;id&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;from&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
-  &lt;span class=&quot;k&quot;&gt;SELECT&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
-  &lt;span class=&quot;n&quot;&gt;ROW_NUMBER&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;OVER&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;PARTITION&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;BY&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;first_name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
-                 &lt;span class=&quot;n&quot;&gt;last_name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
-                 &lt;span class=&quot;n&quot;&gt;email&lt;/span&gt;
-              &lt;span class=&quot;k&quot;&gt;ORDER&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;BY&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;id&lt;/span&gt;
-    &lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;AS&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;user_row_number&lt;/span&gt;
-  &lt;span class=&quot;k&quot;&gt;FROM&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;users&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;duplicates&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;WHERE&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;duplicates&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;user_row_number&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;This query will identify all the rows of the &lt;code class=&quot;highlighter-rouge&quot;&gt;users&lt;/code&gt; table which share the same defined columns and return the primary key (&lt;code class=&quot;highlighter-rouge&quot;&gt;id&lt;/code&gt;) of rows &lt;em&gt;after&lt;/em&gt; the first via the &lt;code class=&quot;highlighter-rouge&quot;&gt;duplicates.user_row_number &amp;gt; 1&lt;/code&gt; condition. The result of this query can then be fed into a &lt;code class=&quot;highlighter-rouge&quot;&gt;DELETE&lt;/code&gt; query to remove the duplicates.&lt;/p&gt;
-
-&lt;p&gt;The &lt;code class=&quot;highlighter-rouge&quot;&gt;ROW_NUMBER()&lt;/code&gt; built-in function returns an incremented value assigned to each row that matches the criteria in the provided &lt;code class=&quot;highlighter-rouge&quot;&gt;OVER&lt;/code&gt; clause. This &lt;code class=&quot;highlighter-rouge&quot;&gt;OVER&lt;/code&gt; clause is followed by the window function: &lt;code class=&quot;highlighter-rouge&quot;&gt;PARTITION&lt;/code&gt;, which divides matching rows into groups or partitions using the columns or functions which follow it. Learn more about window functions at the &lt;a href=&quot;http://www.postgresql.org/docs/current/static/tutorial-window.html&quot;&gt;official PostgreSQL documentation page&lt;/a&gt;.&lt;/p&gt;
-
-&lt;h2 id=&quot;interval&quot;&gt;3. &lt;code class=&quot;highlighter-rouge&quot;&gt;interval&lt;/code&gt;&lt;/h2&gt;
-
-&lt;p&gt;Ever had to scope the results of a database query to a certain time range? So has every developer ever. Luckily, PostgreSQL provides a very readable convenience function: &lt;code class=&quot;highlighter-rouge&quot;&gt;interval&lt;/code&gt;.&lt;/p&gt;
-
-&lt;p&gt;If a rolling count of &lt;code class=&quot;highlighter-rouge&quot;&gt;user&lt;/code&gt; sign ups in the last 24 hours is desired, the following query makes it possible:&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;SELECT&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;FROM&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;users&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;WHERE&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;created_at&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;now&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;interval&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;1 day&#39;&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;The &lt;code class=&quot;highlighter-rouge&quot;&gt;interval&lt;/code&gt; function accepts a variety of input types. Days, Hours, Minutes, Weeks, and more options &lt;a href=&quot;http://www.postgresql.org/docs/current/interactive/datatype-datetime.html&quot;&gt;are available&lt;/a&gt;.&lt;/p&gt;
-
-&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;interval&lt;/code&gt; subtraction can be used on any &lt;code class=&quot;highlighter-rouge&quot;&gt;timestamp&lt;/code&gt;:&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;SELECT&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;FROM&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;users&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;WHERE&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;created_at&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;=&lt;/span&gt;
-  &lt;span class=&quot;s1&quot;&gt;&#39;2016-02-19 12:00:00&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;timestamp&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;interval&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;3 weeks&#39;&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;The &lt;code class=&quot;highlighter-rouge&quot;&gt;::&lt;/code&gt; notation casts the string &lt;code class=&quot;highlighter-rouge&quot;&gt;2016-02-19 12:00:00&lt;/code&gt; to a &lt;code class=&quot;highlighter-rouge&quot;&gt;timestamp&lt;/code&gt;, a requirement when manipulating time ranges with &lt;code class=&quot;highlighter-rouge&quot;&gt;interval&lt;/code&gt;.&lt;/p&gt;
-
-&lt;h2 id=&quot;remote-query-execution&quot;&gt;4. Remote Query Execution&lt;/h2&gt;
-
-&lt;p&gt;A very powerful feature of PostreSQL, and more specifically the &lt;code class=&quot;highlighter-rouge&quot;&gt;psql&lt;/code&gt; command line interface, is the ability to run remote queries. With the &lt;code class=&quot;highlighter-rouge&quot;&gt;--command&lt;/code&gt; or &lt;code class=&quot;highlighter-rouge&quot;&gt;-c&lt;/code&gt; flag, a query may be passed to any PostgreSQL server and executed.&lt;/p&gt;
-
-&lt;p&gt;A unique use for this feature is the ability to transfer a query’s results directly from one environment to another.&lt;/p&gt;
-
-&lt;p&gt;An extensive analysis of the &lt;code class=&quot;highlighter-rouge&quot;&gt;users&lt;/code&gt; table for all &lt;code class=&quot;highlighter-rouge&quot;&gt;users&lt;/code&gt; that signed up in January is requested. This analysis has the potential to be very taxing on a production database, resulting in adverse effects on end users. Additionally, no follower or read only database exists to alleviate this problem. Production data must be transfered to a local environment so that the analysis can run side effect free.&lt;/p&gt;
-
-&lt;p&gt;To accomplish this, the &lt;code class=&quot;highlighter-rouge&quot;&gt;psql&lt;/code&gt; client has the ability to execute a query and return its result to &lt;code class=&quot;highlighter-rouge&quot;&gt;stdout&lt;/code&gt;. Conversely, file contents or query results from &lt;code class=&quot;highlighter-rouge&quot;&gt;stdin&lt;/code&gt; may also be read within the &lt;code class=&quot;highlighter-rouge&quot;&gt;psql&lt;/code&gt; client.&lt;/p&gt;
-
-&lt;p&gt;Utilizing both aspects of this behaviour could look something like:&lt;/p&gt;
-
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;psql &amp;lt;REMOTE POSTGRESQL URL&amp;gt; &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
--c &lt;span class=&quot;s2&quot;&gt;&quot;copy (
-      SELECT *
-      FROM users
-      WHERE date_trunc(&#39;month&#39;, created_at) = &#39;2016-01-01&#39;
-    ) to stdout&quot;&lt;/span&gt; &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
-| psql &amp;lt;LOCAL POSTGRESQL DATABASE&amp;gt; &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
--c &lt;span class=&quot;s2&quot;&gt;&quot;copy users from stdin&quot;&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-
-&lt;p&gt;As an alternative to &lt;code class=&quot;highlighter-rouge&quot;&gt;pg_dump&lt;/code&gt;, this pattern is a quick solution for loading specific data from one database to another.&lt;/p&gt;
-
-&lt;p&gt;The &lt;code class=&quot;highlighter-rouge&quot;&gt;copy&lt;/code&gt; command comes in two variants: &lt;code class=&quot;highlighter-rouge&quot;&gt;copy&lt;/code&gt;, which will be run by the PostgreSQL backend (user “postgres”) and &lt;code class=&quot;highlighter-rouge&quot;&gt;\copy&lt;/code&gt; which runs as the current user. Depending on permissions and what &lt;code class=&quot;highlighter-rouge&quot;&gt;copy&lt;/code&gt; is attempting to do, one may be more appropriate than the other.&lt;/p&gt;
+&lt;p&gt;As with anything, the use of numerical referencing should be deliberate and thoughtful.&lt;/p&gt;
 </content>
  </entry>
  

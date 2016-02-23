@@ -104,9 +104,7 @@
 </span>
   <p>PostgreSQL is an open source object-relational database used to power many production web applications. While many web applications interact with relational databases through Object Relational Mappers (<strong>ORM</strong>), direct SQL queries via a command line interface or graphical client are still common. When writing these queries, these four tips may come in handy.</p>
 
-<h2 id="referencing-columns-by-select-position">1. Referencing Columns by <code class="highlighter-rouge">SELECT</code> Position</h2>
-
-<p>Given a simple users table:</p>
+<p>All examples will assume the presence of a simple users table:</p>
 
 <div class="highlighter-rouge"><pre class="highlight"><code>    <span class="k">Column</span>     <span class="o">|</span>            <span class="k">Type</span>
 <span class="c1">---------------+-----------------------------
@@ -123,6 +121,87 @@
     <span class="nv">"users_pkey"</span> <span class="k">PRIMARY</span> <span class="k">KEY</span><span class="p">,</span> <span class="n">btree</span> <span class="p">(</span><span class="n">id</span><span class="p">)</span>
 </code></pre>
 </div>
+
+<h2 id="finding-duplicate-rows">1. Finding Duplicate Rows</h2>
+
+<p>A common mechanism for defending against duplicate rows in database tables are unique indexes. However, at the time of table creation, a unique index or two may have been forgotten. Duplicates in a table must be removed before a unique index may be added.</p>
+
+<p>A great way to detect duplicates in PostgreSQL is by using window functions. Window functions are similar to aggregates; but, instead of grouping rows for the response, it maintains each row’s individuality.</p>
+
+<p>Desired query: Find all duplicate <code class="highlighter-rouge">users</code> with the same <code class="highlighter-rouge">first_name</code>, <code class="highlighter-rouge">last_name</code>, and <code class="highlighter-rouge">email</code>, returning duplicate <code class="highlighter-rouge">ids</code> only (do not return the oldest <code class="highlighter-rouge">id</code>).</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">SELECT</span> <span class="n">id</span> <span class="k">from</span> <span class="p">(</span>
+  <span class="k">SELECT</span> <span class="n">id</span><span class="p">,</span>
+  <span class="n">ROW_NUMBER</span><span class="p">()</span> <span class="n">OVER</span><span class="p">(</span>
+    <span class="n">PARTITION</span> <span class="k">BY</span> <span class="n">first_name</span><span class="p">,</span>
+                 <span class="n">last_name</span><span class="p">,</span>
+                 <span class="n">email</span>
+              <span class="k">ORDER</span> <span class="k">BY</span> <span class="n">id</span>
+    <span class="p">)</span> <span class="k">AS</span> <span class="n">user_row_number</span>
+  <span class="k">FROM</span> <span class="n">users</span>
+<span class="p">)</span> <span class="n">duplicates</span>
+<span class="k">WHERE</span>
+<span class="n">duplicates</span><span class="p">.</span><span class="n">user_row_number</span> <span class="o">&gt;</span> <span class="mi">1</span>
+</code></pre>
+</div>
+
+<p>This query will identify all the rows of the <code class="highlighter-rouge">users</code> table which share the same defined columns and return the primary key (<code class="highlighter-rouge">id</code>) of rows <em>after</em> the first via the <code class="highlighter-rouge">duplicates.user_row_number &gt; 1</code> condition. The result of this query can then be fed into a <code class="highlighter-rouge">DELETE</code> query to remove the duplicates.</p>
+
+<p>The <code class="highlighter-rouge">ROW_NUMBER()</code> built-in function returns an incremented value assigned to each row that matches the criteria in the provided <code class="highlighter-rouge">OVER</code> clause. This <code class="highlighter-rouge">OVER</code> clause is followed by the window function: <code class="highlighter-rouge">PARTITION</code>, which divides matching rows into groups or partitions using the columns or functions which follow it. Learn more about window functions at the <a href="http://www.postgresql.org/docs/current/static/tutorial-window.html">official PostgreSQL documentation page</a>.</p>
+
+<h2 id="interval">2. <code class="highlighter-rouge">interval</code></h2>
+
+<p>Ever had to scope the results of a database query to a certain time range? So has every developer ever. Luckily, PostgreSQL provides a very readable convenience function: <code class="highlighter-rouge">interval</code>.</p>
+
+<p>If a rolling count of <code class="highlighter-rouge">user</code> sign ups in the last 24 hours is desired, the following query makes it possible:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">SELECT</span> <span class="o">*</span>
+<span class="k">FROM</span> <span class="n">users</span>
+<span class="k">WHERE</span> <span class="n">created_at</span> <span class="o">&gt;=</span> <span class="n">now</span><span class="p">()</span> <span class="o">-</span> <span class="n">interval</span> <span class="s1">'1 day'</span>
+</code></pre>
+</div>
+
+<p>The <code class="highlighter-rouge">interval</code> function accepts a variety of input types. Days, Hours, Minutes, Weeks, and more options <a href="http://www.postgresql.org/docs/current/interactive/datatype-datetime.html">are available</a>.</p>
+
+<p><code class="highlighter-rouge">interval</code> subtraction can be used on any <code class="highlighter-rouge">timestamp</code>:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">SELECT</span> <span class="o">*</span>
+<span class="k">FROM</span> <span class="n">users</span>
+<span class="k">WHERE</span> <span class="n">created_at</span> <span class="o">&gt;=</span>
+  <span class="s1">'2016-02-19 12:00:00'</span><span class="p">::</span><span class="k">timestamp</span> <span class="o">-</span> <span class="n">interval</span> <span class="s1">'3 weeks'</span>
+</code></pre>
+</div>
+
+<p>The <code class="highlighter-rouge">::</code> notation casts the string <code class="highlighter-rouge">2016-02-19 12:00:00</code> to a <code class="highlighter-rouge">timestamp</code>, a requirement when manipulating time ranges with <code class="highlighter-rouge">interval</code>.</p>
+
+<h2 id="remote-query-execution">3. Remote Query Execution</h2>
+
+<p>A very powerful feature of PostreSQL, and more specifically the <code class="highlighter-rouge">psql</code> command line interface, is the ability to run remote queries. With the <code class="highlighter-rouge">--command</code> or <code class="highlighter-rouge">-c</code> flag, a query may be passed to any PostgreSQL server and executed.</p>
+
+<p>A unique use for this feature is the ability to transfer a query’s results directly from one environment to another.</p>
+
+<p>An extensive analysis of the <code class="highlighter-rouge">users</code> table for all <code class="highlighter-rouge">users</code> that signed up in January is requested. This analysis has the potential to be very taxing on a production database, resulting in adverse effects on end users. Additionally, no follower or read only database exists to alleviate this problem. Production data must be transfered to a local environment so that the analysis can run side effect free.</p>
+
+<p>To accomplish this, the <code class="highlighter-rouge">psql</code> client has the ability to execute a query and return its result to <code class="highlighter-rouge">stdout</code>. Conversely, file contents or query results from <code class="highlighter-rouge">stdin</code> may also be read within the <code class="highlighter-rouge">psql</code> client.</p>
+
+<p>Utilizing both aspects of this behaviour could look something like:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>psql &lt;REMOTE POSTGRESQL URL&gt; <span class="se">\</span>
+-c <span class="s2">"copy (
+      SELECT *
+      FROM users
+      WHERE date_trunc('month', created_at) = '2016-01-01'
+    ) to stdout"</span> <span class="se">\</span>
+| psql &lt;LOCAL POSTGRESQL DATABASE&gt; <span class="se">\</span>
+-c <span class="s2">"copy users from stdin"</span>
+</code></pre>
+</div>
+
+<p>As an alternative to <code class="highlighter-rouge">pg_dump</code>, this pattern is a quick solution for loading specific data from one database to another.</p>
+
+<p>The <code class="highlighter-rouge">copy</code> command comes in two variants: <code class="highlighter-rouge">copy</code>, which will be run by the PostgreSQL backend (user “postgres”) and <code class="highlighter-rouge">\copy</code> which runs as the current user. Depending on permissions and what <code class="highlighter-rouge">copy</code> is attempting to do, one may be more appropriate than the other.</p>
+
+<h2 id="referencing-columns-by-select-position">4. Referencing Columns by <code class="highlighter-rouge">SELECT</code> Position</h2>
 
 <p>If one were to issue a <code class="highlighter-rouge">SELECT</code> query with a <code class="highlighter-rouge">GROUP BY</code> or <code class="highlighter-rouge">ORDER BY</code> clause, the columns in these clauses can be referenced by their position in the <code class="highlighter-rouge">SELECT</code> section.</p>
 
@@ -152,86 +231,11 @@
 
 <p>As queries become more complicated with references or additional aggregate functions, numerical referencing becomes even more valuable.</p>
 
-<p><em>Note: With a significantly large number of columns in a <code class="highlighter-rouge">SELECT</code> statement, readability can suffer when referring to them solely by numbers.</em></p>
+<h4 id="use-with-caution">Use with Caution</h4>
 
-<h2 id="finding-duplicate-rows">2. Finding Duplicate Rows</h2>
+<p>While handy, referencing columns by their position is not always appropriate. Adding columns to the <code class="highlighter-rouge">SELECT</code> statement can invalidate previous referencing and cause unwanted behaviour. Additionally, with a significantly large number of columns in a <code class="highlighter-rouge">SELECT</code> statement, readability can suffer when referring to them solely by numbers.</p>
 
-<p>A common mechanism for defending against duplicate rows in database tables are unique indexes. However, at the time of table creation, a unique index or two may have been forgotten. Duplicates in a table must be removed before a unique index may be added.</p>
-
-<p>A great way to detect duplicates in PostgreSQL is by using window functions. Window functions are similar to aggregates; but, instead of grouping rows for the response, it maintains each row’s individuality.</p>
-
-<p>Desired query: Find all duplicate <code class="highlighter-rouge">users</code> with the same <code class="highlighter-rouge">first_name</code>, <code class="highlighter-rouge">last_name</code>, and <code class="highlighter-rouge">email</code>, returning duplicate <code class="highlighter-rouge">ids</code> only (do not return the oldest <code class="highlighter-rouge">id</code>).</p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">SELECT</span> <span class="n">id</span> <span class="k">from</span> <span class="p">(</span>
-  <span class="k">SELECT</span> <span class="n">id</span><span class="p">,</span>
-  <span class="n">ROW_NUMBER</span><span class="p">()</span> <span class="n">OVER</span><span class="p">(</span>
-    <span class="n">PARTITION</span> <span class="k">BY</span> <span class="n">first_name</span><span class="p">,</span>
-                 <span class="n">last_name</span><span class="p">,</span>
-                 <span class="n">email</span>
-              <span class="k">ORDER</span> <span class="k">BY</span> <span class="n">id</span>
-    <span class="p">)</span> <span class="k">AS</span> <span class="n">user_row_number</span>
-  <span class="k">FROM</span> <span class="n">users</span>
-<span class="p">)</span> <span class="n">duplicates</span>
-<span class="k">WHERE</span>
-<span class="n">duplicates</span><span class="p">.</span><span class="n">user_row_number</span> <span class="o">&gt;</span> <span class="mi">1</span>
-</code></pre>
-</div>
-
-<p>This query will identify all the rows of the <code class="highlighter-rouge">users</code> table which share the same defined columns and return the primary key (<code class="highlighter-rouge">id</code>) of rows <em>after</em> the first via the <code class="highlighter-rouge">duplicates.user_row_number &gt; 1</code> condition. The result of this query can then be fed into a <code class="highlighter-rouge">DELETE</code> query to remove the duplicates.</p>
-
-<p>The <code class="highlighter-rouge">ROW_NUMBER()</code> built-in function returns an incremented value assigned to each row that matches the criteria in the provided <code class="highlighter-rouge">OVER</code> clause. This <code class="highlighter-rouge">OVER</code> clause is followed by the window function: <code class="highlighter-rouge">PARTITION</code>, which divides matching rows into groups or partitions using the columns or functions which follow it. Learn more about window functions at the <a href="http://www.postgresql.org/docs/current/static/tutorial-window.html">official PostgreSQL documentation page</a>.</p>
-
-<h2 id="interval">3. <code class="highlighter-rouge">interval</code></h2>
-
-<p>Ever had to scope the results of a database query to a certain time range? So has every developer ever. Luckily, PostgreSQL provides a very readable convenience function: <code class="highlighter-rouge">interval</code>.</p>
-
-<p>If a rolling count of <code class="highlighter-rouge">user</code> sign ups in the last 24 hours is desired, the following query makes it possible:</p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">SELECT</span> <span class="o">*</span>
-<span class="k">FROM</span> <span class="n">users</span>
-<span class="k">WHERE</span> <span class="n">created_at</span> <span class="o">&gt;=</span> <span class="n">now</span><span class="p">()</span> <span class="o">-</span> <span class="n">interval</span> <span class="s1">'1 day'</span>
-</code></pre>
-</div>
-
-<p>The <code class="highlighter-rouge">interval</code> function accepts a variety of input types. Days, Hours, Minutes, Weeks, and more options <a href="http://www.postgresql.org/docs/current/interactive/datatype-datetime.html">are available</a>.</p>
-
-<p><code class="highlighter-rouge">interval</code> subtraction can be used on any <code class="highlighter-rouge">timestamp</code>:</p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">SELECT</span> <span class="o">*</span>
-<span class="k">FROM</span> <span class="n">users</span>
-<span class="k">WHERE</span> <span class="n">created_at</span> <span class="o">&gt;=</span>
-  <span class="s1">'2016-02-19 12:00:00'</span><span class="p">::</span><span class="k">timestamp</span> <span class="o">-</span> <span class="n">interval</span> <span class="s1">'3 weeks'</span>
-</code></pre>
-</div>
-
-<p>The <code class="highlighter-rouge">::</code> notation casts the string <code class="highlighter-rouge">2016-02-19 12:00:00</code> to a <code class="highlighter-rouge">timestamp</code>, a requirement when manipulating time ranges with <code class="highlighter-rouge">interval</code>.</p>
-
-<h2 id="remote-query-execution">4. Remote Query Execution</h2>
-
-<p>A very powerful feature of PostreSQL, and more specifically the <code class="highlighter-rouge">psql</code> command line interface, is the ability to run remote queries. With the <code class="highlighter-rouge">--command</code> or <code class="highlighter-rouge">-c</code> flag, a query may be passed to any PostgreSQL server and executed.</p>
-
-<p>A unique use for this feature is the ability to transfer a query’s results directly from one environment to another.</p>
-
-<p>An extensive analysis of the <code class="highlighter-rouge">users</code> table for all <code class="highlighter-rouge">users</code> that signed up in January is requested. This analysis has the potential to be very taxing on a production database, resulting in adverse effects on end users. Additionally, no follower or read only database exists to alleviate this problem. Production data must be transfered to a local environment so that the analysis can run side effect free.</p>
-
-<p>To accomplish this, the <code class="highlighter-rouge">psql</code> client has the ability to execute a query and return its result to <code class="highlighter-rouge">stdout</code>. Conversely, file contents or query results from <code class="highlighter-rouge">stdin</code> may also be read within the <code class="highlighter-rouge">psql</code> client.</p>
-
-<p>Utilizing both aspects of this behaviour could look something like:</p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code>psql &lt;REMOTE POSTGRESQL URL&gt; <span class="se">\</span>
--c <span class="s2">"copy (
-      SELECT *
-      FROM users
-      WHERE date_trunc('month', created_at) = '2016-01-01'
-    ) to stdout"</span> <span class="se">\</span>
-| psql &lt;LOCAL POSTGRESQL DATABASE&gt; <span class="se">\</span>
--c <span class="s2">"copy users from stdin"</span>
-</code></pre>
-</div>
-
-<p>As an alternative to <code class="highlighter-rouge">pg_dump</code>, this pattern is a quick solution for loading specific data from one database to another.</p>
-
-<p>The <code class="highlighter-rouge">copy</code> command comes in two variants: <code class="highlighter-rouge">copy</code>, which will be run by the PostgreSQL backend (user “postgres”) and <code class="highlighter-rouge">\copy</code> which runs as the current user. Depending on permissions and what <code class="highlighter-rouge">copy</code> is attempting to do, one may be more appropriate than the other.</p>
+<p>As with anything, the use of numerical referencing should be deliberate and thoughtful.</p>
 
 </div>
 
