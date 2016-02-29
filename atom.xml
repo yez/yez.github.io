@@ -17,7 +17,7 @@
    <link href="http://jakeyesbeck.com/2016/02/28/ruby-spaceship-operator/"/>
    <updated>2016-02-28T04:00:00-08:00</updated>
    <id>http://jakeyesbeck.com/2016/02/28/ruby-spaceship-operator</id>
-   <content type="html">&lt;p&gt;The Ruby spaceship operator, &lt;code class=&quot;highlighter-rouge&quot;&gt;&amp;lt;=&amp;gt;&lt;/code&gt;, is used to conduct a three-way comparison used to sort elements of a list. Adhering to the law of trichotomy, the &lt;code class=&quot;highlighter-rouge&quot;&gt;&amp;lt;=&amp;gt;&lt;/code&gt; operator works by comparing two elements and returning a &lt;code class=&quot;highlighter-rouge&quot;&gt;-1&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;0&lt;/code&gt;, or &lt;code class=&quot;highlighter-rouge&quot;&gt;1&lt;/code&gt;. While the original mathematical criteria applies to only real numbers, many programming languages implement the law of trichotomy as a general comparison between equivalent types.&lt;/p&gt;
+   <content type="html">&lt;p&gt;Adhering to the law of trichotomy, the &lt;code class=&quot;highlighter-rouge&quot;&gt;&amp;lt;=&amp;gt;&lt;/code&gt; operator (sometimes called the “Spaceship Operator”) works by comparing two elements and returning a &lt;code class=&quot;highlighter-rouge&quot;&gt;-1&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;0&lt;/code&gt;, or &lt;code class=&quot;highlighter-rouge&quot;&gt;1&lt;/code&gt;. While the original mathematical criteria applies to only real numbers, many programming languages implement the law of trichotomy as a general comparison between equivalent types.&lt;/p&gt;
 
 &lt;h2 id=&quot;basics&quot;&gt;Basics&lt;/h2&gt;
 
