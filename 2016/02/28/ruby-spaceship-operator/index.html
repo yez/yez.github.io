@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta http-equiv="content-type" content="text/html; charset=utf-8">
   
-    <meta name="description" content="A technology blog about a Year of Commits to Open Source projects.">
+    <meta name="description" content="The Ruby Spaceship Operator <=> can be used to sort elements of an array and also when sorting custom classes. This operator returns three values and understanding how it works and where it can be used is very valuable.">
   
 
   <!-- Enable responsiveness on mobile devices-->
@@ -14,7 +14,7 @@
 
   <title>
     
-      A Year of Commits
+      Ruby Spaceship <=> Operator
     
   </title>
 
@@ -63,19 +63,11 @@
 
 
     <div class="content container">
-      <div class="posts">
+      <div class="post">
+  <h1 class="post-title">Ruby Spaceship <=> Operator</h1>
+  <span class="post-date">28 Feb 2016</span>
   
-  <div class="post">
-    <h1 class="post-title">
-      <a href="/2016/02/28/ruby-spaceship-operator/">
-        Ruby Spaceship <=> Operator
-      </a>
-    </h1>
-
-    
-
-    <span class="post-date">28 Feb 2016</span>
-    <span class='share-container'><ul class="share-buttons">
+  <span class='share-container'><ul class="share-buttons">
   <li>
     <a href="https://www.facebook.com/sharer/sharer.php?u=http://jakeyesbeck.com/2016/02/28/ruby-spaceship-operator/&t=Ruby Spaceship <=> Operator" title="Share on Facebook" target="_blank">
       <img src="http://jakeyesbeck.com/assets/images/facebook.svg">
@@ -110,8 +102,7 @@
   </li>
 </ul>
 </span>
-
-    <p>The Ruby spaceship operator, <code class="highlighter-rouge">&lt;=&gt;</code>, is used to conduct a three-way comparison used to sort elements of a list. Adhering to the law of trichotomy, the <code class="highlighter-rouge">&lt;=&gt;</code> operator works by comparing two elements and returning a <code class="highlighter-rouge">-1</code>, <code class="highlighter-rouge">0</code>, or <code class="highlighter-rouge">1</code>. While the original mathematical criteria applies to only real numbers, many programming languages implement the law of trichotomy as a general comparison between equivalent types.</p>
+  <p>The Ruby spaceship operator, <code class="highlighter-rouge">&lt;=&gt;</code>, is used to conduct a three-way comparison used to sort elements of a list. Adhering to the law of trichotomy, the <code class="highlighter-rouge">&lt;=&gt;</code> operator works by comparing two elements and returning a <code class="highlighter-rouge">-1</code>, <code class="highlighter-rouge">0</code>, or <code class="highlighter-rouge">1</code>. While the original mathematical criteria applies to only real numbers, many programming languages implement the law of trichotomy as a general comparison between equivalent types.</p>
 
 <h2 id="basics">Basics</h2>
 
@@ -293,17 +284,40 @@
 
 <p>The <code class="highlighter-rouge">Comparable</code> mixin provides very useful functionality that can easily turn a custom class into a sortable list element. As with most patterns in software, using the right tool at the right time is very important. It may not always be appropriate to write a custom comparison mechanism for a class, but when it is, the collaboration of <code class="highlighter-rouge">&lt;=&gt;</code> and the <code class="highlighter-rouge">Comparable</code> mixin is worth evaluating.</p>
 
-  </div>
-  
 </div>
 
-<div class="pagination">
-  
-    <a class="pagination-item older" href="http://jakeyesbeck.com/page2">Older</a>
-  
-  
-    <span class="pagination-item newer">Newer</span>
-  
+<div class="related">
+  <h2>Related Posts</h2>
+  <ul class="related-posts">
+    
+      <li>
+        <h3>
+          <a href="/2015/09/27/how-to-create-a-custom-enumerable/">
+            How to Create a Custom Enumerable
+            <small>27 Sep 2015</small>
+          </a>
+        </h3>
+      </li>
+    
+      <li>
+        <h3>
+          <a href="/2016/02/07/how-to-remove-a-column-with-zero-downtime-in-ruby-on-rails/">
+            How to Remove a Column with Zero Downtime in Ruby on Rails
+            <small>07 Feb 2016</small>
+          </a>
+        </h3>
+      </li>
+    
+      <li>
+        <h3>
+          <a href="/2016/01/24/ruby-private-class-methods/">
+            Ruby Private Class Methods
+            <small>24 Jan 2016</small>
+          </a>
+        </h3>
+      </li>
+    
+  </ul>
 </div>
 
     </div>
