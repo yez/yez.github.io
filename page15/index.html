@@ -291,6 +291,9 @@ Finished <span class="k">in </span>0.0054 seconds <span class="o">(</span>files 
   ga('require', 'linkid');
   ga('send', 'pageview');
 
+  window.setTimeout(function() {
+    ga('send', 'event', '10 seconds', 'passed')
+  }, 30 * 1000);
 </script>
 
   </body>

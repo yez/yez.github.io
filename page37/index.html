@@ -227,6 +227,9 @@
   ga('require', 'linkid');
   ga('send', 'pageview');
 
+  window.setTimeout(function() {
+    ga('send', 'event', '10 seconds', 'passed')
+  }, 30 * 1000);
 </script>
 
   </body>

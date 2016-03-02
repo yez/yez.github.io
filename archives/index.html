@@ -545,6 +545,9 @@ The only real city I have lived in is San Francisco. I assume that in other citi
   ga('require', 'linkid');
   ga('send', 'pageview');
 
+  window.setTimeout(function() {
+    ga('send', 'event', '10 seconds', 'passed')
+  }, 30 * 1000);
 </script>
 
   </body>
