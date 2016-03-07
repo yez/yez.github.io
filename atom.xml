@@ -4,13 +4,84 @@
  <title>A Year of Commits</title>
  <link href="http://jakeyesbeck.com/atom.xml" rel="self"/>
  <link href="http://jakeyesbeck.com/"/>
- <updated>2016-02-28T18:36:22-08:00</updated>
+ <updated>2016-03-06T19:07:00-08:00</updated>
  <id>http://jakeyesbeck.com/</id>
  <author>
    <name>Jake Yesbeck</name>
    <email>yesbeckjs@gmail.com</email>
  </author>
 
+ 
+ <entry>
+   <title>The Real Cost of Technical Debt</title>
+   <link href="http://jakeyesbeck.com/2016/03/06/the-real-cost-of-technical-debt/"/>
+   <updated>2016-03-06T04:00:00-08:00</updated>
+   <id>http://jakeyesbeck.com/2016/03/06/the-real-cost-of-technical-debt</id>
+   <content type="html">&lt;p&gt;Writing software is an iterative process. Rarely is software written and then never revisited. When this iteration occurs, a software engineer is presented with multiple options. Usually, a single objectively correct option is present but may not be chosen due to time constraints or other outside pressures. When shortcuts are taken to alleviate these external pressures, technical debt is often accrued.&lt;/p&gt;
+
+&lt;h2 id=&quot;permit-today-pay-tomorrow&quot;&gt;Permit Today, Pay Tomorrow&lt;/h2&gt;
+
+&lt;p&gt;Technical debt is referred to as such due to its similarities with financial debt. A credit card enables a person to complete a purchase they may not otherwise be able to, resulting in a bill to be paid by that person in the future: a debt. Technical debt is the same concept; a current feature or product is completed faster than previously possible at the cost of future work: a technical debt.&lt;/p&gt;
+
+&lt;p&gt;If not apparent from name alone, technical debt is not a desired feature in a healthy software system. This debt can often appear benign, giving no cause for alarm or prompt resolution; however, I believe that thinking to be in error. Technical debt can severely damage a software application and may even cause its destruction.&lt;/p&gt;
+
+&lt;h4 id=&quot;solution-communicate-the-importance-of-the-correct-approach&quot;&gt;Solution: Communicate the Importance of the Correct Approach&lt;/h4&gt;
+
+&lt;p&gt;Open communication about why a solution might be slower to accomplish now, but result in a healthier system for the future can be very important. A conversation about the amount of technical debt a “fast” solution will generate might help reduce pressure.&lt;/p&gt;
+
+&lt;h2 id=&quot;ongoing-overhead&quot;&gt;Ongoing Overhead&lt;/h2&gt;
+
+&lt;p&gt;Left unchecked, technical debt can become a constant complexity or time increasing abscess for an otherwise healthy software application. Suddenly, every task that must interact with or touch technical debt affected code is not as simple as it should be. The “simple change” that a product team might request can have its scope increased due to technical debt overages.&lt;/p&gt;
+
+&lt;p&gt;For example, we can assume that a typical web application decides that its new mobile friendly version should be a parallel implementation instead of investing time in making the existing experience responsive. This not DRY solution is immediately technical debt. When a new feature is to be added, it must be added in two distinct places instead of one. This decision might have been made due to the existing implementation having an amount of already unresolved technical debt, making it inflexible to change.&lt;/p&gt;
+
+&lt;h4 id=&quot;solution-plan-for-overhead-reduction&quot;&gt;Solution: Plan for Overhead Reduction&lt;/h4&gt;
+
+&lt;p&gt;To combat this problem, regular intervals of re-factoring and code cleanup should be inserted into a normal development flow. Making time to address technical debt can reduce a problem from an avalanche to a gentle dusting.&lt;/p&gt;
+
+&lt;h2 id=&quot;re-factor-routines&quot;&gt;Re-factor Routines&lt;/h2&gt;
+
+&lt;p&gt;To reduce technical debt, software must be re-factored to remove it and usually obtain the originally desired version of the code. These necessary changes, if not handled in a timely matter, can delay a future project or stop one in progress. Much like a bank charges interest for credit card bills, technical debt’s interest can result in application slowdowns, intermittent errors, or unusual edge cases until a re-factoring occurs.&lt;/p&gt;
+
+&lt;p&gt;Continuing the mobile implementation example, if the two experiences are to be combined into a single code path, this combination might incur a significant amount of work. Tack on application uptime concerns and maintaining pleasant experiences for active end users, the previous credit granted by this technical debt has less and less value.&lt;/p&gt;
+
+&lt;p&gt;On the other hand, if re-factoring is avoided for too long, the compounded technical debt interest can make feature development and iteration grind to a halt until addressed.&lt;/p&gt;
+
+&lt;h4 id=&quot;solution-embrace-re-factoring-and-learn-something-new&quot;&gt;Solution: Embrace Re-Factoring and Learn Something New&lt;/h4&gt;
+
+&lt;p&gt;Re-factoring code should not have the same negative connotation that technical debt has. Actually, re-factoring is a great time to try out new patterns and ideas. Since true re-factoring dictates that code adhere to the same contract it did before completion, it grants a level of safety and enables experimentation. Conducting these rewrites regularly can help reduce technical debt and grow a developer’s skill set.&lt;/p&gt;
+
+&lt;h2 id=&quot;accessible-anti-patterns&quot;&gt;Accessible Anti-Patterns&lt;/h2&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;“I can resist anything except temptation.”
+          - Oscar Wilde&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;The barrier for compromising standards when devising a solution weakens when it is routinely circumvented. As shortcuts become apparent, internal or external pressures to utilize these shortcuts might make them more attractive.&lt;/p&gt;
+
+&lt;p&gt;Admittedly, not all problems can be solved without the accrual of technical debt; however, when it becomes the Status Quo for development, alarms should start sounding. Maintaining vigilance and respecting proper development practices are the responsibilities for the professional software engineer. Allowing one’s self or one’s team to slide the quality meter too far towards the “quick and easy” side will result in more technical debt now, more code to re-work and repair later.&lt;/p&gt;
+
+&lt;h4 id=&quot;solution-keep-previous-technical-debt-payments-in-memory&quot;&gt;Solution: Keep Previous Technical Debt Payments in Memory&lt;/h4&gt;
+
+&lt;p&gt;Human beings can be impulsive. To keep that inclination in check, remembering the cost of a previously dealt with bit of technical debt can help remind people the downsides of such solutions.&lt;/p&gt;
+
+&lt;h2 id=&quot;inevitable-irregularity&quot;&gt;Inevitable Irregularity&lt;/h2&gt;
+
+&lt;p&gt;Discipline is important when creating software applications able to stand the test of time. Having the discipline to push towards the reduction of technical debt inducing solutions can be difficult, but will result in a better system and brighter development future.&lt;/p&gt;
+
+&lt;p&gt;Even the most bullish proponents of correct solutions may find themselves in some amount of technical debt. It is not always avoidable. At times, it can even be the correct path. When external pressures carry a large enough weight (like the survival of a company) it might be correct to cut corners and take on the risk of technical debt.&lt;/p&gt;
+
+&lt;h4 id=&quot;solution-be-realistic&quot;&gt;Solution: Be Realistic&lt;/h4&gt;
+
+&lt;p&gt;Technical debt will happen. When it does, leave notes for your future self to work with and remember that even the best in the business have cut a corner or two under pressure.&lt;/p&gt;
+
+&lt;center&gt;
+  &lt;img title=&quot;technical debt future self&quot; src=&quot;http://imgs.xkcd.com/comics/future_self.png&quot; /&gt;
+  &lt;a href=&quot;http://xkcd.com/1421/&quot;&gt;credit: xkcd&lt;/a&gt;
+&lt;/center&gt;
+</content>
+ </entry>
  
  <entry>
    <title>Ruby Spaceship <=> Operator</title>
