@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta http-equiv="content-type" content="text/html; charset=utf-8">
   
-    <meta name="description" content="A technology blog about a Year of Commits to Open Source projects.">
+    <meta name="description" content="Arel provides many powerful features to aid in complex queries for Ruby on Rails applications. Understanding how Arel works can be the difference between an alright solution and a truly great one.">
   
 
   <!-- Enable responsiveness on mobile devices-->
@@ -14,7 +14,7 @@
 
   <title>
     
-      A Year of Commits
+      The Power of Arel
     
   </title>
 
@@ -64,19 +64,11 @@
 
 
     <div class="content container">
-      <div class="posts">
+      <div class="post">
+  <h1 class="post-title">The Power of Arel</h1>
+  <span class="post-date">13 Mar 2016</span>
   
-  <div class="post">
-    <h1 class="post-title">
-      <a href="/2016/03/13/the-power-of-arel/">
-        The Power of Arel
-      </a>
-    </h1>
-
-    
-
-    <span class="post-date">13 Mar 2016</span>
-    <span class='share-container'><ul class="share-buttons">
+  <span class='share-container'><ul class="share-buttons">
   <li>
     <a href="https://www.facebook.com/sharer/sharer.php?u=http://jakeyesbeck.com/2016/03/13/the-power-of-arel/&t=The Power of Arel" title="Share on Facebook" target="_blank">
       <img src="http://jakeyesbeck.com/assets/images/facebook.svg">
@@ -111,8 +103,7 @@
   </li>
 </ul>
 </span>
-
-    <p>Many modern web applications have at least a few overlapping responsibilities. One of these responsibilities deals with maintaining state. A common choice for storing this state is by way of a relational database. Ruby on Rails applications assume the presence of a database by default and communicate with it via <code class="highlighter-rouge">ActiveRecord</code>.</p>
+  <p>Many modern web applications have at least a few overlapping responsibilities. One of these responsibilities deals with maintaining state. A common choice for storing this state is by way of a relational database. Ruby on Rails applications assume the presence of a database by default and communicate with it via <code class="highlighter-rouge">ActiveRecord</code>.</p>
 
 <p><code class="highlighter-rouge">ActiveRecord</code> is an <strong>O</strong>bject <strong>R</strong>elational <strong>M</strong>apping (ORM) that aids in communicating between the Ruby and database layers. Under the hood, <code class="highlighter-rouge">ActiveRecord</code> uses a relational algebra library called <code class="highlighter-rouge">Arel</code> to compose queries for execution. <code class="highlighter-rouge">Arel</code> is a very powerful library readily available for when <code class="highlighter-rouge">ActiveRecord</code> falls short.</p>
 
@@ -357,17 +348,40 @@
 
 <p>For extremely specific or complex database interactions, using <code class="highlighter-rouge">Arel</code> may not be the correct choice but should at least be evaluated. Only interacting with the lowest level necessary for a resource has many benefits. An <code class="highlighter-rouge">Arel</code> solution to a problem has the potential to be more resilient to future changes.</p>
 
-  </div>
-  
 </div>
 
-<div class="pagination">
-  
-    <a class="pagination-item older" href="http://jakeyesbeck.com/page2">Older</a>
-  
-  
-    <span class="pagination-item newer">Newer</span>
-  
+<div class="related">
+  <h2>Related Posts</h2>
+  <ul class="related-posts">
+    
+      <li>
+        <h3>
+          <a href="/2016/02/07/how-to-remove-a-column-with-zero-downtime-in-ruby-on-rails/">
+            How to Remove a Column with Zero Downtime in Ruby on Rails
+            <small>07 Feb 2016</small>
+          </a>
+        </h3>
+      </li>
+    
+      <li>
+        <h3>
+          <a href="/2015/11/15/five-active-record-features-you-should-be-using/">
+            Five Active Record Features You Should Be Using
+            <small>15 Nov 2015</small>
+          </a>
+        </h3>
+      </li>
+    
+      <li>
+        <h3>
+          <a href="/2016/02/21/four-postgresql-tips/">
+            Four PostgreSQL Tips
+            <small>21 Feb 2016</small>
+          </a>
+        </h3>
+      </li>
+    
+  </ul>
 </div>
 
     </div>

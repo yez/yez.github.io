@@ -223,7 +223,7 @@
 </code></pre>
 </div>
 
-<p>With a pool large enough, <code class="highlighter-rouge">ActiveRecord::Base.connection_pool.with_connection</code> is added to the existing solution:</p>
+<p>With a pool large enough, a <code class="highlighter-rouge">with_connection</code> block can be inserted around the pertinent code:</p>
 
 <div class="highlighter-rouge"><pre class="highlight"><code><span class="k">class</span> <span class="nc">UserEmailValidator</span>
   <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">run</span>
@@ -297,9 +297,9 @@
     
       <li>
         <h3>
-          <a href="/2015/11/15/five-active-record-features-you-should-be-using/">
-            Five Active Record Features You Should Be Using
-            <small>15 Nov 2015</small>
+          <a href="/2016/03/13/the-power-of-arel/">
+            The Power of Arel
+            <small>13 Mar 2016</small>
           </a>
         </h3>
       </li>
