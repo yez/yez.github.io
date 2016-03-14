@@ -114,7 +114,7 @@
 
     <p>Many modern web applications have at least a few overlapping responsibilities. One of these responsibilities deals with maintaining state. A common choice for storing this state is by way of a relational database. Ruby on Rails applications assume the presence of a database by default and communicate with it via <code class="highlighter-rouge">ActiveRecord</code>.</p>
 
-<p><code class="highlighter-rouge">ActiveRecord</code> is an <strong>O</strong>bject <strong>R</strong>elational <strong>M</strong>apping (ORM) that aids in communicating between the Ruby and database layers. Under the hood, <code class="highlighter-rouge">ActiveRecord</code> uses a relational algebra library called <code class="highlighter-rouge">Arel</code> to compose queries for execution. <code class="highlighter-rouge">Arel</code> is a very powerful library readily available for when <code class="highlighter-rouge">ActiveRecord</code> falls short.</p>
+<p><code class="highlighter-rouge">ActiveRecord</code> is an <strong>O</strong>bject <strong>R</strong>elational <strong>M</strong>apping (ORM). Under the hood, <code class="highlighter-rouge">ActiveRecord</code> uses a relational algebra library called <code class="highlighter-rouge">Arel</code> to compose queries for execution. <code class="highlighter-rouge">Arel</code> is a very powerful library readily available for when <code class="highlighter-rouge">ActiveRecord</code> falls short.</p>
 
 <h2 id="the-basics">The Basics</h2>
 
@@ -149,7 +149,8 @@
 
 <p>For such a simple query, <code class="highlighter-rouge">ActiveRecord</code> is capable of generating the appropriate SQL statement:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="no">Post</span><span class="p">.</span><span class="nf">where</span><span class="p">(</span><span class="ss">user_id: </span><span class="mi">123</span><span class="p">,</span> <span class="ss">category: </span><span class="s1">'news'</span><span class="p">)</span>
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="no">Post</span><span class="p">.</span><span class="nf">where</span><span class="p">(</span><span class="ss">user_id: </span><span class="mi">123</span><span class="p">,</span>
+           <span class="ss">category: </span><span class="s1">'news'</span><span class="p">)</span>
     <span class="p">.</span><span class="nf">to_sql</span>
 
 <span class="c1"># =&gt; SELECT "posts".* FROM "posts"  WHERE "posts"."user_id" = 123 AND "posts"."category" = 'news'</span>
@@ -163,7 +164,8 @@
 <div class="highlighter-rouge"><pre class="highlight"><code><span class="n">beginning_of_month</span> <span class="o">=</span> <span class="no">Date</span><span class="p">.</span><span class="nf">today</span>
                          <span class="p">.</span><span class="nf">beginning_of_month</span>
 
-<span class="no">Post</span><span class="p">.</span><span class="nf">where</span><span class="p">(</span><span class="ss">user_id: </span><span class="mi">123</span><span class="p">,</span> <span class="ss">category: </span><span class="s1">'news'</span><span class="p">)</span>
+<span class="no">Post</span><span class="p">.</span><span class="nf">where</span><span class="p">(</span><span class="ss">user_id: </span><span class="mi">123</span><span class="p">,</span>
+           <span class="ss">category: </span><span class="s1">'news'</span><span class="p">)</span>
     <span class="p">.</span><span class="nf">where</span><span class="p">(</span><span class="s1">'created_at &gt;= ?'</span><span class="p">,</span>
            <span class="n">beginning_of_month</span><span class="p">)</span>
     <span class="p">.</span><span class="nf">to_sql</span>
@@ -176,7 +178,7 @@
 
 <h2 id="modelareltable"><code class="highlighter-rouge">Model.arel_table</code></h2>
 
-<p>Every <code class="highlighter-rouge">ActiveRecord</code> can access its underlying <code class="highlighter-rouge">Arel</code> representation with the <code class="highlighter-rouge">arel_table</code> class method.</p>
+<p>Every <code class="highlighter-rouge">ActiveRecord</code> model can access its underlying <code class="highlighter-rouge">Arel</code> representation with the <code class="highlighter-rouge">arel_table</code> class method.</p>
 
 <div class="highlighter-rouge"><pre class="highlight"><code><span class="no">Post</span><span class="p">.</span><span class="nf">arel_table</span>
 
@@ -195,9 +197,9 @@
       <span class="n">arel</span><span class="p">[</span><span class="ss">:user_id</span><span class="p">]</span>
         <span class="p">.</span><span class="nf">eq</span><span class="p">(</span><span class="mi">1234</span><span class="p">)</span>
         <span class="p">.</span><span class="nf">and</span><span class="p">(</span><span class="n">arel</span><span class="p">[</span><span class="ss">:category</span><span class="p">]</span>
-              <span class="p">.</span><span class="nf">eq</span><span class="p">(</span><span class="s1">'news'</span><span class="p">))</span>
+             <span class="p">.</span><span class="nf">eq</span><span class="p">(</span><span class="s1">'news'</span><span class="p">))</span>
         <span class="p">.</span><span class="nf">and</span><span class="p">(</span><span class="n">arel</span><span class="p">[</span><span class="ss">:created_at</span><span class="p">]</span>
-              <span class="p">.</span><span class="nf">gteq</span><span class="p">(</span><span class="n">beginning_of_month</span><span class="p">)))</span>
+             <span class="p">.</span><span class="nf">gteq</span><span class="p">(</span><span class="n">beginning_of_month</span><span class="p">)))</span>
     <span class="p">.</span><span class="nf">to_sql</span>
 
 <span class="c1"># =&gt; SELECT "posts".* FROM "posts"  WHERE ("posts"."user_id" = 1234 AND "posts"."category" = 'news' AND "posts"."created_at" &gt;= '2016-03-01')</span>
@@ -224,7 +226,8 @@
 
 <p>Iterating on the <code class="highlighter-rouge">Post</code> query, it now needs to return the relevant <code class="highlighter-rouge">User</code>. If the original raw SQL solution was used the <code class="highlighter-rouge">user.created_at</code> column and the <code class="highlighter-rouge">posts.created_at</code> column would clash, resulting in an error:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="no">Post</span><span class="p">.</span><span class="nf">where</span><span class="p">(</span><span class="ss">user_id: </span><span class="mi">123</span><span class="p">,</span> <span class="ss">category: </span><span class="s1">'news'</span><span class="p">)</span>
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="no">Post</span><span class="p">.</span><span class="nf">where</span><span class="p">(</span><span class="ss">user_id: </span><span class="mi">123</span><span class="p">,</span>
+           <span class="ss">category: </span><span class="s1">'news'</span><span class="p">)</span>
     <span class="p">.</span><span class="nf">where</span><span class="p">(</span><span class="s1">'created_at &gt;= ? '</span><span class="p">,</span>
            <span class="n">beginning_of_month</span><span class="p">)</span>
     <span class="p">.</span><span class="nf">joins</span><span class="p">(</span><span class="ss">:user</span><span class="p">)</span>
@@ -260,9 +263,9 @@
 </code></pre>
 </div>
 
-<p><em>Note: The actual generated query has many column aliases for the <code class="highlighter-rouge">includes</code> but that is not really relevant.</em></p>
+<p><em>Note: The actual generated query has many column aliases in the select clause for the <code class="highlighter-rouge">includes</code> behaviour but is irrelevant for these examples.</em></p>
 
-<p>With each element specifying both table and column names, this query is still pure Ruby and join friendly.</p>
+<p>With each element specifying both table and column names, this query is still pure Ruby and <code class="highlighter-rouge">join</code> friendly.</p>
 
 <h2 id="advanced-selecting">Advanced Selecting</h2>
 
@@ -270,7 +273,7 @@
 
 <p>A CTE is a temporary named result in an SQL database, derived from a <code class="highlighter-rouge">SELECT</code> query. This derived result remains present in the scope for additional <code class="highlighter-rouge">SELECT</code>, <code class="highlighter-rouge">INSERT</code>, <code class="highlighter-rouge">UPDATE</code>, or <code class="highlighter-rouge">DELETE</code> queries. CTEs can be thought of as alternatives to temporary tables, sub-queries, views, or other in-line user-defined functions.</p>
 
-<h4 id="ask-find-all-posts-written-within-the-last-month-then-return-each-users-email-which-wrote-a-post">Ask: Find all posts written within the last month, then return each user’s email which wrote a post.</h4>
+<h4 id="ask-find-all-posts-written-within-the-last-month-then-return-the-email-of-each-user-who-wrote-the-post">Ask: Find all posts written within the last month, then return the email of each user who wrote the post.</h4>
 
 <p>Since no <code class="highlighter-rouge">Post</code> data is required, this ask is a great candidate for a CTE. A new <code class="highlighter-rouge">Arel::Table</code> can be created to house the CTE and then the <code class="highlighter-rouge">join</code> method on the <code class="highlighter-rouge">User.arel_table</code> makes it accessible:</p>
 
@@ -293,7 +296,8 @@
 <span class="n">user_arel</span>
   <span class="p">.</span><span class="nf">project</span><span class="p">(</span><span class="n">users</span><span class="p">[</span><span class="ss">:email</span><span class="p">])</span>
   <span class="p">.</span><span class="nf">join</span><span class="p">(</span><span class="n">cte_table</span><span class="p">)</span>
-    <span class="p">.</span><span class="nf">on</span><span class="p">(</span><span class="n">users</span><span class="p">[</span><span class="ss">:id</span><span class="p">].</span><span class="nf">eq</span><span class="p">(</span><span class="n">cte_table</span><span class="p">[</span><span class="ss">:user_id</span><span class="p">]))</span>
+    <span class="p">.</span><span class="nf">on</span><span class="p">(</span><span class="n">users</span><span class="p">[</span><span class="ss">:id</span><span class="p">]</span>
+         <span class="p">.</span><span class="nf">eq</span><span class="p">(</span><span class="n">cte_table</span><span class="p">[</span><span class="ss">:user_id</span><span class="p">]))</span>
   <span class="p">.</span><span class="nf">with</span><span class="p">(</span><span class="n">composed_cte</span><span class="p">)</span>
   <span class="p">.</span><span class="nf">to_sql</span>
 
@@ -329,13 +333,14 @@
 <div class="highlighter-rouge"><pre class="highlight"><code><span class="n">user_arel</span>
   <span class="p">.</span><span class="nf">project</span><span class="p">(</span><span class="n">users</span><span class="p">[</span><span class="ss">:email</span><span class="p">])</span>
   <span class="p">.</span><span class="nf">join</span><span class="p">(</span><span class="n">cte_table</span><span class="p">)</span>
-    <span class="p">.</span><span class="nf">on</span><span class="p">(</span><span class="n">users</span><span class="p">[</span><span class="ss">:id</span><span class="p">].</span><span class="nf">eq</span><span class="p">(</span><span class="n">cte_table</span><span class="p">[</span><span class="ss">:user_id</span><span class="p">]))</span>
+    <span class="p">.</span><span class="nf">on</span><span class="p">(</span><span class="n">users</span><span class="p">[</span><span class="ss">:id</span><span class="p">]</span>
+         <span class="p">.</span><span class="nf">eq</span><span class="p">(</span><span class="n">cte_table</span><span class="p">[</span><span class="ss">:user_id</span><span class="p">]))</span>
   <span class="p">.</span><span class="nf">with</span><span class="p">(</span><span class="n">composed_cte</span><span class="p">)</span>
   <span class="p">.</span><span class="nf">to_sql</span>
 </code></pre>
 </div>
 
-<p>Again, since only the <code class="highlighter-rouge">email</code> of the <code class="highlighter-rouge">User</code> is desired, the <code class="highlighter-rouge">project</code> method used. The <code class="highlighter-rouge">join</code> method is similar to the <code class="highlighter-rouge">ActiveRecord</code> method <code class="highlighter-rouge">joins</code> but requires the <code class="highlighter-rouge">on</code> clause to tell the query how to join the tables. Finally, the <code class="highlighter-rouge">with</code> method receives the computed CTE representation and the query is successfully generated.</p>
+<p>Again, since only the <code class="highlighter-rouge">email</code> of the <code class="highlighter-rouge">User</code> is desired, the <code class="highlighter-rouge">project</code> method is used. The <code class="highlighter-rouge">join</code> method is similar to the <code class="highlighter-rouge">ActiveRecord</code> method <code class="highlighter-rouge">joins</code> but requires the <code class="highlighter-rouge">on</code> clause to tell the query how to join the tables. Finally, the <code class="highlighter-rouge">with</code> method receives the computed CTE representation and the query is successfully generated.</p>
 
 <p>To actually use this query, another helpful method on <code class="highlighter-rouge">ActiveRecord</code>, <code class="highlighter-rouge">find_by_sql</code> can accept the full <code class="highlighter-rouge">Arel</code> representation, returning the desired <code class="highlighter-rouge">User</code> models with only the <code class="highlighter-rouge">email</code> column retrieved:</p>
 
@@ -343,7 +348,8 @@
   <span class="n">user_arel</span>
   <span class="p">.</span><span class="nf">project</span><span class="p">(</span><span class="n">users</span><span class="p">[</span><span class="ss">:email</span><span class="p">])</span>
   <span class="p">.</span><span class="nf">join</span><span class="p">(</span><span class="n">cte_table</span><span class="p">)</span>
-    <span class="p">.</span><span class="nf">on</span><span class="p">(</span><span class="n">users</span><span class="p">[</span><span class="ss">:id</span><span class="p">].</span><span class="nf">eq</span><span class="p">(</span><span class="n">cte_table</span><span class="p">[</span><span class="ss">:user_id</span><span class="p">]))</span>
+    <span class="p">.</span><span class="nf">on</span><span class="p">(</span><span class="n">users</span><span class="p">[</span><span class="ss">:id</span><span class="p">]</span>
+         <span class="p">.</span><span class="nf">eq</span><span class="p">(</span><span class="n">cte_table</span><span class="p">[</span><span class="ss">:user_id</span><span class="p">]))</span>
   <span class="p">.</span><span class="nf">with</span><span class="p">(</span><span class="n">composed_cte</span><span class="p">)</span>
 <span class="p">)</span>
 
@@ -353,9 +359,9 @@
 
 <h2 id="why">Why?</h2>
 
-<p>Like most tools or concepts, <code class="highlighter-rouge">Arel</code> may not be applicable in every situation. However, when used appropriately, it can make for some very well maintainable code that is resistant to unexpected failures. When dealing with multiple levels of an application stack, abstracting away complexities around their communication can help vastly simplify a codebase. <code class="highlighter-rouge">ActiveRecord</code> and <code class="highlighter-rouge">Arel</code> do a great job of insulating application developers from the nitty-gritty of database communication. Where <code class="highlighter-rouge">ActiveRecord</code> falls short, <code class="highlighter-rouge">Arel</code> is there to pick up the slack.</p>
+<p>Like most tools, <code class="highlighter-rouge">Arel</code> may not be applicable in every situation. However, when used appropriately, it can make for some very well maintainable code that is resistant to unexpected failures. When dealing with multiple levels of an application stack, abstracting away complexities around their communication can help vastly simplify a codebase. <code class="highlighter-rouge">ActiveRecord</code> and <code class="highlighter-rouge">Arel</code> do a great job of insulating application developers from the nitty-gritty of database communication. Where <code class="highlighter-rouge">ActiveRecord</code> falls short, <code class="highlighter-rouge">Arel</code> is there to pick up the slack.</p>
 
-<p>For extremely specific or complex database interactions, using <code class="highlighter-rouge">Arel</code> may not be the correct choice but should at least be evaluated. Only interacting with the lowest level necessary for a resource has many benefits. An <code class="highlighter-rouge">Arel</code> solution to a problem has the potential to be more resilient to future changes.</p>
+<p>For extremely specific or complex database interactions, using <code class="highlighter-rouge">Arel</code> may not be the correct choice, but should at least be evaluated. Only interacting with the lowest level necessary for a resource has many benefits. An <code class="highlighter-rouge">Arel</code> solution to a problem has the potential to be more resilient to future changes.</p>
 
   </div>
   
