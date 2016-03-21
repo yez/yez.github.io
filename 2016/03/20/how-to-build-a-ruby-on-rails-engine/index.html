@@ -121,8 +121,7 @@
 
 <p>The other approach is to simply create the needed directories and files by hand. This is was the way the Passages Engine was built, resulting in the following directory structure:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>passages
- |-app
+<div class="highlighter-rouge"><pre class="highlight"><code> |-app
  |--controllers
  |---passages
  |----&lt;controller directories&gt;
@@ -145,7 +144,7 @@
 
 <div class="highlighter-rouge"><pre class="highlight"><code><span class="k">module</span> <span class="nn">Passages</span>
   <span class="k">class</span> <span class="nc">Engine</span> <span class="o">&lt;</span> <span class="o">::</span><span class="no">Rails</span><span class="o">::</span><span class="no">Engine</span>
-    <span class="n">isolate_namespace</span> <span class="no">Passages</span>
+    <span class="n">isolate_namespace</span><span class="p">(</span><span class="no">Passages</span><span class="p">)</span>
   <span class="k">end</span>
 <span class="k">end</span>
 </code></pre>
@@ -177,8 +176,7 @@
 
 <p>In the Passages Engine, the <code class="highlighter-rouge">RoutesController</code> demonstrates this nesting.</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>passages
- |-app
+<div class="highlighter-rouge"><pre class="highlight"><code> |-app
  |--controllers
  |---passages
  |----routes_controller.rb
@@ -201,8 +199,7 @@
 
 <p>Unlike the controllers, the <code class="highlighter-rouge">routes.rb</code> file is not contained in a <code class="highlighter-rouge">passages</code> folder, nor is it within the <code class="highlighter-rouge">module Passages</code>.</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>passages
- |-config
+<div class="highlighter-rouge"><pre class="highlight"><code> |-config
  |--routes.rb
 </code></pre>
 </div>
@@ -242,7 +239,7 @@ Routes <span class="k">for </span>Passages::Engine:
 
 <div class="highlighter-rouge"><pre class="highlight"><code><span class="k">module</span> <span class="nn">Passages</span>
   <span class="k">class</span> <span class="nc">Engine</span> <span class="o">&lt;</span> <span class="o">::</span><span class="no">Rails</span><span class="o">::</span><span class="no">Engine</span>
-    <span class="c1"># isolate_namespace Passages</span>
+    <span class="c1"># isolate_namespace(Passages)</span>
   <span class="k">end</span>
 <span class="k">end</span>
 </code></pre>
@@ -280,8 +277,7 @@ Routes <span class="k">for </span>Passages::Engine:
 
 <p>Like controllers and views, an Engine’s assets are also nested under a folder bearing the Engine’s name.</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>passages
- |-app
+<div class="highlighter-rouge"><pre class="highlight"><code> |-app
  |--assets
  |---javascripts
  |----passages
@@ -303,12 +299,12 @@ Routes <span class="k">for </span>Passages::Engine:
 
 <div class="highlighter-rouge"><pre class="highlight"><code><span class="k">module</span> <span class="nn">Passages</span>
   <span class="k">class</span> <span class="nc">Engine</span> <span class="o">&lt;</span> <span class="o">::</span><span class="no">Rails</span><span class="o">::</span><span class="no">Engine</span>
-    <span class="n">isolate_namespace</span> <span class="no">Passages</span>
+    <span class="n">isolate_namespace</span><span class="p">(</span><span class="no">Passages</span><span class="p">)</span>
 
     <span class="n">initializer</span><span class="p">(</span><span class="s2">"passages.assets.precompile"</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">app</span><span class="o">|</span>
       <span class="n">app</span><span class="p">.</span><span class="nf">config</span><span class="p">.</span><span class="nf">assets</span><span class="p">.</span><span class="nf">precompile</span> <span class="o">+=</span> <span class="p">[</span>
-        <span class="s1">'application.css'</span><span class="p">,</span>
-        <span class="s1">'application.js'</span>
+          <span class="s1">'application.css'</span><span class="p">,</span>
+          <span class="s1">'application.js'</span>
         <span class="p">]</span>
     <span class="k">end</span>
   <span class="k">end</span>
@@ -336,12 +332,12 @@ Routes <span class="k">for </span>Passages::Engine:
 
 <div class="highlighter-rouge"><pre class="highlight"><code><span class="k">module</span> <span class="nn">Passages</span>
   <span class="k">class</span> <span class="nc">Engine</span> <span class="o">&lt;</span> <span class="o">::</span><span class="no">Rails</span><span class="o">::</span><span class="no">Engine</span>
-    <span class="n">isolate_namespace</span> <span class="no">Passages</span>
-      <span class="n">initializer</span><span class="p">(</span><span class="s1">'passages'</span><span class="p">,</span>
-                  <span class="ss">after: :load_config_initializers</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">app</span><span class="o">|</span>
-        <span class="no">Rails</span><span class="p">.</span><span class="nf">application</span><span class="p">.</span><span class="nf">routes</span><span class="p">.</span><span class="nf">prepend</span> <span class="k">do</span>
-          <span class="n">mount</span> <span class="no">Passages</span><span class="o">::</span><span class="no">Engine</span><span class="p">,</span> <span class="ss">at: </span><span class="s1">'/passages'</span>
-        <span class="k">end</span>
+    <span class="n">isolate_namespace</span><span class="p">(</span><span class="no">Passages</span><span class="p">)</span>
+
+    <span class="n">initializer</span><span class="p">(</span><span class="s1">'passages'</span><span class="p">,</span>
+                <span class="ss">after: :load_config_initializers</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">app</span><span class="o">|</span>
+      <span class="no">Rails</span><span class="p">.</span><span class="nf">application</span><span class="p">.</span><span class="nf">routes</span><span class="p">.</span><span class="nf">prepend</span> <span class="k">do</span>
+        <span class="n">mount</span> <span class="no">Passages</span><span class="o">::</span><span class="no">Engine</span><span class="p">,</span> <span class="ss">at: </span><span class="s1">'/passages'</span>
       <span class="k">end</span>
     <span class="k">end</span>
   <span class="k">end</span>
@@ -358,6 +354,14 @@ Routes <span class="k">for </span>Passages::Engine:
 <h4 id="use-with-caution">Use With Caution</h4>
 
 <p>Auto-mounted Engines may sound like a great idea but it might be best to leave that decision to the consumer. A suggested approach to this is have an opt-in functionality with auto-mounting. Placing this logic behind a conditional (based on some kind of configuration variable) gives consumers of this Engine the power of auto-mounting without the worry of “magic” they did not ask for.</p>
+
+<h2 id="next-steps">Next Steps</h2>
+
+<p>With the basic structure in place, a new Engine can be built like any other Ruby on Rails application. Controllers and their respective views can be created and placed under the appropriate namespaces and folders. Routes that utilize these controllers can be added as well. Assuming that both the main application and the Engine use the same ORM (or are at least compatible), even models can be created.</p>
+
+<p>The Passages Engine was built as a standalone gem. Making it available was the same process as creating any other gem. A <code class="highlighter-rouge">.gemspec</code> file was created, the gem was cut to a version, and then finally hosted on Rubygems.org. An application that wishes to use the Passages Engine can install it by adding a new line to the Gemfile: <code class="highlighter-rouge">gem 'passages'</code>.</p>
+
+<p>This same pattern can be used to make any stand alone Ruby on Rails Engine. However, it would be a wise decision to choose specific versions of Ruby on Rails to support. For example, the Passages Engine was built to support Ruby on Rails 4.X, it is not compatible with Ruby on Rails 3.X at all.</p>
 
 <h2 id="built-to-last">Built to Last</h2>
 
