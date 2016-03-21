@@ -4,13 +4,285 @@
  <title>A Year of Commits</title>
  <link href="http://jakeyesbeck.com/atom.xml" rel="self"/>
  <link href="http://jakeyesbeck.com/"/>
- <updated>2016-03-13T22:01:54-07:00</updated>
+ <updated>2016-03-20T21:39:53-07:00</updated>
  <id>http://jakeyesbeck.com/</id>
  <author>
    <name>Jake Yesbeck</name>
    <email>yesbeckjs@gmail.com</email>
  </author>
 
+ 
+ <entry>
+   <title>How to Build a Ruby on Rails Engine</title>
+   <link href="http://jakeyesbeck.com/2016/03/20/how-to-build-a-ruby-on-rails-engine/"/>
+   <updated>2016-03-20T05:00:00-07:00</updated>
+   <id>http://jakeyesbeck.com/2016/03/20/how-to-build-a-ruby-on-rails-engine</id>
+   <content type="html">&lt;p&gt;Ruby on Rails Engines are miniature applications whose purpose is to supplement a larger Ruby on Rails application. If functionality can exist independent from a main application, an Engine can provide a wonderful degree of encapsulation.&lt;/p&gt;
+
+&lt;p&gt;Recently, I created the and “gemified” the &lt;a href=&quot;http://jakeyesbeck.com/2016/01/03/passages/&quot;&gt;Passages Ruby on Rails Engine&lt;/a&gt; to help alleviate some routing frustration. This gem will be the be used as the example for demonstrating what goes into creating a Ruby on Rails Engine.&lt;/p&gt;
+
+&lt;h2 id=&quot;revving-up&quot;&gt;Revving Up&lt;/h2&gt;
+
+&lt;p&gt;There are two ways to start building an Engine. One option is to use the built in generators to create directories and dummy classes. These generators behave in the same way as standard Rails generators.&lt;/p&gt;
+
+&lt;p&gt;To generate an Engine in this way, use the &lt;code class=&quot;highlighter-rouge&quot;&gt;plugins&lt;/code&gt; built in generator:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$ &lt;/span&gt;rails plugin new passages --mountable
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;&lt;em&gt;Note: Engines and Plugins are not exactly the same in the Ruby on Rails world but the &lt;code class=&quot;highlighter-rouge&quot;&gt;--mountable&lt;/code&gt; flag tells the plugin generator to generate a full Engine.&lt;/em&gt;&lt;/p&gt;
+
+&lt;p&gt;The other approach is to simply create the needed directories and files by hand. This is was the way the Passages Engine was built, resulting in the following directory structure:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;passages
+ |-app
+ |--controllers
+ |---passages
+ |----&amp;lt;controller directories&amp;gt;
+ |--views
+ |---passages
+ |----&amp;lt;views directories&amp;gt;
+ |-config
+ |--routes.rb
+ |--initializers
+ |---assets.rb
+ |-lib
+ |--passages
+ |---engine.rb
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Some directories that the &lt;code class=&quot;highlighter-rouge&quot;&gt;rails&lt;/code&gt; generator would have added are missing (i.e. &lt;code class=&quot;highlighter-rouge&quot;&gt;models&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;helpers&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;mailers&lt;/code&gt;). These directories might be necessary for some projects, but the Passages Engine did not have use for them.&lt;/p&gt;
+
+&lt;p&gt;The file at the heart of it all is &lt;code class=&quot;highlighter-rouge&quot;&gt;engine.rb&lt;/code&gt;. This file is responsible for defining the engine and will also be utilized later to add optional enhancements an Engine can take advantage of:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;module&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;Passages&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Engine&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Rails&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Engine&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;isolate_namespace&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Passages&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;An interesting line in this file is the &lt;code class=&quot;highlighter-rouge&quot;&gt;isolate_namespace&lt;/code&gt; method call. This method helps ensure encapsulation for the Engine by isolating its controllers, helpers, views, routes, and any other shared resources between the main application and the Engine.&lt;/p&gt;
+
+&lt;p&gt;With isolation, an Engine does not need to worry about conflicting class or module names in the main application. Additionally, an isolated Engine will set its own name according to its namespace, accessible later via &lt;code class=&quot;highlighter-rouge&quot;&gt;Passages::Engine.engine_name&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;Since the Passages Engine is also a gem, it has a file named &lt;code class=&quot;highlighter-rouge&quot;&gt;passages.rb&lt;/code&gt; in its &lt;code class=&quot;highlighter-rouge&quot;&gt;lib&lt;/code&gt; directory:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;module&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;Passages&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+&lt;span class=&quot;nb&quot;&gt;require&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;passages/engine&#39;&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;require&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;controllers/passages/routes_controller&#39;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;This file is responsible for defining the &lt;code class=&quot;highlighter-rouge&quot;&gt;Passages&lt;/code&gt; module and requiring the engine. It is the entry point for this gem’s logic.&lt;/p&gt;
+
+&lt;h2 id=&quot;encapsulate-everywhere&quot;&gt;Encapsulate Everywhere&lt;/h2&gt;
+
+&lt;p&gt;The overarching theme of designing a good Ruby on Rails Engine is encapsulation. An application should not be negatively affected by its underlying Engines, they should simply support and bring new functionality the application.&lt;/p&gt;
+
+&lt;p&gt;To help reinforce this theme, Ruby on Rails requires that an Engine’s controllers, views, and assets all be nested in namespace modules and corresponding directory folders.&lt;/p&gt;
+
+&lt;h3 id=&quot;controllers&quot;&gt;Controllers&lt;/h3&gt;
+
+&lt;p&gt;In the Passages Engine, the &lt;code class=&quot;highlighter-rouge&quot;&gt;RoutesController&lt;/code&gt; demonstrates this nesting.&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;passages
+ |-app
+ |--controllers
+ |---passages
+ |----routes_controller.rb
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;module&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;Passages&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;RoutesController&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;ActionController&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Base&lt;/span&gt;
+    &lt;span class=&quot;c1&quot;&gt;# ...&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;The same folder structure is used for views and assets.&lt;/p&gt;
+
+&lt;h3 id=&quot;routes&quot;&gt;Routes&lt;/h3&gt;
+
+&lt;p&gt;Of course what good is a controller without a route to use it? A Ruby on Rails Engine also can define its own routes similarly to a stand-alone application.&lt;/p&gt;
+
+&lt;p&gt;Unlike the controllers, the &lt;code class=&quot;highlighter-rouge&quot;&gt;routes.rb&lt;/code&gt; file is not contained in a &lt;code class=&quot;highlighter-rouge&quot;&gt;passages&lt;/code&gt; folder, nor is it within the &lt;code class=&quot;highlighter-rouge&quot;&gt;module Passages&lt;/code&gt;.&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;passages
+ |-config
+ |--routes.rb
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;no&quot;&gt;Passages&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Engine&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;routes&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;draw&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;root&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;to: &lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39;routes#index&#39;&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;In a standard Ruby on Rails application, the first line in a routes file is: &lt;code class=&quot;highlighter-rouge&quot;&gt;Rails.application.routes.draw&lt;/code&gt;; however, within an Engine, the name of the Engine replaces &lt;code class=&quot;highlighter-rouge&quot;&gt;Rails.application&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;With a simple routes file in place, an application using the Passages Engine can run &lt;code class=&quot;highlighter-rouge&quot;&gt;rake routes&lt;/code&gt; to see the new routes in action:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$ &lt;/span&gt;rake routes
+     Prefix Verb   URI Pattern
+   passages        /passages
+      users GET    /users
+            POST   /users
+   new_user GET    /users/new
+  edit_user GET    /users/:id/edit
+       user GET    /users/:id
+            PATCH  /users/:id
+            PUT    /users/:id
+            DELETE /users/:id
+Routes &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;Passages::Engine:
+  root GET  /      passages/routes#index
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;p&gt;&lt;em&gt;Note: This assumes the engine is mounted at &lt;code class=&quot;highlighter-rouge&quot;&gt;/passages&lt;/code&gt;, &lt;a href=&quot;#mount-up&quot;&gt;more about mounting routes below&lt;/a&gt;.&lt;/em&gt;&lt;/p&gt;
+
+&lt;p&gt;Neat, the Passages routes are in a separate section to help differentiate them from normal application routes.&lt;/p&gt;
+
+&lt;p&gt;Remember the &lt;code class=&quot;highlighter-rouge&quot;&gt;isolate_namespace&lt;/code&gt; method? One of the side-effects of &lt;strong&gt;not&lt;/strong&gt; using an isolated namespace can be seen when asking for an applications routes.&lt;/p&gt;
+
+&lt;p&gt;If the namespace isolation is commented out:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;module&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;Passages&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Engine&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Rails&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Engine&lt;/span&gt;
+    &lt;span class=&quot;c1&quot;&gt;# isolate_namespace Passages&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Then &lt;code class=&quot;highlighter-rouge&quot;&gt;rake routes&lt;/code&gt; gives a different output:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;gp&quot;&gt;$ &lt;/span&gt;rake routes
+         Prefix Verb   URI Pattern
+passages_engine        /passages
+          users GET    /users
+                POST   /users
+       new_user GET    /users/new
+      edit_user GET    /users/:id/edit
+           user GET    /users/:id
+                PATCH  /users/:id
+                PUT    /users/:id
+                DELETE /users/:id
+
+Routes &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;Passages::Engine:
+  root GET  /          routes#routes
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Notice that now the &lt;code class=&quot;highlighter-rouge&quot;&gt;root&lt;/code&gt; for the Passages Engine has had its prefix removed. This will cause Rails to look in the wrong place for the &lt;code class=&quot;highlighter-rouge&quot;&gt;routes_controller&lt;/code&gt;:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;no&quot;&gt;ActionController&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;RoutingError&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;uninitialized&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;constant&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;RoutesController&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;While this might not be a huge deal for some applications, the fact that an Engine triggers a top level controller to be fetched is worrysome. What if the main application had its own &lt;code class=&quot;highlighter-rouge&quot;&gt;RoutesController&lt;/code&gt;, the Passages Engine could incorrectly fetch that instead. Or if things are reversed, an Engine without an isolated namespace might incorrectly override an important controller in the main application.&lt;/p&gt;
+
+&lt;h3 id=&quot;assets&quot;&gt;Assets&lt;/h3&gt;
+
+&lt;p&gt;Like controllers and views, an Engine’s assets are also nested under a folder bearing the Engine’s name.&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;passages
+ |-app
+ |--assets
+ |---javascripts
+ |----passages
+ |-----application.js
+ |---stylesheets
+ |----passages
+ |-----application.css
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;This organization enables the layouts and other views in the Engine to only load the files it needs and not accidentally reference the main application’s &lt;code class=&quot;highlighter-rouge&quot;&gt;application.js&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;application.css&lt;/code&gt;:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;cp&quot;&gt;&amp;lt;%=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;stylesheet_link_tag&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;passages/application&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;media: &lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39;all&#39;&lt;/span&gt; &lt;span class=&quot;cp&quot;&gt;%&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;cp&quot;&gt;&amp;lt;%=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;javascript_include_tag&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;passages/application&#39;&lt;/span&gt; &lt;span class=&quot;cp&quot;&gt;%&amp;gt;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;To enable precompiled assets, a few more lines need to be added in the same &lt;code class=&quot;highlighter-rouge&quot;&gt;engine.rb&lt;/code&gt; file:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;module&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;Passages&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Engine&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Rails&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Engine&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;isolate_namespace&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Passages&lt;/span&gt;
+
+    &lt;span class=&quot;n&quot;&gt;initializer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;passages.assets.precompile&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;app&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+      &lt;span class=&quot;n&quot;&gt;app&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;config&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;assets&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;precompile&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;
+        &lt;span class=&quot;s1&quot;&gt;&#39;application.css&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+        &lt;span class=&quot;s1&quot;&gt;&#39;application.js&#39;&lt;/span&gt;
+        &lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;This &lt;code class=&quot;highlighter-rouge&quot;&gt;initializer&lt;/code&gt; line creates an initializer in the underlying railties to be evaluated when assets are precompiled via &lt;code class=&quot;highlighter-rouge&quot;&gt;rake assets:precompile&lt;/code&gt;. With this, an application can successfully compile its own assets and those of the Passages Engine.&lt;/p&gt;
+
+&lt;h2 id=&quot;mount-up&quot;&gt;Mount Up&lt;/h2&gt;
+
+&lt;p&gt;A Ruby on Rails Engine must be mounted by an application for it to be accessible.&lt;/p&gt;
+
+&lt;p&gt;The normal place for this to occur is in a main application’s &lt;code class=&quot;highlighter-rouge&quot;&gt;routes.rb&lt;/code&gt;:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;no&quot;&gt;Rails&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;application&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;routes&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;draw&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;mount&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Passages&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Engine&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;at: &lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39;/passages&#39;&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;The &lt;code class=&quot;highlighter-rouge&quot;&gt;&#39;/passages&#39;&lt;/code&gt; string can be replaced with any desired endpoint, the Engine does not care about the name.&lt;/p&gt;
+
+&lt;p&gt;Alternatively, an Engine can &lt;strong&gt;mount itself&lt;/strong&gt; using the same &lt;code class=&quot;highlighter-rouge&quot;&gt;initializer&lt;/code&gt; method in &lt;code class=&quot;highlighter-rouge&quot;&gt;engine.rb&lt;/code&gt;:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;module&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;Passages&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Engine&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Rails&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Engine&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;isolate_namespace&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Passages&lt;/span&gt;
+      &lt;span class=&quot;n&quot;&gt;initializer&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39;passages&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+                  &lt;span class=&quot;ss&quot;&gt;after: :load_config_initializers&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;app&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+        &lt;span class=&quot;no&quot;&gt;Rails&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;application&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;routes&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;prepend&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
+          &lt;span class=&quot;n&quot;&gt;mount&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Passages&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Engine&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;at: &lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39;/passages&#39;&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+      &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;In this case, the initializer has a specific placement: after the configuration initializers are loaded. This initializer then writes to the main application with &lt;code class=&quot;highlighter-rouge&quot;&gt;Rails.application.routes.prepend&lt;/code&gt; and, as the name suggests, prepends the mount to the application’s routes.&lt;/p&gt;
+
+&lt;p&gt;Since the mount is added to the beginning of an application’s routes, it is possible that this mounted path (in this case &lt;code class=&quot;highlighter-rouge&quot;&gt;&#39;/passages&#39;&lt;/code&gt;) will be overridden by a route with the same name later on in the main application’s &lt;code class=&quot;highlighter-rouge&quot;&gt;routes.rb&lt;/code&gt; file.&lt;/p&gt;
+
+&lt;p&gt;After an application mounts the Passages Engine, it can navigate to &lt;code class=&quot;highlighter-rouge&quot;&gt;/passages&lt;/code&gt;. This request would be served by the Passages Engine like a normal Ruby on Rails application request.&lt;/p&gt;
+
+&lt;h4 id=&quot;use-with-caution&quot;&gt;Use With Caution&lt;/h4&gt;
+
+&lt;p&gt;Auto-mounted Engines may sound like a great idea but it might be best to leave that decision to the consumer. A suggested approach to this is have an opt-in functionality with auto-mounting. Placing this logic behind a conditional (based on some kind of configuration variable) gives consumers of this Engine the power of auto-mounting without the worry of “magic” they did not ask for.&lt;/p&gt;
+
+&lt;h2 id=&quot;built-to-last&quot;&gt;Built to Last&lt;/h2&gt;
+
+&lt;p&gt;Going further, the creation of views, initializer files, migrations, and models can all be accomplished the same way one would in a regular Ruby on Rails application.&lt;/p&gt;
+
+&lt;p&gt;When built correctly, Ruby on Rails Engines give application developers the ability bring in functionality without jeopardizing their system. In most object oriented applications, &lt;a href=&quot;https://en.wikipedia.org/wiki/Law_of_Demeter&quot;&gt;The Law of Demeter&lt;/a&gt; should be honored as much as possible, and well encapsulated Ruby on Rails Engines do just that.&lt;/p&gt;
+
+&lt;p&gt;Not all of the Passages Engine was discussed in this guide, but feel free to &lt;a href=&quot;https://github.com/yez/passages&quot;&gt;read the source&lt;/a&gt; to find out more information. Also, I am always looking for eager contributors to either submit issues or pull requests with features they need.&lt;/p&gt;
+
+</content>
+ </entry>
  
  <entry>
    <title>The Power of Arel</title>
@@ -174,7 +446,7 @@
 
 &lt;h2 id=&quot;advanced-selecting&quot;&gt;Advanced Selecting&lt;/h2&gt;
 
-&lt;p&gt;Simple joins and comparrison operators are useful but barely begin to explore the vast API contained within &lt;code class=&quot;highlighter-rouge&quot;&gt;Arel&lt;/code&gt;. An interesting feature that &lt;code class=&quot;highlighter-rouge&quot;&gt;Arel&lt;/code&gt; provides is how to create and utilize &lt;strong&gt;C&lt;/strong&gt;ommon &lt;strong&gt;T&lt;/strong&gt;able &lt;strong&gt;E&lt;/strong&gt;xpressions (CTEs).&lt;/p&gt;
+&lt;p&gt;Simple joins and comparison operators are useful but barely begin to explore the vast API contained within &lt;code class=&quot;highlighter-rouge&quot;&gt;Arel&lt;/code&gt;. An interesting feature that &lt;code class=&quot;highlighter-rouge&quot;&gt;Arel&lt;/code&gt; provides is how to create and utilize &lt;strong&gt;C&lt;/strong&gt;ommon &lt;strong&gt;T&lt;/strong&gt;able &lt;strong&gt;E&lt;/strong&gt;xpressions (CTEs).&lt;/p&gt;
 
 &lt;p&gt;A CTE is a temporary named result in an SQL database, derived from a &lt;code class=&quot;highlighter-rouge&quot;&gt;SELECT&lt;/code&gt; query. This derived result remains present in the scope for additional &lt;code class=&quot;highlighter-rouge&quot;&gt;SELECT&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;INSERT&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;UPDATE&lt;/code&gt;, or &lt;code class=&quot;highlighter-rouge&quot;&gt;DELETE&lt;/code&gt; queries. CTEs can be thought of as alternatives to temporary tables, sub-queries, views, or other in-line user-defined functions.&lt;/p&gt;
 
