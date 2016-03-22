@@ -281,10 +281,7 @@ Routes &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;Passages::Engine:
 
 &lt;p&gt;Going further, the creation of views, initializer files, migrations, and models can all be accomplished the same way one would in a regular Ruby on Rails application.&lt;/p&gt;
 
-&lt;p&gt;When built correctly, Ruby on Rails Engines give application developers the ability bring in functionality without jeopardizing their system. In most object oriented applications, &lt;a href=&quot;https://en.wikipedia.org/wiki/Law_of_Demeter&quot;&gt;The Law of Demeter&lt;/a&gt; should be honored as much as possible, and well encapsulated Ruby on Rails Engines do just that.&lt;/p&gt;
-
 &lt;p&gt;Not all of the Passages Engine was discussed in this guide, but feel free to &lt;a href=&quot;https://github.com/yez/passages&quot;&gt;read the source&lt;/a&gt; to find out more information. Also, I am always looking for eager contributors to either submit issues or pull requests with features they need.&lt;/p&gt;
-
 </content>
  </entry>
  
