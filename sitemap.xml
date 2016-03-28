@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>http://jakeyesbeck.com/2016/03/27/five-more-active-record-features-you-should-be-using/</loc>
+    <lastmod>2016-03-27T05:00:00-07:00</lastmod>
+  </url>
+  <url>
     <loc>http://jakeyesbeck.com/2016/03/20/how-to-build-a-ruby-on-rails-engine/</loc>
     <lastmod>2016-03-20T05:00:00-07:00</lastmod>
   </url>
