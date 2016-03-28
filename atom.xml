@@ -107,7 +107,7 @@
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 
-&lt;p&gt;We can assume that the &lt;code class=&quot;highlighter-rouge&quot;&gt;ReviewQueue&lt;/code&gt; is some kind of background backed by Redis or another key value store place new &lt;code class=&quot;highlighter-rouge&quot;&gt;Books&lt;/code&gt; into a queue for critics to review. The &lt;code class=&quot;highlighter-rouge&quot;&gt;Logger&lt;/code&gt; class simply outputs text to &lt;code class=&quot;highlighter-rouge&quot;&gt;stdout&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;We can assume that the &lt;code class=&quot;highlighter-rouge&quot;&gt;ReviewQueue&lt;/code&gt; is a key/value storage (Redis or something similar) backed object whose purpose is to place new &lt;code class=&quot;highlighter-rouge&quot;&gt;Books&lt;/code&gt; into a queue for critics to review. The &lt;code class=&quot;highlighter-rouge&quot;&gt;Logger&lt;/code&gt; class simply outputs text to &lt;code class=&quot;highlighter-rouge&quot;&gt;stdout&lt;/code&gt;.&lt;/p&gt;
 
 &lt;p&gt;When everything goes well, the callback works beautifully:&lt;/p&gt;
 
@@ -179,7 +179,7 @@
 
 &lt;h2 id=&quot;touch&quot;&gt;4. &lt;code class=&quot;highlighter-rouge&quot;&gt;touch&lt;/code&gt;&lt;/h2&gt;
 
-&lt;p&gt;To update a single timestamp column on an &lt;code class=&quot;highlighter-rouge&quot;&gt;ActiveRecord&lt;/code&gt; object, the &lt;code class=&quot;highlighter-rouge&quot;&gt;touch&lt;/code&gt; is a great option. This method can accept the column name which should be updated in addition to an object’s &lt;code class=&quot;highlighter-rouge&quot;&gt;:updated_at&lt;/code&gt; (if present).&lt;/p&gt;
+&lt;p&gt;To update a single timestamp column on an &lt;code class=&quot;highlighter-rouge&quot;&gt;ActiveRecord&lt;/code&gt; object, &lt;code class=&quot;highlighter-rouge&quot;&gt;touch&lt;/code&gt; is a great option. This method can accept the column name which should be updated in addition to an object’s &lt;code class=&quot;highlighter-rouge&quot;&gt;:updated_at&lt;/code&gt; (if present).&lt;/p&gt;
 
 &lt;p&gt;A great time to utilize the &lt;code class=&quot;highlighter-rouge&quot;&gt;touch&lt;/code&gt; method is when tracking views. The good people at &lt;em&gt;“booksandreviews.com”&lt;/em&gt; need to know how often their &lt;code class=&quot;highlighter-rouge&quot;&gt;Reviews&lt;/code&gt; are viewed.&lt;/p&gt;
 
@@ -246,7 +246,7 @@
 
 &lt;p&gt;Two “different” strings were set to &lt;code class=&quot;highlighter-rouge&quot;&gt;book.title&lt;/code&gt; but since they resolve to the same characters, the object is not &lt;code class=&quot;highlighter-rouge&quot;&gt;changed?&lt;/code&gt;.&lt;/p&gt;
 
-&lt;p&gt;The &lt;code class=&quot;highlighter-rouge&quot;&gt;changed?&lt;/code&gt; method can help save some unnecessary database calls by using it as a guard clause:&lt;/p&gt;
+&lt;p&gt;When using PostgreSQL, the &lt;code class=&quot;highlighter-rouge&quot;&gt;changed?&lt;/code&gt; method can save unnecessary &lt;code class=&quot;highlighter-rouge&quot;&gt;begin&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;commit&lt;/code&gt; transaction calls for objects that have no changes:&lt;/p&gt;
 
 &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;BooksController&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;ApplicationController&lt;/span&gt;
   &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;update&lt;/span&gt;
@@ -277,14 +277,14 @@
   &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;maybe_enqueue_thankyou_email&lt;/span&gt;
     &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;status&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;Approved&#39;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt;
         &lt;span class=&quot;n&quot;&gt;status_was&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;Pending&#39;&lt;/span&gt;
-      &lt;span class=&quot;no&quot;&gt;ThankYouEmail&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;enqueue_for!&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;critic&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+      &lt;span class=&quot;no&quot;&gt;ThankYouEmailQueue&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;add&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;critic&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
     &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
   &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
 &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 
-&lt;p&gt;To verify the result, we can assume the existence of a &lt;code class=&quot;highlighter-rouge&quot;&gt;queued_for?&lt;/code&gt; method on &lt;code class=&quot;highlighter-rouge&quot;&gt;ThankYouEmail&lt;/code&gt; which checks the queue of pending emails for a critic:&lt;/p&gt;
+&lt;p&gt;To verify the result, we can assume the existence of a &lt;code class=&quot;highlighter-rouge&quot;&gt;queued_for?&lt;/code&gt; method on &lt;code class=&quot;highlighter-rouge&quot;&gt;ThankYouEmailQueue&lt;/code&gt; which checks the queue of pending emails for a critic:&lt;/p&gt;
 
 &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;review&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Review&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;find&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
 &lt;span class=&quot;n&quot;&gt;review&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;status&lt;/span&gt;
@@ -292,12 +292,12 @@
 &lt;span class=&quot;n&quot;&gt;review&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;status&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;Approved&#39;&lt;/span&gt;
 &lt;span class=&quot;n&quot;&gt;review&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;save!&lt;/span&gt;
 &lt;span class=&quot;c1&quot;&gt;# =&amp;gt; true&lt;/span&gt;
-&lt;span class=&quot;no&quot;&gt;ThankYouEmail&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;queued_for?&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;review&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;critic_id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;no&quot;&gt;ThankYouEmailQueue&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;queued_for?&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;review&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;critic_id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
 &lt;span class=&quot;c1&quot;&gt;# =&amp;gt; true&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 
-&lt;p&gt;&lt;em&gt;Note: Additionally considerations might need to be made since the &lt;code class=&quot;highlighter-rouge&quot;&gt;save&lt;/code&gt; is not guaranteed to persist like described above in the &lt;code class=&quot;highlighter-rouge&quot;&gt;after_commit&lt;/code&gt; example.&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;Note: Additional considerations might need to be made since the &lt;code class=&quot;highlighter-rouge&quot;&gt;save&lt;/code&gt; is not guaranteed to persist like described above in the &lt;code class=&quot;highlighter-rouge&quot;&gt;after_commit&lt;/code&gt; example.&lt;/em&gt;&lt;/p&gt;
 </content>
  </entry>
  

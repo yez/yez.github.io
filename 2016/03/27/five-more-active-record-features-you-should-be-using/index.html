@@ -193,7 +193,7 @@
 </code></pre>
 </div>
 
-<p>We can assume that the <code class="highlighter-rouge">ReviewQueue</code> is some kind of background backed by Redis or another key value store place new <code class="highlighter-rouge">Books</code> into a queue for critics to review. The <code class="highlighter-rouge">Logger</code> class simply outputs text to <code class="highlighter-rouge">stdout</code>.</p>
+<p>We can assume that the <code class="highlighter-rouge">ReviewQueue</code> is a key/value storage (Redis or something similar) backed object whose purpose is to place new <code class="highlighter-rouge">Books</code> into a queue for critics to review. The <code class="highlighter-rouge">Logger</code> class simply outputs text to <code class="highlighter-rouge">stdout</code>.</p>
 
 <p>When everything goes well, the callback works beautifully:</p>
 
@@ -265,7 +265,7 @@
 
 <h2 id="touch">4. <code class="highlighter-rouge">touch</code></h2>
 
-<p>To update a single timestamp column on an <code class="highlighter-rouge">ActiveRecord</code> object, the <code class="highlighter-rouge">touch</code> is a great option. This method can accept the column name which should be updated in addition to an object’s <code class="highlighter-rouge">:updated_at</code> (if present).</p>
+<p>To update a single timestamp column on an <code class="highlighter-rouge">ActiveRecord</code> object, <code class="highlighter-rouge">touch</code> is a great option. This method can accept the column name which should be updated in addition to an object’s <code class="highlighter-rouge">:updated_at</code> (if present).</p>
 
 <p>A great time to utilize the <code class="highlighter-rouge">touch</code> method is when tracking views. The good people at <em>“booksandreviews.com”</em> need to know how often their <code class="highlighter-rouge">Reviews</code> are viewed.</p>
 
@@ -332,7 +332,7 @@
 
 <p>Two “different” strings were set to <code class="highlighter-rouge">book.title</code> but since they resolve to the same characters, the object is not <code class="highlighter-rouge">changed?</code>.</p>
 
-<p>The <code class="highlighter-rouge">changed?</code> method can help save some unnecessary database calls by using it as a guard clause:</p>
+<p>When using PostgreSQL, the <code class="highlighter-rouge">changed?</code> method can save unnecessary <code class="highlighter-rouge">begin</code> and <code class="highlighter-rouge">commit</code> transaction calls for objects that have no changes:</p>
 
 <div class="highlighter-rouge"><pre class="highlight"><code><span class="k">class</span> <span class="nc">BooksController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
   <span class="k">def</span> <span class="nf">update</span>
@@ -363,14 +363,14 @@
   <span class="k">def</span> <span class="nf">maybe_enqueue_thankyou_email</span>
     <span class="k">if</span> <span class="n">status</span> <span class="o">==</span> <span class="s1">'Approved'</span> <span class="o">&amp;&amp;</span>
         <span class="n">status_was</span> <span class="o">==</span> <span class="s1">'Pending'</span>
-      <span class="no">ThankYouEmail</span><span class="p">.</span><span class="nf">enqueue_for!</span><span class="p">(</span><span class="n">critic</span><span class="p">,</span> <span class="nb">self</span><span class="p">.</span><span class="nf">id</span><span class="p">)</span>
+      <span class="no">ThankYouEmailQueue</span><span class="p">.</span><span class="nf">add</span><span class="p">(</span><span class="n">critic</span><span class="p">,</span> <span class="nb">id</span><span class="p">)</span>
     <span class="k">end</span>
   <span class="k">end</span>
 <span class="k">end</span>
 </code></pre>
 </div>
 
-<p>To verify the result, we can assume the existence of a <code class="highlighter-rouge">queued_for?</code> method on <code class="highlighter-rouge">ThankYouEmail</code> which checks the queue of pending emails for a critic:</p>
+<p>To verify the result, we can assume the existence of a <code class="highlighter-rouge">queued_for?</code> method on <code class="highlighter-rouge">ThankYouEmailQueue</code> which checks the queue of pending emails for a critic:</p>
 
 <div class="highlighter-rouge"><pre class="highlight"><code><span class="n">review</span> <span class="o">=</span> <span class="no">Review</span><span class="p">.</span><span class="nf">find</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
 <span class="n">review</span><span class="p">.</span><span class="nf">status</span>
@@ -378,12 +378,12 @@
 <span class="n">review</span><span class="p">.</span><span class="nf">status</span> <span class="o">=</span> <span class="s1">'Approved'</span>
 <span class="n">review</span><span class="p">.</span><span class="nf">save!</span>
 <span class="c1"># =&gt; true</span>
-<span class="no">ThankYouEmail</span><span class="p">.</span><span class="nf">queued_for?</span><span class="p">(</span><span class="n">review</span><span class="p">.</span><span class="nf">critic_id</span><span class="p">)</span>
+<span class="no">ThankYouEmailQueue</span><span class="p">.</span><span class="nf">queued_for?</span><span class="p">(</span><span class="n">review</span><span class="p">.</span><span class="nf">critic_id</span><span class="p">)</span>
 <span class="c1"># =&gt; true</span>
 </code></pre>
 </div>
 
-<p><em>Note: Additionally considerations might need to be made since the <code class="highlighter-rouge">save</code> is not guaranteed to persist like described above in the <code class="highlighter-rouge">after_commit</code> example.</em></p>
+<p><em>Note: Additional considerations might need to be made since the <code class="highlighter-rouge">save</code> is not guaranteed to persist like described above in the <code class="highlighter-rouge">after_commit</code> example.</em></p>
 
 </div>
 
