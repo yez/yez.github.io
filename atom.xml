@@ -181,7 +181,7 @@
 
 &lt;p&gt;To update a single timestamp column on an &lt;code class=&quot;highlighter-rouge&quot;&gt;ActiveRecord&lt;/code&gt; object, &lt;code class=&quot;highlighter-rouge&quot;&gt;touch&lt;/code&gt; is a great option. This method can accept the column name which should be updated in addition to an object’s &lt;code class=&quot;highlighter-rouge&quot;&gt;:updated_at&lt;/code&gt; (if present).&lt;/p&gt;
 
-&lt;p&gt;A great time to utilize the &lt;code class=&quot;highlighter-rouge&quot;&gt;touch&lt;/code&gt; method is when tracking views. The good people at &lt;em&gt;“booksandreviews.com”&lt;/em&gt; need to know how often their &lt;code class=&quot;highlighter-rouge&quot;&gt;Reviews&lt;/code&gt; are viewed.&lt;/p&gt;
+&lt;p&gt;A great time to utilize the &lt;code class=&quot;highlighter-rouge&quot;&gt;touch&lt;/code&gt; method is when tracking when a record was last viewed. The good people at &lt;em&gt;“booksandreviews.com”&lt;/em&gt; need to be sure their &lt;code class=&quot;highlighter-rouge&quot;&gt;Reviews&lt;/code&gt; are being seen and want to know which &lt;code class=&quot;highlighter-rouge&quot;&gt;Reviews&lt;/code&gt; have not been viewed in a while.&lt;/p&gt;
 
 &lt;p&gt;If the &lt;code class=&quot;highlighter-rouge&quot;&gt;Review&lt;/code&gt; table has a &lt;code class=&quot;highlighter-rouge&quot;&gt;last_viewed_at&lt;/code&gt; column which is of type &lt;code class=&quot;highlighter-rouge&quot;&gt;timestamp&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;touch&lt;/code&gt; can easily update this column in a controller action:&lt;/p&gt;
 

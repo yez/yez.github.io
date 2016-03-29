@@ -276,7 +276,7 @@
 
 <p>To update a single timestamp column on an <code class="highlighter-rouge">ActiveRecord</code> object, <code class="highlighter-rouge">touch</code> is a great option. This method can accept the column name which should be updated in addition to an object’s <code class="highlighter-rouge">:updated_at</code> (if present).</p>
 
-<p>A great time to utilize the <code class="highlighter-rouge">touch</code> method is when tracking views. The good people at <em>“booksandreviews.com”</em> need to know how often their <code class="highlighter-rouge">Reviews</code> are viewed.</p>
+<p>A great time to utilize the <code class="highlighter-rouge">touch</code> method is when tracking when a record was last viewed. The good people at <em>“booksandreviews.com”</em> need to be sure their <code class="highlighter-rouge">Reviews</code> are being seen and want to know which <code class="highlighter-rouge">Reviews</code> have not been viewed in a while.</p>
 
 <p>If the <code class="highlighter-rouge">Review</code> table has a <code class="highlighter-rouge">last_viewed_at</code> column which is of type <code class="highlighter-rouge">timestamp</code>, <code class="highlighter-rouge">touch</code> can easily update this column in a controller action:</p>
 
