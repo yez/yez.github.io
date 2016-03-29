@@ -364,31 +364,33 @@
 </code></pre>
 </div>
 
-<p>If a <code class="highlighter-rouge">Review's</code> status moving from <code class="highlighter-rouge">"Pending"</code> to <code class="highlighter-rouge">"Approved"</code> should send the critic a thank you email, the <code class="highlighter-rouge">status_was</code> method can be utilized in a callback:</p>
+<p>If a <code class="highlighter-rouge">Review's</code> status moving from <code class="highlighter-rouge">"Pending"</code> to <code class="highlighter-rouge">"Approved"</code> should remove it from an approval queue, the <code class="highlighter-rouge">status_was</code> method can be utilized in a callback:</p>
 
 <div class="highlighter-rouge"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Review</span>
-  <span class="n">before_save</span> <span class="ss">:maybe_enqueue_thankyou_email</span>
+  <span class="n">before_save</span> <span class="ss">:maybe_remove_from_review_queue</span>
 
-  <span class="k">def</span> <span class="nf">maybe_enqueue_thankyou_email</span>
+  <span class="k">def</span> <span class="nf">maybe_remove_from_review_queue</span>
     <span class="k">if</span> <span class="n">status</span> <span class="o">==</span> <span class="s1">'Approved'</span> <span class="o">&amp;&amp;</span>
         <span class="n">status_was</span> <span class="o">==</span> <span class="s1">'Pending'</span>
-      <span class="no">ThankYouEmailQueue</span><span class="p">.</span><span class="nf">add</span><span class="p">(</span><span class="n">critic</span><span class="p">,</span> <span class="nb">id</span><span class="p">)</span>
+      <span class="no">ReviewQueue</span><span class="p">.</span><span class="nf">remove</span><span class="p">(</span><span class="nb">id</span><span class="p">)</span>
     <span class="k">end</span>
   <span class="k">end</span>
 <span class="k">end</span>
 </code></pre>
 </div>
 
-<p>To verify the result, we can assume the existence of a <code class="highlighter-rouge">queued_for?</code> method on <code class="highlighter-rouge">ThankYouEmailQueue</code> which checks the queue of pending emails for a critic:</p>
+<p>To verify the result, we can check that the <code class="highlighter-rouge">ReviewQueue</code> decrements its internal count of reviews pending review:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="n">review</span> <span class="o">=</span> <span class="no">Review</span><span class="p">.</span><span class="nf">find</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="no">ReviewQueue</span><span class="p">.</span><span class="nf">size</span>
+<span class="c1">#=&gt; 1</span>
+<span class="n">review</span> <span class="o">=</span> <span class="no">Review</span><span class="p">.</span><span class="nf">find</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
 <span class="n">review</span><span class="p">.</span><span class="nf">status</span>
 <span class="c1"># =&gt; 'Pending'</span>
 <span class="n">review</span><span class="p">.</span><span class="nf">status</span> <span class="o">=</span> <span class="s1">'Approved'</span>
 <span class="n">review</span><span class="p">.</span><span class="nf">save!</span>
 <span class="c1"># =&gt; true</span>
-<span class="no">ThankYouEmailQueue</span><span class="p">.</span><span class="nf">queued_for?</span><span class="p">(</span><span class="n">review</span><span class="p">.</span><span class="nf">critic_id</span><span class="p">)</span>
-<span class="c1"># =&gt; true</span>
+<span class="no">ReviewQueue</span><span class="p">.</span><span class="nf">size</span>
+<span class="c1">#=&gt; 0</span>
 </code></pre>
 </div>
 
