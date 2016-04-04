@@ -4,13 +4,125 @@
  <title>A Year of Commits</title>
  <link href="http://jakeyesbeck.com/atom.xml" rel="self"/>
  <link href="http://jakeyesbeck.com/"/>
- <updated>2016-03-27T22:50:19-07:00</updated>
+ <updated>2016-04-03T21:54:22-07:00</updated>
  <id>http://jakeyesbeck.com/</id>
  <author>
    <name>Jake Yesbeck</name>
    <email>yesbeckjs@gmail.com</email>
  </author>
 
+ 
+ <entry>
+   <title>How to Deal with Timezones the Active Support Way</title>
+   <link href="http://jakeyesbeck.com/2016/04/03/how-to-deal-with-timezones-the-active-support-way/"/>
+   <updated>2016-04-03T05:00:00-07:00</updated>
+   <id>http://jakeyesbeck.com/2016/04/03/how-to-deal-with-timezones-the-active-support-way</id>
+   <content type="html">&lt;p&gt;&lt;em&gt;“Well the code is bad because we had to…”&lt;/em&gt; is a phrase one might hear when discussing timezone offsets or daylight savings time considerations.&lt;/p&gt;
+
+&lt;p&gt;Unless a developer is fortunate enough to work at a company whose userbase is entirely located in the UTC timezone, writing software aware of different timezones can be a daunting task. Luckily, Ruby on Rails’ &lt;code class=&quot;highlighter-rouge&quot;&gt;ActiveSupport&lt;/code&gt; library has some very nice built in features that can prove invaluable when facing time related issues.&lt;/p&gt;
+
+&lt;h2 id=&quot;built-in-timezones&quot;&gt;Built-in Timezones&lt;/h2&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;ActiveSupport&lt;/code&gt; in Ruby on Rails 4.0+ has a built in list of all supported timezones on the &lt;code class=&quot;highlighter-rouge&quot;&gt;TimeZone&lt;/code&gt; class:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;no&quot;&gt;ActiveSupport&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;TimeZone&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;all&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;map&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;#=&amp;gt; [&quot;American Samoa&quot;, &quot;International Date Line West&quot;, &quot;Midway Island&quot;, &quot;Hawaii&quot;, &quot;Alaska&quot;, &quot;Pacific Time (US &amp;amp; Canada)&quot;, &quot;Tijuana&quot;, &quot;Arizona&quot;, &quot;Chihuahua&quot;, &quot;Mazatlan&quot;, &quot;Mountain Time (US &amp;amp; Canada)&quot;, &quot;Central America&quot;, &quot;Central Time (US &amp;amp; Canada)&quot;, &quot;Guadalajara&quot;, ...]&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;This list of timezones can be used when parsing strings into &lt;code class=&quot;highlighter-rouge&quot;&gt;Time&lt;/code&gt; objects and converting an existing &lt;code class=&quot;highlighter-rouge&quot;&gt;Time&lt;/code&gt; object from one timezone to another. For working with timezones in the United States, a handy &lt;code class=&quot;highlighter-rouge&quot;&gt;us_zones&lt;/code&gt; method is also available on the same class.&lt;/p&gt;
+
+&lt;p&gt;One interesting detail about this list of timezones is the lack of daylight savings time qualifiers. Keeping the timezones agnostic of daylight savings helps simplify their use. A developer does not need to worry about using one timezone object over another due to the time of the year.&lt;/p&gt;
+
+&lt;h2 id=&quot;timeusezone&quot;&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;Time.use_zone&lt;/code&gt;&lt;/h2&gt;
+
+&lt;p&gt;The &lt;code class=&quot;highlighter-rouge&quot;&gt;ActiveSupport&lt;/code&gt; library adds some functionality to built in Ruby classes. One of those additions is the ability to set and retrieve the &lt;code class=&quot;highlighter-rouge&quot;&gt;zone&lt;/code&gt; attribute on the &lt;code class=&quot;highlighter-rouge&quot;&gt;Time&lt;/code&gt; class. After a &lt;code class=&quot;highlighter-rouge&quot;&gt;zone&lt;/code&gt; is set, it can be used when parsing strings into &lt;code class=&quot;highlighter-rouge&quot;&gt;Time&lt;/code&gt; objects:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;no&quot;&gt;Time&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;zone&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;Pacific Time (US &amp;amp; Canada)&#39;&lt;/span&gt;
+&lt;span class=&quot;no&quot;&gt;Time&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;zone&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;parse&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39;2016-04-01 10:00:00&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;#=&amp;gt; Fri, 01 Apr 2016 10:00:00 PDT -07:00&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;This code takes a timestamp string without a timezone specified and uses the value of &lt;code class=&quot;highlighter-rouge&quot;&gt;Time.zone&lt;/code&gt; to correctly represent the time in the Pacific timezone.&lt;/p&gt;
+
+&lt;p&gt;However, an immediate red flag is present in this code. The &lt;code class=&quot;highlighter-rouge&quot;&gt;zone&lt;/code&gt; attribute persists for the rest of the Ruby runtime, potentially causing unexpected behaviour at a later time.&lt;/p&gt;
+
+&lt;p&gt;Luckily, &lt;code class=&quot;highlighter-rouge&quot;&gt;ActiveSupport&lt;/code&gt; solves this problem with the &lt;code class=&quot;highlighter-rouge&quot;&gt;use_zone&lt;/code&gt; method. This method accepts the same set of strings as its single argument and expects a block.&lt;/p&gt;
+
+&lt;p&gt;Within the passed in block is the only place &lt;code class=&quot;highlighter-rouge&quot;&gt;Time.zone&lt;/code&gt; is affected, eliminating the possibility of a &lt;code class=&quot;highlighter-rouge&quot;&gt;zone&lt;/code&gt; sticking around longer than intended:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;no&quot;&gt;Time&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;zone&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;name&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;#=&amp;gt; &quot;UTC&quot;&lt;/span&gt;
+
+&lt;span class=&quot;no&quot;&gt;Time&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;use_zone&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39;Pacific Time (US &amp;amp; Canada)&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
+  &lt;span class=&quot;no&quot;&gt;Time&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;zone&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;name&lt;/span&gt;
+  &lt;span class=&quot;c1&quot;&gt;# =&amp;gt; &quot;Pacific Time (US &amp;amp; Canada)&quot;&lt;/span&gt;
+  &lt;span class=&quot;no&quot;&gt;Time&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;zone&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;parse&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39;2016-04-01 10:00:00&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+  &lt;span class=&quot;c1&quot;&gt;#=&amp;gt; Fri, 01 Apr 2016 10:00:00 PDT -07:00&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+&lt;span class=&quot;no&quot;&gt;Time&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;zone&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;name&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;#=&amp;gt; &quot;UTC&quot;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;This temporary &lt;code class=&quot;highlighter-rouge&quot;&gt;zone&lt;/code&gt; setting can be very helpful if a set of users are processed, each with their own respective timezone.&lt;/p&gt;
+
+&lt;h2 id=&quot;timewithzoneintimezone&quot;&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;TimeWithZone.in_time_zone&lt;/code&gt;&lt;/h2&gt;
+
+&lt;p&gt;When dealing with &lt;code class=&quot;highlighter-rouge&quot;&gt;Time&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;Date&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;DateTime&lt;/code&gt; objects, converting each from one timezone to another can be tedious. The &lt;code class=&quot;highlighter-rouge&quot;&gt;in_time_zone&lt;/code&gt; method removes some complexity from those operations.&lt;/p&gt;
+
+&lt;p&gt;Used alone, the &lt;code class=&quot;highlighter-rouge&quot;&gt;in_time_zone&lt;/code&gt; can transform an existing object into an instance of &lt;code class=&quot;highlighter-rouge&quot;&gt;TimeWithZone&lt;/code&gt;:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;now&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Time&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;now&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# =&amp;gt; 2016-04-04 03:55:24 +0000&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;now&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;in_time_zone&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39;Hawaii&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# =&amp;gt; Sun, 03 Apr 2016 17:55:24 HST -10:00&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;In any sane system, timestamps in a database are always stored in UTC or Zulu time. When exposing these timestamps to users, the &lt;code class=&quot;highlighter-rouge&quot;&gt;in_time_zone&lt;/code&gt; method can quickly switch the timestamp to a user’s local time.&lt;/p&gt;
+
+&lt;p&gt;To see a more creative use of &lt;code class=&quot;highlighter-rouge&quot;&gt;in_time_zone&lt;/code&gt;, we can assume that an application must solve a scheduling problem. An example application wants to send its users an email at the exact same time relative to a user’s timezone. Regardless of where a user lives, they should receive an email at 10:30 AM local time.&lt;/p&gt;
+
+&lt;p&gt;A naive approach might not yield the intended result:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;user&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;time_zone&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# =&amp;gt; Hawaii&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;send_time&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Time&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;new&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2016&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mo&quot;&gt;04&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mo&quot;&gt;01&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;10&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;30&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# =&amp;gt; 2016-04-01 10:30:00 +0000&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;send_time&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;in_time_zone&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;user&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;time_zone&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# =&amp;gt; Fri, 01 Apr 2016 00:30:00 HST -10:00&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Whoops, that is not right at all. This code initialized a &lt;code class=&quot;highlighter-rouge&quot;&gt;Time&lt;/code&gt; object for the “correct” send time but then &lt;code class=&quot;highlighter-rouge&quot;&gt;in_time_zone&lt;/code&gt; not only moved the timezone of that object, it also modified the actual time. This would result in all users getting an email at the same exact moment but at an inconvenient time relative to where they live.&lt;/p&gt;
+
+&lt;p&gt;Potential solutions to this problem might include modifying the timezone part of an outputted string (the &lt;code class=&quot;highlighter-rouge&quot;&gt;&quot;+0000&quot;&lt;/code&gt; at the end) and re-parsing it, but that solution can be prone to error and hard to understand.&lt;/p&gt;
+
+&lt;p&gt;Since the &lt;code class=&quot;highlighter-rouge&quot;&gt;in_time_zone&lt;/code&gt; method works on the &lt;code class=&quot;highlighter-rouge&quot;&gt;Date&lt;/code&gt; class, the simplest approach would be to initialize a new &lt;code class=&quot;highlighter-rouge&quot;&gt;DateTime&lt;/code&gt; object in a user’s timezone and add 10.5 hours to it:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;user&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;time_zone&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# =&amp;gt; Hawaii&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;beginning_of_day&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Date&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;today&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;in_time_zone&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;user&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;time_zone&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# =&amp;gt; Sun, 03 Apr 2016 00:00:00 HST -10:00&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;beginning_of_day&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;10&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;5&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;hours&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# =&amp;gt; Sun, 03 Apr 2016 10:30:00 HST -10:00&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;sender&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;ImportantEmailSender&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;new&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;user&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;sender&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;send_at!&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;beginning_of_day&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Great! An email will be sent at 10:30 AM Hawaii time and we successfully avoided any time string munging or other strange object casting. A user in London can also receive an email at exactly 10:30 AM their local time and this code need not grow in complexity.&lt;/p&gt;
+
+&lt;h2 id=&quot;saving-time&quot;&gt;Saving Time&lt;/h2&gt;
+
+&lt;p&gt;Whether in code or everyday life, it seems that struggling with time is something we as humans are simply destined to do. Some good news is that &lt;code class=&quot;highlighter-rouge&quot;&gt;ActiveSupport&lt;/code&gt; may not grant you any more wall clock time, but could save you some when wrangling different pieces of scheduling code together.&lt;/p&gt;
+
+&lt;p&gt;As usual, the API of the &lt;code class=&quot;highlighter-rouge&quot;&gt;ActiveSupport::TimeZone&lt;/code&gt; class is much larger than just the two methods illustrated here. For more information, the &lt;a href=&quot;http://api.rubyonrails.org/classes/ActiveSupport/TimeZone.html&quot;&gt;offical ActiveSupport documentation&lt;/a&gt; is a great place to read further.&lt;/p&gt;
+</content>
+ </entry>
  
  <entry>
    <title>Five More Active Record Features You Should Be Using</title>

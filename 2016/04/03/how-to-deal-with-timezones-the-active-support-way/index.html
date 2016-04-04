@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta http-equiv="content-type" content="text/html; charset=utf-8">
   
-    <meta name="description" content="A technology blog about a Year of Commits to Open Source projects.">
+    <meta name="description" content="Dealing with timezones can be a very arduous task for even seasoned software developers. The Ruby library, ActiveSupport helps alleviate some of that pain.">
   
 
   <!-- Enable responsiveness on mobile devices-->
@@ -14,7 +14,7 @@
 
   <title>
     
-      A Year of Commits
+      How to Deal with Timezones the Active Support Way
     
   </title>
 
@@ -64,19 +64,11 @@
 
 
     <div class="content container">
-      <div class="posts">
+      <div class="post">
+  <h1 class="post-title">How to Deal with Timezones the Active Support Way</h1>
+  <span class="post-date">03 Apr 2016</span>
   
-  <div class="post">
-    <h1 class="post-title">
-      <a href="/2016/04/03/how-to-deal-with-timezones-the-active-support-way/">
-        How to Deal with Timezones the Active Support Way
-      </a>
-    </h1>
-
-    
-
-    <span class="post-date">03 Apr 2016</span>
-    <span class='share-container'><ul class="share-buttons">
+  <span class='share-container'><ul class="share-buttons">
   <li>
     <a href="https://www.facebook.com/sharer/sharer.php?u=http://jakeyesbeck.com/2016/04/03/how-to-deal-with-timezones-the-active-support-way/&t=How to Deal with Timezones the Active Support Way" title="Share on Facebook" target="_blank">
       <img src="http://jakeyesbeck.com/assets/images/facebook.svg">
@@ -111,8 +103,7 @@
   </li>
 </ul>
 </span>
-
-    <p><em>“Well the code is bad because we had to…”</em> is a phrase one might hear when discussing timezone offsets or daylight savings time considerations.</p>
+  <p><em>“Well the code is bad because we had to…”</em> is a phrase one might hear when discussing timezone offsets or daylight savings time considerations.</p>
 
 <p>Unless a developer is fortunate enough to work at a company whose userbase is entirely located in the UTC timezone, writing software aware of different timezones can be a daunting task. Luckily, Ruby on Rails’ <code class="highlighter-rouge">ActiveSupport</code> library has some very nice built in features that can prove invaluable when facing time related issues.</p>
 
@@ -217,17 +208,40 @@
 
 <p>As usual, the API of the <code class="highlighter-rouge">ActiveSupport::TimeZone</code> class is much larger than just the two methods illustrated here. For more information, the <a href="http://api.rubyonrails.org/classes/ActiveSupport/TimeZone.html">offical ActiveSupport documentation</a> is a great place to read further.</p>
 
-  </div>
-  
 </div>
 
-<div class="pagination">
-  
-    <a class="pagination-item older" href="http://jakeyesbeck.com/page2">Older</a>
-  
-  
-    <span class="pagination-item newer">Newer</span>
-  
+<div class="related">
+  <h2>Related Posts</h2>
+  <ul class="related-posts">
+    
+      <li>
+        <h3>
+          <a href="/2016/02/07/how-to-remove-a-column-with-zero-downtime-in-ruby-on-rails/">
+            How to Remove a Column with Zero Downtime in Ruby on Rails
+            <small>07 Feb 2016</small>
+          </a>
+        </h3>
+      </li>
+    
+      <li>
+        <h3>
+          <a href="/2016/03/27/five-more-active-record-features-you-should-be-using/">
+            Five More Active Record Features You Should Be Using
+            <small>27 Mar 2016</small>
+          </a>
+        </h3>
+      </li>
+    
+      <li>
+        <h3>
+          <a href="/2016/03/20/how-to-build-a-ruby-on-rails-engine/">
+            How to Build a Ruby on Rails Engine
+            <small>20 Mar 2016</small>
+          </a>
+        </h3>
+      </li>
+    
+  </ul>
 </div>
 
     </div>

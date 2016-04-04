@@ -68,315 +68,333 @@
   
   <div class="post">
     <h1 class="post-title">
-      <a href="/2016/03/20/how-to-build-a-ruby-on-rails-engine/">
-        How to Build a Ruby on Rails Engine
+      <a href="/2016/03/27/five-more-active-record-features-you-should-be-using/">
+        Five More Active Record Features You Should Be Using
       </a>
     </h1>
 
     
 
-    <span class="post-date">20 Mar 2016</span>
+    <span class="post-date">27 Mar 2016</span>
     <span class='share-container'><ul class="share-buttons">
   <li>
-    <a href="https://www.facebook.com/sharer/sharer.php?u=http://jakeyesbeck.com/2016/03/20/how-to-build-a-ruby-on-rails-engine/&t=How to Build a Ruby on Rails Engine" title="Share on Facebook" target="_blank">
+    <a href="https://www.facebook.com/sharer/sharer.php?u=http://jakeyesbeck.com/2016/03/27/five-more-active-record-features-you-should-be-using/&t=Five More Active Record Features You Should Be Using" title="Share on Facebook" target="_blank">
       <img src="http://jakeyesbeck.com/assets/images/facebook.svg">
     </a>
   </li>
   <li>
-    <a href="https://twitter.com/intent/tweet?source=http%3A%2F%2Fjakeyesbeck.com&text=How to Build a Ruby on Rails Engine%20http://jakeyesbeck.com/2016/03/20/how-to-build-a-ruby-on-rails-engine/&via=jakeyesbeck" target="_blank" title="Tweet">
+    <a href="https://twitter.com/intent/tweet?source=http%3A%2F%2Fjakeyesbeck.com&text=Five More Active Record Features You Should Be Using%20http://jakeyesbeck.com/2016/03/27/five-more-active-record-features-you-should-be-using/&via=jakeyesbeck" target="_blank" title="Tweet">
       <img src="http://jakeyesbeck.com/assets/images/twitter.svg">
     </a>
   </li>
   <li>
-    <a href="https://plus.google.com/share?url=http://jakeyesbeck.com/2016/03/20/how-to-build-a-ruby-on-rails-engine/" target="_blank" title="Share on Google+">
+    <a href="https://plus.google.com/share?url=http://jakeyesbeck.com/2016/03/27/five-more-active-record-features-you-should-be-using/" target="_blank" title="Share on Google+">
       <img src="http://jakeyesbeck.com/assets/images/google_plus.svg">
     </a>
   </li>
 
   <li>
-    <a href="https://news.ycombinator.com/submitlink?u=http://jakeyesbeck.com/2016/03/20/how-to-build-a-ruby-on-rails-engine/&t=How to Build a Ruby on Rails Engine" target="_blank" title="Share on Hacker News">
+    <a href="https://news.ycombinator.com/submitlink?u=http://jakeyesbeck.com/2016/03/27/five-more-active-record-features-you-should-be-using/&t=Five More Active Record Features You Should Be Using" target="_blank" title="Share on Hacker News">
       <img src="http://jakeyesbeck.com/assets/images/ycomb.svg">
     </a>
   </li>
 
   <li>
-    <a href="https://getpocket.com/save?url=http://jakeyesbeck.com/2016/03/20/how-to-build-a-ruby-on-rails-engine/&title=How to Build a Ruby on Rails Engine" target="_blank" title="Add to Pocket">
+    <a href="https://getpocket.com/save?url=http://jakeyesbeck.com/2016/03/27/five-more-active-record-features-you-should-be-using/&title=Five More Active Record Features You Should Be Using" target="_blank" title="Add to Pocket">
       <img src="http://jakeyesbeck.com/assets/images/pocket.svg">
     </a>
   </li>
   <li>
-    <a href="http://www.reddit.com/submit?url=http://jakeyesbeck.com/2016/03/20/how-to-build-a-ruby-on-rails-engine/&title=How to Build a Ruby on Rails Engine" target="_blank" title="Submit to Reddit">
+    <a href="http://www.reddit.com/submit?url=http://jakeyesbeck.com/2016/03/27/five-more-active-record-features-you-should-be-using/&title=Five More Active Record Features You Should Be Using" target="_blank" title="Submit to Reddit">
       <img src="http://jakeyesbeck.com/assets/images/reddit.svg">
     </a>
   </li>
 </ul>
 </span>
 
-    <p>Ruby on Rails Engines are miniature applications whose purpose is to supplement a larger Ruby on Rails application. If functionality can exist independent from a main application, an Engine can provide a wonderful degree of encapsulation.</p>
+    <p>In a <a href="http://jakeyesbeck.com/2015/11/15/five-active-record-features-you-should-be-using/">previous post</a>, I illustrated a few helpful <code class="highlighter-rouge">ActiveRecord</code> features. The entire API of <code class="highlighter-rouge">ActiveRecord</code> cannot possibly be contained within a single or even a handful of digestible posts; but, here are at least five more pieces of that massive API that some might find useful.</p>
 
-<p>Recently, I created the and “gemified” the <a href="http://jakeyesbeck.com/2016/01/03/passages/">Passages Ruby on Rails Engine</a> to help alleviate some routing frustration. This gem will be the be used as the example for demonstrating what goes into creating a Ruby on Rails Engine.</p>
+<p>Just like before, the example application used to demonstrate these features will be an imaginary Ruby on Rails application: <em>“booksandreviews.com”</em>:</p>
 
-<h2 id="revving-up">Revving Up</h2>
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Book</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
+  <span class="n">belongs_to</span> <span class="ss">:author</span>
+  <span class="n">has_many</span> <span class="ss">:reviews</span>
+<span class="k">end</span>
 
-<p>There are two ways to start building an Engine. One option is to use the built in generators to create directories and dummy classes. These generators behave in the same way as standard Rails generators.</p>
+<span class="k">class</span> <span class="nc">Author</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
+  <span class="n">has_many</span> <span class="ss">:books</span>
+<span class="k">end</span>
 
-<p>To generate an Engine in this way, use the <code class="highlighter-rouge">plugins</code> built in generator:</p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="gp">$ </span>rails plugin new passages --mountable
+<span class="k">class</span> <span class="nc">Review</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
+  <span class="n">belongs_to</span> <span class="ss">:book</span>
+<span class="k">end</span>
 </code></pre>
 </div>
 
-<p><em>Note: Engines and Plugins are not exactly the same in the Ruby on Rails world but the <code class="highlighter-rouge">--mountable</code> flag tells the plugin generator to generate a full Engine.</em></p>
+<h2 id="pluck">1. <code class="highlighter-rouge">pluck</code></h2>
 
-<p>The other approach is to simply create the needed directories and files by hand. This is was the way the Passages Engine was built, resulting in the following directory structure:</p>
+<p>Introduced in Ruby on Rails 4.0, the <code class="highlighter-rouge">pluck</code> method helps keep memory allocation to a minimum when returning results from <code class="highlighter-rouge">ActiveRecord</code> queries. A great use case for the <code class="highlighter-rouge">pluck</code> method is when a database table backing an <code class="highlighter-rouge">ActiveRecord</code> object has a very large number of columns. In this situation, returning an object’s full dataset can be cause unnecessary memory allocation and potentially expensive deserialization (in the case of custom or JSON serialized columns).</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code> |-app
- |--controllers
- |---passages
- |----&lt;controller directories&gt;
- |--views
- |---passages
- |----&lt;views directories&gt;
- |-config
- |--routes.rb
- |--initializers
- |---assets.rb
- |-lib
- |--passages
- |---engine.rb
+<p>To get a list of <code class="highlighter-rouge">book_ids</code> from the <code class="highlighter-rouge">'fantasy'</code> genre, the <code class="highlighter-rouge">pluck</code> method is a simple to use:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="no">Book</span><span class="p">.</span><span class="nf">where</span><span class="p">(</span><span class="ss">genre: </span><span class="s1">'fantasy'</span><span class="p">).</span><span class="nf">pluck</span><span class="p">(</span><span class="ss">:id</span><span class="p">)</span>
+<span class="c1"># SELECT "books"."id" FROM "books" WHERE "books"."genre" = 'fantasy'</span>
+<span class="o">=&gt;</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">45</span><span class="p">,</span> <span class="p">.</span><span class="nf">.</span><span class="o">.</span><span class="p">]</span>
 </code></pre>
 </div>
 
-<p>Some directories that the <code class="highlighter-rouge">rails</code> generator would have added are missing (i.e. <code class="highlighter-rouge">models</code>, <code class="highlighter-rouge">helpers</code>, <code class="highlighter-rouge">mailers</code>). These directories might be necessary for some projects, but the Passages Engine did not have use for them.</p>
+<p>An important thing to recognize about the <code class="highlighter-rouge">pluck</code> method is its return value. Unlike its cousin, <code class="highlighter-rouge">select</code>, the <code class="highlighter-rouge">pluck</code> method does not return an <code class="highlighter-rouge">ActiveRecord</code> instance.</p>
 
-<p>The file at the heart of it all is <code class="highlighter-rouge">engine.rb</code>. This file is responsible for defining the engine and will also be utilized later to add optional enhancements an Engine can take advantage of:</p>
+<p>Multiple column names may be passed to <code class="highlighter-rouge">pluck</code> and the values of these columns will be returned in a nested <code class="highlighter-rouge">Array</code>. The returned <code class="highlighter-rouge">Array</code> will maintain the order of columns to how they were requested:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">module</span> <span class="nn">Passages</span>
-  <span class="k">class</span> <span class="nc">Engine</span> <span class="o">&lt;</span> <span class="o">::</span><span class="no">Rails</span><span class="o">::</span><span class="no">Engine</span>
-    <span class="n">isolate_namespace</span><span class="p">(</span><span class="no">Passages</span><span class="p">)</span>
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="no">Book</span><span class="p">.</span><span class="nf">where</span><span class="p">(</span><span class="ss">genre: </span><span class="s1">'fantasy'</span><span class="p">).</span><span class="nf">pluck</span><span class="p">(</span><span class="ss">:id</span><span class="p">,</span> <span class="ss">:title</span><span class="p">)</span>
+<span class="c1"># SELECT "books"."id", "books"."title" FROM "books" WHERE "books"."genre" = 'fantasy'</span>
+<span class="o">=&gt;</span> <span class="p">[[</span><span class="mi">1</span><span class="p">,</span> <span class="s1">'A Title'</span><span class="p">],</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="s1">'Another One'</span><span class="p">]]</span>
+</code></pre>
+</div>
+
+<p>While possible, it might not always be the best idea to request multiple columns in a single <code class="highlighter-rouge">pluck</code> call. Too many columns can produce an unruly result and nullify the performance gain <code class="highlighter-rouge">pluck</code> provided in the first place.</p>
+
+<h2 id="transaction">2. <code class="highlighter-rouge">transaction</code></h2>
+
+<p>An important aspect of relational databases is its atomic behaviour. When creating <code class="highlighter-rouge">ActiveRecord</code> objects, maintaining this aspect is possible through the use of the <code class="highlighter-rouge">transaction</code> method.</p>
+
+<p>For instance, if an exception occurs during the update of all of a <code class="highlighter-rouge">Book's</code> <code class="highlighter-rouge">Reviews</code>, a <code class="highlighter-rouge">transaction</code> can help mitigate harmful side-effects:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="n">book</span> <span class="o">=</span> <span class="no">Book</span><span class="p">.</span><span class="nf">find</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">book</span><span class="p">.</span><span class="nf">reviews</span><span class="p">.</span><span class="nf">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">review</span><span class="o">|</span>
+  <span class="n">review</span><span class="p">.</span><span class="nf">meaningful_update!</span>
+<span class="k">end</span>
+</code></pre>
+</div>
+
+<p>If the <code class="highlighter-rouge">meaningful_update!</code> method throws an exception, all reviews before the erroring review will update appropriately and all after will not. If this method has a compounding side-effect (like incrementing a field), iterating through all reviews again would be harmful.</p>
+
+<p>With a <code class="highlighter-rouge">transaction</code>, this problem does not exist:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span><span class="p">.</span><span class="nf">transaction</span> <span class="k">do</span>
+  <span class="n">book</span> <span class="o">=</span> <span class="no">Book</span><span class="p">.</span><span class="nf">find</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+  <span class="n">book</span><span class="p">.</span><span class="nf">reviews</span><span class="p">.</span><span class="nf">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">review</span><span class="o">|</span>
+    <span class="n">review</span><span class="p">.</span><span class="nf">meaningful_update!</span>
   <span class="k">end</span>
 <span class="k">end</span>
 </code></pre>
 </div>
 
-<p>An interesting line in this file is the <code class="highlighter-rouge">isolate_namespace</code> method call. This method helps ensure encapsulation for the Engine by isolating its controllers, helpers, views, routes, and any other shared resources between the main application and the Engine.</p>
+<p>After adding the <code class="highlighter-rouge">transaction</code>, this new code will revert all changes contained within the <code class="highlighter-rouge">transaction</code> if an exception is raised. It is equivalent to updating all records in a single query.</p>
 
-<p>With isolation, an Engine does not need to worry about conflicting class or module names in the main application. Additionally, an isolated Engine will set its own name according to its namespace, accessible later via <code class="highlighter-rouge">Passages::Engine.engine_name</code>.</p>
+<h2 id="aftercommit">3. <code class="highlighter-rouge">after_commit</code></h2>
 
-<p>Since the Passages Engine is also a gem, it has a file named <code class="highlighter-rouge">passages.rb</code> in its <code class="highlighter-rouge">lib</code> directory:</p>
+<p>Love them or hate them, callbacks in Ruby on Rails are a viable option to solve many problems. <code class="highlighter-rouge">ActiveRecord</code> callbacks are initiated at different times depending on the operation a model is about to undergo.</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">module</span> <span class="nn">Passages</span>
-<span class="k">end</span>
+<p>A fairly common use case for callbacks in Ruby on Rails revolves around what to do after a model is persisted. A model can be persisted by either <code class="highlighter-rouge">save</code>, <code class="highlighter-rouge">create</code> or <code class="highlighter-rouge">update</code>. Since the concept of “saving” is the common denominator for all these methods, it would be reasonable to use the <code class="highlighter-rouge">after_save</code> to trigger logic that should follow one of these persistence operations.</p>
 
-<span class="nb">require</span> <span class="s1">'passages/engine'</span>
-<span class="nb">require</span> <span class="s1">'controllers/passages/routes_controller'</span>
-</code></pre>
-</div>
+<p>To add a new <code class="highlighter-rouge">Book</code> to a queue for a <code class="highlighter-rouge">Review</code> after it is saved:</p>
 
-<p>This file is responsible for defining the <code class="highlighter-rouge">Passages</code> module and requiring the engine. It is the entry point for this gem’s logic.</p>
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Book</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
+  <span class="n">after_save</span> <span class="ss">:enqueue_for_review</span>
 
-<h2 id="encapsulate-everywhere">Encapsulate Everywhere</h2>
-
-<p>The overarching theme of designing a good Ruby on Rails Engine is encapsulation. An application should not be negatively affected by its underlying Engines, they should simply support and bring new functionality the application.</p>
-
-<p>To help reinforce this theme, Ruby on Rails requires that an Engine’s controllers, views, and assets all be nested in namespace modules and corresponding directory folders.</p>
-
-<h3 id="controllers">Controllers</h3>
-
-<p>In the Passages Engine, the <code class="highlighter-rouge">RoutesController</code> demonstrates this nesting.</p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code> |-app
- |--controllers
- |---passages
- |----routes_controller.rb
-</code></pre>
-</div>
-
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">module</span> <span class="nn">Passages</span>
-  <span class="k">class</span> <span class="nc">RoutesController</span> <span class="o">&lt;</span> <span class="no">ActionController</span><span class="o">::</span><span class="no">Base</span>
-    <span class="c1"># ...</span>
+  <span class="k">def</span> <span class="nf">enqueue_for_review</span>
+    <span class="no">ReviewQueue</span><span class="p">.</span><span class="nf">add</span><span class="p">(</span><span class="ss">book_id: </span><span class="nb">self</span><span class="p">.</span><span class="nf">id</span><span class="p">)</span>
+    <span class="no">Logger</span><span class="p">.</span><span class="nf">info</span><span class="p">(</span><span class="s2">"Added </span><span class="si">#{</span><span class="nb">self</span><span class="p">.</span><span class="nf">id</span><span class="si">}</span><span class="s2"> to ReviewQueue"</span><span class="p">)</span>
   <span class="k">end</span>
 <span class="k">end</span>
 </code></pre>
 </div>
 
-<p>The same folder structure is used for views and assets.</p>
+<p>We can assume that the <code class="highlighter-rouge">ReviewQueue</code> is a key/value storage (Redis or something similar) backed object whose purpose is to place new <code class="highlighter-rouge">Books</code> into a queue for critics to review. The <code class="highlighter-rouge">Logger</code> class simply outputs text to <code class="highlighter-rouge">stdout</code>.</p>
 
-<h3 id="routes">Routes</h3>
+<p>When everything goes well, the callback works beautifully:</p>
 
-<p>Of course what good is a controller without a route to use it? A Ruby on Rails Engine also can define its own routes similarly to a stand-alone application.</p>
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="no">Book</span><span class="p">.</span><span class="nf">create!</span><span class="p">(</span>
+  <span class="ss">title: </span><span class="s1">'A New Book'</span><span class="p">,</span>
+  <span class="ss">author_id: </span><span class="mi">3</span><span class="p">,</span>
+  <span class="ss">content: </span><span class="s1">'Blah blah...'</span>
+<span class="p">)</span>
+<span class="c1">#=&gt; Added 4 to ReviewQueue</span>
+<span class="c1">#=&gt; &lt;Book id: 4, title: 'A New Book' ..&gt;</span>
 
-<p>Unlike the controllers, the <code class="highlighter-rouge">routes.rb</code> file is not contained in a <code class="highlighter-rouge">passages</code> folder, nor is it within the <code class="highlighter-rouge">module Passages</code>.</p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code> |-config
- |--routes.rb
+<span class="no">ReviewQueue</span><span class="p">.</span><span class="nf">size</span>
+<span class="c1">#=&gt; 1</span>
 </code></pre>
 </div>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="no">Passages</span><span class="o">::</span><span class="no">Engine</span><span class="p">.</span><span class="nf">routes</span><span class="p">.</span><span class="nf">draw</span> <span class="k">do</span>
-  <span class="n">root</span> <span class="ss">to: </span><span class="s1">'routes#index'</span>
+<p>However, if this code was wrapped in a <code class="highlighter-rouge">transaction</code>, and that <code class="highlighter-rouge">transaction</code> fails, the <code class="highlighter-rouge">Book</code> will not persist but the element on in the Redis-backed <code class="highlighter-rouge">ReviewQueue</code> remains.</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span><span class="p">.</span><span class="nf">transaction</span> <span class="k">do</span>
+  <span class="no">Book</span><span class="p">.</span><span class="nf">create!</span><span class="p">(</span>
+    <span class="ss">title: </span><span class="s1">'A New Book'</span><span class="p">,</span>
+    <span class="ss">author_id: </span><span class="mi">3</span><span class="p">,</span>
+    <span class="ss">content: </span><span class="s1">'Blah blah...'</span>
+  <span class="p">)</span>
+
+  <span class="k">raise</span> <span class="no">StandardError</span><span class="p">,</span> <span class="s1">'Something Happened'</span>
+<span class="k">end</span>
+
+<span class="c1">#=&gt; Added 4 to ReviewQueue</span>
+<span class="c1">#=&gt; Error 'Something Happened'</span>
+
+<span class="no">ReviewQueue</span><span class="p">.</span><span class="nf">size</span>
+<span class="c1">#=&gt; 1</span>
+</code></pre>
+</div>
+
+<p>This code has now generated an element on the <code class="highlighter-rouge">ReviewQueue</code> for a non-existent <code class="highlighter-rouge">Book</code>; however, if the <code class="highlighter-rouge">after_commit</code> callback is used, this problem will fade away.</p>
+
+<p>Replacing <code class="highlighter-rouge">after_save</code> with <code class="highlighter-rouge">after_commit</code>:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Book</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
+  <span class="n">after_commit</span> <span class="ss">:enqueue_for_review</span>
+
+  <span class="c1"># ...</span>
 <span class="k">end</span>
 </code></pre>
 </div>
 
-<p>In a standard Ruby on Rails application, the first line in a routes file is: <code class="highlighter-rouge">Rails.application.routes.draw</code>; however, within an Engine, the name of the Engine replaces <code class="highlighter-rouge">Rails.application</code>.</p>
+<p>The same code results a much more desirable outcome:</p>
 
-<p>With a simple routes file in place, an application using the Passages Engine can run <code class="highlighter-rouge">rake routes</code> to see the new routes in action:</p>
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span><span class="p">.</span><span class="nf">transaction</span> <span class="k">do</span>
+  <span class="no">Book</span><span class="p">.</span><span class="nf">create!</span><span class="p">(</span>
+    <span class="ss">title: </span><span class="s1">'A New Book'</span><span class="p">,</span>
+    <span class="ss">author_id: </span><span class="mi">3</span><span class="p">,</span>
+    <span class="ss">content: </span><span class="s1">'Blah blah...'</span>
+  <span class="p">)</span>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="gp">$ </span>rake routes
-     Prefix Verb   URI Pattern
-   passages        /passages
-      users GET    /users
-            POST   /users
-   new_user GET    /users/new
-  edit_user GET    /users/:id/edit
-       user GET    /users/:id
-            PATCH  /users/:id
-            PUT    /users/:id
-            DELETE /users/:id
-Routes <span class="k">for </span>Passages::Engine:
-  root GET  /      passages/routes#index
+  <span class="k">raise</span> <span class="no">StandardError</span><span class="p">,</span> <span class="s1">'Something Happened'</span>
+<span class="k">end</span>
+
+<span class="c1">#=&gt; Error 'Something Happened'</span>
+
+<span class="no">ReviewQueue</span><span class="p">.</span><span class="nf">size</span>
+<span class="c1">#=&gt; 0</span>
 </code></pre>
 </div>
-<p><em>Note: This assumes the engine is mounted at <code class="highlighter-rouge">/passages</code>, <a href="#mount-up">more about mounting routes below</a>.</em></p>
 
-<p>Neat, the Passages routes are in a separate section to help differentiate them from normal application routes.</p>
+<p>Awesome, the <code class="highlighter-rouge">after_commit</code> callback is only triggered after the record is persisted to the database, exactly what we wanted. Ruby on Rails provides <a href="http://guides.rubyonrails.org/active_record_callbacks.html">many more callback hooks</a> besides <code class="highlighter-rouge">after_commit</code>.</p>
 
-<p>Remember the <code class="highlighter-rouge">isolate_namespace</code> method? One of the side-effects of <strong>not</strong> using an isolated namespace can be seen when asking for an applications routes.</p>
+<h2 id="touch">4. <code class="highlighter-rouge">touch</code></h2>
 
-<p>If the namespace isolation is commented out:</p>
+<p>To update a single timestamp column on an <code class="highlighter-rouge">ActiveRecord</code> object, <code class="highlighter-rouge">touch</code> is a great option. This method can accept the column name which should be updated in addition to an object’s <code class="highlighter-rouge">:updated_at</code> (if present).</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">module</span> <span class="nn">Passages</span>
-  <span class="k">class</span> <span class="nc">Engine</span> <span class="o">&lt;</span> <span class="o">::</span><span class="no">Rails</span><span class="o">::</span><span class="no">Engine</span>
-    <span class="c1"># isolate_namespace(Passages)</span>
+<p>A great time to utilize the <code class="highlighter-rouge">touch</code> method is when tracking when a record was last viewed. The good people at <em>“booksandreviews.com”</em> need to be sure their <code class="highlighter-rouge">Reviews</code> are being seen and want to know which <code class="highlighter-rouge">Reviews</code> have not been viewed in a while.</p>
+
+<p>If the <code class="highlighter-rouge">Review</code> table has a <code class="highlighter-rouge">last_viewed_at</code> column which is of type <code class="highlighter-rouge">timestamp</code>, <code class="highlighter-rouge">touch</code> can easily update this column in a controller action:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">class</span> <span class="nc">ReviewsController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
+  <span class="k">def</span> <span class="nf">show</span>
+    <span class="vi">@review</span> <span class="o">=</span> <span class="no">Review</span><span class="p">.</span><span class="nf">find</span><span class="p">(</span><span class="n">params</span><span class="p">[</span><span class="ss">:id</span><span class="p">])</span>
+    <span class="vi">@review</span><span class="p">.</span><span class="nf">touch</span><span class="p">(</span><span class="ss">:last_viewed_at</span><span class="p">)</span>
   <span class="k">end</span>
 <span class="k">end</span>
 </code></pre>
 </div>
 
-<p>Then <code class="highlighter-rouge">rake routes</code> gives a different output:</p>
+<p>A request which calls this controller action will result in the query:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="gp">$ </span>rake routes
-         Prefix Verb   URI Pattern
-passages_engine        /passages
-          users GET    /users
-                POST   /users
-       new_user GET    /users/new
-      edit_user GET    /users/:id/edit
-           user GET    /users/:id
-                PATCH  /users/:id
-                PUT    /users/:id
-                DELETE /users/:id
-
-Routes <span class="k">for </span>Passages::Engine:
-  root GET  /          routes#routes
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">UPDATE</span> <span class="nv">"reviews"</span>
+<span class="k">SET</span> <span class="nv">"updated_at"</span> <span class="o">=</span> <span class="s1">'2016-03-28 00:43:43.616367'</span><span class="p">,</span>
+<span class="nv">"last_viewed_at"</span> <span class="o">=</span> <span class="s1">'2016-03-28 00:43:43.616367'</span>
+<span class="k">WHERE</span> <span class="nv">"reviews"</span><span class="p">.</span><span class="nv">"id"</span> <span class="o">=</span> <span class="mi">1</span>
 </code></pre>
 </div>
 
-<p>Notice that now the <code class="highlighter-rouge">root</code> for the Passages Engine has had its prefix removed. This will cause Rails to look in the wrong place for the <code class="highlighter-rouge">routes_controller</code>:</p>
+<p>Unlike setting other attributes, the <code class="highlighter-rouge">touch</code> method invokes an update query right away.</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="no">ActionController</span><span class="o">::</span><span class="no">RoutingError</span>
-<span class="p">(</span><span class="n">uninitialized</span> <span class="n">constant</span> <span class="no">RoutesController</span><span class="p">):</span>
+<h2 id="changes">5. <code class="highlighter-rouge">changes</code></h2>
+
+<p><code class="highlighter-rouge">ActiveRecord</code> keeps a sizable amount of information about an object while it undergoes updates. A hash, accessible via the <code class="highlighter-rouge">changes</code> method, acts a central location for these updates. Additionally, <code class="highlighter-rouge">ActiveRecord</code> exposes a number of per-attribute helper methods to give even more visibility.</p>
+
+<p>Each key in the <code class="highlighter-rouge">changes</code> hash maps to a record’s attribute. The value of each key is an Array with two elements: what the attribute value used to be, and what it is now:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="n">review</span> <span class="o">=</span> <span class="no">Review</span><span class="p">.</span><span class="nf">find</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">review</span><span class="p">.</span><span class="nf">book_id</span> <span class="o">=</span> <span class="mi">5</span>
+<span class="n">review</span><span class="p">.</span><span class="nf">changes</span>
+<span class="c1"># =&gt; {"book_id"=&gt;[4, 5]}</span>
 </code></pre>
 </div>
 
-<p>While this might not be a huge deal for some applications, the fact that an Engine triggers a top level controller to be fetched is worrysome. What if the main application had its own <code class="highlighter-rouge">RoutesController</code>, the Passages Engine could incorrectly fetch that instead. Or if things are reversed, an Engine without an isolated namespace might incorrectly override an important controller in the main application.</p>
+<h3 id="a-changed">a. <code class="highlighter-rouge">changed?</code></h3>
 
-<h3 id="assets">Assets</h3>
+<p>A simple boolean method <code class="highlighter-rouge">changed?</code> is available to determine if anything on the object is different since its retrieval.</p>
 
-<p>Like controllers and views, an Engine’s assets are also nested under a folder bearing the Engine’s name.</p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code> |-app
- |--assets
- |---javascripts
- |----passages
- |-----application.js
- |---stylesheets
- |----passages
- |-----application.css
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="n">review</span> <span class="o">=</span> <span class="no">Review</span><span class="p">.</span><span class="nf">find</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">review</span><span class="p">.</span><span class="nf">book_id</span> <span class="o">=</span> <span class="mi">5</span>
+<span class="n">review</span><span class="p">.</span><span class="nf">changed?</span>
+<span class="c1"># =&gt; true</span>
 </code></pre>
 </div>
 
-<p>This organization enables the layouts and other views in the Engine to only load the files it needs and not accidentally reference the main application’s <code class="highlighter-rouge">application.js</code> and <code class="highlighter-rouge">application.css</code>:</p>
+<p>However, if the same value is set on a model, regardless of the value’s <code class="highlighter-rouge">object_id</code>, <code class="highlighter-rouge">changed?</code> returns <code class="highlighter-rouge">false</code>:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="cp">&lt;%=</span> <span class="n">stylesheet_link_tag</span> <span class="s1">'passages/application'</span><span class="p">,</span> <span class="ss">media: </span><span class="s1">'all'</span> <span class="cp">%&gt;</span>
-<span class="cp">&lt;%=</span> <span class="n">javascript_include_tag</span> <span class="s1">'passages/application'</span> <span class="cp">%&gt;</span>
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="n">book</span> <span class="o">=</span> <span class="no">Book</span><span class="p">.</span><span class="nf">find</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">book</span><span class="p">.</span><span class="nf">title</span>
+<span class="c1"># =&gt; 'A Book'</span>
+<span class="n">book</span><span class="p">.</span><span class="nf">title</span><span class="p">.</span><span class="nf">object_id</span>
+<span class="c1"># =&gt; 2158279020</span>
+<span class="n">book</span><span class="p">.</span><span class="nf">title</span> <span class="o">=</span> <span class="s1">'A Book'</span>
+<span class="n">book</span><span class="p">.</span><span class="nf">changed?</span>
+<span class="c1"># =&gt; false</span>
+<span class="n">book</span><span class="p">.</span><span class="nf">title</span><span class="p">.</span><span class="nf">object_id</span>
+<span class="c1"># =&gt; 2158274600</span>
 </code></pre>
 </div>
 
-<p>To enable precompiled assets, a few more lines need to be added in the same <code class="highlighter-rouge">engine.rb</code> file:</p>
+<p>Two “different” strings were set to <code class="highlighter-rouge">book.title</code> but since they resolve to the same characters, the object is not <code class="highlighter-rouge">changed?</code>.</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">module</span> <span class="nn">Passages</span>
-  <span class="k">class</span> <span class="nc">Engine</span> <span class="o">&lt;</span> <span class="o">::</span><span class="no">Rails</span><span class="o">::</span><span class="no">Engine</span>
-    <span class="n">isolate_namespace</span><span class="p">(</span><span class="no">Passages</span><span class="p">)</span>
+<p>When using PostgreSQL, the <code class="highlighter-rouge">changed?</code> method can save unnecessary <code class="highlighter-rouge">begin</code> and <code class="highlighter-rouge">commit</code> transaction calls for objects that have no changes:</p>
 
-    <span class="n">initializer</span><span class="p">(</span><span class="s2">"passages.assets.precompile"</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">app</span><span class="o">|</span>
-      <span class="n">app</span><span class="p">.</span><span class="nf">config</span><span class="p">.</span><span class="nf">assets</span><span class="p">.</span><span class="nf">precompile</span> <span class="o">+=</span> <span class="p">[</span>
-          <span class="s1">'application.css'</span><span class="p">,</span>
-          <span class="s1">'application.js'</span>
-        <span class="p">]</span>
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">class</span> <span class="nc">BooksController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
+  <span class="k">def</span> <span class="nf">update</span>
+    <span class="vi">@book</span> <span class="o">=</span> <span class="no">Book</span><span class="p">.</span><span class="nf">find</span><span class="p">(</span><span class="n">sanitized_params</span><span class="p">[</span><span class="ss">:id</span><span class="p">])</span>
+    <span class="vi">@book</span><span class="p">.</span><span class="nf">assign_attributes</span><span class="p">(</span><span class="n">sanitized_params</span><span class="p">)</span>
+    <span class="vi">@book</span><span class="p">.</span><span class="nf">save!</span> <span class="k">if</span> <span class="vi">@book</span><span class="p">.</span><span class="nf">changed?</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre>
+</div>
+
+<h3 id="b-attributewas">b. <code class="highlighter-rouge">&lt;attribute&gt;_was</code></h3>
+
+<p>Accessing the same <code class="highlighter-rouge">changes</code> hash as the <code class="highlighter-rouge">changed?</code> method, <code class="highlighter-rouge">&lt;attribute&gt;_was</code> returns the value of an attribute before it was reassigned:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="n">review</span> <span class="o">=</span> <span class="no">Review</span><span class="p">.</span><span class="nf">find</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">review</span><span class="p">.</span><span class="nf">status</span> <span class="o">=</span> <span class="s1">'Approved'</span>
+<span class="n">review</span><span class="p">.</span><span class="nf">status_was</span>
+<span class="c1"># =&gt; 'Pending'</span>
+</code></pre>
+</div>
+
+<p>If a <code class="highlighter-rouge">Review's</code> status moving from <code class="highlighter-rouge">"Pending"</code> to <code class="highlighter-rouge">"Approved"</code> should remove it from an approval queue, the <code class="highlighter-rouge">status_was</code> method can be utilized in a callback:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Review</span>
+  <span class="n">before_save</span> <span class="ss">:maybe_remove_from_review_queue</span>
+
+  <span class="k">def</span> <span class="nf">maybe_remove_from_review_queue</span>
+    <span class="k">if</span> <span class="n">status</span> <span class="o">==</span> <span class="s1">'Approved'</span> <span class="o">&amp;&amp;</span>
+        <span class="n">status_was</span> <span class="o">==</span> <span class="s1">'Pending'</span>
+      <span class="no">ReviewQueue</span><span class="p">.</span><span class="nf">remove</span><span class="p">(</span><span class="nb">id</span><span class="p">)</span>
     <span class="k">end</span>
   <span class="k">end</span>
 <span class="k">end</span>
 </code></pre>
 </div>
 
-<p>This <code class="highlighter-rouge">initializer</code> line creates an initializer in the underlying railties to be evaluated when assets are precompiled via <code class="highlighter-rouge">rake assets:precompile</code>. With this, an application can successfully compile its own assets and those of the Passages Engine.</p>
+<p>To verify the result, we can check that the <code class="highlighter-rouge">ReviewQueue</code> decrements its internal count of reviews pending review:</p>
 
-<h2 id="mount-up">Mount Up</h2>
-
-<p>A Ruby on Rails Engine must be mounted by an application for it to be accessible.</p>
-
-<p>The normal place for this to occur is in a main application’s <code class="highlighter-rouge">routes.rb</code>:</p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="no">Rails</span><span class="p">.</span><span class="nf">application</span><span class="p">.</span><span class="nf">routes</span><span class="p">.</span><span class="nf">draw</span> <span class="k">do</span>
-  <span class="n">mount</span> <span class="no">Passages</span><span class="o">::</span><span class="no">Engine</span><span class="p">,</span> <span class="ss">at: </span><span class="s1">'/passages'</span>
-<span class="k">end</span>
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="no">ReviewQueue</span><span class="p">.</span><span class="nf">size</span>
+<span class="c1">#=&gt; 1</span>
+<span class="n">review</span> <span class="o">=</span> <span class="no">Review</span><span class="p">.</span><span class="nf">find</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">review</span><span class="p">.</span><span class="nf">status</span>
+<span class="c1"># =&gt; 'Pending'</span>
+<span class="n">review</span><span class="p">.</span><span class="nf">status</span> <span class="o">=</span> <span class="s1">'Approved'</span>
+<span class="n">review</span><span class="p">.</span><span class="nf">save!</span>
+<span class="c1"># =&gt; true</span>
+<span class="no">ReviewQueue</span><span class="p">.</span><span class="nf">size</span>
+<span class="c1">#=&gt; 0</span>
 </code></pre>
 </div>
 
-<p>The <code class="highlighter-rouge">'/passages'</code> string can be replaced with any desired endpoint, the Engine does not care about the name.</p>
-
-<p>Alternatively, an Engine can <strong>mount itself</strong> using the same <code class="highlighter-rouge">initializer</code> method in <code class="highlighter-rouge">engine.rb</code>:</p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">module</span> <span class="nn">Passages</span>
-  <span class="k">class</span> <span class="nc">Engine</span> <span class="o">&lt;</span> <span class="o">::</span><span class="no">Rails</span><span class="o">::</span><span class="no">Engine</span>
-    <span class="n">isolate_namespace</span><span class="p">(</span><span class="no">Passages</span><span class="p">)</span>
-
-    <span class="n">initializer</span><span class="p">(</span><span class="s1">'passages'</span><span class="p">,</span>
-                <span class="ss">after: :load_config_initializers</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">app</span><span class="o">|</span>
-      <span class="no">Rails</span><span class="p">.</span><span class="nf">application</span><span class="p">.</span><span class="nf">routes</span><span class="p">.</span><span class="nf">prepend</span> <span class="k">do</span>
-        <span class="n">mount</span> <span class="no">Passages</span><span class="o">::</span><span class="no">Engine</span><span class="p">,</span> <span class="ss">at: </span><span class="s1">'/passages'</span>
-      <span class="k">end</span>
-    <span class="k">end</span>
-  <span class="k">end</span>
-<span class="k">end</span>
-</code></pre>
-</div>
-
-<p>In this case, the initializer has a specific placement: after the configuration initializers are loaded. This initializer then writes to the main application with <code class="highlighter-rouge">Rails.application.routes.prepend</code> and, as the name suggests, prepends the mount to the application’s routes.</p>
-
-<p>Since the mount is added to the beginning of an application’s routes, it is possible that this mounted path (in this case <code class="highlighter-rouge">'/passages'</code>) will be overridden by a route with the same name later on in the main application’s <code class="highlighter-rouge">routes.rb</code> file.</p>
-
-<p>After an application mounts the Passages Engine, it can navigate to <code class="highlighter-rouge">/passages</code>. This request would be served by the Passages Engine like a normal Ruby on Rails application request.</p>
-
-<h4 id="use-with-caution">Use With Caution</h4>
-
-<p>Auto-mounted Engines may sound like a great idea but it might be best to leave that decision to the consumer. A suggested approach to this is have an opt-in functionality with auto-mounting. Placing this logic behind a conditional (based on some kind of configuration variable) gives consumers of this Engine the power of auto-mounting without the worry of “magic” they did not ask for.</p>
-
-<h2 id="next-steps">Next Steps</h2>
-
-<p>With the basic structure in place, a new Engine can be built like any other Ruby on Rails application. Controllers and their respective views can be created and placed under the appropriate namespaces and folders. Routes that utilize these controllers can be added as well. Assuming that both the main application and the Engine use the same ORM (or are at least compatible), even models can be created.</p>
-
-<p>The Passages Engine was built as a standalone gem. Making it available was the same process as creating any other gem. A <code class="highlighter-rouge">.gemspec</code> file was created, the gem was cut to a version, and then finally hosted on Rubygems.org. An application that wishes to use the Passages Engine can install it by adding a new line to the Gemfile: <code class="highlighter-rouge">gem 'passages'</code>.</p>
-
-<p>This same pattern can be used to make any stand alone Ruby on Rails Engine. However, it would be a wise decision to choose specific versions of Ruby on Rails to support. For example, the Passages Engine was built to support Ruby on Rails 4.X, it is not compatible with Ruby on Rails 3.X at all.</p>
-
-<h2 id="built-to-last">Built to Last</h2>
-
-<p>Going further, the creation of views, initializer files, migrations, and models can all be accomplished the same way one would in a regular Ruby on Rails application.</p>
-
-<p>Not all of the Passages Engine was discussed in this guide, but feel free to <a href="https://github.com/yez/passages">read the source</a> to find out more information. Also, I am always looking for eager contributors to either submit issues or pull requests with features they need.</p>
+<p><em>Note: Additional considerations might need to be made since the <code class="highlighter-rouge">save</code> is not guaranteed to persist like described above in the <code class="highlighter-rouge">after_commit</code> example.</em></p>
 
   </div>
   
