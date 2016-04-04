@@ -82,7 +82,7 @@
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 
-&lt;p&gt;In any sane system, timestamps in a database are always stored in UTC or Zulu time. When exposing these timestamps to users, the &lt;code class=&quot;highlighter-rouge&quot;&gt;in_time_zone&lt;/code&gt; method can quickly switch the timestamp to a user’s local time.&lt;/p&gt;
+&lt;p&gt;In any sane system, timestamps in a database are always stored in UTC, aka Zulu, time. When exposing these timestamps to users, the &lt;code class=&quot;highlighter-rouge&quot;&gt;in_time_zone&lt;/code&gt; method can quickly switch the timestamp to a user’s local time.&lt;/p&gt;
 
 &lt;p&gt;To see a more creative use of &lt;code class=&quot;highlighter-rouge&quot;&gt;in_time_zone&lt;/code&gt;, we can assume that an application must solve a scheduling problem. An example application wants to send its users an email at the exact same time relative to a user’s timezone. Regardless of where a user lives, they should receive an email at 10:30 AM local time.&lt;/p&gt;
 
