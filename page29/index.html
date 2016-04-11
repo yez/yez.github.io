@@ -68,141 +68,179 @@
   
   <div class="post">
     <h1 class="post-title">
-      <a href="/2015/09/20/rails-http-status-codes/">
-        Just learn Rails (Part 3) HTTP status codes
+      <a href="/2015/09/27/how-to-create-a-custom-enumerable/">
+        How to Create a Custom Enumerable
       </a>
     </h1>
 
     
 
-    <span class="post-date">20 Sep 2015</span>
+    <span class="post-date">27 Sep 2015</span>
     <span class='share-container'><ul class="share-buttons">
   <li>
-    <a href="https://www.facebook.com/sharer/sharer.php?u=http://jakeyesbeck.com/2015/09/20/rails-http-status-codes/&t=Just learn Rails (Part 3) HTTP status codes" title="Share on Facebook" target="_blank">
+    <a href="https://www.facebook.com/sharer/sharer.php?u=http://jakeyesbeck.com/2015/09/27/how-to-create-a-custom-enumerable/&t=How to Create a Custom Enumerable" title="Share on Facebook" target="_blank">
       <img src="http://jakeyesbeck.com/assets/images/facebook.svg">
     </a>
   </li>
   <li>
-    <a href="https://twitter.com/intent/tweet?source=http%3A%2F%2Fjakeyesbeck.com&text=Just learn Rails (Part 3) HTTP status codes%20http://jakeyesbeck.com/2015/09/20/rails-http-status-codes/&via=jakeyesbeck" target="_blank" title="Tweet">
+    <a href="https://twitter.com/intent/tweet?source=http%3A%2F%2Fjakeyesbeck.com&text=How to Create a Custom Enumerable%20http://jakeyesbeck.com/2015/09/27/how-to-create-a-custom-enumerable/&via=jakeyesbeck" target="_blank" title="Tweet">
       <img src="http://jakeyesbeck.com/assets/images/twitter.svg">
     </a>
   </li>
   <li>
-    <a href="https://plus.google.com/share?url=http://jakeyesbeck.com/2015/09/20/rails-http-status-codes/" target="_blank" title="Share on Google+">
+    <a href="https://plus.google.com/share?url=http://jakeyesbeck.com/2015/09/27/how-to-create-a-custom-enumerable/" target="_blank" title="Share on Google+">
       <img src="http://jakeyesbeck.com/assets/images/google_plus.svg">
     </a>
   </li>
 
   <li>
-    <a href="https://news.ycombinator.com/submitlink?u=http://jakeyesbeck.com/2015/09/20/rails-http-status-codes/&t=Just learn Rails (Part 3) HTTP status codes" target="_blank" title="Share on Hacker News">
+    <a href="https://news.ycombinator.com/submitlink?u=http://jakeyesbeck.com/2015/09/27/how-to-create-a-custom-enumerable/&t=How to Create a Custom Enumerable" target="_blank" title="Share on Hacker News">
       <img src="http://jakeyesbeck.com/assets/images/ycomb.svg">
     </a>
   </li>
 
   <li>
-    <a href="https://getpocket.com/save?url=http://jakeyesbeck.com/2015/09/20/rails-http-status-codes/&title=Just learn Rails (Part 3) HTTP status codes" target="_blank" title="Add to Pocket">
+    <a href="https://getpocket.com/save?url=http://jakeyesbeck.com/2015/09/27/how-to-create-a-custom-enumerable/&title=How to Create a Custom Enumerable" target="_blank" title="Add to Pocket">
       <img src="http://jakeyesbeck.com/assets/images/pocket.svg">
     </a>
   </li>
   <li>
-    <a href="http://www.reddit.com/submit?url=http://jakeyesbeck.com/2015/09/20/rails-http-status-codes/&title=Just learn Rails (Part 3) HTTP status codes" target="_blank" title="Submit to Reddit">
+    <a href="http://www.reddit.com/submit?url=http://jakeyesbeck.com/2015/09/27/how-to-create-a-custom-enumerable/&title=How to Create a Custom Enumerable" target="_blank" title="Submit to Reddit">
       <img src="http://jakeyesbeck.com/assets/images/reddit.svg">
     </a>
   </li>
 </ul>
 </span>
 
-    <p>So you want to be a Rails superstar? To live large, big servers, requesting tars. Writing code all over the world, gotta make commits constantly. Great, I feel the same way.</p>
+    <p>Ruby is a wonderfully flexible language. An example of this flexibility is in the ability to define a custom collection class that acts as an <a href="http://ruby-doc.org/core-2.1.1/Enumerable.html">Enumerable</a> object. In Ruby, a collection that acts as an <code class="highlighter-rouge">Enumerable</code> is basically a class which holds a list of objects and exposes helpful methods for iteration and collection. An example of this pattern built into Ruby is the <a href="http://ruby-doc.org/core-2.2.3/Array.html">Array</a> class.</p>
 
-<p>Assuming you have already had that <em>“I should <a href="http://jakeyesbeck.com/2015/05/17/just-learn-rails/">just learn Rails</a>”</em> moment, the idea of writing an API for a super awesome application might be on the horizon. And, of course, the framework that makes the most sense is Ruby on Rails. Given that is the direction things might naturally evolve, creating an API with Rails can gloss over a few crucial design concepts and considerations.</p>
+<p>In keeping with a <a href="http://jakeyesbeck.com/2015/09/13/rescue-groups/">theme</a>, let us assume that an application about dogs exists. In this example, a <code class="highlighter-rouge">DogKennel</code> class exists that will hold information about each dog in the kennel and detailed information about said kennel. We can also assume that this class is meant to be used as a collection of dogs, exposing helper methods for information about the kennel. Why would we use this collection class over a typical <code class="highlighter-rouge">Array</code>? One reason might be that the consumer of this class expects a list of dogs and some additional metadata. That metadata can be easily exposed in this class without having to wrap the class or extract the metadata from an included <code class="highlighter-rouge">Hash</code>.</p>
 
-<h2 id="http-status-codes-are-important">HTTP status codes are important</h2>
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">class</span> <span class="nc">DogKennel</span>
 
-<p>When the <strong>Hypertext Transfer Protocol</strong> (or HTTP) was conceived, the idea of a server responding with multiple distinct pieces of data came into existence. Officially, HTTP is a stateless application-level protocol for distributed, collaborative, hypertext information system. In other words, it is a standard way that one server can talk to another in a predefined fashion. This is especially useful when writing a system that will facilitate requests from someone other than the person which built it; e.g. an HTTP API.</p>
+  <span class="kp">attr_reader</span> <span class="ss">:dogs</span><span class="p">,</span> <span class="ss">:location</span><span class="p">,</span> <span class="ss">:operating_hours</span>
 
-<p>The aspect of HTTP that is most relevant in this post are <a href="https://en.wikipedia.org/wiki/List_of_HTTP_status_codes">status codes</a>. These codes explicitly tell consumers of an application how they should react to a request. From authorization issues to an incorrect arity of parameters, a large amount of information is exposed via HTTP status codes.</p>
-
-<h2 id="rails-status-code-support">Rails status code support</h2>
-
-<p>Let us assume that an application exists to look up information about books. To get a specific book, a RESTful route is provided by the application at <code class="highlighter-rouge">https://mycoolbookapp.com/books/12</code>. This route might execute the following controller action:</p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">class</span> <span class="nc">BooksController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
-  <span class="k">def</span> <span class="nf">show</span>
-    <span class="n">render</span> <span class="ss">json: </span><span class="no">Book</span><span class="p">.</span><span class="nf">find</span><span class="p">(</span><span class="n">params</span><span class="p">[</span><span class="ss">:id</span><span class="p">])</span>
+  <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="n">dogs</span><span class="p">,</span> <span class="n">location</span><span class="p">,</span> <span class="n">operating_hours</span><span class="p">)</span>
+    <span class="vi">@dogs</span> <span class="o">=</span> <span class="n">dogs</span>
+    <span class="vi">@location</span> <span class="o">=</span> <span class="n">location</span>
+    <span class="vi">@operating_hours</span> <span class="o">=</span> <span class="n">operating_hours</span>
   <span class="k">end</span>
 <span class="k">end</span>
 </code></pre>
 </div>
 
-<p>This simple controller action can respond with three HTTP status codes. A <code class="highlighter-rouge">200</code> will be in the response of any <code class="highlighter-rouge">Book</code> which matches the <code class="highlighter-rouge">:id</code> supplied. Likewise, a <code class="highlighter-rouge">404</code> will automatically be returned if the <code class="highlighter-rouge">Book</code> requested does not exist. Finally, if some “code in need of improvement” is accessed and fails, a <code class="highlighter-rouge">500</code> is returned to let the user know that the server has almost certainly caught fire <em>(surely no code pushed to production has bugs in it)</em>.</p>
+<h2 id="add-include-enumerable">1. Add <code class="highlighter-rouge">include Enumerable</code></h2>
 
-<p>For a very simple API, this response structure is adequate. However, achieving more complicated responses might not be so straight forward. For instance, if a user must be logged in to access a <code class="highlighter-rouge">Book</code>, the correct response might be <code class="highlighter-rouge">401</code>, to explicitly let the user know that they are not authorized to see that resource.</p>
+<p>To make our <code class="highlighter-rouge">DogKennel</code> into something that can iterate over its dogs easily, we can add the <code class="highlighter-rouge">Enumerable</code> module. The desired functionality will have iterative functions as instance methods, so <code class="highlighter-rouge">include</code> will be used:</p>
 
-<p>If HTTP status codes are unknown or underutilized, an inexperienced developer might write that response that attempts to only use the text body of a response.</p>
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">class</span> <span class="nc">DogKennel</span>
+  <span class="kp">include</span> <span class="no">Enumerable</span>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">class</span> <span class="nc">BooksController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
-  <span class="n">before_filter</span> <span class="ss">:authenticate_user</span>
+  <span class="kp">attr_reader</span> <span class="ss">:dogs</span><span class="p">,</span> <span class="ss">:location</span><span class="p">,</span> <span class="ss">:operating_hours</span>
 
-  <span class="k">def</span> <span class="nf">show</span>
-    <span class="k">if</span> <span class="vi">@user</span><span class="p">.</span><span class="nf">nil?</span>
-      <span class="n">response</span> <span class="o">=</span> <span class="p">{</span> <span class="ss">error: </span><span class="s1">'User is not logged in'</span> <span class="p">}</span>
-    <span class="k">else</span>
-      <span class="n">response</span> <span class="o">=</span> <span class="no">Book</span><span class="p">.</span><span class="nf">find</span><span class="p">(</span><span class="n">params</span><span class="p">[</span><span class="ss">:id</span><span class="p">])</span>
-    <span class="k">end</span>
-
-    <span class="n">render</span> <span class="ss">json: </span><span class="n">response</span>
+  <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="n">dogs</span><span class="p">,</span> <span class="n">location</span><span class="p">,</span> <span class="n">operating_hours</span><span class="p">)</span>
+    <span class="vi">@dogs</span> <span class="o">=</span> <span class="n">dogs</span>
+    <span class="vi">@location</span> <span class="o">=</span> <span class="n">location</span>
+    <span class="vi">@operating_hours</span> <span class="o">=</span> <span class="n">operating_hours</span>
   <span class="k">end</span>
 <span class="k">end</span>
 </code></pre>
 </div>
 
-<p>This code will respond with a <code class="highlighter-rouge">200</code> and a message denoting an error. This is not the correct way to return a result. This is the equivalent of someone allowing you to leave a store with an item and not pay, then arresting you for it. It just does not make sense and should be avoided.</p>
+<p>This <code class="highlighter-rouge">include</code> will allow the <code class="highlighter-rouge">DogKennel</code> class to inherit a large number of useful methods; however, none of these methods are able to be used until a basic iterative <code class="highlighter-rouge">each</code> method is defined. If a method such as <code class="highlighter-rouge">map</code> is called in this state, the <code class="highlighter-rouge">DogKennel</code> class will throw a <code class="highlighter-rouge">NoMethodError</code> until the <code class="highlighter-rouge">each</code> method is defined.</p>
 
-<p>Instead, Ruby on Rails gives us <a href="http://billpatrianakos.me/blog/2013/10/13/list-of-rails-status-code-symbols/">very helpful symbols</a> that can be used to accurately convey the appropriate response to end users.</p>
+<h2 id="define-an-each-method">2. Define an <code class="highlighter-rouge">each</code> Method</h2>
 
-<p>To only return the correct HTTP status code, the books controller can be rewritten to:</p>
+<p>The <code class="highlighter-rouge">each</code> method is the building block for all other iterative methods the <code class="highlighter-rouge">Enumerable</code> module includes. For this example, we can assume that the consumer of <code class="highlighter-rouge">DogKennel</code> will want to iterate over the dogs in the kennel. The <code class="highlighter-rouge">each</code> method must accept a block and either yield or pass the block along to another method:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">class</span> <span class="nc">BooksController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
-  <span class="n">before_filter</span> <span class="ss">:authenticate_user</span>
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">class</span> <span class="nc">DogKennel</span>
+  <span class="kp">include</span> <span class="no">Enumerable</span>
 
-  <span class="k">def</span> <span class="nf">show</span>
-    <span class="k">if</span> <span class="vi">@user</span><span class="p">.</span><span class="nf">nil?</span>
-      <span class="k">return</span> <span class="n">head</span> <span class="ss">:unauthorized</span>
-    <span class="k">end</span>
+  <span class="c1"># ...</span>
 
-    <span class="n">render</span> <span class="ss">json: </span><span class="no">Book</span><span class="p">.</span><span class="nf">find</span><span class="p">(</span><span class="n">params</span><span class="p">[</span><span class="ss">:id</span><span class="p">])</span>
+  <span class="k">def</span> <span class="nf">each</span><span class="p">(</span><span class="o">&amp;</span><span class="n">block</span><span class="p">)</span>
+    <span class="vi">@dogs</span><span class="p">.</span><span class="nf">each</span><span class="p">(</span><span class="o">&amp;</span><span class="n">block</span><span class="p">)</span>
   <span class="k">end</span>
 <span class="k">end</span>
 </code></pre>
 </div>
 
-<p>Additionally, you can provide even more information to the consumer of your API with a combination of HTTP status codes and a response body:</p>
+<p>Hooray! Now, the <code class="highlighter-rouge">DogKennel</code> class can respond to <code class="highlighter-rouge">each</code>, <code class="highlighter-rouge">map</code>, <code class="highlighter-rouge">select</code> and all the other documented <code class="highlighter-rouge">Enumerable</code> iterative methods.</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">class</span> <span class="nc">BooksController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
-  <span class="n">before_filter</span> <span class="ss">:authenticate_user</span>
+<p>Some examples of how this class can now be used:</p>
 
-  <span class="k">def</span> <span class="nf">show</span>
-    <span class="k">if</span> <span class="vi">@user</span><span class="p">.</span><span class="nf">nil?</span>
-      <span class="n">response</span> <span class="o">=</span> <span class="p">{</span> <span class="ss">error: </span><span class="s1">'User is not logged in'</span> <span class="p">}</span>
-      <span class="n">status</span> <span class="o">=</span> <span class="ss">:unauthorized</span>
-    <span class="k">else</span>
-      <span class="n">response</span> <span class="o">=</span> <span class="no">Book</span><span class="p">.</span><span class="nf">find</span><span class="p">(</span><span class="n">params</span><span class="p">[</span><span class="ss">:id</span><span class="p">])</span>
-      <span class="n">status</span> <span class="o">=</span> <span class="ss">:ok</span>
-    <span class="k">end</span>
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="n">dog_kennel</span> <span class="o">=</span> <span class="no">DogKennel</span><span class="p">.</span><span class="nf">new</span><span class="p">([</span><span class="s1">'Fido'</span><span class="p">,</span> <span class="s1">'Spot'</span><span class="p">,</span> <span class="s1">'Bandit'</span><span class="p">],</span> <span class="s1">'Tallahassee'</span><span class="p">,</span> <span class="s1">'09:00 - 18:00'</span><span class="p">)</span>
 
-    <span class="n">render</span> <span class="ss">json: </span><span class="n">response</span><span class="p">,</span> <span class="ss">status: </span><span class="n">status</span>
+<span class="n">dog_kennel</span><span class="p">.</span><span class="nf">each</span> <span class="p">{</span> <span class="o">|</span><span class="n">dog</span><span class="o">|</span> <span class="nb">puts</span> <span class="s2">"</span><span class="si">#{</span><span class="n">dog</span><span class="si">}</span><span class="s2"> is here!"</span><span class="p">}</span>
+<span class="c1"># =&gt; Fido is here!</span>
+<span class="c1"># =&gt; Spot is here!</span>
+<span class="c1"># =&gt; Bandit is here!</span>
+
+<span class="n">dog_kennel</span><span class="p">.</span><span class="nf">select</span> <span class="p">{</span> <span class="o">|</span><span class="n">dog</span><span class="o">|</span> <span class="n">dog</span><span class="p">.</span><span class="nf">length</span> <span class="o">==</span> <span class="mi">4</span> <span class="p">}</span>
+<span class="c1">#=&gt; ['Fido', 'Spot']</span>
+</code></pre>
+</div>
+
+<p>As always, this is not the only way to achieve this solution in Ruby. Ruby-ists are blessed with a plethora of tools to do any task. I am of the opinion that for this specific task, making a custom collection class is clean and concise. Delegation might be an attractive option but could prove to be overly verbose for this use case.</p>
+
+<h2 id="consider-comparisons">3. Consider Comparisons</h2>
+
+<p>In this new collection class, the <code class="highlighter-rouge">sort</code> method will default using the <code class="highlighter-rouge">&lt;=&gt;</code> (sometimes called spaceship) operator. This combined comparison operator returns <code class="highlighter-rouge">0</code> if first operand equals the second, <code class="highlighter-rouge">1</code> if first operand is greater than the second and <code class="highlighter-rouge">-1</code> if first operand is less than the second.</p>
+
+<p>This will work fine for strings and other basic object types; however, if a more complex object held the information about each dog, the <code class="highlighter-rouge">&lt;=&gt;</code> method must be defined on that object.</p>
+
+<p>A <code class="highlighter-rouge">Dog</code> class is created to represent a dog’s attributes:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Dog</span>
+  <span class="kp">attr_reader</span> <span class="ss">:breed</span><span class="p">,</span> <span class="ss">:name</span><span class="p">,</span> <span class="ss">:color</span>
+
+  <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="n">breed</span><span class="p">,</span> <span class="nb">name</span><span class="p">,</span> <span class="n">color</span><span class="p">)</span>
+    <span class="vi">@breed</span> <span class="o">=</span> <span class="n">breed</span>
+    <span class="vi">@name</span> <span class="o">=</span> <span class="nb">name</span>
+    <span class="vi">@color</span> <span class="o">=</span> <span class="n">color</span>
   <span class="k">end</span>
 <span class="k">end</span>
 </code></pre>
 </div>
 
-<h2 id="communicate-effectively">Communicate effectively</h2>
+<p>Then, instances of <code class="highlighter-rouge">Dog</code> are then given to <code class="highlighter-rouge">DogKennel</code> on initialization and sorted:</p>
 
-<p>This example has exposed the difference between a decent API and one that understands how HTTP should work. While the specific problem <a href="https://github.com/CanCanCommunity/cancancan">could be solved with CanCanCan</a>, it is important to understand how and why those libraries work the way that they do.</p>
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="n">fido</span> <span class="o">=</span> <span class="no">Dog</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="s1">'Daschund'</span><span class="p">,</span> <span class="s1">'Fido'</span><span class="p">,</span> <span class="s1">'brown'</span><span class="p">)</span>
 
-<p>If one were to continue down the naive path, returning hashes or strings with incorrect HTTP status codes, things would become messy quickly. That response structure unjustly handcuffs the API clients to be unnecessarily tolerant of ad-hoc text responses. But, if the API conforms to HTTP standards, a client knows exactly what each response means. A <code class="highlighter-rouge">400</code> status code in the response will give context to what a supplied error means. The client can respond correctly and know that their request resulted in an error. However, if a response body is the only way to denote that something went wrong, what stops a new developer on the API from changing the <code class="highlighter-rouge">error</code> key to <code class="highlighter-rouge">Error</code> and ruin everyone’s day?</p>
+<span class="n">bandit</span> <span class="o">=</span> <span class="no">Dog</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="s1">'Labrador'</span><span class="p">,</span> <span class="s1">'Bandit'</span><span class="p">,</span> <span class="s1">'black'</span><span class="p">)</span>
 
-<p>Instead of capturing in text every single detail about why a request did not result in an expected response, use HTTP status codes to supplement and communicate effectively.</p>
+<span class="n">dog_kennel</span> <span class="o">=</span> <span class="no">DogKennel</span><span class="p">.</span><span class="nf">new</span><span class="p">([</span><span class="n">fido</span><span class="p">,</span> <span class="n">bandit</span><span class="p">],</span> <span class="s1">'Tallahassee'</span><span class="p">,</span> <span class="s1">'09:00 - 18:00'</span><span class="p">)</span>
+
+<span class="n">dog_kennel</span><span class="p">.</span><span class="nf">sort</span>
+<span class="c1">#=&gt; ArgumentError: comparison of Dog with Dog failed</span>
+</code></pre>
+</div>
+
+<p>This error is to be expected since the <code class="highlighter-rouge">Dog</code> class has no way to compare one instance of itself against another. To maintain feature parity with the first example, we can define the <code class="highlighter-rouge">&lt;=&gt;</code> method that introspects on each <code class="highlighter-rouge">Dog</code>’s name:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Dog</span>
+  <span class="c1"># ...</span>
+
+  <span class="k">def</span> <span class="nf">&lt;</span><span class="o">=&gt;</span><span class="p">(</span><span class="n">other_dog</span><span class="p">)</span>
+    <span class="nb">self</span><span class="p">.</span><span class="nf">name</span> <span class="o">&lt;=&gt;</span> <span class="n">other_dog</span><span class="p">.</span><span class="nf">name</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre>
+</div>
+
+<p>Now, we can sort those puppies!</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="n">dog_kennel</span><span class="p">.</span><span class="nf">sort</span>
+<span class="c1">#=&gt; [#&lt;Dog:0x007fcb4a01c800 @name="Bandit", @breed="Labrador", @color="black"&gt;,</span>
+     <span class="c1">#&lt;Dog:0x007fcb4914b880 @name="Fido", @breed="Daschund", @color="brown"&gt;]</span>
+</code></pre>
+</div>
+
+<h2 id="its-raining-iterators-and-dogs">It’s Raining Iterators and Dogs</h2>
+
+<p>Having the <code class="highlighter-rouge">Enumerable</code> module included and the <code class="highlighter-rouge">&lt;=&gt;</code> comparison operator defined, the <code class="highlighter-rouge">DogKennel</code> class can now be used in the same convenient way as other collection classes.</p>
+
+<p>The strength behind this approach is expressed through its maintainability. Since no long list of methods was defined, and no duplicative code was written, this code can exist alongside active development of the <code class="highlighter-rouge">Enumerable</code> module. For the example in question, this could be an overkill solution. But, in a more complex and sophistiacted system, using the <code class="highlighter-rouge">Enumerable</code> could be the best option.</p>
 
   </div>
   
