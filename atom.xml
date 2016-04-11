@@ -145,7 +145,7 @@
 
 &lt;p&gt;The &lt;code class=&quot;highlighter-rouge&quot;&gt;respond_to_missing?&lt;/code&gt; method is also defined to enable &lt;code class=&quot;highlighter-rouge&quot;&gt;respond_to?&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;method&lt;/code&gt; calls to execute successfully. &lt;a href=&quot;https://robots.thoughtbot.com/always-define-respond-to-missing-when-overriding&quot;&gt;Read more information about &lt;code class=&quot;highlighter-rouge&quot;&gt;respond_to_missing?&lt;/code&gt; here.&lt;/a&gt;&lt;/p&gt;
 
-&lt;p&gt;&lt;em&gt;Note: Patterns equivalent to this are used in some popular libraries like &lt;code class=&quot;highlighter-rouge&quot;&gt;OpenStruct&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;Hashie&lt;/code&gt; to achieve the similar results.&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;Note: Patterns equivalent to this are used in some popular libraries like &lt;code class=&quot;highlighter-rouge&quot;&gt;OpenStruct&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;Hashie&lt;/code&gt; to achieve similar results.&lt;/em&gt;&lt;/p&gt;
 
 &lt;h3 id=&quot;regular-object&quot;&gt;3. “Regular” Object&lt;/h3&gt;
 
