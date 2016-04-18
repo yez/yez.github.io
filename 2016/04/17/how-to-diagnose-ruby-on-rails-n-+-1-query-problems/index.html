@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta http-equiv="content-type" content="text/html; charset=utf-8">
   
-    <meta name="description" content="Jake Yesbeck's Technology Blog inspired by Open Source Projects.">
+    <meta name="description" content="Diagnosing slow Ruby on Rails transactions with New Relic is a great way to make sure a Ruby on Rails application is as efficient as possible.">
   
 
   <!-- Enable responsiveness on mobile devices-->
@@ -14,7 +14,7 @@
 
   <title>
     
-      A Year of Commits
+      How to Diagnose Ruby on Rails N + 1 Query Problems
     
   </title>
 
@@ -64,19 +64,11 @@
 
 
     <div class="content container">
-      <div class="posts">
+      <div class="post">
+  <h1 class="post-title">How to Diagnose Ruby on Rails N + 1 Query Problems</h1>
+  <span class="post-date">17 Apr 2016</span>
   
-  <div class="post">
-    <h1 class="post-title">
-      <a href="/2016/04/17/how-to-diagnose-ruby-on-rails-n-+-1-query-problems/">
-        How to Diagnose Ruby on Rails N + 1 Query Problems
-      </a>
-    </h1>
-
-    
-
-    <span class="post-date">17 Apr 2016</span>
-    <span class='share-container'><ul class="share-buttons">
+  <span class='share-container'><ul class="share-buttons">
   <li>
     <a href="https://www.facebook.com/sharer/sharer.php?u=http://jakeyesbeck.com/2016/04/17/how-to-diagnose-ruby-on-rails-n-+-1-query-problems/&t=How to Diagnose Ruby on Rails N + 1 Query Problems" title="Share on Facebook" target="_blank">
       <img src="http://jakeyesbeck.com/assets/images/facebook.svg">
@@ -111,8 +103,7 @@
   </li>
 </ul>
 </span>
-
-    <p>Diagnosing performance problems in a production Ruby on Rails application can be deceptively complex. When constructing a new application or expanding the features of an existing one, development environments that are not subject to typical production web traffic may not make performance issues evident. In those instances, the use of some simple (and mostly free) tools can help diagnose performance issues in production.</p>
+  <p>Diagnosing performance problems in a production Ruby on Rails application can be deceptively complex. When constructing a new application or expanding the features of an existing one, development environments that are not subject to typical production web traffic may not make performance issues evident. In those instances, the use of some simple (and mostly free) tools can help diagnose performance issues in production.</p>
 
 <p>If an application is hosted on Heroku, the New Relic add-on can be added to the application for free. Despite it having a few limitations, the free version of New Relic can be extremely valuable for diagnosing some common performance issues.</p>
 
@@ -269,17 +260,40 @@
 
 <p>New Relic was a crucial element in this example but it is not the only tool available. Many other analysis tools for Ruby on Rails applications exist and Rails itself gives developers insight into an application’s behaviour via its logs.</p>
 
-  </div>
-  
 </div>
 
-<div class="pagination">
-  
-    <a class="pagination-item older" href="http://jakeyesbeck.com/page2">Older</a>
-  
-  
-    <span class="pagination-item newer">Newer</span>
-  
+<div class="related">
+  <h2>Related Posts</h2>
+  <ul class="related-posts">
+    
+      <li>
+        <h3>
+          <a href="/2016/02/07/how-to-remove-a-column-with-zero-downtime-in-ruby-on-rails/">
+            How to Remove a Column with Zero Downtime in Ruby on Rails
+            <small>07 Feb 2016</small>
+          </a>
+        </h3>
+      </li>
+    
+      <li>
+        <h3>
+          <a href="/2016/03/13/the-power-of-arel/">
+            The Power of Arel
+            <small>13 Mar 2016</small>
+          </a>
+        </h3>
+      </li>
+    
+      <li>
+        <h3>
+          <a href="/2016/03/27/five-more-active-record-features-you-should-be-using/">
+            Five More Active Record Features You Should Be Using
+            <small>27 Mar 2016</small>
+          </a>
+        </h3>
+      </li>
+    
+  </ul>
 </div>
 
     </div>

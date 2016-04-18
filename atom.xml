@@ -4,13 +4,177 @@
  <title>A Year of Commits</title>
  <link href="http://jakeyesbeck.com/atom.xml" rel="self"/>
  <link href="http://jakeyesbeck.com/"/>
- <updated>2016-04-10T21:28:02-07:00</updated>
+ <updated>2016-04-17T22:11:35-07:00</updated>
  <id>http://jakeyesbeck.com/</id>
  <author>
    <name>Jake Yesbeck</name>
    <email>yesbeckjs@gmail.com</email>
  </author>
 
+ 
+ <entry>
+   <title>How to Diagnose Ruby on Rails N + 1 Query Problems</title>
+   <link href="http://jakeyesbeck.com/2016/04/17/how-to-diagnose-ruby-on-rails-n-+-1-query-problems/"/>
+   <updated>2016-04-17T05:00:00-07:00</updated>
+   <id>http://jakeyesbeck.com/2016/04/17/how-to-diagnose-ruby-on-rails-n-+-1-query-problems</id>
+   <content type="html">&lt;p&gt;Diagnosing performance problems in a production Ruby on Rails application can be deceptively complex. When constructing a new application or expanding the features of an existing one, development environments that are not subject to typical production web traffic may not make performance issues evident. In those instances, the use of some simple (and mostly free) tools can help diagnose performance issues in production.&lt;/p&gt;
+
+&lt;p&gt;If an application is hosted on Heroku, the New Relic add-on can be added to the application for free. Despite it having a few limitations, the free version of New Relic can be extremely valuable for diagnosing some common performance issues.&lt;/p&gt;
+
+&lt;p&gt;New Relic will be the primary tool used in this post for analysis, but an application’s log files can prove to be just as valuable when analyzed correctly.&lt;/p&gt;
+
+&lt;h2 id=&quot;setup&quot;&gt;Setup&lt;/h2&gt;
+
+&lt;p&gt;The example application has the following database structure and respective models:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;create_table&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:users&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;t&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;t&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;string&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:email&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;t&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;string&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:first_name&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;t&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;string&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:last_name&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;t&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;timestamps&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;null: &lt;/span&gt;&lt;span class=&quot;kp&quot;&gt;false&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;create_table&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:posts&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;t&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;t&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;integer&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:user_id&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;t&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;integer&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:theme_id&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;t&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;string&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:content&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;t&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;timestamps&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;null: &lt;/span&gt;&lt;span class=&quot;kp&quot;&gt;false&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;create_table&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:themes&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;t&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;t&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;string&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:theme&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;t&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;timestamps&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;null: &lt;/span&gt;&lt;span class=&quot;kp&quot;&gt;false&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;User&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;ActiveRecord&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Base&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;has_many&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:posts&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Post&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;ActiveRecord&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Base&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;belongs_to&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:user&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;belongs_to&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:theme&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Theme&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;ActiveRecord&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Base&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;An example controller, &lt;code class=&quot;highlighter-rouge&quot;&gt;home_controller.rb&lt;/code&gt; has a single action:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;HomeController&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;ApplicationController&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;show&lt;/span&gt;
+    &lt;span class=&quot;vi&quot;&gt;@user&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;User&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;find&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;params&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:user_id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;The above action renders a single simple view, &lt;code class=&quot;highlighter-rouge&quot;&gt;show.html.haml&lt;/code&gt;:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nt&quot;&gt;%h3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;Posts from &lt;/span&gt;&lt;span class=&quot;si&quot;&gt;#{&lt;/span&gt; &lt;span class=&quot;vi&quot;&gt;@user&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;first_name&lt;/span&gt; &lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt; &lt;/span&gt;&lt;span class=&quot;si&quot;&gt;#{&lt;/span&gt; &lt;span class=&quot;vi&quot;&gt;@user&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;last_name&lt;/span&gt; &lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;
+
+&lt;span class=&quot;p&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;vi&quot;&gt;@user&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;posts&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;each&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;post&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+  &lt;span class=&quot;nc&quot;&gt;.theme&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;Theme &lt;/span&gt;&lt;span class=&quot;si&quot;&gt;#{&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;post&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;theme&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;theme&lt;/span&gt; &lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;
+  &lt;span class=&quot;nc&quot;&gt;.content&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;post&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;content&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Additionally in the application’s &lt;code class=&quot;highlighter-rouge&quot;&gt;Gemfile&lt;/code&gt;, the New Relic Ruby gem has been added:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;source&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;https://rubygems.org&#39;&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# ...&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;gem&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;newrelic_rpm&#39;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;On a development machine under no contention, this action will quickly render a page consisting of a &lt;code class=&quot;highlighter-rouge&quot;&gt;User&#39;s&lt;/code&gt; name information, a list of their &lt;code class=&quot;highlighter-rouge&quot;&gt;posts&lt;/code&gt; and the &lt;code class=&quot;highlighter-rouge&quot;&gt;theme&lt;/code&gt; each post belongs to.&lt;/p&gt;
+
+&lt;p&gt;However, there is an &lt;code class=&quot;highlighter-rouge&quot;&gt;N + 1&lt;/code&gt; query issue with this code. In a development environment, this issue might be overlooked or deemed satisfactory. It may not be until this code is released into the wild that a problem is seen.&lt;/p&gt;
+
+&lt;h2 id=&quot;the-n--1-problem&quot;&gt;The N + 1 Problem&lt;/h2&gt;
+
+&lt;p&gt;An &lt;code class=&quot;highlighter-rouge&quot;&gt;N + 1&lt;/code&gt; query problem is responsible for an application’s execution of far more queries than needed. The &lt;code class=&quot;highlighter-rouge&quot;&gt;N&lt;/code&gt; in &lt;code class=&quot;highlighter-rouge&quot;&gt;N + 1&lt;/code&gt; refers to the number of elements in a retrieved list, in this case: &lt;code class=&quot;highlighter-rouge&quot;&gt;@user.posts&lt;/code&gt;. The &lt;code class=&quot;highlighter-rouge&quot;&gt;1&lt;/code&gt; then refers to queries that need to be executed when traversing over the list of elements &lt;code class=&quot;highlighter-rouge&quot;&gt;N&lt;/code&gt;, in this case each &lt;code class=&quot;highlighter-rouge&quot;&gt;post&#39;s&lt;/code&gt; &lt;code class=&quot;highlighter-rouge&quot;&gt;theme&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;As with most problems, the first step to solving them involves validating their existence. This is the step in which New Relic is utilized.&lt;/p&gt;
+
+&lt;p&gt;When using Heroku, after the New Relic add-on has been created for an application, it can be opened with:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;heroku addons:open newrelic --app my-application-name
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Otherwise, a user can simply Log-in at &lt;code class=&quot;highlighter-rouge&quot;&gt;rpm.newrelic.com&lt;/code&gt; and navigate to their application after signing up and linking their application.&lt;/p&gt;
+
+&lt;p&gt;Once the desired application has been opened in New Relic, navigating to the the &lt;code class=&quot;highlighter-rouge&quot;&gt;transactions&lt;/code&gt; tab and then the &lt;code class=&quot;highlighter-rouge&quot;&gt;HomeController#show&lt;/code&gt; transaction will show our &lt;code class=&quot;highlighter-rouge&quot;&gt;N + 1&lt;/code&gt; issue.&lt;/p&gt;
+
+&lt;p&gt;At first glance, the graph of this simple endpoint is telling a alarming story. A large amount of time is spent in the database, fetching records necessary to render the page:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://jakeyesbeck.com/assets/images/graph_before_fix.png&quot; alt=&quot;New Relic Transaction Trace Graph for N + 1&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Below this graph, New Relic conveniently displays the call count breakdown for this transaction:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://jakeyesbeck.com/assets/images/call_count_table_before_fix.png&quot; alt=&quot;New Relic Transaction Call Count Table for N + 1&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Immediately, we can see that the &lt;code class=&quot;highlighter-rouge&quot;&gt;Postgres Theme find&lt;/code&gt; is called an average of &lt;strong&gt;20&lt;/strong&gt; times per transaction. Compared to the single call count of the surrounding methods in this table, &lt;strong&gt;20&lt;/strong&gt; seems excessive.&lt;/p&gt;
+
+&lt;h2 id=&quot;investigation-station&quot;&gt;Investigation Station&lt;/h2&gt;
+
+&lt;p&gt;With a direction to run in, it is time to revisit the code and find the offending line. Luckily, this application’s code line count totals to about 40, so the search is short.&lt;/p&gt;
+
+&lt;p&gt;Here is the line that causes the issue:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nc&quot;&gt;.theme&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;Theme &lt;/span&gt;&lt;span class=&quot;si&quot;&gt;#{&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;post&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;theme&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;theme&lt;/span&gt; &lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Each time &lt;code class=&quot;highlighter-rouge&quot;&gt;post.theme.theme&lt;/code&gt; is called the following query is executed:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;SELECT&lt;/span&gt;  &lt;span class=&quot;nv&quot;&gt;&quot;themes&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;FROM&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;&quot;themes&quot;&lt;/span&gt;  &lt;span class=&quot;k&quot;&gt;WHERE&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;&quot;themes&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;&quot;id&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;LIMIT&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;  &lt;span class=&quot;p&quot;&gt;[[&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;&quot;id&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]]&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;While things like query caching, primary key indexes and other performance aiding features exist within production relational databases, issuing the same query 20 times per page load is still wasteful.&lt;/p&gt;
+
+&lt;h2 id=&quot;the-fix&quot;&gt;The Fix&lt;/h2&gt;
+
+&lt;p&gt;Many solutions to this problem exist, each with their own pros and cons. The important part of this post is how to effectively use New Relic to diagnose a problem in a production Ruby on Rails application.&lt;/p&gt;
+
+&lt;p&gt;All that aside, what kind of effect does a solution to this problem have on our example application?&lt;/p&gt;
+
+&lt;p&gt;To rid this system of its &lt;code class=&quot;highlighter-rouge&quot;&gt;N + 1&lt;/code&gt; query, we can prepend some information to the simple &lt;code class=&quot;highlighter-rouge&quot;&gt;find&lt;/code&gt; method, letting &lt;code class=&quot;highlighter-rouge&quot;&gt;ActiveRecord&lt;/code&gt; do the work for us:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;HomeController&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;ApplicationController&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;show&lt;/span&gt;
+    &lt;span class=&quot;vi&quot;&gt;@user&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;User&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;includes&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;posts: :theme&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+                &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;references&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:posts&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:themes&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+                &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;find&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;params&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:user_id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Here the &lt;code class=&quot;highlighter-rouge&quot;&gt;includes&lt;/code&gt; method will use the established foreign keys via the &lt;code class=&quot;highlighter-rouge&quot;&gt;belongs_to&lt;/code&gt; relationships and pull in relevant &lt;code class=&quot;highlighter-rouge&quot;&gt;posts&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;themes&lt;/code&gt;. The &lt;code class=&quot;highlighter-rouge&quot;&gt;references&lt;/code&gt; method allows &lt;code class=&quot;highlighter-rouge&quot;&gt;ActiveRecord&lt;/code&gt; to &lt;code class=&quot;highlighter-rouge&quot;&gt;JOIN&lt;/code&gt; the tables listed, minimizing the number of queries needed.&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;Note: This is just one solution for this particular problem with its own downsides. Any memory concerns dealing with a &lt;code class=&quot;highlighter-rouge&quot;&gt;User&lt;/code&gt; that has far too many &lt;code class=&quot;highlighter-rouge&quot;&gt;posts&lt;/code&gt; or similar problems are not addressed.&lt;/em&gt;&lt;/p&gt;
+
+&lt;p&gt;Opening up New Relic shows the the improvement:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://jakeyesbeck.com/assets/images/graph_after_fix.png&quot; alt=&quot;New Relic Transaction Trace Graph After Fix&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;A request previously rendering in 200ms is now as low as 40ms.&lt;/p&gt;
+
+&lt;p&gt;The breakdown of the transaction call count shows improvement as well:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://jakeyesbeck.com/assets/images/call_count_table_after_fix.png&quot; alt=&quot;New Relic Transaction Call Count Table After Fix&quot; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;measure-twice-measure-again-just-keep-measuring&quot;&gt;Measure Twice, Measure Again, Just Keep Measuring&lt;/h2&gt;
+
+&lt;p&gt;Understanding slow parts of a production Ruby on Rails application can mean the difference between an “OK” user experience and a great one. When developing these applications, it can be hard to keep track of every inefficiency that could result in sub-optimal &lt;code class=&quot;highlighter-rouge&quot;&gt;N + 1&lt;/code&gt; behaviour. Both new and seasoned Ruby on Rails applications can be vulnerable to these types of problems, knowing how to diagnose them is the first step towards their resolution.&lt;/p&gt;
+
+&lt;p&gt;New Relic was a crucial element in this example but it is not the only tool available. Many other analysis tools for Ruby on Rails applications exist and Rails itself gives developers insight into an application’s behaviour via its logs.&lt;/p&gt;
+</content>
+ </entry>
  
  <entry>
    <title>Things to Consider when Metaprogramming in Ruby</title>

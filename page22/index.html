@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta http-equiv="content-type" content="text/html; charset=utf-8">
   
-    <meta name="description" content="A technology blog about a Year of Commits to Open Source projects.">
+    <meta name="description" content="Jake Yesbeck's Technology Blog inspired by Open Source Projects.">
   
 
   <!-- Enable responsiveness on mobile devices-->
@@ -68,225 +68,202 @@
   
   <div class="post">
     <h1 class="post-title">
-      <a href="/2015/11/15/five-active-record-features-you-should-be-using/">
-        Five Active Record Features You Should Be Using
+      <a href="/2015/11/22/how-to-write-futureproof-mocks/">
+        How to Write Future-proof Mocks in RSpec 3
       </a>
     </h1>
 
     
 
-    <span class="post-date">15 Nov 2015</span>
+    <span class="post-date">22 Nov 2015</span>
     <span class='share-container'><ul class="share-buttons">
   <li>
-    <a href="https://www.facebook.com/sharer/sharer.php?u=http://jakeyesbeck.com/2015/11/15/five-active-record-features-you-should-be-using/&t=Five Active Record Features You Should Be Using" title="Share on Facebook" target="_blank">
+    <a href="https://www.facebook.com/sharer/sharer.php?u=http://jakeyesbeck.com/2015/11/22/how-to-write-futureproof-mocks/&t=How to Write Future-proof Mocks in RSpec 3" title="Share on Facebook" target="_blank">
       <img src="http://jakeyesbeck.com/assets/images/facebook.svg">
     </a>
   </li>
   <li>
-    <a href="https://twitter.com/intent/tweet?source=http%3A%2F%2Fjakeyesbeck.com&text=Five Active Record Features You Should Be Using%20http://jakeyesbeck.com/2015/11/15/five-active-record-features-you-should-be-using/&via=jakeyesbeck" target="_blank" title="Tweet">
+    <a href="https://twitter.com/intent/tweet?source=http%3A%2F%2Fjakeyesbeck.com&text=How to Write Future-proof Mocks in RSpec 3%20http://jakeyesbeck.com/2015/11/22/how-to-write-futureproof-mocks/&via=jakeyesbeck" target="_blank" title="Tweet">
       <img src="http://jakeyesbeck.com/assets/images/twitter.svg">
     </a>
   </li>
   <li>
-    <a href="https://plus.google.com/share?url=http://jakeyesbeck.com/2015/11/15/five-active-record-features-you-should-be-using/" target="_blank" title="Share on Google+">
+    <a href="https://plus.google.com/share?url=http://jakeyesbeck.com/2015/11/22/how-to-write-futureproof-mocks/" target="_blank" title="Share on Google+">
       <img src="http://jakeyesbeck.com/assets/images/google_plus.svg">
     </a>
   </li>
 
   <li>
-    <a href="https://news.ycombinator.com/submitlink?u=http://jakeyesbeck.com/2015/11/15/five-active-record-features-you-should-be-using/&t=Five Active Record Features You Should Be Using" target="_blank" title="Share on Hacker News">
+    <a href="https://news.ycombinator.com/submitlink?u=http://jakeyesbeck.com/2015/11/22/how-to-write-futureproof-mocks/&t=How to Write Future-proof Mocks in RSpec 3" target="_blank" title="Share on Hacker News">
       <img src="http://jakeyesbeck.com/assets/images/ycomb.svg">
     </a>
   </li>
 
   <li>
-    <a href="https://getpocket.com/save?url=http://jakeyesbeck.com/2015/11/15/five-active-record-features-you-should-be-using/&title=Five Active Record Features You Should Be Using" target="_blank" title="Add to Pocket">
+    <a href="https://getpocket.com/save?url=http://jakeyesbeck.com/2015/11/22/how-to-write-futureproof-mocks/&title=How to Write Future-proof Mocks in RSpec 3" target="_blank" title="Add to Pocket">
       <img src="http://jakeyesbeck.com/assets/images/pocket.svg">
     </a>
   </li>
   <li>
-    <a href="http://www.reddit.com/submit?url=http://jakeyesbeck.com/2015/11/15/five-active-record-features-you-should-be-using/&title=Five Active Record Features You Should Be Using" target="_blank" title="Submit to Reddit">
+    <a href="http://www.reddit.com/submit?url=http://jakeyesbeck.com/2015/11/22/how-to-write-futureproof-mocks/&title=How to Write Future-proof Mocks in RSpec 3" target="_blank" title="Submit to Reddit">
       <img src="http://jakeyesbeck.com/assets/images/reddit.svg">
     </a>
   </li>
 </ul>
 </span>
 
-    <p>Active Record is responsible for communicating with the persistence layer by default in Ruby on Rails applications. Using Active Record effectively and efficiently can greatly improve an application’s code.</p>
+    <p>Tests are an important component in most software applications. Whether tests drive the development, or are strapped on after the fact, tests need to be reliable for future development to progress. An application’s complexity rises with time. During and after this increase, a rock solid test suite is crucial.</p>
 
-<p>In Ruby on Rails 4.0, some material changes have been made to Active Record. Understanding these changes, and how they are best utilized is important for any Rails developer.</p>
+<h2 id="let-the-dogs-out">Let the Dogs Out</h2>
 
-<p>To help explain these concepts, we can assume a Ruby on Rails application <em>“booksandreviews.com”</em> exists with three models:</p>
+<p>Given an application that deals with <code class="highlighter-rouge">Dogs</code>:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Book</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
-  <span class="n">belongs_to</span> <span class="ss">:author</span>
-  <span class="n">has_many</span> <span class="ss">:reviews</span>
-<span class="k">end</span>
-
-<span class="k">class</span> <span class="nc">Author</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
-  <span class="n">has_many</span> <span class="ss">:books</span>
-<span class="k">end</span>
-
-<span class="k">class</span> <span class="nc">Review</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
-  <span class="n">belongs_to</span> <span class="ss">:book</span>
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Dog</span>
 <span class="k">end</span>
 </code></pre>
 </div>
 
-<p>The smart people over at <em>“booksandreviews.com”</em> need to know what the state of their data to build metrics and make sales. Metrics need data and Active Record will be used to fetch that data.</p>
+<p>Keeping track of grooming statistics about this application’s dogs is the obvious cash cow. But that sounds very tedious and complicated, so we can assume that a <code class="highlighter-rouge">GroomingService</code> exists that exposes a single <code class="highlighter-rouge">Groomer</code> object:</p>
 
-<h2 id="nested-queries">1. Nested Queries</h2>
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">module</span> <span class="nn">GroomingService</span>
+  <span class="k">class</span> <span class="nc">Groomer</span>
+    <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="n">dog</span><span class="p">)</span>
+      <span class="vi">@dog</span> <span class="o">=</span> <span class="n">dog</span>
+    <span class="k">end</span>
 
-<p>When doing database queries, the fewer the better. Since Active Record is responsible of crafting these queries, it is important to make sure it has all the help it needs. For simple queries this is rarely an issue, but more complex requirements can lead to sub-optimal results.</p>
-
-<p>One day, Tim from sales comes rampaging through the office convinced that there <strong>must</strong> be a bug in the system. A recent sale for <em>“booksandreviews.com”</em> did not go well and he wants answers. Tim wants an analysis run. He wants all reviews published today, which are for books published in 2015.</p>
-
-<p>Without too much thought, this approach seems reasonable:</p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="n">book_ids</span> <span class="o">=</span> <span class="no">Book</span><span class="p">.</span><span class="nf">where</span><span class="p">(</span><span class="ss">publish_year: </span><span class="s1">'2015'</span><span class="p">).</span><span class="nf">map</span><span class="p">(</span><span class="o">&amp;</span><span class="ss">:id</span><span class="p">)</span>
-<span class="c1"># =&gt; SELECT "books".* FROM "books" WHERE (publish_year = '2015')</span>
-
-<span class="n">reviews</span> <span class="o">=</span> <span class="no">Review</span><span class="p">.</span><span class="nf">where</span><span class="p">(</span><span class="ss">publish_date: </span><span class="s1">'2015-11-15'</span><span class="p">,</span>
-                       <span class="ss">book_ids: </span><span class="n">book_ids</span><span class="p">).</span><span class="nf">to_a</span>
-<span class="c1"># =&gt; SELECT "reviews".* FROM "reviews" WHERE "reviews"."publish_date" = '2015-11-15' AND "reviews"."book_ids" IN (1, 2, 3)</span>
-</code></pre>
-</div>
-
-<p>This will load the desired books, extract their <code class="highlighter-rouge">id</code>’s, and pass that result to the <code class="highlighter-rouge">Review</code> query. Not only does this generate two queries, it also wastes memory by creating an array of <code class="highlighter-rouge">Book</code> objects to <code class="highlighter-rouge">map</code> over and then another array of <code class="highlighter-rouge">book_ids</code>. With a large enough list of books, this could cause some serious problems.</p>
-
-<p>Active Record’s <code class="highlighter-rouge">where</code> method returns an instance of <code class="highlighter-rouge">ActiveRecord::Relation</code>. These relations can be passed to other methods to aid in query construction. With the same request, we can save the <code class="highlighter-rouge">map</code> and array creation:</p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="n">books</span> <span class="o">=</span> <span class="no">Book</span><span class="p">.</span><span class="nf">where</span><span class="p">(</span><span class="ss">publish_year: </span><span class="s1">'2015'</span><span class="p">)</span>
-<span class="c1"># =&gt; ActiveRecord::Relation</span>
-
-<span class="n">reviews</span> <span class="o">=</span> <span class="no">Review</span><span class="p">.</span><span class="nf">where</span><span class="p">(</span><span class="ss">publish_date: </span><span class="s1">'2015-11-15'</span><span class="p">,</span> <span class="ss">book: </span><span class="n">books</span><span class="p">).</span><span class="nf">to_a</span>
-<span class="c1"># SELECT "reviews".* FROM "reviews" WHERE "reviews"."publish_date" = '2015-11-15' AND "reviews"."book_id" IN (SELECT "books"."id" FROM "books" WHERE "books"."publish_year" = '2015')</span>
-</code></pre>
-</div>
-
-<p>This still executes two <code class="highlighter-rouge">SELECT</code> statements but it nests them to let the database take care of memory allocation and optimization. The <code class="highlighter-rouge">book_ids</code> array is replaced with the <code class="highlighter-rouge">books</code> relation and is passed to the <code class="highlighter-rouge">Review</code> query.</p>
-
-<p><strong>Note: This can reduced to a single query with <code class="highlighter-rouge">.joins</code>, but for now we can assume that a nested query is desired.</strong></p>
-
-<h2 id="dry-scopes">2. DRY Scopes</h2>
-
-<p>Still fuming, Tim demands more information. Now he wants to know the list of all <code class="highlighter-rouge">Books</code> published in 2015 which have at least one approved <code class="highlighter-rouge">Review</code>. Since <code class="highlighter-rouge">Reviews</code> are subjective, they need to be approved in order to maintain the quality that <em>“booksandreviews.com”</em> is known for.</p>
-
-<p>Luckily, a scope has been written on the <code class="highlighter-rouge">Review</code> class to accomplish this.</p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Review</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
-  <span class="n">belongs_to</span> <span class="ss">:book</span>
-
-  <span class="n">scope</span> <span class="ss">:approved</span><span class="p">,</span> <span class="o">-&gt;</span><span class="p">{</span> <span class="n">where</span><span class="p">(</span><span class="ss">approved: </span><span class="kp">true</span><span class="p">)</span> <span class="p">}</span>
+    <span class="k">def</span> <span class="nf">groom</span>
+      <span class="c1"># Some complex grooming logic</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
 <span class="k">end</span>
 </code></pre>
 </div>
 
-<p>However, it is <code class="highlighter-rouge">Books</code> that we need to return, not <code class="highlighter-rouge">Reviews</code>. Repeating the scope definition, a join query can be used for this analysis:</p>
+<p>This service was included by the <code class="highlighter-rouge">groomer</code> gem and will become a core piece of the application. To keep everyone in the project sane and well rested, a robust spec suite is needed.</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="n">books</span> <span class="o">=</span> <span class="no">Book</span><span class="p">.</span><span class="nf">where</span><span class="p">(</span><span class="ss">publish_year: </span><span class="s1">'2015'</span><span class="p">)</span>
-            <span class="p">.</span><span class="nf">includes</span><span class="p">(</span><span class="ss">:reviews</span><span class="p">)</span>
-            <span class="p">.</span><span class="nf">references</span><span class="p">(</span><span class="ss">:reviews</span><span class="p">)</span>
-            <span class="p">.</span><span class="nf">where</span><span class="p">(</span><span class="s1">'reviews.approved = ?'</span><span class="p">,</span> <span class="kp">true</span> <span class="p">)</span>
-            <span class="p">.</span><span class="nf">to_a</span>
-<span class="c1"># =&gt; SELECT #long books and reviews column select# FROM "books" LEFT OUTER JOIN "reviews" ON "reviews"."book_id" = "books"."id" WHERE "books"."publish_year" = '2015' AND (reviews.approved = 't')</span>
+<h2 id="spec-it-up">Spec It Up</h2>
+
+<p>Using <code class="highlighter-rouge">RSpec</code> and the <code class="highlighter-rouge">GroomingService</code>, a very basic test can be written to make sure the code works as expected.</p>
+
+<p>Introducing the <code class="highlighter-rouge">GroomingService</code> into the <code class="highlighter-rouge">Dog</code> class could look like:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Dog</span>
+  <span class="k">def</span> <span class="nf">groom</span>
+    <span class="no">GroomingService</span><span class="o">::</span><span class="no">Groomer</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="nb">self</span><span class="p">).</span><span class="nf">groom</span>
+  <span class="k">end</span>
+<span class="k">end</span>
 </code></pre>
 </div>
 
-<p><code class="highlighter-rouge">Books</code> are returned at the cost of duplicating the <code class="highlighter-rouge">approved</code> scope. That means that the scope in <code class="highlighter-rouge">Review</code> changes, this code will not benefit from that change. The <code class="highlighter-rouge">.includes</code> and <code class="highlighter-rouge">.references</code> methods are used to ensure that we only return one <code class="highlighter-rouge">Book</code> (in the case of many <code class="highlighter-rouge">Reviews</code> belonging to the same <code class="highlighter-rouge">Book</code>).</p>
+<p>The first test should be to make sure that when the <code class="highlighter-rouge">groom</code> method on a <code class="highlighter-rouge">Dog</code> is called, it initializes and calls <code class="highlighter-rouge">groom</code> out to the <code class="highlighter-rouge">GroomService::Groomer</code> object.</p>
 
-<p>The <strong>D</strong>on’t <strong>R</strong>epeat <strong>Y</strong>ourself (DRY) principle was created for this exact reason. When identical code is not shared and instead repeated, changes to one version can have dangerous consequences on the other.</p>
+<p>When asserting that a certain set of methods is called on a particular object, the built in <a href="https://www.relishapp.com/rspec/rspec-mocks/v/3-4/docs/basics/test-doubles">RSpec double</a> method is very handy.</p>
 
-<p>The good news is that Active Record provides precisely the medicine for this ailment: <code class="highlighter-rouge">.merge</code>.</p>
+<p>The <code class="highlighter-rouge">double</code> method returns a stand-in object to assert <code class="highlighter-rouge">allow</code> and <code class="highlighter-rouge">expect</code> messages against. Any method that is called on the test double which is not explicitly <code class="highlighter-rouge">allow</code>ed or <code class="highlighter-rouge">expect</code>ed results in an error.</p>
 
-<p>With <code class="highlighter-rouge">.merge</code>, an existing scope can be used in another Active Record query.</p>
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="n">describe</span> <span class="no">Dog</span> <span class="k">do</span>
+  <span class="n">subject</span> <span class="p">{</span> <span class="n">described_class</span><span class="p">.</span><span class="nf">new</span> <span class="p">}</span>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="n">books</span> <span class="o">=</span> <span class="no">Book</span><span class="p">.</span><span class="nf">where</span><span class="p">(</span><span class="ss">publish_year: </span><span class="s1">'2015'</span><span class="p">)</span>
-            <span class="p">.</span><span class="nf">includes</span><span class="p">(</span><span class="ss">:reviews</span><span class="p">)</span>
-            <span class="p">.</span><span class="nf">references</span><span class="p">(</span><span class="ss">:reviews</span><span class="p">)</span>
-            <span class="p">.</span><span class="nf">merge</span><span class="p">(</span><span class="no">Review</span><span class="p">.</span><span class="nf">approved</span><span class="p">)</span>
-            <span class="p">.</span><span class="nf">to_a</span>
-<span class="c1"># =&gt; SELECT #long books and reviews column select# FROM "books" LEFT OUTER JOIN "reviews" ON "reviews"."book_id" = "books"."id" WHERE "books"."publish_year" = '2015' AND (reviews.approved = 't')</span>
+  <span class="n">describe</span> <span class="s1">'#groom'</span> <span class="k">do</span>
+    <span class="n">let</span><span class="p">(</span><span class="ss">:groomer</span><span class="p">)</span> <span class="p">{</span> <span class="n">double</span><span class="p">(</span><span class="no">GroomingService</span><span class="o">::</span><span class="no">Groomer</span><span class="p">)</span> <span class="p">}</span>
+
+    <span class="n">it</span> <span class="s1">'initializes and calls groom'</span> <span class="k">do</span>
+      <span class="n">expect</span><span class="p">(</span><span class="no">GroomingService</span><span class="o">::</span><span class="no">Groomer</span><span class="p">).</span><span class="nf">to</span> <span class="n">receive</span><span class="p">(</span><span class="ss">:new</span><span class="p">)</span> <span class="p">{</span> <span class="n">groomer</span> <span class="p">}</span>
+      <span class="n">expect</span><span class="p">(</span><span class="n">groomer</span><span class="p">).</span><span class="nf">to</span> <span class="n">receive</span><span class="p">(</span><span class="ss">:groom</span><span class="p">)</span>
+
+      <span class="n">subject</span><span class="p">.</span><span class="nf">groom</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span>
 </code></pre>
 </div>
 
-<p>Great! Now the results are the exact same and the code is DRY.</p>
+<p>As expected, this test passes beautifully:</p>
 
-<h2 id="wherenot">3. <code class="highlighter-rouge">where.not</code></h2>
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="nv">$:</span> rspec dog_spec.rb
 
-<p>Typical insatiable Tim is back with yet another request to add to the brand new “totally not vanity metrics dashboard”. Now, he wants to know all the books <strong>not</strong> published in 2012.</p>
+Dog
+  <span class="c">#groom</span>
+    calls new with self and <span class="k">then </span>groom
 
-<p>Without even asking why such a silly request is necessary, some more code can be cranked out:</p>
+Finished <span class="k">in </span>0.00773 seconds <span class="o">(</span>files took 0.09367 seconds to load<span class="o">)</span>
+1 example, 0 failures
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="n">books</span> <span class="o">=</span> <span class="no">Book</span><span class="p">.</span><span class="nf">where</span><span class="p">(</span><span class="s1">'publish_year != 2012'</span><span class="p">).</span><span class="nf">to_a</span>
-<span class="c1"># =&gt; SELECT "books".* FROM "books" WHERE (publish_year != '2012')</span>
 </code></pre>
 </div>
 
-<p>Like before, this code works but could be better. There is some raw SQL in there that the next developer might not understand well enough to manipulate. Whatever the reason, it is best to rely on abstraction instead of explicit SQL.</p>
+<p>That can be it, right? Pack it up and put the dogs away, whoever let them out will have to do it all again later.</p>
 
-<p>To help solve this dilemma, the <code class="highlighter-rouge">.not</code> modifier has been introduced in Active Record 4.0.</p>
+<h2 id="think-of-the-future">Think of the Future</h2>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="n">books</span> <span class="o">=</span> <span class="no">Book</span><span class="p">.</span><span class="nf">where</span><span class="p">.</span><span class="nf">not</span><span class="p">(</span><span class="ss">publish_year: </span><span class="mi">2012</span><span class="p">).</span><span class="nf">to_a</span>
-<span class="c1"># =&gt; SELECT "books".* FROM "books" WHERE (publish_year != '2012')</span>
+<p>After some time passes, the <code class="highlighter-rouge">GroomingService::Groomer</code> has changed its method signature. Instead of the <code class="highlighter-rouge">groom</code> method, it has changed to <code class="highlighter-rouge">groom!</code>. Chances are someone thought that either the method had too many side affects or that <code class="highlighter-rouge">!</code> are just really awesome looking.</p>
+
+<p>In any case, the included service changes and when the test runs:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="nv">$:</span> rspec dog_spec.rb
+
+Dog
+  <span class="c">#groom</span>
+    calls new with self and <span class="k">then </span>groom
+
+Finished <span class="k">in </span>0.00735 seconds <span class="o">(</span>files took 0.10532 seconds to load<span class="o">)</span>
+1 example, 0 failures
+
 </code></pre>
 </div>
 
-<p>The result is the same but look how much nicer that is. Not only is the raw SQL gone, the code is more positive too.</p>
+<p><em>It passes</em>? How can that be? The method changed from <code class="highlighter-rouge">groom</code> to <code class="highlighter-rouge">groom!</code>. The <code class="highlighter-rouge">groom</code> method does not even exist on <code class="highlighter-rouge">GroomingService::Groomer</code>. It seems that the specs do not care what does or does not exist on the <code class="highlighter-rouge">double</code>, they just happily pass.</p>
 
-<h2 id="first-and-take">4. <code class="highlighter-rouge">first</code> and <code class="highlighter-rouge">take</code></h2>
+<h2 id="use-instancedouble">Use <code class="highlighter-rouge">instance_double</code></h2>
 
-<p>Since <em>“booksandreviews.com”</em> has been around since 2012, chances are it upgraded from Ruby on Rails 3.0 to 4.0. One notable change from Active Record 3 to 4 is the behaviour of <code class="highlighter-rouge">.first</code>.</p>
+<p>The answer here is to use <code class="highlighter-rouge">instance_double</code>. Like <code class="highlighter-rouge">double</code>, <code class="highlighter-rouge">instance_double</code> also returns a stand-in object that raises errors if methods not <code class="highlighter-rouge">allow</code>ed or <code class="highlighter-rouge">expect</code>ed are called on the object.</p>
 
-<p>In Ruby on Rails 4.0+, the <code class="highlighter-rouge">.first</code> method returns the first row after the table has been ordered by its <code class="highlighter-rouge">id</code>.</p>
+<p>The key difference is that <code class="highlighter-rouge">instance_double</code> checks the underlying object to make sure that it responds to methods before making assertions that they are called.</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="no">Author</span><span class="p">.</span><span class="nf">where</span><span class="p">(</span><span class="ss">first_name: </span><span class="s1">'Bill'</span><span class="p">).</span><span class="nf">first</span>
-<span class="c1"># =&gt; SELECT  "authors".* FROM "authors" WHERE "authors"."first_name" = "Bill" ORDER BY "authors"."id" ASC LIMIT 1</span>
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="n">describe</span> <span class="no">Dog</span> <span class="k">do</span>
+  <span class="n">subject</span> <span class="p">{</span> <span class="n">described_class</span><span class="p">.</span><span class="nf">new</span> <span class="p">}</span>
+
+  <span class="n">describe</span> <span class="s1">'#groom'</span> <span class="k">do</span>
+    <span class="n">let</span><span class="p">(</span><span class="ss">:groomer</span><span class="p">)</span> <span class="p">{</span> <span class="n">instance_double</span><span class="p">(</span><span class="no">GroomingService</span><span class="o">::</span><span class="no">Groomer</span><span class="p">)</span> <span class="p">}</span>
+
+    <span class="n">it</span> <span class="s1">'initializes and calls groom'</span> <span class="k">do</span>
+      <span class="n">expect</span><span class="p">(</span><span class="no">GroomingService</span><span class="o">::</span><span class="no">Groomer</span><span class="p">).</span><span class="nf">to</span> <span class="n">receive</span><span class="p">(</span><span class="ss">:new</span><span class="p">)</span> <span class="p">{</span> <span class="n">groomer</span> <span class="p">}</span>
+      <span class="n">expect</span><span class="p">(</span><span class="n">groomer</span><span class="p">).</span><span class="nf">to</span> <span class="n">receive</span><span class="p">(</span><span class="ss">:groom</span><span class="p">)</span>
+
+      <span class="n">subject</span><span class="p">.</span><span class="nf">groom</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span>
 </code></pre>
 </div>
 
-<p>This will work fine for every table that has an <code class="highlighter-rouge">id</code> column. However, if a table does not need an <code class="highlighter-rouge">id</code> column, this method causes a problem.</p>
+<p>Now running this test, we see the failure we should expect:</p>
 
-<p>Despite each <code class="highlighter-rouge">Author</code> having an id, complex joins might cause an issue with an implicit <code class="highlighter-rouge">ORDER BY</code> on queries.</p>
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="nv">$:</span> rspec dog_spec.rb
 
-<p>To alleviate that problem, the <code class="highlighter-rouge">take</code> method can be used instead of <code class="highlighter-rouge">first</code>:</p>
+Dog
+  <span class="c">#groom</span>
+    calls new with self and <span class="k">then </span>groom <span class="o">(</span>FAILED - 1<span class="o">)</span>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="no">Author</span><span class="p">.</span><span class="nf">where</span><span class="p">(</span><span class="ss">first_name: </span><span class="s1">'Bill'</span><span class="p">).</span><span class="nf">take</span>
-<span class="c1"># =&gt; SELECT  "authors".* FROM "authors" WHERE "authors"."first_name" = "Bill" LIMIT 1</span>
+Failures:
+
+  1<span class="o">)</span> Dog#groom calls new with self and <span class="k">then </span>groom
+     Failure/Error: expect<span class="o">(</span>groomer<span class="o">)</span>.to receive<span class="o">(</span>:groom<span class="o">)</span>
+       the GroomingService::Groomer class does not
+          implement the instance method: groom
+
+Finished <span class="k">in </span>0.0054 seconds <span class="o">(</span>files took 0.08288 seconds to load<span class="o">)</span>
+1 example, 1 failure
 </code></pre>
 </div>
 
-<p>This behaves in a much more explicit way, returning the same information without a default ordering.</p>
+<p>While no one likes failing specs, a failure here is always preferable to one in production.</p>
 
-<h2 id="unscoped">5. <code class="highlighter-rouge">.unscoped</code></h2>
+<p>Since the API that we do not own (<code class="highlighter-rouge">Groomer</code>) changed, it was a mistake to blindly mock it without asking the underlying object if that method existed. However, with this problem corrected, the code is more robust and development can continue.</p>
 
-<p>During the development life of “<em>booksandreviews.com”</em>, countless modules have been built and gems included. Amidst this chaos, someone must have typed <code class="highlighter-rouge">gem install hairball</code> and horribly altered the <code class="highlighter-rouge">Author</code> class. This has led to the new guy Mike’s  complaint that: <em>“Authors are missing data”</em>.</p>
+<h2 id="mocking-with-confidence">Mocking with Confidence</h2>
 
-<p>Mike knows that authors have a <code class="highlighter-rouge">first_name</code> but for some reason it is not being returned:</p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="n">authors</span> <span class="o">=</span> <span class="no">Author</span><span class="p">.</span><span class="nf">where</span><span class="p">(</span><span class="ss">last_name: </span><span class="s1">'Smith'</span><span class="p">).</span><span class="nf">take</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
-<span class="n">authors</span><span class="p">.</span><span class="nf">map</span><span class="p">(</span><span class="o">&amp;</span><span class="ss">:first_name</span><span class="p">)</span>
-<span class="c1"># =&gt; [nil, nil, nil, nil, nil]</span>
-</code></pre>
-</div>
-
-<p>What Mike does not know is that one of those hairball gems added a default scope to all Active Record objects that begin with the letter “A”. However impossible this bug is, it exists and it is ruining Mike’s day.</p>
-
-<p>What Mike needs is the <code class="highlighter-rouge">.unscoped</code> method. This method removes all existing scopes on an Active Record relation.</p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="n">authors</span> <span class="o">=</span> <span class="no">Author</span><span class="p">.</span><span class="nf">unscoped</span><span class="p">.</span><span class="nf">where</span><span class="p">(</span><span class="ss">last_name: </span><span class="s1">'Smith'</span><span class="p">).</span><span class="nf">take</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
-<span class="n">authors</span><span class="p">.</span><span class="nf">map</span><span class="p">(</span><span class="o">&amp;</span><span class="ss">:first_name</span><span class="p">)</span>
-<span class="c1"># =&gt; ['Frank', 'Frank', 'Jim', 'Frank', 'Frank']</span>
-</code></pre>
-</div>
-
-<p><em>(Is anyone else concerned that there are four Frank Smith authors?)</em></p>
-
-<p>With the <code class="highlighter-rouge">.unscoped</code> method, all harmful default scopes are removed and the Franks are free.</p>
-
-<h2 id="queries-on-queries">Queries on Queries</h2>
-
-<p>With these five techniques (and probably a lot more), naiive Active Record queries can stay DRY and intuitive. The exhaustive list of what Active Record can provide can be found <a href="http://guides.rubyonrails.org/active_record_querying.html">at Rails Guides</a>.</p>
+<p>Asserting that a method is called on an object is a very common pattern in Ruby tests. Additionally, Ruby does not have the benefit of compiled languages in terms of method invocation validation. We as Rubyists rely on automated testing to make sure that our applications work as expected, can be iterated upon, and handle third party library updates. While it may be attractive to use permissive mocking assertions, they can be dangerous and cause more problems than they are worth.</p>
 
 
   </div>

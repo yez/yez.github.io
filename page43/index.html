@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta http-equiv="content-type" content="text/html; charset=utf-8">
   
-    <meta name="description" content="A technology blog about a Year of Commits to Open Source projects.">
+    <meta name="description" content="Jake Yesbeck's Technology Blog inspired by Open Source Projects.">
   
 
   <!-- Enable responsiveness on mobile devices-->
@@ -68,139 +68,65 @@
   
   <div class="post">
     <h1 class="post-title">
-      <a href="/2015/06/21/validates-subset/">
-        Rails style subset validation
+      <a href="/2015/06/28/staying-motivated/">
+        Staying Motivated
       </a>
     </h1>
 
     
 
-    <span class="post-date">21 Jun 2015</span>
+    <span class="post-date">28 Jun 2015</span>
     <span class='share-container'><ul class="share-buttons">
   <li>
-    <a href="https://www.facebook.com/sharer/sharer.php?u=http://jakeyesbeck.com/2015/06/21/validates-subset/&t=Rails style subset validation" title="Share on Facebook" target="_blank">
+    <a href="https://www.facebook.com/sharer/sharer.php?u=http://jakeyesbeck.com/2015/06/28/staying-motivated/&t=Staying Motivated" title="Share on Facebook" target="_blank">
       <img src="http://jakeyesbeck.com/assets/images/facebook.svg">
     </a>
   </li>
   <li>
-    <a href="https://twitter.com/intent/tweet?source=http%3A%2F%2Fjakeyesbeck.com&text=Rails style subset validation%20http://jakeyesbeck.com/2015/06/21/validates-subset/&via=jakeyesbeck" target="_blank" title="Tweet">
+    <a href="https://twitter.com/intent/tweet?source=http%3A%2F%2Fjakeyesbeck.com&text=Staying Motivated%20http://jakeyesbeck.com/2015/06/28/staying-motivated/&via=jakeyesbeck" target="_blank" title="Tweet">
       <img src="http://jakeyesbeck.com/assets/images/twitter.svg">
     </a>
   </li>
   <li>
-    <a href="https://plus.google.com/share?url=http://jakeyesbeck.com/2015/06/21/validates-subset/" target="_blank" title="Share on Google+">
+    <a href="https://plus.google.com/share?url=http://jakeyesbeck.com/2015/06/28/staying-motivated/" target="_blank" title="Share on Google+">
       <img src="http://jakeyesbeck.com/assets/images/google_plus.svg">
     </a>
   </li>
 
   <li>
-    <a href="https://news.ycombinator.com/submitlink?u=http://jakeyesbeck.com/2015/06/21/validates-subset/&t=Rails style subset validation" target="_blank" title="Share on Hacker News">
+    <a href="https://news.ycombinator.com/submitlink?u=http://jakeyesbeck.com/2015/06/28/staying-motivated/&t=Staying Motivated" target="_blank" title="Share on Hacker News">
       <img src="http://jakeyesbeck.com/assets/images/ycomb.svg">
     </a>
   </li>
 
   <li>
-    <a href="https://getpocket.com/save?url=http://jakeyesbeck.com/2015/06/21/validates-subset/&title=Rails style subset validation" target="_blank" title="Add to Pocket">
+    <a href="https://getpocket.com/save?url=http://jakeyesbeck.com/2015/06/28/staying-motivated/&title=Staying Motivated" target="_blank" title="Add to Pocket">
       <img src="http://jakeyesbeck.com/assets/images/pocket.svg">
     </a>
   </li>
   <li>
-    <a href="http://www.reddit.com/submit?url=http://jakeyesbeck.com/2015/06/21/validates-subset/&title=Rails style subset validation" target="_blank" title="Submit to Reddit">
+    <a href="http://www.reddit.com/submit?url=http://jakeyesbeck.com/2015/06/28/staying-motivated/&title=Staying Motivated" target="_blank" title="Submit to Reddit">
       <img src="http://jakeyesbeck.com/assets/images/reddit.svg">
     </a>
   </li>
 </ul>
 </span>
 
-    <p>Do you suddenly wake up in a cold sweat, wondering if there is <strong>finally</strong> a way to validate that your data is a proper subset that you desire? I too have experienced this horror, and that is why I made a rails style <a href="https://github.com/yez/validates_subset">subset validator</a>.</p>
+    <p>Motivation is the most important thing you can control. Only with proper motivation can one reach their full potential. <a href="http://jakeyesbeck.com/2015/04/23/a-year-of-commits/">A Year of Commits</a> is a project that requires a decent amount of motivation. I, like nearly every human ever, am not always the defintion of a “driven individual”. It takes a large amount of effort to persevere through low points and come out the other side with something to show for it. It has been <strong>63</strong> days of my Year of Commits initiative and I have found a few helpful ways to keep my motivation up and morale high.</p>
 
-<h2 id="validations-ber-alles">Validations über alles</h2>
+<h2 id="make-small-deliverables-for-yourself">1. Make small deliverables for yourself</h2>
 
-<p>Data validation is important. Having data you can depend on is the difference between a great application and one that might be classified as: <em>“amateur hour”</em>. Rails provides a nice amount of validators via <code class="highlighter-rouge">ActiveModel::Validations</code>, but not an exhaustive set (get it?). One of those missing pieces involves validating sets of data. Just in case you haven’t had your coffee yet, we define a <a href="https://en.wikipedia.org/wiki/Set_(abstract_data_type)">set</a> as an abstract data type that stores distinct values in no particular order.</p>
+<p>If you embark on grandiose endeavors frequently, consider breaking pieces of them apart into small, digestible morsels of motivation goodness. Every project does not need to go at break neck speed instantly. This is especially applicable in software development. You know that project that you’ve been planning? The revolutionary one that you’re so excited about? That project has a greater chance of completion if you don’t expect finish the whole thing in an afternoon. Setting yourself up with unreasonable expectations can deflate even the most cocksure individuals. If you take some time to prioritize small deliverable pieces, you will be much more likely to achieve something. Speaking from experience, there comes a time when you have to sit back and wonder: <em>“Why do I have 10-15 projects around 30% completion?”.</em> It might just be that you were biting off a bit more than you can chew. Take smaller bites, you will get there if you just keep going.</p>
 
-<p>Ruby does indeed have the <code class="highlighter-rouge">Set</code> class but most code I’ve come across simply uses the <code class="highlighter-rouge">Array</code> class. So, for simplicity’s sake, all examples will use <code class="highlighter-rouge">Array</code>.</p>
+<h2 id="keep-moving">2. Keep moving</h2>
 
-<p>Now that we have all been convinced that subset validation is the greatest thing since sliced bread, how about some examples?</p>
+<p>A complementary behavior to breaking things into smaller pieces is to make every day count. As the person committed to working every single day for year, I might be a <em>tad</em> biased. However, I believe that maintaining at least some kind of constant pace of effort will keep motivation from dropping off a cliff. Procrastination is the greatest enemy of motivation. If you let yourself delay your tasks once, it becomes increasingly easy to delay them again. Subsequent delays will mostly likely be in the not so distant future. If you make your tasks part of your routine, it can have the opposite effect. I bet you don’t even think about all the time you spend doing things that are just “part of your routine”. Imagine if the task you want to accomplish, the world changing, earth shattering, unbelievable awesome project that you have queued up was as easy to fit into your schedule as brushing your teeth. There exists no magic that some of the greatest achievers have found and harnessed. They simply kept working until the job was done. To them, working on what mattered to them was as routine as brushing their teeth or putting on their shoes.</p>
 
-<h2 id="example-usage">Example usage</h2>
+<h2 id="believe-that-you-are-good-at-what-you-do">3. Believe that you are good at what you do</h2>
 
-<p>To include <code class="highlighter-rouge">validates_subset</code>, simply add <code class="highlighter-rouge">gem 'validates_subset'</code> in your Gemfile of your projects. Or type <code class="highlighter-rouge">gem install validates_subset</code> in your terminal.</p>
+<p>As it so happens, your kindergarten teacher was right about a thing or two. Attitude is important in order to help you stay motivated. A self debilitating mindset can vacuum the motivation out of nearly anything. Having the right attitude will help you soar, help keep that fire of motivation stoked and ready. Impostor syndrome, doubts, or anything in that general mindset will be nothing but a hindrance. Understanding your skill sets, knowing where you want to improve and where you have strengths, will help keep you motivated to achieve your goals. This might be the most obvious piece of advice but that does not mean it is the easiest to achieve. In software development, our confidence in our abilities is constantly tested. I try and combat this by remaining calm, remembering <a href="http://jakeyesbeck.com/2015/06/14/you-are-not-your-code/">“I am not my code”</a>, and taking a few deep breaths now and again. Confidence takes time to build. If you are among the lucky few that simply have it in abundance, great news, you just need to keep it strong!</p>
 
-<p>For rails applications, the gem is automagically available to you. For other ruby frameworks, just add the line: <code class="highlighter-rouge">require 'validates_subset'</code> wherever you need the library. For this, we can assume that our application is using Rails 4.0 and we have a class that looks like:</p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">class</span> <span class="nc">HasASubset</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
-  <span class="kp">attr_accessor</span> <span class="ss">:foo</span>
-
-  <span class="n">validates_subset</span> <span class="ss">:foo</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
-<span class="k">end</span>
-</code></pre>
-</div>
-
-<h2 id="using-our-handy-dandy-test-class-we-can-see-that">Using our handy dandy test class, we can see that:</h2>
-
-<h3 id="a-valid-subset-is-valid">A valid subset is valid:</h3>
-
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="nb">test</span> <span class="o">=</span> <span class="no">HasASubset</span><span class="p">.</span><span class="nf">new</span>
-<span class="nb">test</span><span class="p">.</span><span class="nf">foo</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-<span class="nb">test</span><span class="p">.</span><span class="nf">valid?</span>
-<span class="c1"># =&gt; true</span>
-</code></pre>
-</div>
-
-<h3 id="an-empty-set-is-also-very-valid">An empty set is also very valid:</h3>
-
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="nb">test</span> <span class="o">=</span> <span class="no">HasASubset</span><span class="p">.</span><span class="nf">new</span>
-<span class="nb">test</span><span class="p">.</span><span class="nf">foo</span> <span class="o">=</span> <span class="p">[]</span>
-<span class="nb">test</span><span class="p">.</span><span class="nf">valid?</span>
-<span class="c1"># =&gt; true</span>
-</code></pre>
-</div>
-
-<h3 id="an-invalid-set-is-invalid">An invalid set is… invalid:</h3>
-
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="nb">test</span> <span class="o">=</span> <span class="no">HasASubset</span><span class="p">.</span><span class="nf">new</span>
-<span class="nb">test</span><span class="p">.</span><span class="nf">foo</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'banana'</span><span class="p">]</span>
-<span class="nb">test</span><span class="p">.</span><span class="nf">valid?</span>
-<span class="c1"># =&gt; false</span>
-</code></pre>
-</div>
-
-<h3 id="and-a-non-set-is-invalid">And a non-set is invalid:</h3>
-
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="nb">test</span> <span class="o">=</span> <span class="no">HasASubset</span><span class="p">.</span><span class="nf">new</span>
-<span class="nb">test</span><span class="p">.</span><span class="nf">foo</span> <span class="o">=</span> <span class="mi">99_999</span>
-<span class="nb">test</span><span class="p">.</span><span class="nf">valid?</span>
-<span class="c1"># =&gt; false</span>
-</code></pre>
-</div>
-
-<p>Holy guacamole that is some sweet validation. But wait, there’s more! Since this validator is built on top of rock solid <code class="highlighter-rouge">ActiveModel::Validations</code> logic, all modifiers are supported.</p>
-
-<h2 id="modification-nation">Modification nation</h2>
-
-<p>If your particular dataset needs something to be a subset or <code class="highlighter-rouge">nil</code>, it is a simple as:</p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">class</span> <span class="nc">HasASubset</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
-  <span class="kp">attr_accessor</span> <span class="ss">:foo</span>
-
-  <span class="n">validates_subset</span> <span class="ss">:foo</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="ss">allow_nil: </span><span class="kp">true</span>
-<span class="k">end</span>
-</code></pre>
-</div>
-
-<p>If you needed the data to <code class="highlighter-rouge">allow_nil</code> and only validate on <code class="highlighter-rouge">create</code>, you could easily define the validation as:</p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">class</span> <span class="nc">HasASubset</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
-  <span class="kp">attr_accessor</span> <span class="ss">:foo</span>
-
-  <span class="n">validates_subset</span> <span class="ss">:foo</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="ss">allow_nil: </span><span class="kp">true</span><span class="p">,</span> <span class="ss">on: :create</span>
-<span class="k">end</span>
-</code></pre>
-</div>
-
-<p>Any combination of modifiers is supported by <code class="highlighter-rouge">validates_subset</code>. For a complete list of modifiers, have a look at the <a href="http://api.rubyonrails.org/classes/ActiveModel/Validations/ClassMethods.html#method-i-validate">rails documentationn</a>.</p>
-
-<p>As always, please contribute to and use this software for the low low price of free.</p>
+<p>So now with all this new information, ask yourself: Are <em>you</em> good? Yeah you are good. You are better than good, you’re motivated! Keep moving, keep building, keep creating and you will get to where you want to go. You are the one at the helm, the one in control of your journey. Motivation is the fuel.</p>
 
   </div>
   
