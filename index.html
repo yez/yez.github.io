@@ -248,7 +248,7 @@
 </code></pre>
 </div>
 
-<p>Here the <code class="highlighter-rouge">includes</code> method will use the established foreign keys via the <code class="highlighter-rouge">belongs_to</code> relationships and pull in relevant <code class="highlighter-rouge">posts</code> and <code class="highlighter-rouge">themes</code>. The <code class="highlighter-rouge">references</code> method allows <code class="highlighter-rouge">ActiveRecord</code> to <code class="highlighter-rouge">JOIN</code> the tables listed, minimizing the number of queries needed.</p>
+<p>Here the <code class="highlighter-rouge">eager_load</code> method will use the established foreign keys via the <code class="highlighter-rouge">belongs_to</code> relationships and pull in relevant <code class="highlighter-rouge">posts</code> and <code class="highlighter-rouge">themes</code>, resulting in two <code class="highlighter-rouge">JOIN</code> clauses in the query.</p>
 
 <p><em>Note: This is just one solution for this particular problem with its own downsides. Any memory concerns dealing with a <code class="highlighter-rouge">User</code> that has far too many <code class="highlighter-rouge">posts</code> or similar problems are not addressed.</em></p>
 

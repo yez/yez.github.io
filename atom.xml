@@ -153,7 +153,7 @@
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 
-&lt;p&gt;Here the &lt;code class=&quot;highlighter-rouge&quot;&gt;includes&lt;/code&gt; method will use the established foreign keys via the &lt;code class=&quot;highlighter-rouge&quot;&gt;belongs_to&lt;/code&gt; relationships and pull in relevant &lt;code class=&quot;highlighter-rouge&quot;&gt;posts&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;themes&lt;/code&gt;. The &lt;code class=&quot;highlighter-rouge&quot;&gt;references&lt;/code&gt; method allows &lt;code class=&quot;highlighter-rouge&quot;&gt;ActiveRecord&lt;/code&gt; to &lt;code class=&quot;highlighter-rouge&quot;&gt;JOIN&lt;/code&gt; the tables listed, minimizing the number of queries needed.&lt;/p&gt;
+&lt;p&gt;Here the &lt;code class=&quot;highlighter-rouge&quot;&gt;eager_load&lt;/code&gt; method will use the established foreign keys via the &lt;code class=&quot;highlighter-rouge&quot;&gt;belongs_to&lt;/code&gt; relationships and pull in relevant &lt;code class=&quot;highlighter-rouge&quot;&gt;posts&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;themes&lt;/code&gt;, resulting in two &lt;code class=&quot;highlighter-rouge&quot;&gt;JOIN&lt;/code&gt; clauses in the query.&lt;/p&gt;
 
 &lt;p&gt;&lt;em&gt;Note: This is just one solution for this particular problem with its own downsides. Any memory concerns dealing with a &lt;code class=&quot;highlighter-rouge&quot;&gt;User&lt;/code&gt; that has far too many &lt;code class=&quot;highlighter-rouge&quot;&gt;posts&lt;/code&gt; or similar problems are not addressed.&lt;/em&gt;&lt;/p&gt;
 
