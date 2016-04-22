@@ -14,9 +14,9 @@
  
  <entry>
    <title>How to Diagnose Ruby on Rails N + 1 Query Problems</title>
-   <link href="http://jakeyesbeck.com/2016/04/17/how-to-diagnose-ruby-on-rails-n-+-1-query-problems/"/>
+   <link href="http://jakeyesbeck.com/2016/04/17/how-to-diagnose-ruby-on-rails-n-plus-1-query-problems/"/>
    <updated>2016-04-17T05:00:00-07:00</updated>
-   <id>http://jakeyesbeck.com/2016/04/17/how-to-diagnose-ruby-on-rails-n-+-1-query-problems</id>
+   <id>http://jakeyesbeck.com/2016/04/17/how-to-diagnose-ruby-on-rails-n-plus-1-query-problems</id>
    <content type="html">&lt;p&gt;Diagnosing performance problems in a production Ruby on Rails application can be deceptively complex. When constructing a new application or expanding the features of an existing one, development environments that are not subject to typical production web traffic may not make performance issues evident. In those instances, the use of some simple (and mostly free) tools can help diagnose performance issues in production.&lt;/p&gt;
 
 &lt;p&gt;If an application is hosted on Heroku, the New Relic add-on can be added to the application for free. Despite it having a few limitations, the free version of New Relic can be extremely valuable for diagnosing some common performance issues.&lt;/p&gt;
