@@ -4,13 +4,113 @@
  <title>A Year of Commits</title>
  <link href="http://jakeyesbeck.com/atom.xml" rel="self"/>
  <link href="http://jakeyesbeck.com/"/>
- <updated>2016-04-17T22:11:35-07:00</updated>
+ <updated>2016-04-26T09:59:09-07:00</updated>
  <id>http://jakeyesbeck.com/</id>
  <author>
    <name>Jake Yesbeck</name>
    <email>yesbeckjs@gmail.com</email>
  </author>
 
+ 
+ <entry>
+   <title>A Successful Year of Commits</title>
+   <link href="http://jakeyesbeck.com/2016/04/26/a-successful-year-of-commits/"/>
+   <updated>2016-04-26T05:00:00-07:00</updated>
+   <id>http://jakeyesbeck.com/2016/04/26/a-successful-year-of-commits</id>
+   <content type="html">&lt;p&gt;At Rails Conf 2015, I met a lot of great people from the Ruby community. These people had a profound effect on me, instilling in me a new motivation to become part of something larger than myself. A year ago today, I embarked on a journey to better myself as a Software Engineer. &lt;a href=&quot;http://jakeyesbeck.com/2015/04/23/a-year-of-commits/&quot;&gt;I decided to commit to open source software every day for a year&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;Even though open source software has been around for decades, up until a year ago I had thought it mostly magic and far beyond my reach. After Rails Conf 2015, it became clear to me that contributing to and becoming part of the open source community was not so far fetched.&lt;/p&gt;
+
+&lt;h2 id=&quot;the-plan&quot;&gt;The Plan&lt;/h2&gt;
+
+&lt;p&gt;The word “plan” might be a bit generous for what I decided to do. I was going to “just keep doing commits for a year”. Surely doing something over and over again will yield good results…right? It has to have at least &lt;em&gt;some&lt;/em&gt; effect on &lt;em&gt;some&lt;/em&gt; aspect of my programming ability.&lt;/p&gt;
+
+&lt;p&gt;And so that is what I did. For one year, I made at least one commit to an open source repository (someone else’s or my own) every day:&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://jakeyesbeck.com/assets/images/complete_year_of_commits_graph.png&quot; alt=&quot;Completed Year of Commits Github Graph&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;I started this endeavor on April 26th 2015 and ended it today, April 26 2016.&lt;/p&gt;
+
+&lt;h2 id=&quot;reality-check&quot;&gt;Reality Check&lt;/h2&gt;
+
+&lt;p&gt;At the beginning of the year, I was under the impression that I was going to be able to contribute to other people’s repositories every day without too much effort. That idea was soon shattered due to the short the time constraints I had to work with. After all, I am happily employed and unable to devote more than a few hours a day to open source work. Exploring someone else’s code base, reproducing an issue and finding a solution can take more than a few hours.&lt;/p&gt;
+
+&lt;p&gt;It became clear that I needed to fill in gaps of time with my own projects. This ended up being much more fun than I had anticipated and I got to build some cool libraries that people would actually use:&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/yez/passages&quot;&gt;Passages&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/yez/validates_type&quot;&gt;validates_type&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/yez/rescue_groups&quot;&gt;Rescue Groups&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/yez/validates_subset&quot;&gt;validates_subset&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/yez/honest_renter&quot;&gt;Honest Renter&lt;/a&gt;&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;However, this does not mean that my only contributions were to my own projects. Oh no, far from it, I forked repositories on Github like crazy and ended up contributing to a lot of great projects:&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/codetriage/codetriage&quot;&gt;Code Triage&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/Growstuff/growstuff&quot;&gt;Growstuff&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/sendgrid/sendgrid-ruby&quot;&gt;SendGrid Ruby&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/girishso/pluck_to_hash&quot;&gt;Pluck to Hash&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/covermymeds/fetching-gem&quot;&gt;Fetching&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/codegram/date_validator&quot;&gt;Date Validator&lt;/a&gt;&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;…and many more&lt;/p&gt;
+
+&lt;p&gt;Each of these projects taught me something new and introduced me to many different coding styles. My contributions ranged from one-liners to entire spec suite creations. If any maintainers of these libraries end up reading this post: Thank you for all the work you do. Open source development is done for free and I value the time you put into it.&lt;/p&gt;
+
+&lt;h2 id=&quot;expect-the-unexpected&quot;&gt;Expect the Unexpected&lt;/h2&gt;
+
+&lt;p&gt;A delightful surprise during this project was writing this blog. I had a feeling that I would enjoy writing every week and originally intended to only write about the Year of Commits project. However, a few weeks into the posts and I quickly found new inspiration. It turns out that people actually like reading my explanations of coding patterns, designs, and tutorials:&lt;/p&gt;
+
+&lt;blockquote class=&quot;twitter-tweet&quot; data-lang=&quot;en&quot;&gt;
+  &lt;p lang=&quot;en&quot; dir=&quot;ltr&quot;&gt;&lt;a href=&quot;https://twitter.com/jakeyesbeck&quot;&gt;@jakeyesbeck&lt;/a&gt; Hey man! Your blog is awesome! Keep going! Also thanks for sharing your thoughts and learned things! 👍&lt;/p&gt;&amp;mdash; Gabriel Francisco (@fgbreel) &lt;a href=&quot;https://twitter.com/fgbreel/status/700493892861485056&quot;&gt;February 19, 2016&lt;/a&gt;
+&lt;/blockquote&gt;
+&lt;script async=&quot;&quot; src=&quot;//platform.twitter.com/widgets.js&quot; charset=&quot;utf-8&quot;&gt;&lt;/script&gt;
+
+&lt;blockquote class=&quot;twitter-tweet&quot; data-lang=&quot;en&quot;&gt;
+  &lt;p lang=&quot;en&quot; dir=&quot;ltr&quot;&gt;Been really impressed with &lt;a href=&quot;https://twitter.com/jakeyesbeck&quot;&gt;@jakeyesbeck&lt;/a&gt;&amp;#39;s blog recently for great &lt;a href=&quot;https://twitter.com/hashtag/Ruby?src=hash&quot;&gt;#Ruby&lt;/a&gt; and &lt;a href=&quot;https://twitter.com/hashtag/RubyOnRails?src=hash&quot;&gt;#RubyOnRails&lt;/a&gt; posts. Check it out! &lt;a href=&quot;https://t.co/cIGGTdzqlL&quot;&gt;https://t.co/cIGGTdzqlL&lt;/a&gt;&lt;/p&gt;&amp;mdash; Brad Urani (@bradurani) &lt;a href=&quot;https://twitter.com/bradurani/status/701544221224755200&quot;&gt;February 21, 2016&lt;/a&gt;
+&lt;/blockquote&gt;
+&lt;script async=&quot;&quot; src=&quot;//platform.twitter.com/widgets.js&quot; charset=&quot;utf-8&quot;&gt;&lt;/script&gt;
+
+&lt;p&gt;Of course, not all feedback on my posts was positive, but all of it was useful. Having my opinion out there, my content distributed and consumed has been extremely motivating and completely unexpected. Finding topics I thought would be useful and interesting to others was always a hard challenge, but having a self-imposed obligation of one post per week kept me honest.&lt;/p&gt;
+
+&lt;p&gt;I now believe all software engineers should write. There are a lot of parallels between writing code and writing paragraphs; both are done with great care. Writing about something is a great way to express your ideas, share knowledge, and solidify concepts for yourself. Aside from the growth in my technical skills during this past year, having my writing appreciated made all my hard work worth it.&lt;/p&gt;
+
+&lt;p&gt;I was lucky enough to be &lt;a href=&quot;http://rubyweekly.com/issues/284&quot;&gt;featured in Ruby Weekly&lt;/a&gt; a &lt;a href=&quot;http://rubyweekly.com/issues/285&quot;&gt;few times&lt;/a&gt; and was even mentioned in a couple podcasts.&lt;/p&gt;
+
+&lt;p&gt;This support completely validated my commitment and helped make this project so productive.&lt;/p&gt;
+
+&lt;h2 id=&quot;what-i-learned&quot;&gt;What I Learned&lt;/h2&gt;
+
+&lt;p&gt;The big question that most people I talk about this project ask is: “What have I learned while doing it?” Early on in the year, I would answer by explaining some new software pattern or Ruby library that I came across. But, after a few months, I realised something much more important: &lt;em&gt;the value of perseverance&lt;/em&gt;.&lt;/p&gt;
+
+&lt;p&gt;Committing code every day for a week is not difficult. Writing software every day for a month is a little harder, and every day for a year is harder still. Within a year’s time, inconveniences are bound to appear. Be it an unexpected spell of food poisoning, an impromptu vacation to Las Vegas, or a simple release of a new Netflix show to binge watch, the coding must continue. All of these things did indeed happen to me over the course of a year and it was very tempting to say to myself: “What is the harm in missing one day?”&lt;/p&gt;
+
+&lt;p&gt;But one missed day meant more and more as time went on. At 100 consecutive days, missing one day would have been disappointing, at 200 days it would have been devastating and at 300 days, it was unthinkable. When people did not seem to care about libraries I worked on or blog posts I published, it was easier to think about skipping a day.&lt;/p&gt;
+
+&lt;p&gt;And here, a year later, I stand without missing a single day. Persevering through criticism and rejection, I kept going until my task was done. If a blog post was not well received, I had next week to try again. If a library was not found useful, I could tweak it until it was. Perseverance was my hammer and everything started to look like a nail.&lt;/p&gt;
+
+&lt;p&gt;And it worked. I learned a lot, met some great people, and hopefully helped a few people along the way. Believing in myself and my ability to persevere was my biggest lesson during this project and I will not soon forget it.&lt;/p&gt;
+
+&lt;h2 id=&quot;would-i-do-it-again&quot;&gt;Would I do it Again?&lt;/h2&gt;
+
+&lt;p&gt;In short, heck yes I would. This experience has been one of the most beneficial, positive, and growth inducing tasks I have ever done. Thinking back to a year ago, my attitude towards open source software and my own abilities as a software engineer have completely changed. Working with many different types of people and receiving a variety of feedback has been a very eye opening experience.&lt;/p&gt;
+
+&lt;p&gt;Too often in our daily lives are we subject to repetition. These patterns can be confining while not appearing as such. Breaking out of one’s routine and exposing yourself to a variety of new stimuli can help maintain an open mind about new ideas or technology.&lt;/p&gt;
+
+&lt;p&gt;This project is not for everyone. I was lucky enough to have the time and energy to complete a task of this scale and for that I am supremely thankful.&lt;/p&gt;
+
+&lt;h2 id=&quot;looking-forward&quot;&gt;Looking Forward&lt;/h2&gt;
+
+&lt;p&gt;I plan to keep writing and contributing to open source projects as frequently as time allows. I doubt I will ever obtain the same level of Github streak that this project allotted me, but I hope to continue to make meaningful contributions to open source projects.&lt;/p&gt;
+
+&lt;p&gt;The confidence and exposure to many different types of codebases is something that I will value for a long time. I am more than thankful for all the people who said kind things to me or gave me words of encouragement. Without those people, there is no way that I could have accomplished this.&lt;/p&gt;
+
+&lt;p&gt;Thank you all so much, now I think its time for me to take a little break. I plan to be back in a few weeks, refreshed and ready to write more.&lt;/p&gt;
+</content>
+ </entry>
  
  <entry>
    <title>How to Diagnose Ruby on Rails N + 1 Query Problems</title>
