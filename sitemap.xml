@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>http://jakeyesbeck.com/2017/07/12/a-few-rspec-helpful-hints/</loc>
+    <lastmod>2017-07-12T08:00:00-04:00</lastmod>
+  </url>
+  <url>
     <loc>http://jakeyesbeck.com/2016/04/26/a-successful-year-of-commits/</loc>
     <lastmod>2016-04-26T05:00:00-07:00</lastmod>
   </url>

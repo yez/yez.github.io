@@ -68,184 +68,231 @@
   
   <div class="post">
     <h1 class="post-title">
-      <a href="/2016/02/21/four-postgresql-tips/">
-        Four PostgreSQL Tips
+      <a href="/2016/02/28/ruby-spaceship-operator/">
+        Ruby Spaceship <=> Operator
       </a>
     </h1>
 
     
 
-    <span class="post-date">21 Feb 2016</span>
+    <span class="post-date">28 Feb 2016</span>
     <span class='share-container'><ul class="share-buttons">
   <li>
-    <a href="https://www.facebook.com/sharer/sharer.php?u=http://jakeyesbeck.com/2016/02/21/four-postgresql-tips/&t=Four PostgreSQL Tips" title="Share on Facebook" target="_blank">
+    <a href="https://www.facebook.com/sharer/sharer.php?u=http://jakeyesbeck.com/2016/02/28/ruby-spaceship-operator/&t=Ruby Spaceship <=> Operator" title="Share on Facebook" target="_blank">
       <img src="http://jakeyesbeck.com/assets/images/facebook.svg">
     </a>
   </li>
   <li>
-    <a href="https://twitter.com/intent/tweet?source=http%3A%2F%2Fjakeyesbeck.com&text=Four PostgreSQL Tips%20http://jakeyesbeck.com/2016/02/21/four-postgresql-tips/&via=jakeyesbeck" target="_blank" title="Tweet">
+    <a href="https://twitter.com/intent/tweet?source=http%3A%2F%2Fjakeyesbeck.com&text=Ruby Spaceship <=> Operator%20http://jakeyesbeck.com/2016/02/28/ruby-spaceship-operator/&via=jakeyesbeck" target="_blank" title="Tweet">
       <img src="http://jakeyesbeck.com/assets/images/twitter.svg">
     </a>
   </li>
   <li>
-    <a href="https://plus.google.com/share?url=http://jakeyesbeck.com/2016/02/21/four-postgresql-tips/" target="_blank" title="Share on Google+">
+    <a href="https://plus.google.com/share?url=http://jakeyesbeck.com/2016/02/28/ruby-spaceship-operator/" target="_blank" title="Share on Google+">
       <img src="http://jakeyesbeck.com/assets/images/google_plus.svg">
     </a>
   </li>
 
   <li>
-    <a href="https://news.ycombinator.com/submitlink?u=http://jakeyesbeck.com/2016/02/21/four-postgresql-tips/&t=Four PostgreSQL Tips" target="_blank" title="Share on Hacker News">
+    <a href="https://news.ycombinator.com/submitlink?u=http://jakeyesbeck.com/2016/02/28/ruby-spaceship-operator/&t=Ruby Spaceship <=> Operator" target="_blank" title="Share on Hacker News">
       <img src="http://jakeyesbeck.com/assets/images/ycomb.svg">
     </a>
   </li>
 
   <li>
-    <a href="https://getpocket.com/save?url=http://jakeyesbeck.com/2016/02/21/four-postgresql-tips/&title=Four PostgreSQL Tips" target="_blank" title="Add to Pocket">
+    <a href="https://getpocket.com/save?url=http://jakeyesbeck.com/2016/02/28/ruby-spaceship-operator/&title=Ruby Spaceship <=> Operator" target="_blank" title="Add to Pocket">
       <img src="http://jakeyesbeck.com/assets/images/pocket.svg">
     </a>
   </li>
   <li>
-    <a href="http://www.reddit.com/submit?url=http://jakeyesbeck.com/2016/02/21/four-postgresql-tips/&title=Four PostgreSQL Tips" target="_blank" title="Submit to Reddit">
+    <a href="http://www.reddit.com/submit?url=http://jakeyesbeck.com/2016/02/28/ruby-spaceship-operator/&title=Ruby Spaceship <=> Operator" target="_blank" title="Submit to Reddit">
       <img src="http://jakeyesbeck.com/assets/images/reddit.svg">
     </a>
   </li>
 </ul>
 </span>
 
-    <p>PostgreSQL is an open source object-relational database used to power many production web applications. While many web applications interact with relational databases through Object Relational Mappers (<strong>ORM</strong>), direct SQL queries via a command line interface or graphical client are still common. When writing these queries, these four tips may come in handy.</p>
+    <p>Adhering to the law of trichotomy, the <code class="highlighter-rouge">&lt;=&gt;</code> operator (sometimes called the “Spaceship Operator”) works by comparing two elements and returning a <code class="highlighter-rouge">-1</code>, <code class="highlighter-rouge">0</code>, or <code class="highlighter-rouge">1</code>. While the original mathematical criteria applies to only real numbers, many programming languages implement the law of trichotomy as a general comparison between equivalent types.</p>
 
-<p>All examples will assume the presence of a simple users table:</p>
+<h2 id="basics">Basics</h2>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>    <span class="k">Column</span>     <span class="o">|</span>            <span class="k">Type</span>
-<span class="c1">---------------+-----------------------------
-</span> <span class="n">id</span>            <span class="o">|</span> <span class="n">integer</span>
- <span class="n">first_name</span>    <span class="o">|</span> <span class="n">character</span> <span class="n">varying</span><span class="p">(</span><span class="mi">255</span><span class="p">)</span>
- <span class="n">last_name</span>     <span class="o">|</span> <span class="n">character</span> <span class="n">varying</span><span class="p">(</span><span class="mi">255</span><span class="p">)</span>
- <span class="n">email</span>         <span class="o">|</span> <span class="n">character</span> <span class="n">varying</span><span class="p">(</span><span class="mi">255</span><span class="p">)</span>
- <span class="n">created_at</span>    <span class="o">|</span> <span class="k">timestamp</span> <span class="k">without</span> <span class="n">time</span> <span class="k">zone</span>
- <span class="n">updated_at</span>    <span class="o">|</span> <span class="k">timestamp</span> <span class="k">without</span> <span class="n">time</span> <span class="k">zone</span>
- <span class="n">password</span>      <span class="o">|</span> <span class="n">character</span> <span class="n">varying</span>
- <span class="n">registered</span>    <span class="o">|</span> <span class="n">boolean</span>
- <span class="n">registered_at</span> <span class="o">|</span> <span class="k">timestamp</span> <span class="k">without</span> <span class="n">time</span> <span class="k">zone</span>
-<span class="n">Indexes</span><span class="p">:</span>
-    <span class="nv">"users_pkey"</span> <span class="k">PRIMARY</span> <span class="k">KEY</span><span class="p">,</span> <span class="n">btree</span> <span class="p">(</span><span class="n">id</span><span class="p">)</span>
+<p>At first glance, the return value of the <code class="highlighter-rouge">&lt;=&gt;</code> operator can be a bit confusing. A simple way to remember the significance of these return values is to break an expression down from left to right:</p>
+
+<h3 id="section">1. <code class="highlighter-rouge">&lt;</code> –&gt; <code class="highlighter-rouge">-1</code></h3>
+<p>if <code class="highlighter-rouge">a &lt; b</code>, then <code class="highlighter-rouge">-1</code> is returned</p>
+
+<h3 id="section-1">2. <code class="highlighter-rouge">=</code> –&gt; <code class="highlighter-rouge">0</code></h3>
+<p>if <code class="highlighter-rouge">a = b</code>, then <code class="highlighter-rouge">0</code> is returned</p>
+
+<h3 id="section-2">3. <code class="highlighter-rouge">&gt;</code> –&gt; <code class="highlighter-rouge">1</code></h3>
+<p>if <code class="highlighter-rouge">a &gt; b</code>, then <code class="highlighter-rouge">1</code> is returned</p>
+
+<p>Example:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="o">&gt;</span> <span class="n">a</span> <span class="o">=</span> <span class="mi">3</span>
+<span class="o">&gt;</span> <span class="n">b</span> <span class="o">=</span> <span class="mi">5</span>
+<span class="o">&gt;</span> <span class="n">a</span> <span class="o">&lt;=&gt;</span> <span class="n">b</span>
+<span class="c1"># =&gt; -1</span>
+
+<span class="o">&gt;</span> <span class="n">a</span> <span class="o">=</span> <span class="mi">3</span>
+<span class="o">&gt;</span> <span class="n">b</span> <span class="o">=</span> <span class="mi">3</span>
+<span class="o">&gt;</span> <span class="n">a</span> <span class="o">&lt;=&gt;</span> <span class="n">b</span>
+<span class="c1"># =&gt; 0</span>
+
+<span class="o">&gt;</span> <span class="n">a</span> <span class="o">=</span> <span class="mi">10</span>
+<span class="o">&gt;</span> <span class="n">b</span> <span class="o">=</span> <span class="mi">3</span>
+<span class="o">&gt;</span> <span class="n">a</span> <span class="o">&lt;=&gt;</span> <span class="n">b</span>
+<span class="c1"># =&gt; 1</span>
 </code></pre>
 </div>
 
-<h2 id="finding-duplicate-rows">1. Finding Duplicate Rows</h2>
+<h2 id="sorting">Sorting</h2>
 
-<p>A common mechanism for defending against duplicate rows in database tables are unique indexes. However, at the time of table creation, a unique index or two may have been forgotten. Duplicates in a table must be removed before a unique index may be added.</p>
+<p>The <code class="highlighter-rouge">&lt;=&gt;</code> operator can be used alone for comparison or its contract honored within a block following the <code class="highlighter-rouge">sort</code> method.</p>
 
-<p>A great way to detect duplicates in PostgreSQL is by using window functions. Window functions are similar to aggregates; but, instead of grouping rows for the response, it maintains each row’s individuality.</p>
+<p>By default, the <code class="highlighter-rouge">&lt;=&gt;</code> operator behaves as described above:</p>
 
-<p>Desired query: Find all duplicate <code class="highlighter-rouge">users</code> with the same <code class="highlighter-rouge">first_name</code>, <code class="highlighter-rouge">last_name</code>, and <code class="highlighter-rouge">email</code>, returning duplicate <code class="highlighter-rouge">ids</code> only (do not return the oldest <code class="highlighter-rouge">id</code>).</p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">SELECT</span> <span class="n">id</span> <span class="k">from</span> <span class="p">(</span>
-  <span class="k">SELECT</span> <span class="n">id</span><span class="p">,</span>
-  <span class="n">ROW_NUMBER</span><span class="p">()</span> <span class="n">OVER</span><span class="p">(</span>
-    <span class="n">PARTITION</span> <span class="k">BY</span> <span class="n">first_name</span><span class="p">,</span>
-                 <span class="n">last_name</span><span class="p">,</span>
-                 <span class="n">email</span>
-              <span class="k">ORDER</span> <span class="k">BY</span> <span class="n">id</span>
-    <span class="p">)</span> <span class="k">AS</span> <span class="n">user_row_number</span>
-  <span class="k">FROM</span> <span class="n">users</span>
-<span class="p">)</span> <span class="n">duplicates</span>
-<span class="k">WHERE</span>
-<span class="n">duplicates</span><span class="p">.</span><span class="n">user_row_number</span> <span class="o">&gt;</span> <span class="mi">1</span>
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="n">list</span> <span class="o">=</span> <span class="p">[</span><span class="mi">8</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
+<span class="n">list</span><span class="p">.</span><span class="nf">sort</span> <span class="p">{</span> <span class="o">|</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="o">|</span> <span class="n">a</span> <span class="o">&lt;=&gt;</span> <span class="n">b</span> <span class="p">}</span>
+<span class="c1"># =&gt; [0, 1, 3, 3, 4, 8]</span>
 </code></pre>
 </div>
 
-<p>This query will identify all the rows of the <code class="highlighter-rouge">users</code> table which share the same defined columns and return the primary key (<code class="highlighter-rouge">id</code>) of rows <em>after</em> the first via the <code class="highlighter-rouge">duplicates.user_row_number &gt; 1</code> condition. The result of this query can then be fed into a <code class="highlighter-rouge">DELETE</code> query to remove the duplicates.</p>
+<p>Following this pattern, it is easy to sort a list in reverse by swapping operand positions:</p>
 
-<p>The <code class="highlighter-rouge">ROW_NUMBER()</code> built-in function returns an incremented value assigned to each row that matches the criteria in the provided <code class="highlighter-rouge">OVER</code> clause. This <code class="highlighter-rouge">OVER</code> clause is followed by the window function: <code class="highlighter-rouge">PARTITION</code>, which divides matching rows into groups or partitions using the columns or functions which follow it. Learn more about window functions at the <a href="http://www.postgresql.org/docs/current/static/tutorial-window.html">official PostgreSQL documentation page</a>.</p>
-
-<h2 id="interval">2. <code class="highlighter-rouge">interval</code></h2>
-
-<p>Ever had to scope the results of a database query to a certain time range? So has every developer ever. Luckily, PostgreSQL provides a very readable convenience function: <code class="highlighter-rouge">interval</code>.</p>
-
-<p>If a rolling count of <code class="highlighter-rouge">user</code> sign ups in the last 24 hours is desired, the following query makes it possible:</p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">SELECT</span> <span class="o">*</span>
-<span class="k">FROM</span> <span class="n">users</span>
-<span class="k">WHERE</span> <span class="n">created_at</span> <span class="o">&gt;=</span> <span class="n">now</span><span class="p">()</span> <span class="o">-</span> <span class="n">interval</span> <span class="s1">'1 day'</span>
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="n">list</span> <span class="o">=</span> <span class="p">[</span><span class="mi">8</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
+<span class="n">list</span><span class="p">.</span><span class="nf">sort</span> <span class="p">{</span> <span class="o">|</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="o">|</span> <span class="n">b</span> <span class="o">&lt;=&gt;</span> <span class="n">a</span> <span class="p">}</span>
+<span class="c1"># =&gt; [8, 4, 3, 3, 1, 0]</span>
 </code></pre>
 </div>
 
-<p>The <code class="highlighter-rouge">interval</code> function accepts a variety of input types. Days, Hours, Minutes, Weeks, and more options <a href="http://www.postgresql.org/docs/current/interactive/datatype-datetime.html">are available</a>.</p>
+<p>The <code class="highlighter-rouge">sort</code> method is extendable beyond explicit use of the <code class="highlighter-rouge">&lt;=&gt;</code> operator. A block passed to <code class="highlighter-rouge">sort</code> must only return either <code class="highlighter-rouge">-1</code>, <code class="highlighter-rouge">0</code>, or <code class="highlighter-rouge">1</code> for sorting to work effectively.</p>
 
-<p><code class="highlighter-rouge">interval</code> subtraction can be used on any <code class="highlighter-rouge">timestamp</code>:</p>
+<p>If the same list were to be ordered in odds then evens:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">SELECT</span> <span class="o">*</span>
-<span class="k">FROM</span> <span class="n">users</span>
-<span class="k">WHERE</span> <span class="n">created_at</span> <span class="o">&gt;=</span>
-  <span class="s1">'2016-02-19 12:00:00'</span><span class="p">::</span><span class="k">timestamp</span> <span class="o">-</span> <span class="n">interval</span> <span class="s1">'3 weeks'</span>
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="n">list</span> <span class="o">=</span> <span class="p">[</span><span class="mi">8</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
+<span class="n">list</span><span class="p">.</span><span class="nf">sort</span> <span class="p">{</span> <span class="o">|</span><span class="n">a</span><span class="p">,</span> <span class="n">_</span><span class="o">|</span> <span class="n">a</span><span class="p">.</span><span class="nf">odd?</span> <span class="p">?</span> <span class="o">-</span><span class="mi">1</span> <span class="p">:</span> <span class="mi">1</span> <span class="p">}</span>
+<span class="c1"># =&gt; [3, 3, 1, 4, 8, 0]</span>
 </code></pre>
 </div>
 
-<p>The <code class="highlighter-rouge">::</code> notation casts the string <code class="highlighter-rouge">2016-02-19 12:00:00</code> to a <code class="highlighter-rouge">timestamp</code>, a requirement when manipulating time ranges with <code class="highlighter-rouge">interval</code>.</p>
+<p>Also, since <code class="highlighter-rouge">-1</code>, <code class="highlighter-rouge">0</code>, and <code class="highlighter-rouge">1</code> are simple integers, creating compound <code class="highlighter-rouge">&lt;=&gt;</code> blocks is possible. If the same list were to be sorted odds then evens, with all odd and even numbers sorted in ascending order, it might look like this:</p>
 
-<h2 id="remote-query-execution">3. Remote Query Execution</h2>
-
-<p>A very powerful feature of PostreSQL, and more specifically the <code class="highlighter-rouge">psql</code> command line interface, is the ability to run remote queries. With the <code class="highlighter-rouge">--command</code> or <code class="highlighter-rouge">-c</code> flag, a query may be passed to any PostgreSQL server and executed.</p>
-
-<p>A unique use for this feature is the ability to transfer a query’s results directly from one environment to another.</p>
-
-<p>An extensive analysis of the <code class="highlighter-rouge">users</code> table for all <code class="highlighter-rouge">users</code> that signed up in January is requested. This analysis has the potential to be very taxing on a production database, resulting in adverse effects on end users. Additionally, no follower or read only database exists to alleviate this problem. Production data must be transfered to a local environment so that the analysis can run side effect free.</p>
-
-<p>To accomplish this, the <code class="highlighter-rouge">psql</code> client has the ability to execute a query and return its result to <code class="highlighter-rouge">stdout</code>. Conversely, file contents or query results from <code class="highlighter-rouge">stdin</code> may also be read within the <code class="highlighter-rouge">psql</code> client.</p>
-
-<p>Utilizing both aspects of this behaviour could look something like:</p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code>psql &lt;REMOTE POSTGRESQL URL&gt; <span class="se">\</span>
--c <span class="s2">"copy (
-      SELECT *
-      FROM users
-      WHERE date_trunc('month', created_at) = '2016-01-01'
-    ) to stdout"</span> <span class="se">\</span>
-| psql &lt;LOCAL POSTGRESQL DATABASE&gt; <span class="se">\</span>
--c <span class="s2">"copy users from stdin"</span>
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="n">list</span> <span class="o">=</span> <span class="p">[</span><span class="mi">8</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
+<span class="n">list</span><span class="p">.</span><span class="nf">sort</span> <span class="k">do</span> <span class="o">|</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="o">|</span>
+  <span class="k">if</span> <span class="n">a</span><span class="p">.</span><span class="nf">odd?</span>
+    <span class="k">if</span> <span class="n">b</span><span class="p">.</span><span class="nf">odd?</span>
+      <span class="c1"># both are odd, default &lt;=&gt; behaviour is used</span>
+      <span class="n">a</span> <span class="o">&lt;=&gt;</span> <span class="n">b</span>
+    <span class="k">else</span>
+      <span class="o">-</span><span class="mi">1</span> <span class="c1"># a &lt; b</span>
+    <span class="k">end</span>
+  <span class="k">else</span> <span class="c1"># a is even</span>
+    <span class="k">if</span> <span class="n">b</span><span class="p">.</span><span class="nf">even?</span>
+      <span class="c1"># both are even, default &lt;=&gt; behaviour is used</span>
+      <span class="n">a</span> <span class="o">&lt;=&gt;</span> <span class="n">b</span>
+    <span class="k">else</span>
+      <span class="mi">1</span> <span class="c1"># a &gt; b</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+<span class="c1"># =&gt; [1, 3, 3, 0, 4, 8]</span>
 </code></pre>
 </div>
 
-<p>As an alternative to <code class="highlighter-rouge">pg_dump</code>, this pattern is a quick solution for loading specific data from one database to another.</p>
+<p>Far from elegant, this code effectively sorts the array of numbers first by odds to evens and then in ascending order.</p>
 
-<p>The <code class="highlighter-rouge">copy</code> command comes in two variants: <code class="highlighter-rouge">copy</code>, which will be run by the PostgreSQL backend (user “postgres”) and <code class="highlighter-rouge">\copy</code> which runs as the current user. Depending on permissions and what <code class="highlighter-rouge">copy</code> is attempting to do, one may be more appropriate than the other.</p>
+<h2 id="custom-methods">Custom Methods</h2>
 
-<h2 id="referencing-columns-by-select-position">4. Referencing Columns by <code class="highlighter-rouge">SELECT</code> Position</h2>
+<p>While thought of and generally referred to as an operator, <code class="highlighter-rouge">&lt;=&gt;</code> is actually a method. Defined originally on <code class="highlighter-rouge">Object</code>, any object has the opportunity to redefine this method to achieve custom sort behaviour.</p>
 
-<p>If one were to issue a <code class="highlighter-rouge">SELECT</code> query with a <code class="highlighter-rouge">GROUP BY</code> or <code class="highlighter-rouge">ORDER BY</code> clause, the columns in these clauses can be referenced by their position in the <code class="highlighter-rouge">SELECT</code> section.</p>
+<p>An example class, <code class="highlighter-rouge">Node</code>, has a single attribute <code class="highlighter-rouge">value</code>:</p>
 
-<p>Desired query: Retrieve a count of all users which share the same <code class="highlighter-rouge">first_name</code> and were <code class="highlighter-rouge">created_at</code> on the same hour of the same day then order by the hour of creation and then <code class="highlighter-rouge">first_name</code>.</p>
-
-<h4 id="without-numeric-referencing">Without numeric referencing</h4>
-
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">SELECT</span> <span class="n">first_name</span><span class="p">,</span> <span class="n">date_trunc</span><span class="p">(</span><span class="s1">'hour'</span><span class="p">,</span> <span class="n">created_at</span><span class="p">),</span> <span class="k">count</span><span class="p">(</span><span class="o">*</span><span class="p">)</span>
-<span class="k">FROM</span> <span class="n">users</span>
-<span class="k">GROUP</span> <span class="k">BY</span> <span class="n">first_name</span><span class="p">,</span> <span class="n">date_trunc</span><span class="p">(</span><span class="s1">'hour'</span><span class="p">,</span> <span class="n">created_at</span><span class="p">)</span>
-<span class="k">ORDER</span> <span class="k">BY</span> <span class="n">date_trunc</span><span class="p">(</span><span class="s1">'hour'</span><span class="p">,</span> <span class="n">created_at</span><span class="p">),</span> <span class="n">first_name</span><span class="p">;</span>
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Node</span>
+  <span class="kp">attr_accessor</span> <span class="ss">:value</span>
+<span class="k">end</span>
 </code></pre>
 </div>
 
-<p>This query will satisfy the request, returning an ordered list <code class="highlighter-rouge">users</code> data grouped by their <code class="highlighter-rouge">first_name</code> and hour of the <code class="highlighter-rouge">created_at</code>.</p>
+<p>By default, sorting an array of <code class="highlighter-rouge">Node</code> objects does not produce the desired result:</p>
 
-<h4 id="with-numeric-referencing">With numeric referencing</h4>
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="n">node1</span> <span class="o">=</span> <span class="no">Node</span><span class="p">.</span><span class="nf">new</span>
+<span class="n">node1</span><span class="p">.</span><span class="nf">value</span> <span class="o">=</span> <span class="mi">20</span>
 
-<p>Starting with 1, each value in the <code class="highlighter-rouge">SELECT</code> clause can be referenced by its numerical position. This can help reduce typos and copy pasting issues:</p>
+<span class="n">node2</span> <span class="o">=</span> <span class="no">Node</span><span class="p">.</span><span class="nf">new</span>
+<span class="n">node2</span><span class="p">.</span><span class="nf">value</span> <span class="o">=</span> <span class="mi">10</span>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">SELECT</span> <span class="n">first_name</span><span class="p">,</span> <span class="n">date_trunc</span><span class="p">(</span><span class="s1">'hour'</span><span class="p">,</span> <span class="n">created_at</span><span class="p">),</span> <span class="k">count</span><span class="p">(</span><span class="o">*</span><span class="p">)</span>
-<span class="k">FROM</span> <span class="n">users</span>
-<span class="k">GROUP</span> <span class="k">BY</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span>
-<span class="k">ORDER</span> <span class="k">BY</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">;</span>
+<span class="n">node3</span> <span class="o">=</span> <span class="no">Node</span><span class="p">.</span><span class="nf">new</span>
+<span class="n">node3</span><span class="p">.</span><span class="nf">value</span> <span class="o">=</span> <span class="mi">30</span>
+
+<span class="n">list</span> <span class="o">=</span> <span class="p">[</span><span class="n">node1</span><span class="p">,</span> <span class="n">node2</span><span class="p">,</span> <span class="n">node3</span><span class="p">]</span>
+<span class="n">list</span><span class="p">.</span><span class="nf">sort</span>
+
+<span class="c1"># =&gt; ArgumentError: comparison of Node with Node failed</span>
 </code></pre>
 </div>
 
-<p>As queries become more complicated with references or additional aggregate functions, numerical referencing becomes even more valuable.</p>
+<p>However, with a custom <code class="highlighter-rouge">&lt;=&gt;</code> method:</p>
 
-<h4 id="use-with-caution">Use with Caution</h4>
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Node</span>
+  <span class="kp">attr_accessor</span> <span class="ss">:value</span>
 
-<p>While handy, referencing columns by their position is not always appropriate. Adding columns to the <code class="highlighter-rouge">SELECT</code> statement can invalidate previous referencing and cause unwanted behaviour. Additionally, with a significantly large number of columns in a <code class="highlighter-rouge">SELECT</code> statement, readability can suffer when referring to them solely by numbers.</p>
+  <span class="k">def</span> <span class="nf">&lt;</span><span class="o">=&gt;</span><span class="p">(</span><span class="n">other_node</span><span class="p">)</span>
+    <span class="nb">self</span><span class="p">.</span><span class="nf">value</span> <span class="o">&lt;=&gt;</span> <span class="n">other_node</span><span class="p">.</span><span class="nf">value</span>
+  <span class="k">end</span>
+<span class="k">end</span>
 
-<p>As with anything, the use of numerical referencing should be deliberate and thoughtful.</p>
+<span class="n">list</span> <span class="o">=</span> <span class="p">[</span><span class="n">node1</span><span class="p">,</span> <span class="n">node2</span><span class="p">,</span> <span class="n">node3</span><span class="p">]</span>
+<span class="n">list</span><span class="p">.</span><span class="nf">sort</span>
+<span class="c1"># =&gt; [#&lt;Node: @value=10&gt;, #&lt;Node: @value=20&gt;, #&lt;Node: @value=30&gt;]</span>
+</code></pre>
+</div>
+
+<p>Boom! Custom sorting in the mix!</p>
+
+<p>Admittedly, this same behaviour is possible with the built in <code class="highlighter-rouge">sort_by</code> method:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="n">list</span> <span class="o">=</span> <span class="p">[</span><span class="n">node1</span><span class="p">,</span> <span class="n">node2</span><span class="p">,</span> <span class="n">node3</span><span class="p">]</span>
+<span class="n">list</span><span class="p">.</span><span class="nf">sort_by</span><span class="p">(</span><span class="o">&amp;</span><span class="ss">:value</span><span class="p">)</span>
+
+<span class="c1"># =&gt; [#&lt;Node: @value=10&gt;, #&lt;Node: @value=20&gt;, #&lt;Node: @value=30&gt;]</span>
+</code></pre>
+</div>
+
+<p>But, what happens when the <code class="highlighter-rouge">Node</code> class wants to expose a sorting mechanism while removing its <code class="highlighter-rouge">value</code> method? In that case, the <code class="highlighter-rouge">sort_by</code> method would no longer be sufficient.</p>
+
+<p>Defining a custom <code class="highlighter-rouge">&lt;=&gt;</code> method also allows objects to include the <code class="highlighter-rouge">Comparable</code> mixin effectively. The <code class="highlighter-rouge">Comparable</code> mixin provides the conventional comparison operators (<code class="highlighter-rouge">&lt;</code>, <code class="highlighter-rouge">&gt;</code>, <code class="highlighter-rouge">&lt;=</code>, etc.).</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Node</span>
+  <span class="kp">include</span> <span class="no">Comparable</span>
+  <span class="kp">attr_accessor</span> <span class="ss">:value</span>
+
+  <span class="k">def</span> <span class="nf">&lt;</span><span class="o">=&gt;</span><span class="p">(</span><span class="n">other_node</span><span class="p">)</span>
+    <span class="nb">self</span><span class="p">.</span><span class="nf">value</span> <span class="o">&lt;=&gt;</span> <span class="n">other_node</span><span class="p">.</span><span class="nf">value</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="n">node1</span> <span class="o">=</span> <span class="no">Node</span><span class="p">.</span><span class="nf">new</span>
+<span class="n">node1</span><span class="p">.</span><span class="nf">value</span> <span class="o">=</span> <span class="mi">200</span>
+
+<span class="n">node2</span> <span class="o">=</span> <span class="no">Node</span><span class="p">.</span><span class="nf">new</span>
+<span class="n">node2</span><span class="p">.</span><span class="nf">value</span> <span class="o">=</span> <span class="mi">300</span>
+
+<span class="n">node1</span> <span class="o">&gt;</span> <span class="n">node2</span>
+<span class="c1"># =&gt; false</span>
+
+<span class="n">node1</span> <span class="o">&lt;</span> <span class="n">node2</span>
+<span class="c1"># =&gt; true</span>
+
+<span class="n">node3</span> <span class="o">=</span> <span class="no">Node</span><span class="p">.</span><span class="nf">new</span>
+<span class="n">node3</span><span class="p">.</span><span class="nf">value</span> <span class="o">=</span> <span class="mi">250</span>
+
+<span class="n">node3</span><span class="p">.</span><span class="nf">between?</span><span class="p">(</span><span class="n">node1</span><span class="p">,</span> <span class="n">node2</span><span class="p">)</span>
+<span class="c1"># =&gt; true</span>
+</code></pre>
+</div>
+
+<p>The <code class="highlighter-rouge">Comparable</code> mixin provides very useful functionality that can easily turn a custom class into a sortable list element. As with most patterns in software, using the right tool at the right time is very important. It may not always be appropriate to write a custom comparison mechanism for a class, but when it is, the collaboration of <code class="highlighter-rouge">&lt;=&gt;</code> and the <code class="highlighter-rouge">Comparable</code> mixin is worth evaluating.</p>
 
   </div>
   

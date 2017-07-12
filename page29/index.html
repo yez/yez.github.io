@@ -68,180 +68,238 @@
   
   <div class="post">
     <h1 class="post-title">
-      <a href="/2015/10/11/building-a-simple-web-server-with-ruby-2/">
-        Building a Simple Web Server with Ruby 2.0+
+      <a href="/2015/10/18/building-a-simple-web-server-with-ruby-2-part-2/">
+        Building a Simple Web Server with Ruby 2.0+ (Part 2)
       </a>
     </h1>
 
     
 
-    <span class="post-date">11 Oct 2015</span>
+    <span class="post-date">18 Oct 2015</span>
     <span class='share-container'><ul class="share-buttons">
   <li>
-    <a href="https://www.facebook.com/sharer/sharer.php?u=http://jakeyesbeck.com/2015/10/11/building-a-simple-web-server-with-ruby-2/&t=Building a Simple Web Server with Ruby 2.0+" title="Share on Facebook" target="_blank">
+    <a href="https://www.facebook.com/sharer/sharer.php?u=http://jakeyesbeck.com/2015/10/18/building-a-simple-web-server-with-ruby-2-part-2/&t=Building a Simple Web Server with Ruby 2.0+ (Part 2)" title="Share on Facebook" target="_blank">
       <img src="http://jakeyesbeck.com/assets/images/facebook.svg">
     </a>
   </li>
   <li>
-    <a href="https://twitter.com/intent/tweet?source=http%3A%2F%2Fjakeyesbeck.com&text=Building a Simple Web Server with Ruby 2.0%2B%20http://jakeyesbeck.com/2015/10/11/building-a-simple-web-server-with-ruby-2/&via=jakeyesbeck" target="_blank" title="Tweet">
+    <a href="https://twitter.com/intent/tweet?source=http%3A%2F%2Fjakeyesbeck.com&text=Building a Simple Web Server with Ruby 2.0%2B (Part 2)%20http://jakeyesbeck.com/2015/10/18/building-a-simple-web-server-with-ruby-2-part-2/&via=jakeyesbeck" target="_blank" title="Tweet">
       <img src="http://jakeyesbeck.com/assets/images/twitter.svg">
     </a>
   </li>
   <li>
-    <a href="https://plus.google.com/share?url=http://jakeyesbeck.com/2015/10/11/building-a-simple-web-server-with-ruby-2/" target="_blank" title="Share on Google+">
+    <a href="https://plus.google.com/share?url=http://jakeyesbeck.com/2015/10/18/building-a-simple-web-server-with-ruby-2-part-2/" target="_blank" title="Share on Google+">
       <img src="http://jakeyesbeck.com/assets/images/google_plus.svg">
     </a>
   </li>
 
   <li>
-    <a href="https://news.ycombinator.com/submitlink?u=http://jakeyesbeck.com/2015/10/11/building-a-simple-web-server-with-ruby-2/&t=Building a Simple Web Server with Ruby 2.0+" target="_blank" title="Share on Hacker News">
+    <a href="https://news.ycombinator.com/submitlink?u=http://jakeyesbeck.com/2015/10/18/building-a-simple-web-server-with-ruby-2-part-2/&t=Building a Simple Web Server with Ruby 2.0+ (Part 2)" target="_blank" title="Share on Hacker News">
       <img src="http://jakeyesbeck.com/assets/images/ycomb.svg">
     </a>
   </li>
 
   <li>
-    <a href="https://getpocket.com/save?url=http://jakeyesbeck.com/2015/10/11/building-a-simple-web-server-with-ruby-2/&title=Building a Simple Web Server with Ruby 2.0+" target="_blank" title="Add to Pocket">
+    <a href="https://getpocket.com/save?url=http://jakeyesbeck.com/2015/10/18/building-a-simple-web-server-with-ruby-2-part-2/&title=Building a Simple Web Server with Ruby 2.0+ (Part 2)" target="_blank" title="Add to Pocket">
       <img src="http://jakeyesbeck.com/assets/images/pocket.svg">
     </a>
   </li>
   <li>
-    <a href="http://www.reddit.com/submit?url=http://jakeyesbeck.com/2015/10/11/building-a-simple-web-server-with-ruby-2/&title=Building a Simple Web Server with Ruby 2.0+" target="_blank" title="Submit to Reddit">
+    <a href="http://www.reddit.com/submit?url=http://jakeyesbeck.com/2015/10/18/building-a-simple-web-server-with-ruby-2-part-2/&title=Building a Simple Web Server with Ruby 2.0+ (Part 2)" target="_blank" title="Submit to Reddit">
       <img src="http://jakeyesbeck.com/assets/images/reddit.svg">
     </a>
   </li>
 </ul>
 </span>
 
-    <p>The Ruby language can be utilized for a variety of different purposes. The most popular of these is as a web scripting language. The entry point to these applications, the web server, is not something that is usually built from the ground up. Most applications have the lines <code class="highlighter-rouge">gem 'puma'</code> or <code class="highlighter-rouge">gem 'unicorn'</code> in their <code class="highlighter-rouge">Gemfile</code>. Those are high quality web servers that were built and are maintained by very talented people, but how do they work?</p>
+    <p>In <a href="http://jakeyesbeck.com/2015/10/11/building-a-simple-web-server-with-ruby-2/">a previous post</a>, a very simple Ruby server was created to listen to HTTP requests. While great for a first step, this example server does nothing more than respond with “Hello World”. Greetings are nice and polite, but I think we can do better.</p>
 
-<p>The aforementioned web servers are just Ruby gems written by Rubyists. While they are awesome gems, <a href="http://jakeyesbeck.com/2015/08/16/gems-are-not-magic/">they are not magic</a>. A basic web server can be written to satisfy some very simple requests.</p>
+<h2 id="pro-filing">Pro-filing</h2>
 
-<h2 id="get-basic"><code class="highlighter-rouge">GET</code> Basic</h2>
+<p>A reasonable feature for this simple server is the ability to serve files. When retrieving files, the server must remain secure, only serving files that should be readable by clients. Additionally, if a requested file does not exist, the server should make the client aware.</p>
 
-<p>The job of a web server is to take an incoming request, decide what it means and respond accordingly. Essentially, we want to read some text, process it, and send some other text as response. To create a very simple server, the built in <code class="highlighter-rouge">Socket</code> library will be utilized.</p>
+<p>Since a request can have multiple parts, the server will need to parse out the noise from the desired file. For instance, if the request looks like <code class="highlighter-rouge">/path/to/my_file.html?query=params&amp;are=cool</code>, the server should remove all query parameters and search for <code class="highlighter-rouge">my_file.html</code> nested within the <code class="highlighter-rouge">/path/to/</code> directory.</p>
 
-<p>The goal of this tiny server will be to listen to <code class="highlighter-rouge">localhost</code> requests on port <code class="highlighter-rouge">8080</code>.</p>
+<p>With an incoming request:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="nb">require</span> <span class="s1">'socket'</span>
+<div class="highlighter-rouge"><pre class="highlight"><code>GET /path/to/my_file.html?query<span class="o">=</span>params&amp;are<span class="o">=</span>cool HTTP/1.1
+</code></pre>
+</div>
 
-<span class="n">server</span> <span class="o">=</span> <span class="no">TCPServer</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="mi">8080</span><span class="p">)</span>
+<p>A simple file fetching method might look like:</p>
 
-<span class="kp">loop</span> <span class="k">do</span>
-  <span class="n">request</span> <span class="o">=</span> <span class="n">server</span><span class="p">.</span><span class="nf">accept</span>
-  <span class="n">request</span><span class="p">.</span><span class="nf">puts</span> <span class="s1">'hello world'</span>
-  <span class="n">request</span><span class="p">.</span><span class="nf">close</span>
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="nb">require</span> <span class="s1">'uri'</span>
+
+<span class="no">SEVER_ROOT_DIR</span> <span class="o">=</span> <span class="s1">'/var/www'</span>
+
+<span class="k">def</span> <span class="nf">fetch_file</span><span class="p">(</span><span class="n">request_string</span><span class="p">)</span>
+  <span class="n">request_parts</span> <span class="o">=</span> <span class="n">request_string</span><span class="p">.</span><span class="nf">split</span><span class="p">(</span><span class="s1">' '</span><span class="p">)</span>
+
+  <span class="c1"># Remove query params and HTTP verb, version</span>
+  <span class="n">path</span> <span class="o">=</span> <span class="no">URI</span><span class="p">(</span><span class="n">request_parts</span><span class="p">[</span><span class="mi">1</span><span class="p">]).</span><span class="nf">path</span>
+
+  <span class="n">full_path</span> <span class="o">=</span> <span class="no">File</span><span class="p">.</span><span class="nf">join</span><span class="p">(</span><span class="no">SERVER_ROOT_DIR</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>
+
+  <span class="no">File</span><span class="p">.</span><span class="nf">open</span><span class="p">(</span><span class="n">full_path</span><span class="p">)</span> <span class="k">if</span> <span class="no">File</span><span class="p">.</span><span class="nf">file?</span><span class="p">(</span><span class="n">full_path</span><span class="p">)</span>
 <span class="k">end</span>
 </code></pre>
 </div>
 
-<p>And there it is! A ridiculously tiny web server written in Ruby. Dissecting this code, we see how simple the <code class="highlighter-rouge">Socket</code> library makes this task.</p>
+<p>Given a request string input (from <code class="highlighter-rouge">request.gets</code> in the existing code), this method returns an instance of <code class="highlighter-rouge">File</code> if it can find the requested file or <code class="highlighter-rouge">nil</code> if it does not exist. The <code class="highlighter-rouge">SERVER_ROOT_DIR</code> is used to ensure the file lookup is centralized to where the server expects the files to be.</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="n">server</span> <span class="o">=</span> <span class="no">TCPServer</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="mi">8080</span><span class="p">)</span>
-</code></pre>
-</div>
-
-<p>This line makes a new <code class="highlighter-rouge">TCPServer</code> instance that will accept requests to port <code class="highlighter-rouge">8080</code> and defaults to <code class="highlighter-rouge">localhost</code> as the host. The important method on the <code class="highlighter-rouge">TCPServer</code> instance is <code class="highlighter-rouge">accept</code>.</p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="kp">loop</span> <span class="k">do</span>
-</code></pre>
-</div>
-
-<p>Since this server is meant to respond to any request on port <code class="highlighter-rouge">8080</code>, an infinite loop is created so that more than one request can be fulfilled before the process exits.</p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="n">request</span> <span class="o">=</span> <span class="n">server</span><span class="p">.</span><span class="nf">accept</span>
-<span class="n">request</span><span class="p">.</span><span class="nf">puts</span> <span class="s1">'hello world'</span>
-<span class="n">request</span><span class="p">.</span><span class="nf">close</span>
-</code></pre>
-</div>
-
-<p>Here is the real logic of the server. The <code class="highlighter-rouge">accept</code> method returns a new instance of <code class="highlighter-rouge">TCPSocket</code> which can be used to communicate with a client. A response string, <code class="highlighter-rouge">'hello world'</code>, is then printed to the client and the connection is closed.</p>
-
-<p>Saving this code to <code class="highlighter-rouge">example_server.rb</code>, the server can be started with <code class="highlighter-rouge">ruby example_server.rb</code> in a console.</p>
-
-<p>Using <code class="highlighter-rouge">curl</code> to test this server results in:</p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="nv">$:</span> curl localhost:8080
-hello world
-curl: <span class="o">(</span>56<span class="o">)</span> Recv failure: Connection reset by peer
-</code></pre>
-</div>
-
-<p>Alright, alright, the <code class="highlighter-rouge">'hello world'</code> has been printed to the console but it looks like there might be an issue. <code class="highlighter-rouge">Connection reset by peer</code>, what the heck does that mean? It means that the server did not send enough information to the client, particularly about when to close the connection. The client is expecting more data than this very naive server is providing. The client expects header data.</p>
-
-<h2 id="look-ma-no-header">Look Ma, no Head(er)!</h2>
-
-<p>An HTTP header consists of many colon-separated key-value pairs deliminated by a return and newline combination. Everything from a status code to response size can be returned in an HTTP header.</p>
-
-<p>For this simple example, a status code, <code class="highlighter-rouge">Content-Type</code>, <code class="highlighter-rouge">Content-Length</code>, and <code class="highlighter-rouge">Connection</code> will be added to the response header.</p>
+<p>Putting it all together, the server can now fetch and return files that exist.</p>
 
 <div class="highlighter-rouge"><pre class="highlight"><code><span class="nb">require</span> <span class="s1">'socket'</span>
+<span class="nb">require</span> <span class="s1">'uri'</span>
+
+<span class="no">SERVER_ROOT_DIR</span> <span class="o">=</span> <span class="s1">'/var/www'</span>
+
+<span class="k">def</span> <span class="nf">fetch_file</span><span class="p">(</span><span class="n">request_string</span><span class="p">)</span>
+  <span class="n">request_parts</span> <span class="o">=</span> <span class="n">request_string</span><span class="p">.</span><span class="nf">split</span><span class="p">(</span><span class="s1">' '</span><span class="p">)</span>
+  <span class="n">path</span> <span class="o">=</span> <span class="no">URI</span><span class="p">(</span><span class="n">request_parts</span><span class="p">[</span><span class="mi">1</span><span class="p">]).</span><span class="nf">path</span>
+  <span class="n">full_path</span> <span class="o">=</span> <span class="no">File</span><span class="p">.</span><span class="nf">join</span><span class="p">(</span><span class="no">SERVER_ROOT_DIR</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>
+  <span class="no">File</span><span class="p">.</span><span class="nf">open</span><span class="p">(</span><span class="n">full_path</span><span class="p">)</span> <span class="k">if</span> <span class="no">File</span><span class="p">.</span><span class="nf">file?</span><span class="p">(</span><span class="n">full_path</span><span class="p">)</span>
+<span class="k">end</span>
 
 <span class="n">server</span> <span class="o">=</span> <span class="no">TCPServer</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="mi">8080</span><span class="p">)</span>
 
 <span class="kp">loop</span> <span class="k">do</span>
-  <span class="n">request</span> <span class="o">=</span> <span class="n">server</span><span class="p">.</span><span class="nf">accept</span>
+  <span class="no">Thread</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="n">socket</span><span class="p">.</span><span class="nf">accept</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">request</span><span class="o">|</span>
+    <span class="n">request_string</span> <span class="o">=</span> <span class="n">request</span><span class="p">.</span><span class="nf">gets</span>
+    <span class="n">file_to_return</span> <span class="o">=</span> <span class="n">fetch_file</span><span class="p">(</span><span class="n">request_string</span><span class="p">)</span>
 
-  <span class="n">response</span> <span class="o">=</span> <span class="s1">'hello world'</span>
+    <span class="k">if</span> <span class="n">file_to_return</span><span class="p">.</span><span class="nf">nil?</span>
+      <span class="n">header</span> <span class="o">=</span> <span class="s2">"HTTP/1.1 404 Not Found</span><span class="se">\r\n</span><span class="s2">"</span>
+      <span class="n">response</span> <span class="o">=</span> <span class="s1">'File not found'</span>
+    <span class="k">else</span>
+      <span class="n">header</span> <span class="o">=</span> <span class="s2">"HTTP/1.1 200 OK</span><span class="se">\r\n</span><span class="s2">"</span>
+      <span class="n">response</span> <span class="o">=</span> <span class="n">file_to_return</span><span class="p">.</span><span class="nf">read</span>
+    <span class="k">end</span>
 
-  <span class="n">header</span> <span class="o">=</span> <span class="s2">"HTTP/1.1 200 OK</span><span class="se">\r\n</span><span class="s2">"</span>
-  <span class="n">header</span> <span class="o">+=</span> <span class="s2">"Content-Type: text/plain</span><span class="se">\r\n</span><span class="s2">"</span>
-  <span class="n">header</span> <span class="o">+=</span> <span class="s2">"Content-Length: </span><span class="si">#{</span> <span class="n">response</span><span class="p">.</span><span class="nf">bytesize</span> <span class="si">}</span><span class="se">\r\n</span><span class="s2">"</span>
-  <span class="n">header</span> <span class="o">+=</span> <span class="s2">"Connection: close</span><span class="se">\r\n</span><span class="s2">"</span>
+    <span class="n">header</span> <span class="o">+=</span> <span class="s2">"Content-Type: text/plain</span><span class="se">\r\n</span><span class="s2">"</span>
+    <span class="n">header</span> <span class="o">+=</span> <span class="s2">"Content-Length: </span><span class="si">#{</span> <span class="n">response</span><span class="p">.</span><span class="nf">bytesize</span> <span class="si">}</span><span class="se">\r\n</span><span class="s2">"</span>
+    <span class="n">header</span> <span class="o">+=</span> <span class="s2">"Connection: close</span><span class="se">\r\n</span><span class="s2">"</span>
 
-  <span class="n">request</span><span class="p">.</span><span class="nf">puts</span> <span class="n">header</span>
-  <span class="n">request</span><span class="p">.</span><span class="nf">puts</span> <span class="s2">"</span><span class="se">\r\n</span><span class="s2">"</span>
-  <span class="n">request</span><span class="p">.</span><span class="nf">puts</span> <span class="n">response</span>
+    <span class="n">request</span><span class="p">.</span><span class="nf">puts</span> <span class="n">header</span>
+    <span class="n">request</span><span class="p">.</span><span class="nf">puts</span> <span class="s2">"</span><span class="se">\r\n</span><span class="s2">"</span>
+    <span class="n">request</span><span class="p">.</span><span class="nf">puts</span> <span class="n">response</span>
 
-  <span class="n">request</span><span class="p">.</span><span class="nf">close</span>
+    <span class="n">request</span><span class="p">.</span><span class="nf">close</span>
+  <span class="k">end</span>
 <span class="k">end</span>
 </code></pre>
 </div>
 
-<p>With this additional information, a client using this server will know the type, size, and connection status of its request. This will enable the client to respect the content type, parse the result intelligently and close the connection.</p>
+<p>Now, a curl request for an invalid file produces a <code class="highlighter-rouge">404</code>:</p>
 
-<p>An interesting detail about HTTP headers is the way they end. A single line consisting of a return newline, <code class="highlighter-rouge">request.puts "\r\n"</code>, is how the client knows that the HTTP header is finished.</p>
+<div class="highlighter-rouge"><pre class="highlight"><code>curl localhost:8080/bad_file.html -I
 
-<p><strong>Note: If a server like this is created for any real requests, hard-coded response headers is not the best idea</strong>.</p>
-
-<h2 id="heads-up">Head’s up</h2>
-
-<p>Now, the same <code class="highlighter-rouge">curl localhost:8080</code> test to the new and improved server returns no error:</p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="nv">$:</span> curl localhost:8080
-hello world
-</code></pre>
-</div>
-
-<p>The new headers are visible via <code class="highlighter-rouge">curl localhost:8080 -I</code>:</p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="nv">$:</span> curl localhost:8080 -I
-HTTP/1.1 200 OK
+HTTP/1.1 404 Not Found
 Content-Type: text/plain
-Content-Length: 11
+Content-Length: 14
 Connection: close
 </code></pre>
 </div>
 
-<p>The server is now responding in a sensible way, but a problem still exists. If more than one request is made, the first request will be processed and all others will wait.</p>
+<h2 id="more-logic-more-problems">More Logic, More Problems</h2>
 
-<p>This implementation is not adequate for concurrent request handling, but another built in solution is readily available.</p>
+<p>A few problems are immediately evident with this code. One is that any file that exists on the system can be requested. For instance, the file <code class="highlighter-rouge">/etc/passwd</code> is a common target for immature web servers to accidentally expose.</p>
 
-<h2 id="threads-the-needle">Threads the Needle</h2>
+<p>To combat this, the <code class="highlighter-rouge">fetch_file</code> method can throw out all directory movement inducing path parts:</p>
 
-<p>An easy way to achieve basic concurrency with this server is via <code class="highlighter-rouge">Threads</code>. Out of the box Ruby uses the Matz’s Ruby Interpreter or MRI. MRI is not capable of true concurrency (due to the Global Interpreter Lock) but built in threads will be just fine for this small server.</p>
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">def</span> <span class="nf">fetch_file</span><span class="p">(</span><span class="n">request_string</span><span class="p">)</span>
+  <span class="n">request_parts</span> <span class="o">=</span> <span class="n">request_string</span><span class="p">.</span><span class="nf">split</span><span class="p">(</span><span class="s1">' '</span><span class="p">)</span>
+  <span class="n">path</span> <span class="o">=</span> <span class="k">begin</span>
+    <span class="n">insecure_path</span> <span class="o">=</span> <span class="no">URI</span><span class="p">(</span><span class="n">request_parts</span><span class="p">[</span><span class="mi">1</span><span class="p">]).</span><span class="nf">path</span>
 
-<p>This example can be extended to use threads by wrapping the responsibility of the request in a block:</p>
+    <span class="n">secure_request_parts</span> <span class="o">=</span> <span class="n">insecure_path</span><span class="p">.</span><span class="nf">split</span><span class="p">(</span><span class="s1">'/'</span><span class="p">).</span><span class="nf">reject</span> <span class="k">do</span> <span class="o">|</span><span class="n">part</span><span class="o">|</span>
+      <span class="n">part</span> <span class="o">==</span> <span class="s1">'..'</span> <span class="o">||</span> <span class="n">part</span> <span class="o">==</span> <span class="s1">'.'</span> <span class="o">||</span> <span class="n">part</span> <span class="o">==</span> <span class="s1">''</span>
+    <span class="k">end</span>
+
+    <span class="n">secure_request_parts</span><span class="p">.</span><span class="nf">join</span><span class="p">(</span><span class="s1">'/'</span><span class="p">)</span>
+  <span class="k">end</span>
+
+  <span class="n">full_path</span> <span class="o">=</span> <span class="no">File</span><span class="p">.</span><span class="nf">join</span><span class="p">(</span><span class="no">SERVER_ROOT_DIR</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>
+
+  <span class="no">File</span><span class="p">.</span><span class="nf">open</span><span class="p">(</span><span class="n">full_path</span><span class="p">)</span> <span class="k">if</span> <span class="no">File</span><span class="p">.</span><span class="nf">file?</span><span class="p">(</span><span class="n">full_path</span><span class="p">)</span>
+<span class="k">end</span>
+</code></pre>
+</div>
+
+<p>This will change a path from <code class="highlighter-rouge">/../../../my/hidden/file</code> to <code class="highlighter-rouge">/my/hidden/file</code>, nullifying the attempt to expose private files.</p>
+
+<h2 id="speaking-the-same-language">Speaking the Same Language</h2>
+
+<p>A second issue with our new and improved tiny web server is in the response type. Currently, all responses indicate that the type of the file returned is <code class="highlighter-rouge">text/plain</code>. Instead, the response type can be extracted from the file returned. To determine a file’s type, a good place to start is by examining the extension.</p>
+
+<p>For the request <code class="highlighter-rouge">/path/to/my_file.html?query=params&amp;are=cool</code>, the server must be able to identify that the <code class="highlighter-rouge">.html</code> extension maps to the content type <code class="highlighter-rouge">text/html</code>.</p>
+
+<p>With the addition of a simple mapping method, the server can respond more intelligently:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">def</span> <span class="nf">content_type</span><span class="p">(</span><span class="n">file_extension</span><span class="p">)</span>
+  <span class="p">{</span>
+    <span class="ss">html: </span><span class="s1">'text/html'</span><span class="p">,</span>
+    <span class="ss">txt: </span><span class="s1">'text/plain'</span><span class="p">,</span>
+    <span class="ss">json: </span><span class="s1">'application/json'</span>
+  <span class="p">}[</span><span class="n">file_extension</span><span class="p">]</span> <span class="o">||</span> <span class="s1">'text/plain'</span>
+<span class="k">end</span>
+</code></pre>
+</div>
+
+<p>This method accepts an extension (like <code class="highlighter-rouge">.html</code>) and maps it to a <code class="highlighter-rouge">Content-Type</code>. If no mapping can be found, it assumes that the file is in plain text.</p>
+
+<p>Using some additional <code class="highlighter-rouge">File.extname</code> extraction, using this <code class="highlighter-rouge">content_type</code> method is simple:</p>
 
 <div class="highlighter-rouge"><pre class="highlight"><code><span class="nb">require</span> <span class="s1">'socket'</span>
+<span class="nb">require</span> <span class="s1">'uri'</span>
 
-<span class="n">server</span> <span class="o">=</span> <span class="no">TCPServer</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="mi">8080</span><span class="p">)</span>
+<span class="no">SERVER_ROOT_DIR</span> <span class="o">=</span> <span class="s1">'/var/www'</span>
+
+<span class="k">def</span> <span class="nf">fetch_file</span><span class="p">(</span><span class="n">request_string</span><span class="p">)</span>
+  <span class="n">request_parts</span> <span class="o">=</span> <span class="n">request_string</span><span class="p">.</span><span class="nf">split</span><span class="p">(</span><span class="s1">' '</span><span class="p">)</span>
+  <span class="n">path</span> <span class="o">=</span> <span class="k">begin</span>
+    <span class="n">insecure_path</span> <span class="o">=</span> <span class="no">URI</span><span class="p">(</span><span class="n">request_parts</span><span class="p">[</span><span class="mi">1</span><span class="p">]).</span><span class="nf">path</span>
+
+    <span class="n">secure_request_parts</span> <span class="o">=</span> <span class="n">insecure_path</span><span class="p">.</span><span class="nf">split</span><span class="p">(</span><span class="s1">'/'</span><span class="p">).</span><span class="nf">reject</span> <span class="k">do</span> <span class="o">|</span><span class="n">part</span><span class="o">|</span>
+      <span class="n">part</span> <span class="o">==</span> <span class="s1">'..'</span> <span class="o">||</span> <span class="n">part</span> <span class="o">==</span> <span class="s1">'.'</span> <span class="o">||</span> <span class="n">part</span> <span class="o">==</span> <span class="s1">''</span>
+    <span class="k">end</span>
+
+    <span class="n">secure_request_parts</span><span class="p">.</span><span class="nf">join</span><span class="p">(</span><span class="s1">'/'</span><span class="p">)</span>
+  <span class="k">end</span>
+
+  <span class="n">full_path</span> <span class="o">=</span> <span class="no">File</span><span class="p">.</span><span class="nf">join</span><span class="p">(</span><span class="no">SERVER_ROOT_DIR</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>
+
+  <span class="no">File</span><span class="p">.</span><span class="nf">open</span><span class="p">(</span><span class="n">full_path</span><span class="p">)</span> <span class="k">if</span> <span class="no">File</span><span class="p">.</span><span class="nf">file?</span><span class="p">(</span><span class="n">full_path</span><span class="p">)</span>
+<span class="k">end</span>
+
+<span class="k">def</span> <span class="nf">content_type</span><span class="p">(</span><span class="n">file_extension</span><span class="p">)</span>
+  <span class="p">{</span>
+    <span class="ss">html: </span><span class="s1">'text/html'</span><span class="p">,</span>
+    <span class="ss">txt: </span><span class="s1">'text/plain'</span><span class="p">,</span>
+    <span class="ss">json: </span><span class="s1">'application/json'</span>
+  <span class="p">}[</span><span class="n">file_extension</span><span class="p">]</span> <span class="o">||</span> <span class="s1">'text/plain'</span>
+<span class="k">end</span>
+
+<span class="n">socket</span> <span class="o">=</span> <span class="no">TCPServer</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="mi">8080</span><span class="p">)</span>
 
 <span class="kp">loop</span> <span class="k">do</span>
-  <span class="no">Thread</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="n">server</span><span class="p">.</span><span class="nf">accept</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">request</span><span class="o">|</span>
-    <span class="n">response</span> <span class="o">=</span> <span class="s1">'hello world'</span>
+  <span class="no">Thread</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="n">socket</span><span class="p">.</span><span class="nf">accept</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">request</span><span class="o">|</span>
+    <span class="n">request_string</span> <span class="o">=</span> <span class="n">request</span><span class="p">.</span><span class="nf">gets</span>
 
-    <span class="n">header</span> <span class="o">=</span> <span class="s2">"HTTP/1.1 200 OK</span><span class="se">\r\n</span><span class="s2">"</span>
-    <span class="n">header</span> <span class="o">+=</span> <span class="s2">"Content-Type: text/plain</span><span class="se">\r\n</span><span class="s2">"</span>
+    <span class="n">file_to_return</span> <span class="o">=</span> <span class="n">fetch_file</span><span class="p">(</span><span class="n">request_string</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">file_to_return</span><span class="p">.</span><span class="nf">nil?</span>
+      <span class="n">header</span> <span class="o">=</span> <span class="s2">"HTTP/1.1 404 Not Found</span><span class="se">\r\n</span><span class="s2">"</span>
+      <span class="n">response</span> <span class="o">=</span> <span class="s1">'File not found'</span>
+      <span class="n">extension</span> <span class="o">=</span> <span class="kp">nil</span>
+    <span class="k">else</span>
+      <span class="n">header</span> <span class="o">=</span> <span class="s2">"HTTP/1.1 200 OK</span><span class="se">\r\n</span><span class="s2">"</span>
+      <span class="n">response</span> <span class="o">=</span> <span class="n">file_to_return</span><span class="p">.</span><span class="nf">read</span>
+      <span class="n">extension</span> <span class="o">=</span> <span class="no">File</span><span class="p">.</span><span class="nf">extname</span><span class="p">(</span><span class="n">file_to_return</span><span class="p">.</span><span class="nf">to_path</span><span class="p">)</span>
+                      <span class="p">.</span><span class="nf">split</span><span class="p">(</span><span class="s1">'.'</span><span class="p">).</span><span class="nf">last</span><span class="p">.</span><span class="nf">to_sym</span>
+    <span class="k">end</span>
+
+    <span class="n">header</span> <span class="o">+=</span> <span class="s2">"Content-Type: </span><span class="si">#{</span> <span class="n">content_type</span><span class="p">(</span><span class="n">extension</span><span class="p">)</span> <span class="si">}</span><span class="se">\r\n</span><span class="s2">"</span>
     <span class="n">header</span> <span class="o">+=</span> <span class="s2">"Content-Length: </span><span class="si">#{</span> <span class="n">response</span><span class="p">.</span><span class="nf">bytesize</span> <span class="si">}</span><span class="se">\r\n</span><span class="s2">"</span>
     <span class="n">header</span> <span class="o">+=</span> <span class="s2">"Connection: close</span><span class="se">\r\n</span><span class="s2">"</span>
 
@@ -255,45 +313,35 @@ Connection: close
 </code></pre>
 </div>
 
-<p>Voila! A simple threaded Ruby server!</p>
+<p>The important line is:</p>
 
-<p><strong>Note: As with the previous solution, this might not be fit for a production environment since every single request spawns a new thread within a single process</strong>.</p>
-
-<h2 id="what-now">What now?</h2>
-
-<p>Now, this simple server will fulfill concurrent requests in a way that will make sense to its consumers. However, it always responds with <code class="highlighter-rouge">'hello world'</code>, regardless of the request data. To fetch and parse the incoming data, <code class="highlighter-rouge">request.gets</code> is available:</p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="nb">require</span> <span class="s1">'socket'</span>
-
-<span class="n">server</span> <span class="o">=</span> <span class="no">TCPServer</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="mi">8080</span><span class="p">)</span>
-
-<span class="kp">loop</span> <span class="k">do</span>
-  <span class="no">Thread</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="n">server</span><span class="p">.</span><span class="nf">accept</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">request</span><span class="o">|</span>
-    <span class="n">response</span> <span class="o">=</span> <span class="s1">'hello world'</span>
-
-    <span class="n">request_input</span> <span class="o">=</span> <span class="n">request</span><span class="p">.</span><span class="nf">gets</span>
-    <span class="c1"># handle request information</span>
-
-    <span class="n">header</span> <span class="o">=</span> <span class="s2">"HTTP/1.1 200 OK</span><span class="se">\r\n</span><span class="s2">"</span>
-    <span class="n">header</span> <span class="o">+=</span> <span class="s2">"Content-Type: text/plain</span><span class="se">\r\n</span><span class="s2">"</span>
-    <span class="n">header</span> <span class="o">+=</span> <span class="s2">"Content-Length: </span><span class="si">#{</span> <span class="n">response</span><span class="p">.</span><span class="nf">bytesize</span> <span class="si">}</span><span class="se">\r\n</span><span class="s2">"</span>
-    <span class="n">header</span> <span class="o">+=</span> <span class="s2">"Connection: close</span><span class="se">\r\n</span><span class="s2">"</span>
-
-    <span class="n">request</span><span class="p">.</span><span class="nf">puts</span> <span class="n">header</span>
-    <span class="n">request</span><span class="p">.</span><span class="nf">puts</span> <span class="s2">"</span><span class="se">\r\n</span><span class="s2">"</span>
-    <span class="n">request</span><span class="p">.</span><span class="nf">puts</span> <span class="n">response</span>
-
-    <span class="n">request</span><span class="p">.</span><span class="nf">close</span>
-  <span class="k">end</span>
-<span class="k">end</span>
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="n">extension</span> <span class="o">=</span> <span class="no">File</span><span class="p">.</span><span class="nf">extname</span><span class="p">(</span><span class="n">file_to_return</span><span class="p">.</span><span class="nf">to_path</span><span class="p">)</span>
+                <span class="p">.</span><span class="nf">split</span><span class="p">(</span><span class="s1">'.'</span><span class="p">).</span><span class="nf">last</span><span class="p">.</span><span class="nf">to_sym</span>
 </code></pre>
 </div>
 
-<p>Other improvements would be header configuration, incoming request parsing, and thread pooling.</p>
+<p>This code results in a symbol to pass to <code class="highlighter-rouge">content_type</code> that returns a meaningful content type for the client.</p>
 
-<p>Spending a thousand hours iterating on this code will certainly improve its quality, but it still might not allow this simple server stack up to the leaders in the space. I would recommend using a more battle tested web server for an actual production application. At least some of those awesome servers’ mysteries have been explained.</p>
+<p>The results of a request using this new content type parsing are just as expected:</p>
 
-<p>To see even more improvements, check out <a href="http://jakeyesbeck.com/2015/10/18/building-a-simple-web-server-with-ruby-2-part-2/">part 2!</a></p>
+<div class="highlighter-rouge"><pre class="highlight"><code>curl localhost:8080/path/to/my_file.html -I
+
+HTTP/1.1 200 OK
+Content-Type: text/html
+Content-Length: 79
+Connection: close
+</code></pre>
+</div>
+
+<p>There it is! The <code class="highlighter-rouge">text/html</code> content type returned correctly by the server when an html file was requested.</p>
+
+<h2 id="good-progress-but-far-from-perfect">Good Progress but Far from Perfect</h2>
+
+<p>This new iteration has added some good depth to the server; however, a plethora of issues remain. This server still has no concept of thread pooling for memory management, no authentication for restricted access files, and can only fetch basic files.</p>
+
+<p>While this might be sufficient for a pet project or educational purposes, I must reiterate that using a more mature and maintained web server is preferable.</p>
+
+<p>It sure has been fun building it though, right?</p>
 
   </div>
   

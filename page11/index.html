@@ -68,217 +68,184 @@
   
   <div class="post">
     <h1 class="post-title">
-      <a href="/2016/02/14/ruby-threads-and-active-record-connections/">
-        Ruby Threads and ActiveRecord Connections
+      <a href="/2016/02/21/four-postgresql-tips/">
+        Four PostgreSQL Tips
       </a>
     </h1>
 
     
 
-    <span class="post-date">14 Feb 2016</span>
+    <span class="post-date">21 Feb 2016</span>
     <span class='share-container'><ul class="share-buttons">
   <li>
-    <a href="https://www.facebook.com/sharer/sharer.php?u=http://jakeyesbeck.com/2016/02/14/ruby-threads-and-active-record-connections/&t=Ruby Threads and ActiveRecord Connections" title="Share on Facebook" target="_blank">
+    <a href="https://www.facebook.com/sharer/sharer.php?u=http://jakeyesbeck.com/2016/02/21/four-postgresql-tips/&t=Four PostgreSQL Tips" title="Share on Facebook" target="_blank">
       <img src="http://jakeyesbeck.com/assets/images/facebook.svg">
     </a>
   </li>
   <li>
-    <a href="https://twitter.com/intent/tweet?source=http%3A%2F%2Fjakeyesbeck.com&text=Ruby Threads and ActiveRecord Connections%20http://jakeyesbeck.com/2016/02/14/ruby-threads-and-active-record-connections/&via=jakeyesbeck" target="_blank" title="Tweet">
+    <a href="https://twitter.com/intent/tweet?source=http%3A%2F%2Fjakeyesbeck.com&text=Four PostgreSQL Tips%20http://jakeyesbeck.com/2016/02/21/four-postgresql-tips/&via=jakeyesbeck" target="_blank" title="Tweet">
       <img src="http://jakeyesbeck.com/assets/images/twitter.svg">
     </a>
   </li>
   <li>
-    <a href="https://plus.google.com/share?url=http://jakeyesbeck.com/2016/02/14/ruby-threads-and-active-record-connections/" target="_blank" title="Share on Google+">
+    <a href="https://plus.google.com/share?url=http://jakeyesbeck.com/2016/02/21/four-postgresql-tips/" target="_blank" title="Share on Google+">
       <img src="http://jakeyesbeck.com/assets/images/google_plus.svg">
     </a>
   </li>
 
   <li>
-    <a href="https://news.ycombinator.com/submitlink?u=http://jakeyesbeck.com/2016/02/14/ruby-threads-and-active-record-connections/&t=Ruby Threads and ActiveRecord Connections" target="_blank" title="Share on Hacker News">
+    <a href="https://news.ycombinator.com/submitlink?u=http://jakeyesbeck.com/2016/02/21/four-postgresql-tips/&t=Four PostgreSQL Tips" target="_blank" title="Share on Hacker News">
       <img src="http://jakeyesbeck.com/assets/images/ycomb.svg">
     </a>
   </li>
 
   <li>
-    <a href="https://getpocket.com/save?url=http://jakeyesbeck.com/2016/02/14/ruby-threads-and-active-record-connections/&title=Ruby Threads and ActiveRecord Connections" target="_blank" title="Add to Pocket">
+    <a href="https://getpocket.com/save?url=http://jakeyesbeck.com/2016/02/21/four-postgresql-tips/&title=Four PostgreSQL Tips" target="_blank" title="Add to Pocket">
       <img src="http://jakeyesbeck.com/assets/images/pocket.svg">
     </a>
   </li>
   <li>
-    <a href="http://www.reddit.com/submit?url=http://jakeyesbeck.com/2016/02/14/ruby-threads-and-active-record-connections/&title=Ruby Threads and ActiveRecord Connections" target="_blank" title="Submit to Reddit">
+    <a href="http://www.reddit.com/submit?url=http://jakeyesbeck.com/2016/02/21/four-postgresql-tips/&title=Four PostgreSQL Tips" target="_blank" title="Submit to Reddit">
       <img src="http://jakeyesbeck.com/assets/images/reddit.svg">
     </a>
   </li>
 </ul>
 </span>
 
-    <p>Processing large data sets is a common problem faced by many production web applications. <a href="http://jakeyesbeck.com/2015/08/09/how-to-process-large-data-sets-with-ruby/">One solution</a> is to divide the work amongst multiple processes and have each responsible for a single or significantly smaller batch of data. However, this solution is not without its problems. Machine provisioning limitations or financial barriers may invalidate this solution for a very large N.</p>
+    <p>PostgreSQL is an open source object-relational database used to power many production web applications. While many web applications interact with relational databases through Object Relational Mappers (<strong>ORM</strong>), direct SQL queries via a command line interface or graphical client are still common. When writing these queries, these four tips may come in handy.</p>
 
-<p>Within the same vein as “divide and conquer” exists another solution, one which requires far fewer parallel processes: <code class="highlighter-rouge">Threads</code>. In the Ruby programming language, a <code class="highlighter-rouge">Thread</code> is a built-in object for concurrent programming.</p>
+<p>All examples will assume the presence of a simple users table:</p>
 
-<p>Unlike independent processes, all Ruby <code class="highlighter-rouge">Threads</code> within the same process share memory, enabling each individual <code class="highlighter-rouge">Thread</code> to consume or process objects and elements from the same data store.</p>
-
-<p>For this example, a database will be queried, results manipulated and finally returned to same database via <code class="highlighter-rouge">ActiveRecord</code>.</p>
-
-<h2 id="first-pass">First Pass</h2>
-
-<p>Given a <code class="highlighter-rouge">User</code> model backed by a simple <code class="highlighter-rouge">users</code> table:</p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
-<span class="k">end</span>
+<div class="highlighter-rouge"><pre class="highlight"><code>    <span class="k">Column</span>     <span class="o">|</span>            <span class="k">Type</span>
+<span class="c1">---------------+-----------------------------
+</span> <span class="n">id</span>            <span class="o">|</span> <span class="n">integer</span>
+ <span class="n">first_name</span>    <span class="o">|</span> <span class="n">character</span> <span class="n">varying</span><span class="p">(</span><span class="mi">255</span><span class="p">)</span>
+ <span class="n">last_name</span>     <span class="o">|</span> <span class="n">character</span> <span class="n">varying</span><span class="p">(</span><span class="mi">255</span><span class="p">)</span>
+ <span class="n">email</span>         <span class="o">|</span> <span class="n">character</span> <span class="n">varying</span><span class="p">(</span><span class="mi">255</span><span class="p">)</span>
+ <span class="n">created_at</span>    <span class="o">|</span> <span class="k">timestamp</span> <span class="k">without</span> <span class="n">time</span> <span class="k">zone</span>
+ <span class="n">updated_at</span>    <span class="o">|</span> <span class="k">timestamp</span> <span class="k">without</span> <span class="n">time</span> <span class="k">zone</span>
+ <span class="n">password</span>      <span class="o">|</span> <span class="n">character</span> <span class="n">varying</span>
+ <span class="n">registered</span>    <span class="o">|</span> <span class="n">boolean</span>
+ <span class="n">registered_at</span> <span class="o">|</span> <span class="k">timestamp</span> <span class="k">without</span> <span class="n">time</span> <span class="k">zone</span>
+<span class="n">Indexes</span><span class="p">:</span>
+    <span class="nv">"users_pkey"</span> <span class="k">PRIMARY</span> <span class="k">KEY</span><span class="p">,</span> <span class="n">btree</span> <span class="p">(</span><span class="n">id</span><span class="p">)</span>
 </code></pre>
 </div>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">class</span> <span class="nc">CreateUsersTable</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Migration</span>
-  <span class="k">def</span> <span class="nf">change</span>
-    <span class="n">create_table</span> <span class="ss">:users</span> <span class="k">do</span> <span class="o">|</span><span class="n">t</span><span class="o">|</span>
-      <span class="n">t</span><span class="p">.</span><span class="nf">string</span> <span class="ss">:first_name</span>
-      <span class="n">t</span><span class="p">.</span><span class="nf">string</span> <span class="ss">:last_name</span>
-      <span class="n">t</span><span class="p">.</span><span class="nf">string</span> <span class="ss">:email</span>
-      <span class="n">t</span><span class="p">.</span><span class="nf">boolean</span> <span class="ss">:validated</span><span class="p">,</span> <span class="ss">default: </span><span class="kp">false</span>
-      <span class="n">t</span><span class="p">.</span><span class="nf">timestamps</span> <span class="ss">null: </span><span class="kp">false</span>
-    <span class="k">end</span>
-  <span class="k">end</span>
-<span class="k">end</span>
+<h2 id="finding-duplicate-rows">1. Finding Duplicate Rows</h2>
+
+<p>A common mechanism for defending against duplicate rows in database tables are unique indexes. However, at the time of table creation, a unique index or two may have been forgotten. Duplicates in a table must be removed before a unique index may be added.</p>
+
+<p>A great way to detect duplicates in PostgreSQL is by using window functions. Window functions are similar to aggregates; but, instead of grouping rows for the response, it maintains each row’s individuality.</p>
+
+<p>Desired query: Find all duplicate <code class="highlighter-rouge">users</code> with the same <code class="highlighter-rouge">first_name</code>, <code class="highlighter-rouge">last_name</code>, and <code class="highlighter-rouge">email</code>, returning duplicate <code class="highlighter-rouge">ids</code> only (do not return the oldest <code class="highlighter-rouge">id</code>).</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">SELECT</span> <span class="n">id</span> <span class="k">from</span> <span class="p">(</span>
+  <span class="k">SELECT</span> <span class="n">id</span><span class="p">,</span>
+  <span class="n">ROW_NUMBER</span><span class="p">()</span> <span class="n">OVER</span><span class="p">(</span>
+    <span class="n">PARTITION</span> <span class="k">BY</span> <span class="n">first_name</span><span class="p">,</span>
+                 <span class="n">last_name</span><span class="p">,</span>
+                 <span class="n">email</span>
+              <span class="k">ORDER</span> <span class="k">BY</span> <span class="n">id</span>
+    <span class="p">)</span> <span class="k">AS</span> <span class="n">user_row_number</span>
+  <span class="k">FROM</span> <span class="n">users</span>
+<span class="p">)</span> <span class="n">duplicates</span>
+<span class="k">WHERE</span>
+<span class="n">duplicates</span><span class="p">.</span><span class="n">user_row_number</span> <span class="o">&gt;</span> <span class="mi">1</span>
 </code></pre>
 </div>
 
-<p>The problem to solve is fairly straight forward:</p>
+<p>This query will identify all the rows of the <code class="highlighter-rouge">users</code> table which share the same defined columns and return the primary key (<code class="highlighter-rouge">id</code>) of rows <em>after</em> the first via the <code class="highlighter-rouge">duplicates.user_row_number &gt; 1</code> condition. The result of this query can then be fed into a <code class="highlighter-rouge">DELETE</code> query to remove the duplicates.</p>
 
-<blockquote>
-  <p>All <code class="highlighter-rouge">User</code> records that are not already validated should be fetched and an external API hit with their email address for validation, then saved. If a <code class="highlighter-rouge">User's</code> email address is not valid, it should be removed.</p>
-</blockquote>
+<p>The <code class="highlighter-rouge">ROW_NUMBER()</code> built-in function returns an incremented value assigned to each row that matches the criteria in the provided <code class="highlighter-rouge">OVER</code> clause. This <code class="highlighter-rouge">OVER</code> clause is followed by the window function: <code class="highlighter-rouge">PARTITION</code>, which divides matching rows into groups or partitions using the columns or functions which follow it. Learn more about window functions at the <a href="http://www.postgresql.org/docs/current/static/tutorial-window.html">official PostgreSQL documentation page</a>.</p>
 
-<p>Fast forwarding through time, it can be assumed that a completely serial solution has been written and deemed unsatisfactory. Then, during a second iteration, a bit of concurrent code was written:</p>
+<h2 id="interval">2. <code class="highlighter-rouge">interval</code></h2>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">class</span> <span class="nc">UserEmailValidator</span>
-  <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">run</span>
-    <span class="no">User</span><span class="p">.</span><span class="nf">where</span><span class="p">(</span><span class="ss">validated: </span><span class="kp">false</span><span class="p">)</span>
-        <span class="p">.</span><span class="nf">find_in_batches</span><span class="p">(</span><span class="ss">batch_size: </span><span class="mi">30</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">user_batch</span><span class="o">|</span>
-          <span class="n">validate_emails</span><span class="p">(</span><span class="n">user_batch</span><span class="p">)</span>
-        <span class="k">end</span>
-  <span class="k">end</span>
+<p>Ever had to scope the results of a database query to a certain time range? So has every developer ever. Luckily, PostgreSQL provides a very readable convenience function: <code class="highlighter-rouge">interval</code>.</p>
 
-  <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">validate_emails</span><span class="p">(</span><span class="n">user_batch</span><span class="p">)</span>
-    <span class="n">threads</span> <span class="o">=</span> <span class="n">user_batch</span><span class="p">.</span><span class="nf">map</span> <span class="k">do</span> <span class="o">|</span><span class="n">user</span><span class="o">|</span>
-      <span class="no">Thread</span><span class="p">.</span><span class="nf">new</span> <span class="k">do</span>
-        <span class="n">email_validator</span> <span class="o">=</span> <span class="no">EmailService</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="n">user</span><span class="p">.</span><span class="nf">email</span><span class="p">)</span>
-        <span class="n">email_validator</span><span class="p">.</span><span class="nf">validate</span>
+<p>If a rolling count of <code class="highlighter-rouge">user</code> sign ups in the last 24 hours is desired, the following query makes it possible:</p>
 
-        <span class="n">user</span><span class="p">.</span><span class="nf">email</span> <span class="o">=</span> <span class="kp">nil</span> <span class="k">if</span> <span class="n">email_validator</span><span class="p">.</span><span class="nf">invalid?</span>
-
-        <span class="n">user</span><span class="p">.</span><span class="nf">validated</span> <span class="o">=</span> <span class="kp">true</span>
-
-        <span class="n">user</span><span class="p">.</span><span class="nf">save!</span>
-      <span class="k">end</span>
-    <span class="k">end</span>
-
-    <span class="n">threads</span><span class="p">.</span><span class="nf">each</span><span class="p">(</span><span class="o">&amp;</span><span class="ss">:join</span><span class="p">)</span>
-  <span class="k">end</span>
-<span class="k">end</span>
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">SELECT</span> <span class="o">*</span>
+<span class="k">FROM</span> <span class="n">users</span>
+<span class="k">WHERE</span> <span class="n">created_at</span> <span class="o">&gt;=</span> <span class="n">now</span><span class="p">()</span> <span class="o">-</span> <span class="n">interval</span> <span class="s1">'1 day'</span>
 </code></pre>
 </div>
 
-<p>The important pieces of this code are:</p>
+<p>The <code class="highlighter-rouge">interval</code> function accepts a variety of input types. Days, Hours, Minutes, Weeks, and more options <a href="http://www.postgresql.org/docs/current/interactive/datatype-datetime.html">are available</a>.</p>
 
-<ol>
-  <li>
-    <p><code class="highlighter-rouge">find_in_batches(batch_size: 30)</code></p>
+<p><code class="highlighter-rouge">interval</code> subtraction can be used on any <code class="highlighter-rouge">timestamp</code>:</p>
 
-    <p>To cut down on memory allocation, only 30 <code class="highlighter-rouge">Users</code> are fetched at one time. Each of these <code class="highlighter-rouge">Users</code> have their email address validated in a separate <code class="highlighter-rouge">Thread</code>.</p>
-  </li>
-  <li>
-    <p><code class="highlighter-rouge">threads.map(&amp;:join)</code></p>
-
-    <p>The <code class="highlighter-rouge">join</code> method is used to make the program wait for all <code class="highlighter-rouge">Threads</code> to complete. If one <code class="highlighter-rouge">Thread</code> were to error out, some rescue and retry logic could be added to help.</p>
-  </li>
-</ol>
-
-<p>Functionally adequate, this code should iterate over the entire set of <code class="highlighter-rouge">User</code> records, 30 at a time, and update them in parallel.</p>
-
-<p>However, actually running this code will point out a very serious limitation.</p>
-
-<p><em>Note: The GIL in MRI Ruby prevents this code from ever running <strong>truly</strong> parallel but since this code is input/output constrained, it does not make a difference.</em></p>
-
-<h2 id="connection-accumulation">Connection Accumulation</h2>
-
-<p>Moments after the above code runs for the first time, this error is seen:</p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="no">ActiveRecord</span><span class="o">::</span><span class="no">ConnectionTimeoutError</span><span class="p">:</span>
-  <span class="n">could</span> <span class="n">not</span> <span class="n">obtain</span> <span class="n">a</span> <span class="n">database</span> <span class="n">connection</span> <span class="n">within</span> <span class="mi">5</span><span class="o">.</span><span class="mo">000</span> <span class="n">seconds</span>
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">SELECT</span> <span class="o">*</span>
+<span class="k">FROM</span> <span class="n">users</span>
+<span class="k">WHERE</span> <span class="n">created_at</span> <span class="o">&gt;=</span>
+  <span class="s1">'2016-02-19 12:00:00'</span><span class="p">::</span><span class="k">timestamp</span> <span class="o">-</span> <span class="n">interval</span> <span class="s1">'3 weeks'</span>
 </code></pre>
 </div>
 
-<p>As it turns out, each <code class="highlighter-rouge">Thread</code> spawned had allocated its own connection to the database via <code class="highlighter-rouge">ActiveRecord</code>. Then, even after the <code class="highlighter-rouge">Thread</code> completed its work, the connection was not relinquished. Stale, idle connections began to accumulate within the Ruby process and before even 1000 <code class="highlighter-rouge">User</code> objects could be processed, the connection pool was empty.</p>
+<p>The <code class="highlighter-rouge">::</code> notation casts the string <code class="highlighter-rouge">2016-02-19 12:00:00</code> to a <code class="highlighter-rouge">timestamp</code>, a requirement when manipulating time ranges with <code class="highlighter-rouge">interval</code>.</p>
 
-<p>Presumably, right after the <code class="highlighter-rouge">self.validate_emails</code> method completed for a batch of <code class="highlighter-rouge">Users</code>, the process should have released those connections to be used for either the next batch of <code class="highlighter-rouge">Threads</code> or other processes.</p>
+<h2 id="remote-query-execution">3. Remote Query Execution</h2>
 
-<p>Since this liberation of database connections did not happen automatically, it seems that we must intervene.</p>
+<p>A very powerful feature of PostreSQL, and more specifically the <code class="highlighter-rouge">psql</code> command line interface, is the ability to run remote queries. With the <code class="highlighter-rouge">--command</code> or <code class="highlighter-rouge">-c</code> flag, a query may be passed to any PostgreSQL server and executed.</p>
 
-<h2 id="pool-full-of-connections-then-we-dive-in-it">Pool Full of Connections, then We Dive in it</h2>
+<p>A unique use for this feature is the ability to transfer a query’s results directly from one environment to another.</p>
 
-<p>To help <code class="highlighter-rouge">ActiveRecord</code> handle connection allocation and deallocation, the <a href="http://api.rubyonrails.org/classes/ActiveRecord/ConnectionAdapters/ConnectionPool.html#method-i-with_connection">with_connection</a> block is used. <code class="highlighter-rouge">with_connection</code> is a method that <code class="highlighter-rouge">yields</code> a connection to a block, then returns that same connection to the pool when the block has completed.</p>
+<p>An extensive analysis of the <code class="highlighter-rouge">users</code> table for all <code class="highlighter-rouge">users</code> that signed up in January is requested. This analysis has the potential to be very taxing on a production database, resulting in adverse effects on end users. Additionally, no follower or read only database exists to alleviate this problem. Production data must be transfered to a local environment so that the analysis can run side effect free.</p>
 
-<p>Basically, it ensures that the life cycle for a single database connection is only active within the block provided.</p>
+<p>To accomplish this, the <code class="highlighter-rouge">psql</code> client has the ability to execute a query and return its result to <code class="highlighter-rouge">stdout</code>. Conversely, file contents or query results from <code class="highlighter-rouge">stdin</code> may also be read within the <code class="highlighter-rouge">psql</code> client.</p>
 
-<p>To make sure this solution will work, it is imperative that the database connection pool in either <code class="highlighter-rouge">database.yml</code> or in a connection initializer is set high enough.</p>
+<p>Utilizing both aspects of this behaviour could look something like:</p>
 
-<p>An example database.yml:</p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="s">production</span><span class="pi">:</span>
-  <span class="s">adapter</span><span class="pi">:</span> <span class="s">postgresql</span>
-  <span class="s">database</span><span class="pi">:</span> <span class="s">production_database</span>
-  <span class="s">pool</span><span class="pi">:</span> <span class="s">50</span>
+<div class="highlighter-rouge"><pre class="highlight"><code>psql &lt;REMOTE POSTGRESQL URL&gt; <span class="se">\</span>
+-c <span class="s2">"copy (
+      SELECT *
+      FROM users
+      WHERE date_trunc('month', created_at) = '2016-01-01'
+    ) to stdout"</span> <span class="se">\</span>
+| psql &lt;LOCAL POSTGRESQL DATABASE&gt; <span class="se">\</span>
+-c <span class="s2">"copy users from stdin"</span>
 </code></pre>
 </div>
 
-<p>With a pool large enough, a <code class="highlighter-rouge">with_connection</code> block can be inserted around the pertinent code:</p>
+<p>As an alternative to <code class="highlighter-rouge">pg_dump</code>, this pattern is a quick solution for loading specific data from one database to another.</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">class</span> <span class="nc">UserEmailValidator</span>
-  <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">run</span>
-    <span class="no">User</span><span class="p">.</span><span class="nf">where</span><span class="p">(</span><span class="ss">validated: </span><span class="kp">false</span><span class="p">)</span>
-        <span class="p">.</span><span class="nf">find_in_batches</span><span class="p">(</span><span class="ss">batch_size: </span><span class="mi">30</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">user_batch</span><span class="o">|</span>
-          <span class="n">validate_emails</span><span class="p">(</span><span class="n">user_batch</span><span class="p">)</span>
-        <span class="k">end</span>
-  <span class="k">end</span>
+<p>The <code class="highlighter-rouge">copy</code> command comes in two variants: <code class="highlighter-rouge">copy</code>, which will be run by the PostgreSQL backend (user “postgres”) and <code class="highlighter-rouge">\copy</code> which runs as the current user. Depending on permissions and what <code class="highlighter-rouge">copy</code> is attempting to do, one may be more appropriate than the other.</p>
 
-  <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">validate_emails</span><span class="p">(</span><span class="n">user_batch</span><span class="p">)</span>
-    <span class="n">threads</span> <span class="o">=</span> <span class="n">user_batch</span><span class="p">.</span><span class="nf">map</span> <span class="k">do</span> <span class="o">|</span><span class="n">user</span><span class="o">|</span>
-      <span class="no">Thread</span><span class="p">.</span><span class="nf">new</span> <span class="k">do</span>
-        <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span><span class="p">.</span><span class="nf">connection_pool</span><span class="p">.</span><span class="nf">with_connection</span> <span class="k">do</span>
-          <span class="n">email_validator</span> <span class="o">=</span> <span class="no">EmailService</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="n">user</span><span class="p">.</span><span class="nf">email</span><span class="p">)</span>
-          <span class="n">email_validator</span><span class="p">.</span><span class="nf">validate</span>
+<h2 id="referencing-columns-by-select-position">4. Referencing Columns by <code class="highlighter-rouge">SELECT</code> Position</h2>
 
-          <span class="n">user</span><span class="p">.</span><span class="nf">email</span> <span class="o">=</span> <span class="kp">nil</span> <span class="k">if</span> <span class="n">email_validator</span><span class="p">.</span><span class="nf">invalid?</span>
+<p>If one were to issue a <code class="highlighter-rouge">SELECT</code> query with a <code class="highlighter-rouge">GROUP BY</code> or <code class="highlighter-rouge">ORDER BY</code> clause, the columns in these clauses can be referenced by their position in the <code class="highlighter-rouge">SELECT</code> section.</p>
 
-          <span class="n">user</span><span class="p">.</span><span class="nf">validated</span> <span class="o">=</span> <span class="kp">true</span>
+<p>Desired query: Retrieve a count of all users which share the same <code class="highlighter-rouge">first_name</code> and were <code class="highlighter-rouge">created_at</code> on the same hour of the same day then order by the hour of creation and then <code class="highlighter-rouge">first_name</code>.</p>
 
-          <span class="n">user</span><span class="p">.</span><span class="nf">save!</span>
-        <span class="k">end</span>
-      <span class="k">end</span>
-    <span class="k">end</span>
+<h4 id="without-numeric-referencing">Without numeric referencing</h4>
 
-    <span class="n">threads</span><span class="p">.</span><span class="nf">each</span><span class="p">(</span><span class="o">&amp;</span><span class="ss">:join</span><span class="p">)</span>
-  <span class="k">end</span>
-<span class="k">end</span>
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">SELECT</span> <span class="n">first_name</span><span class="p">,</span> <span class="n">date_trunc</span><span class="p">(</span><span class="s1">'hour'</span><span class="p">,</span> <span class="n">created_at</span><span class="p">),</span> <span class="k">count</span><span class="p">(</span><span class="o">*</span><span class="p">)</span>
+<span class="k">FROM</span> <span class="n">users</span>
+<span class="k">GROUP</span> <span class="k">BY</span> <span class="n">first_name</span><span class="p">,</span> <span class="n">date_trunc</span><span class="p">(</span><span class="s1">'hour'</span><span class="p">,</span> <span class="n">created_at</span><span class="p">)</span>
+<span class="k">ORDER</span> <span class="k">BY</span> <span class="n">date_trunc</span><span class="p">(</span><span class="s1">'hour'</span><span class="p">,</span> <span class="n">created_at</span><span class="p">),</span> <span class="n">first_name</span><span class="p">;</span>
 </code></pre>
 </div>
 
-<p>Running this very deliberate connection handling process now ensures that no more than 30 connections are claimed. Each <code class="highlighter-rouge">Thread</code> will connect to the database with one single connection and the <code class="highlighter-rouge">with_connection</code> block will return that connection to the predefined pool upon completion.</p>
+<p>This query will satisfy the request, returning an ordered list <code class="highlighter-rouge">users</code> data grouped by their <code class="highlighter-rouge">first_name</code> and hour of the <code class="highlighter-rouge">created_at</code>.</p>
 
-<p>With the addition of this necessary connection pruning, the great <code class="highlighter-rouge">User</code> email validation effort can complete. Depending on the size of the data set and machines available, the 30 per batch limit could be easily increased, resulting in greater validation speed.</p>
+<h4 id="with-numeric-referencing">With numeric referencing</h4>
 
-<p>The <code class="highlighter-rouge">database.yml</code> configuration should have a pool size of equal to or greater than the number of <code class="highlighter-rouge">Threads</code> spawned. If 100 <code class="highlighter-rouge">User</code> objects needed to be processed at once, the pool should be <code class="highlighter-rouge">&gt;= 100</code>.</p>
+<p>Starting with 1, each value in the <code class="highlighter-rouge">SELECT</code> clause can be referenced by its numerical position. This can help reduce typos and copy pasting issues:</p>
 
-<h2 id="alternatives">Alternatives</h2>
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">SELECT</span> <span class="n">first_name</span><span class="p">,</span> <span class="n">date_trunc</span><span class="p">(</span><span class="s1">'hour'</span><span class="p">,</span> <span class="n">created_at</span><span class="p">),</span> <span class="k">count</span><span class="p">(</span><span class="o">*</span><span class="p">)</span>
+<span class="k">FROM</span> <span class="n">users</span>
+<span class="k">GROUP</span> <span class="k">BY</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span>
+<span class="k">ORDER</span> <span class="k">BY</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">;</span>
+</code></pre>
+</div>
 
-<p>Handling database connections and using raw <code class="highlighter-rouge">Threads</code> this explicitly can make some developers uncomfortable. Luckily, a few great libraries have been written to alleviate this problem.</p>
+<p>As queries become more complicated with references or additional aggregate functions, numerical referencing becomes even more valuable.</p>
 
-<p>In a previous post, <a href="http://jakeyesbeck.com/2016/01/10/how-to-parallelize-ruby-http-requests/#enter-em-synchrony">EM Synchrony</a> was utilized to make parallel HTTP requests. It also has the ability to parallelize <code class="highlighter-rouge">ActiveRecord</code> reading and writing without consuming excess database connections.</p>
+<h4 id="use-with-caution">Use with Caution</h4>
 
-<p>Another helpful library quickly becoming the most popular concurrency library is <a href="https://github.com/ruby-concurrency/concurrent-ruby">concurrent-ruby</a>. The <code class="highlighter-rouge">concurrent-ruby</code> library provides convenient models for dealing with futures, promises and other parallelization data structures. However, the same <code class="highlighter-rouge">ActiveRecord</code> connections issues will occur with concurrent ruby objects as with plain old <code class="highlighter-rouge">Threads</code>.</p>
+<p>While handy, referencing columns by their position is not always appropriate. Adding columns to the <code class="highlighter-rouge">SELECT</code> statement can invalidate previous referencing and cause unwanted behaviour. Additionally, with a significantly large number of columns in a <code class="highlighter-rouge">SELECT</code> statement, readability can suffer when referring to them solely by numbers.</p>
 
-<p>Additionally, this code has been written for the sake of making a point. There are many ways to solve a problem and this is simply one of them.</p>
+<p>As with anything, the use of numerical referencing should be deliberate and thoughtful.</p>
 
   </div>
   
