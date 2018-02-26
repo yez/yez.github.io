@@ -6,7 +6,7 @@ GEM
     colorator (0.1)
     fast-stemmer (1.0.2)
     ffi (1.9.10)
-    gsl (1.16.0.6)
+    gsl (2.1.0.3)
     jekyll (3.0.1)
       colorator (~> 0.1)
       jekyll-sass-converter (~> 1.0)
@@ -29,6 +29,8 @@ GEM
       rb-inotify (>= 0.9)
     mercenary (0.3.5)
     rb-fsevent (0.9.7)
+    rb-gsl (1.16.0.6)
+      gsl
     rb-inotify (0.9.5)
       ffi (>= 0.5.0)
     rouge (1.10.1)
@@ -40,7 +42,7 @@ PLATFORMS
 
 DEPENDENCIES
   classifier-reborn
-  gsl
   jekyll
   jekyll-paginate
   jekyll-sitemap
+  rb-gsl

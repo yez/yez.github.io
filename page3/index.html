@@ -59,7 +59,7 @@
       <a class="sidebar-nav-item" href="/atom.xml">Feed</a>
     </nav>
 
-    <p class='copyright'>&copy; Jake Yesbeck 2017. All rights reserved.</p>
+    <p class='copyright'>&copy; Jake Yesbeck 2018. All rights reserved.</p>
   </div>
 </div>
 
@@ -69,205 +69,142 @@
   
   <div class="post">
     <h1 class="post-title">
-      <a href="/2016/04/17/how-to-diagnose-ruby-on-rails-n-plus-1-query-problems/">
-        How to Diagnose Ruby on Rails N + 1 Query Problems
+      <a href="/2016/04/26/a-successful-year-of-commits/">
+        A Successful Year of Commits
       </a>
     </h1>
 
     
 
-    <span class="post-date">17 Apr 2016</span>
+    <span class="post-date">26 Apr 2016</span>
     <span class='share-container'><ul class="share-buttons">
   <li>
-    <a href="https://www.facebook.com/sharer/sharer.php?u=http://jakeyesbeck.com/2016/04/17/how-to-diagnose-ruby-on-rails-n-plus-1-query-problems/&t=How to Diagnose Ruby on Rails N + 1 Query Problems" title="Share on Facebook" target="_blank">
+    <a href="https://www.facebook.com/sharer/sharer.php?u=http://jakeyesbeck.com/2016/04/26/a-successful-year-of-commits/&t=A Successful Year of Commits" title="Share on Facebook" target="_blank">
       <img src="http://jakeyesbeck.com/assets/images/facebook.svg">
     </a>
   </li>
   <li>
-    <a href="https://twitter.com/intent/tweet?source=http%3A%2F%2Fjakeyesbeck.com&text=How to Diagnose Ruby on Rails N %2B 1 Query Problems%20http://jakeyesbeck.com/2016/04/17/how-to-diagnose-ruby-on-rails-n-plus-1-query-problems/&via=jakeyesbeck" target="_blank" title="Tweet">
+    <a href="https://twitter.com/intent/tweet?source=http%3A%2F%2Fjakeyesbeck.com&text=A Successful Year of Commits%20http://jakeyesbeck.com/2016/04/26/a-successful-year-of-commits/&via=jakeyesbeck" target="_blank" title="Tweet">
       <img src="http://jakeyesbeck.com/assets/images/twitter.svg">
     </a>
   </li>
   <li>
-    <a href="https://plus.google.com/share?url=http://jakeyesbeck.com/2016/04/17/how-to-diagnose-ruby-on-rails-n-plus-1-query-problems/" target="_blank" title="Share on Google+">
+    <a href="https://plus.google.com/share?url=http://jakeyesbeck.com/2016/04/26/a-successful-year-of-commits/" target="_blank" title="Share on Google+">
       <img src="http://jakeyesbeck.com/assets/images/google_plus.svg">
     </a>
   </li>
 
   <li>
-    <a href="https://news.ycombinator.com/submitlink?u=http://jakeyesbeck.com/2016/04/17/how-to-diagnose-ruby-on-rails-n-plus-1-query-problems/&t=How to Diagnose Ruby on Rails N + 1 Query Problems" target="_blank" title="Share on Hacker News">
+    <a href="https://news.ycombinator.com/submitlink?u=http://jakeyesbeck.com/2016/04/26/a-successful-year-of-commits/&t=A Successful Year of Commits" target="_blank" title="Share on Hacker News">
       <img src="http://jakeyesbeck.com/assets/images/ycomb.svg">
     </a>
   </li>
 
   <li>
-    <a href="https://getpocket.com/save?url=http://jakeyesbeck.com/2016/04/17/how-to-diagnose-ruby-on-rails-n-plus-1-query-problems/&title=How to Diagnose Ruby on Rails N + 1 Query Problems" target="_blank" title="Add to Pocket">
+    <a href="https://getpocket.com/save?url=http://jakeyesbeck.com/2016/04/26/a-successful-year-of-commits/&title=A Successful Year of Commits" target="_blank" title="Add to Pocket">
       <img src="http://jakeyesbeck.com/assets/images/pocket.svg">
     </a>
   </li>
   <li>
-    <a href="http://www.reddit.com/submit?url=http://jakeyesbeck.com/2016/04/17/how-to-diagnose-ruby-on-rails-n-plus-1-query-problems/&title=How to Diagnose Ruby on Rails N + 1 Query Problems" target="_blank" title="Submit to Reddit">
+    <a href="http://www.reddit.com/submit?url=http://jakeyesbeck.com/2016/04/26/a-successful-year-of-commits/&title=A Successful Year of Commits" target="_blank" title="Submit to Reddit">
       <img src="http://jakeyesbeck.com/assets/images/reddit.svg">
     </a>
   </li>
 </ul>
 </span>
 
-    <p>Diagnosing performance problems in a production Ruby on Rails application can be deceptively complex. When constructing a new application or expanding the features of an existing one, development environments that are not subject to typical production web traffic may not make performance issues evident. In those instances, the use of some simple (and mostly free) tools can help diagnose performance issues in production.</p>
+    <p>At Rails Conf 2015, I met a lot of great people from the Ruby community. These people had a profound effect on me, instilling in me a new motivation to become part of something larger than myself. A year ago today, I embarked on a journey to better myself as a Software Engineer. <a href="http://jakeyesbeck.com/2015/04/23/a-year-of-commits/">I decided to commit to open source software every day for a year</a>.</p>
 
-<p>If an application is hosted on Heroku, the New Relic add-on can be added to the application for free. Despite it having a few limitations, the free version of New Relic can be extremely valuable for diagnosing some common performance issues.</p>
+<p>Even though open source software has been around for decades, up until a year ago I had thought it mostly magic and far beyond my reach. After Rails Conf 2015, it became clear to me that contributing to and becoming part of the open source community was not so far fetched.</p>
 
-<p>New Relic will be the primary tool used in this post for analysis, but an application’s log files can prove to be just as valuable when analyzed correctly.</p>
+<h2 id="the-plan">The Plan</h2>
 
-<h2 id="setup">Setup</h2>
+<p>The word “plan” might be a bit generous for what I decided to do. I was going to “just keep doing commits for a year”. Surely doing something over and over again will yield good results…right? It has to have at least <em>some</em> effect on <em>some</em> aspect of my programming ability.</p>
 
-<p>The example application has the following database structure and respective models:</p>
+<p>And so that is what I did. For one year, I made at least one commit to an open source repository (someone else’s or my own) every day:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="n">create_table</span> <span class="ss">:users</span> <span class="k">do</span> <span class="o">|</span><span class="n">t</span><span class="o">|</span>
-  <span class="n">t</span><span class="p">.</span><span class="nf">string</span> <span class="ss">:email</span>
-  <span class="n">t</span><span class="p">.</span><span class="nf">string</span> <span class="ss">:first_name</span>
-  <span class="n">t</span><span class="p">.</span><span class="nf">string</span> <span class="ss">:last_name</span>
-  <span class="n">t</span><span class="p">.</span><span class="nf">timestamps</span><span class="p">(</span><span class="ss">null: </span><span class="kp">false</span><span class="p">)</span>
-<span class="k">end</span>
+<p><img src="http://jakeyesbeck.com/assets/images/complete_year_of_commits_graph.png" alt="Completed Year of Commits Github Graph" /></p>
 
-<span class="n">create_table</span> <span class="ss">:posts</span> <span class="k">do</span> <span class="o">|</span><span class="n">t</span><span class="o">|</span>
-  <span class="n">t</span><span class="p">.</span><span class="nf">integer</span> <span class="ss">:user_id</span>
-  <span class="n">t</span><span class="p">.</span><span class="nf">integer</span> <span class="ss">:theme_id</span>
-  <span class="n">t</span><span class="p">.</span><span class="nf">string</span> <span class="ss">:content</span>
-  <span class="n">t</span><span class="p">.</span><span class="nf">timestamps</span><span class="p">(</span><span class="ss">null: </span><span class="kp">false</span><span class="p">)</span>
-<span class="k">end</span>
+<p>I started this endeavor on April 26th 2015 and ended it today, April 26 2016.</p>
 
-<span class="n">create_table</span> <span class="ss">:themes</span> <span class="k">do</span> <span class="o">|</span><span class="n">t</span><span class="o">|</span>
-  <span class="n">t</span><span class="p">.</span><span class="nf">string</span> <span class="ss">:name</span>
-  <span class="n">t</span><span class="p">.</span><span class="nf">timestamps</span><span class="p">(</span><span class="ss">null: </span><span class="kp">false</span><span class="p">)</span>
-<span class="k">end</span>
+<h2 id="reality-check">Reality Check</h2>
 
-<span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
-  <span class="n">has_many</span> <span class="ss">:posts</span>
-<span class="k">end</span>
+<p>At the beginning of the year, I was under the impression that I was going to be able to contribute to other people’s repositories every day without too much effort. That idea was soon shattered due to the short time constraints I had to work with. After all, I am happily employed and unable to devote more than a few hours a day to open source work. Exploring someone else’s code base, reproducing an issue and finding a solution can take more than a few hours.</p>
 
-<span class="k">class</span> <span class="nc">Post</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
-  <span class="n">belongs_to</span> <span class="ss">:user</span>
-  <span class="n">belongs_to</span> <span class="ss">:theme</span>
-<span class="k">end</span>
+<p>It became clear that I needed to fill in gaps of time with my own projects. This ended up being much more fun than I had anticipated and I got to build some cool libraries that people would actually use:</p>
 
-<span class="k">class</span> <span class="nc">Theme</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
-<span class="k">end</span>
-</code></pre>
-</div>
+<ol>
+  <li><a href="https://github.com/yez/passages">Passages</a></li>
+  <li><a href="https://github.com/yez/validates_type">validates_type</a></li>
+  <li><a href="https://github.com/yez/rescue_groups">Rescue Groups</a></li>
+  <li><a href="https://github.com/yez/validates_subset">validates_subset</a></li>
+  <li><a href="https://github.com/yez/honest_renter">Honest Renter</a></li>
+</ol>
 
-<p>An example controller, <code class="highlighter-rouge">home_controller.rb</code> has a single action:</p>
+<p>However, this does not mean that my only contributions were to my own projects. Oh no, far from it, I forked repositories on Github like crazy and ended up contributing to a lot of great projects:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">class</span> <span class="nc">HomeController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
-  <span class="k">def</span> <span class="nf">show</span>
-    <span class="vi">@user</span> <span class="o">=</span> <span class="no">User</span><span class="p">.</span><span class="nf">find</span><span class="p">(</span><span class="n">params</span><span class="p">[</span><span class="ss">:user_id</span><span class="p">])</span>
-  <span class="k">end</span>
-<span class="k">end</span>
-</code></pre>
-</div>
+<ol>
+  <li><a href="https://github.com/codetriage/codetriage">Code Triage</a></li>
+  <li><a href="https://github.com/Growstuff/growstuff">Growstuff</a></li>
+  <li><a href="https://github.com/sendgrid/sendgrid-ruby">SendGrid Ruby</a></li>
+  <li><a href="https://github.com/girishso/pluck_to_hash">Pluck to Hash</a></li>
+  <li><a href="https://github.com/covermymeds/fetching-gem">Fetching</a></li>
+  <li><a href="https://github.com/codegram/date_validator">Date Validator</a></li>
+</ol>
 
-<p>The above action renders a single simple view, <code class="highlighter-rouge">show.html.haml</code>:</p>
+<p>…and many more</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="nt">%h3</span><span class="p">=</span> <span class="s2">"Posts from </span><span class="si">#{</span> <span class="vi">@user</span><span class="p">.</span><span class="nf">first_name</span> <span class="si">}</span><span class="s2"> </span><span class="si">#{</span> <span class="vi">@user</span><span class="p">.</span><span class="nf">last_name</span> <span class="si">}</span><span class="s2">"</span>
+<p>Each of these projects taught me something new and introduced me to many different coding styles. My contributions ranged from one-liners to entire spec suite creations. If any maintainers of these libraries end up reading this post: Thank you for all the work you do. Open source development is done for free and I value the time you put into it.</p>
 
-<span class="p">-</span> <span class="vi">@user</span><span class="p">.</span><span class="nf">posts</span><span class="p">.</span><span class="nf">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">post</span><span class="o">|</span>
-  <span class="nc">.theme</span><span class="p">=</span> <span class="s2">"Theme </span><span class="si">#{</span> <span class="n">post</span><span class="p">.</span><span class="nf">theme</span><span class="p">.</span><span class="nf">name</span> <span class="si">}</span><span class="s2">"</span>
-  <span class="nc">.content</span><span class="p">=</span> <span class="n">post</span><span class="p">.</span><span class="nf">content</span>
-</code></pre>
-</div>
+<h2 id="expect-the-unexpected">Expect the Unexpected</h2>
 
-<p>Additionally in the application’s <code class="highlighter-rouge">Gemfile</code>, the New Relic Ruby gem has been added:</p>
+<p>A delightful surprise during this project was writing this blog. I had a feeling that I would enjoy writing every week and originally intended to only write about the Year of Commits project. However, a few weeks into the posts and I quickly found new inspiration. It turns out that people actually like reading my explanations of coding patterns, designs, and tutorials:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="n">source</span> <span class="s1">'https://rubygems.org'</span>
-<span class="c1"># ...</span>
-<span class="n">gem</span> <span class="s1">'newrelic_rpm'</span>
-</code></pre>
-</div>
+<blockquote class="twitter-tweet" data-lang="en">
+  <p lang="en" dir="ltr"><a href="https://twitter.com/jakeyesbeck">@jakeyesbeck</a> Hey man! Your blog is awesome! Keep going! Also thanks for sharing your thoughts and learned things! 👍</p>&mdash; Gabriel Francisco (@fgbreel) <a href="https://twitter.com/fgbreel/status/700493892861485056">February 19, 2016</a>
+</blockquote>
+<script async="" src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
 
-<p>On a development machine under no contention, this action will quickly render a page consisting of a <code class="highlighter-rouge">User's</code> name information, a list of their <code class="highlighter-rouge">posts</code> and the <code class="highlighter-rouge">theme</code> each post belongs to.</p>
+<blockquote class="twitter-tweet" data-lang="en">
+  <p lang="en" dir="ltr">Been really impressed with <a href="https://twitter.com/jakeyesbeck">@jakeyesbeck</a>&#39;s blog recently for great <a href="https://twitter.com/hashtag/Ruby?src=hash">#Ruby</a> and <a href="https://twitter.com/hashtag/RubyOnRails?src=hash">#RubyOnRails</a> posts. Check it out! <a href="https://t.co/cIGGTdzqlL">https://t.co/cIGGTdzqlL</a></p>&mdash; Brad Urani (@bradurani) <a href="https://twitter.com/bradurani/status/701544221224755200">February 21, 2016</a>
+</blockquote>
+<script async="" src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
 
-<p>However, there is an <code class="highlighter-rouge">N + 1</code> query issue with this code. In a development environment, this issue might be overlooked or deemed satisfactory. It may not be until this code is released into the wild that a problem is seen.</p>
+<p>Of course, not all feedback on my posts was positive, but all of it was useful. Having my opinion out there, my content distributed and consumed has been extremely motivating and completely unexpected. Finding topics I thought would be useful and interesting to others was always a hard challenge, but having a self-imposed obligation of one post per week kept me honest.</p>
 
-<h2 id="the-n--1-problem">The N + 1 Problem</h2>
+<p>I now believe all software engineers should write. There are a lot of parallels between writing code and writing paragraphs; both are done with great care. Writing about something is a great way to express your ideas, share knowledge, and solidify concepts for yourself. Aside from the growth in my technical skills during this past year, having my writing appreciated made all my hard work worth it.</p>
 
-<p>An <code class="highlighter-rouge">N + 1</code> query problem is responsible for an application’s execution of far more queries than needed. The <code class="highlighter-rouge">1</code> in <code class="highlighter-rouge">N + 1</code> refers to first query executed, in this case when loading: <code class="highlighter-rouge">@user.posts</code>. The <code class="highlighter-rouge">N</code> then refers to number of queries that must be executed when traversing over the list of elements, in this case each <code class="highlighter-rouge">post's</code> <code class="highlighter-rouge">theme</code>.</p>
+<p>I was lucky enough to be <a href="http://rubyweekly.com/issues/284">featured in Ruby Weekly</a> a <a href="http://rubyweekly.com/issues/285">few times</a> and was even mentioned in a couple podcasts.</p>
 
-<p>As with most problems, the first step to solving them involves validating their existence. This is the step in which New Relic is utilized.</p>
+<p>This support completely validated my commitment and helped make this project so productive.</p>
 
-<p>When using Heroku, after the New Relic add-on has been created for an application, it can be opened with:</p>
+<h2 id="what-i-learned">What I Learned</h2>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>heroku addons:open newrelic --app my-application-name
-</code></pre>
-</div>
+<p>The big question that most people I talk about this project ask is: “What have I learned while doing it?” Early on in the year, I would answer by explaining some new software pattern or Ruby library that I came across. But, after a few months, I realised something much more important: <em>the value of perseverance</em>.</p>
 
-<p>Otherwise, a user can simply Log-in at <code class="highlighter-rouge">rpm.newrelic.com</code> and navigate to their application after signing up and linking their application.</p>
+<p>Committing code every day for a week is not difficult. Writing software every day for a month is a little harder, and every day for a year is harder still. Within a year’s time, inconveniences are bound to appear. Be it an unexpected spell of food poisoning, an impromptu vacation to Las Vegas, or a simple release of a new Netflix show to binge watch, the coding must continue. All of these things did indeed happen to me over the course of a year and it was very tempting to say to myself: “What is the harm in missing one day?”</p>
 
-<p>Once the desired application has been opened in New Relic, navigating to the the <code class="highlighter-rouge">transactions</code> tab and then the <code class="highlighter-rouge">HomeController#show</code> transaction will show our <code class="highlighter-rouge">N + 1</code> issue.</p>
+<p>But one missed day meant more and more as time went on. At 100 consecutive days, missing one day would have been disappointing, at 200 days it would have been devastating and at 300 days, it was unthinkable. When people did not seem to care about libraries I worked on or blog posts I published, it was easier to think about skipping a day.</p>
 
-<p>At first glance, the graph of this simple endpoint is telling a alarming story. A large amount of time is spent in the database, fetching records necessary to render the page:</p>
+<p>And here, a year later, I stand without missing a single day. Persevering through criticism and rejection, I kept going until my task was done. If a blog post was not well received, I had next week to try again. If a library was not found useful, I could tweak it until it was. Perseverance was my hammer and everything started to look like a nail.</p>
 
-<p><img src="http://jakeyesbeck.com/assets/images/graph_before_fix.png" alt="New Relic Transaction Trace Graph for N + 1" /></p>
+<p>And it worked. I learned a lot, met some great people, and hopefully helped a few people along the way. Believing in myself and my ability to persevere was my biggest lesson during this project and I will not soon forget it.</p>
 
-<p>Below this graph, New Relic conveniently displays the call count breakdown for this transaction:</p>
+<h2 id="would-i-do-it-again">Would I do it Again?</h2>
 
-<p><img src="http://jakeyesbeck.com/assets/images/call_count_table_before_fix.png" alt="New Relic Transaction Call Count Table for N + 1" /></p>
+<p>In short, heck yes I would. This experience has been one of the most beneficial, positive, and growth inducing tasks I have ever done. Thinking back to a year ago, my attitude towards open source software and my own abilities as a software engineer have completely changed. Working with many different types of people and receiving a variety of feedback has been a very eye opening experience.</p>
 
-<p>Immediately, we can see that the <code class="highlighter-rouge">Postgres Theme find</code> is called an average of <strong>20</strong> times per transaction. Compared to the single call count of the surrounding methods in this table, <strong>20</strong> seems excessive.</p>
+<p>Too often in our daily lives are we subject to repetition. These patterns can be confining while not appearing as such. Breaking out of one’s routine and exposing yourself to a variety of new stimuli can help maintain an open mind about new ideas or technology.</p>
 
-<h2 id="investigation-station">Investigation Station</h2>
+<p>This project is not for everyone. I was lucky enough to have the time and energy to complete a task of this scale and for that I am supremely thankful.</p>
 
-<p>With a direction to run in, it is time to revisit the code and find the offending line. Luckily, this application’s code line count totals to about 40, so the search is short.</p>
+<h2 id="looking-forward">Looking Forward</h2>
 
-<p>Here is the line that causes the issue:</p>
+<p>I plan to keep writing and contributing to open source projects as frequently as time allows. I doubt I will ever obtain the same level of Github streak that this project allotted me, but I hope to continue to make meaningful contributions to open source projects.</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="nc">.theme</span><span class="p">=</span> <span class="s2">"Theme </span><span class="si">#{</span> <span class="n">post</span><span class="p">.</span><span class="nf">theme</span><span class="p">.</span><span class="nf">name</span> <span class="si">}</span><span class="s2">"</span>
-</code></pre>
-</div>
+<p>The confidence and exposure to many different types of codebases is something that I will value for a long time. I am more than thankful for all the people who said kind things to me or gave me words of encouragement. Without those people, there is no way that I could have accomplished this.</p>
 
-<p>Each time <code class="highlighter-rouge">post.theme.name</code> is called the following query is executed:</p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">SELECT</span>  <span class="nv">"themes"</span><span class="p">.</span><span class="o">*</span> <span class="k">FROM</span> <span class="nv">"themes"</span>  <span class="k">WHERE</span> <span class="nv">"themes"</span><span class="p">.</span><span class="nv">"id"</span> <span class="o">=</span> <span class="err">$</span><span class="mi">1</span> <span class="k">LIMIT</span> <span class="mi">1</span>  <span class="p">[[</span><span class="nv">"id"</span><span class="p">,</span> <span class="mi">3</span><span class="p">]]</span>
-</code></pre>
-</div>
-
-<p>While things like query caching, primary key indexes and other performance aiding features exist within production relational databases, issuing the same query 20 times per page load is still wasteful.</p>
-
-<h2 id="the-fix">The Fix</h2>
-
-<p>Many solutions to this problem exist, each with their own pros and cons. The important part of this post is how to effectively use New Relic to diagnose a problem in a production Ruby on Rails application.</p>
-
-<p>All that aside, what kind of effect does a solution to this problem have on our example application?</p>
-
-<p>To rid this system of its <code class="highlighter-rouge">N + 1</code> query, we can prepend some information to the simple <code class="highlighter-rouge">find</code> method, letting <code class="highlighter-rouge">ActiveRecord</code> do the work for us:</p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">class</span> <span class="nc">HomeController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
-  <span class="k">def</span> <span class="nf">show</span>
-    <span class="vi">@user</span> <span class="o">=</span> <span class="no">User</span><span class="p">.</span><span class="nf">eager_load</span><span class="p">(</span><span class="ss">posts: :theme</span><span class="p">)</span>
-                <span class="p">.</span><span class="nf">find</span><span class="p">(</span><span class="n">params</span><span class="p">[</span><span class="ss">:user_id</span><span class="p">])</span>
-  <span class="k">end</span>
-<span class="k">end</span>
-</code></pre>
-</div>
-
-<p>Here the <code class="highlighter-rouge">eager_load</code> method will use the established foreign keys via the <code class="highlighter-rouge">belongs_to</code> relationships and pull in relevant <code class="highlighter-rouge">posts</code> and <code class="highlighter-rouge">themes</code>, resulting in two <code class="highlighter-rouge">JOIN</code> clauses in the query.</p>
-
-<p><em>Note: This is just one solution for this particular problem with its own downsides. Any memory concerns dealing with a <code class="highlighter-rouge">User</code> that has far too many <code class="highlighter-rouge">posts</code> or similar problems are not addressed.</em></p>
-
-<p>Opening up New Relic shows the the improvement:</p>
-
-<p><img src="http://jakeyesbeck.com/assets/images/graph_after_fix.png" alt="New Relic Transaction Trace Graph After Fix" /></p>
-
-<p>A request previously rendering in 200ms is now as low as 40ms.</p>
-
-<p>The breakdown of the transaction call count shows improvement as well:</p>
-
-<p><img src="http://jakeyesbeck.com/assets/images/call_count_table_after_fix.png" alt="New Relic Transaction Call Count Table After Fix" /></p>
-
-<h2 id="measure-twice-measure-again-just-keep-measuring">Measure Twice, Measure Again, Just Keep Measuring</h2>
-
-<p>Understanding slow parts of a production Ruby on Rails application can mean the difference between an “OK” user experience and a great one. When developing these applications, it can be hard to keep track of every inefficiency that could result in sub-optimal <code class="highlighter-rouge">N + 1</code> behaviour. Both new and seasoned Ruby on Rails applications can be vulnerable to these types of problems, knowing how to diagnose them is the first step towards their resolution.</p>
-
-<p>New Relic was a crucial element in this example but it is not the only tool available. Many other analysis tools for Ruby on Rails applications exist and Rails itself gives developers insight into an application’s behaviour via its logs.</p>
+<p>Thank you all so much, now I think its time for me to take a little break. I plan to be back in a few weeks, refreshed and ready to write more.</p>
 
   </div>
   

@@ -4,13 +4,107 @@
  <title>A Year of Commits</title>
  <link href="http://jakeyesbeck.com/atom.xml" rel="self"/>
  <link href="http://jakeyesbeck.com/"/>
- <updated>2017-07-12T19:17:51-04:00</updated>
+ <updated>2018-02-26T12:15:59-05:00</updated>
  <id>http://jakeyesbeck.com/</id>
  <author>
    <name>Jake Yesbeck</name>
    <email>yesbeckjs@gmail.com</email>
  </author>
 
+ 
+ <entry>
+   <title>Improving Remote Work as a Software Engineer</title>
+   <link href="http://jakeyesbeck.com/2018/02/18/improving-remote-work-as-a-software-engineer/"/>
+   <updated>2018-02-18T07:00:00-05:00</updated>
+   <id>http://jakeyesbeck.com/2018/02/18/improving-remote-work-as-a-software-engineer</id>
+   <content type="html">&lt;p&gt;After working in the Bay Area for many years, I decided that being able to
+afford a house was something I’d like to do. That and family led me back to the East
+Coast and a new chapter of my career began: Remote Software Engineering.&lt;/p&gt;
+
+&lt;p&gt;Transitioning to working remotely in any profession has its challenges. After
+a few years as a remote software engineer, I have learned many things that don’t work
+and a few that do. Most of the things that didn’t work helped point me in the
+direction to those that do and hopefully these bits of insight can help others.
+These tips are most relevant to someone who is the only or one of few remote
+engineers on their team.&lt;/p&gt;
+
+&lt;h2 id=&quot;presence&quot;&gt;Presence&lt;/h2&gt;
+
+&lt;p&gt;The largest and most obvious challenge one will face as a remote software
+engineer is a lack of presence. In an office, people can have small side
+conversations, ask about one another’s weekends, or simply say “hello” in the
+hallway. While seemingly inconsequential, these tiny interactions establish presence.&lt;/p&gt;
+
+&lt;p&gt;Maintaining presence is important if an engineer is a member of a team or has
+many stakeholders in their work. Presence can make the difference between being
+perceived as &lt;em&gt;“a member of team”&lt;/em&gt; as opposed to &lt;em&gt;“that one person who works on…
+What is it they do again?”&lt;/em&gt;. The former helps a person feel unified with the team they work for,
+the mission they are striving towards, and the product they are building; the
+latter is hollow and temporary.&lt;/p&gt;
+
+&lt;p&gt;So how does a remote software engineer maintain presence? With consistent yet
+relevant communication. Whether a company uses Hipchat, Slack, Google Hangouts, or
+another chat application, instant communication should already be baked into an
+organization’s workflow and can be utilized to establish presence. While
+over-communication is rarely valuable, sending short and well constructed
+messages about current progress or next steps helps keep team members informed and
+questions answered.&lt;/p&gt;
+
+&lt;p&gt;If instant messaging isn’t on the menu, status emails might do well in its place.
+There is nothing worse than an employer, manager, or team lead thinking that a remote
+software engineer isn’t delivering what they should. A single daily email can help
+provide visibility. The email doesn’t need to be very verbose. It can be as simple as
+a list of what’s been done today, any blockers that have been encountered, or an update
+to a nearing deadline. It might seem tedious or unnecessary but, to a
+manager or stakeholder, such an email can help reassure them of progress and
+collaboration.&lt;/p&gt;
+
+&lt;h2 id=&quot;tone&quot;&gt;Tone&lt;/h2&gt;
+
+&lt;p&gt;Since communication is so important for a remote software engineer, the tone in
+which that communication is even more important. &lt;em&gt;Tone is incredibly hard to convey
+over text communication&lt;/em&gt;. Because of this, it might take a few tries to accurately
+convey negative messages without sounding like an extremely irritated or otherwise
+nasty individual.&lt;/p&gt;
+
+&lt;p&gt;Code reviews are a great example of how the right tone can make all the
+difference. Think of code reviews in the recent past, unless a team goes out of their way to be super
+positive, most code review comments are a little negative. For example, a typical code
+review might have comments like: &lt;em&gt;“This doesn’t look right”&lt;/em&gt;, _“Change &lt;x&gt; to &lt;y&gt;
+here&quot;_, or _&quot;I don&#39;t agree with this&quot;_. The reason these comments are not an
+issue for a local team is because this is not the only comments they exchange.
+Perhaps a local team will have one-off side conversations where they explain their
+opinions in a more positive way. Or, completely separate to the code review, a local
+team shares some amount of small talk that is likely positive. Whatever the case,
+the local team has a mixture of positive interactions along with (most likely) negative
+code review comments. The remote software engineer does not have this luxury. All
+they have to offer is their code review comments which, most likely, are not
+filled with a very positive tone. This is what must be adjusted.&lt;/y&gt;&lt;/x&gt;&lt;/p&gt;
+
+&lt;p&gt;Utilizing a positive tone in code reviews and other communication help remind
+people that their remote team member is just that: a valuable member of the
+team, invested in their work and the happiness of their colleagues. To enable
+this perception, the remote software engineer can find opportunities for positivity
+that might be easily overlooked. Simple comments on how a method’s signature is nicely
+defined or a code comment is especially helpful are easy things to point out during
+a code review that express positivity.&lt;/p&gt;
+
+&lt;h2 id=&quot;availability&quot;&gt;Availability&lt;/h2&gt;
+
+&lt;p&gt;For those remote software engineers in the same timezone as the rest of their team,
+availability shouldn’t be an issue. For everyone else, there may be times
+in which “after hours” communication can help boost one’s reputation as being
+dependable and invested despite being remote.&lt;/p&gt;
+
+&lt;p&gt;Responding in off hours is not the same as being always available. People need and
+benefit from downtime and the remote engineer is no different.  Because of this,
+the availability of a remote employee should be flexible but not unreasonable.
+Responding to a few emails or chat messages after hours or during a morning coffee
+before their “normal work day” can go a long way.  After all, if a company is willing
+to be flexible and work with a remote software engineer, shouldn’t that engineer also
+be flexible?&lt;/p&gt;
+</content>
+ </entry>
  
  <entry>
    <title>A Few RSpec Helpful Hints</title>
