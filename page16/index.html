@@ -213,9 +213,9 @@
 
 <h2 id="modules">2. Modules</h2>
 
-<p>Modules in ruby are collections of methods and constants. These collections can be used as encapsulation tools or, in this case, alternatives to defining class methods.</p>
+<p>Modules in ruby are collections of methods and constants. These collections can be used as encapsulation tools or, in this case, alternatives to defining public and private class methods.</p>
 
-<p>When a class <code class="highlighter-rouge">extends</code> a module, all the the methods within that module become class methods on the subject class*. This pattern can be used to define the <code class="highlighter-rouge">tricks</code> method on <code class="highlighter-rouge">Dog</code>.</p>
+<p>When a class <code class="highlighter-rouge">extends</code> a module, all the methods within that module become class methods on the subject class*. This pattern can be used to define the <code class="highlighter-rouge">tricks</code> method on <code class="highlighter-rouge">Dog</code>.</p>
 
 <p><em>*Note: This only pertains to methods defined in a “typical sense” any <code class="highlighter-rouge">def self.</code> or <code class="highlighter-rouge">def Dog.</code> method definitions in a module do not automatically become class methods in the same way when <code class="highlighter-rouge">extended</code>.</em></p>
 
@@ -278,7 +278,7 @@
 
 <h2 id="further-reading">Further Reading</h2>
 
-<p>The aforementioned solutions will get the job done but might not answer lingering questions about <em>why</em> things work the way they do. A few great articles on <a href="http://madebydna.com/all/code/2011/06/24/eigenclasses-demystified.html">the ruby eigenclass</a> and <a href="http://junichiito.blogspot.com/2012/03/matz-answers-why-ruby-lets-sub-classes.html">Matz’s thoughts on Ruby method design</a> should help paint a more concise picture of why Ruby works the way that it does.</p>
+<p>The aforementioned solutions will get the job done but might not answer lingering questions about <em>why</em> things work the way they do. A few great articles on <a href="http://madebydna.com/all/code/2011/06/24/eigenclasses-demystified.html">the ruby eigenclass</a> and <a href="http://junichiito.blogspot.com/2012/03/matz-answers-why-ruby-lets-sub-classes.html">Matz’s thoughts on Ruby method design</a> should help paint a more concise picture of why Ruby’s private class method definition is complex.</p>
 
   </div>
   

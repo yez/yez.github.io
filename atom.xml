@@ -2930,9 +2930,9 @@ Routes &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;Passages::Engine:
 
 &lt;h2 id=&quot;modules&quot;&gt;2. Modules&lt;/h2&gt;
 
-&lt;p&gt;Modules in ruby are collections of methods and constants. These collections can be used as encapsulation tools or, in this case, alternatives to defining class methods.&lt;/p&gt;
+&lt;p&gt;Modules in ruby are collections of methods and constants. These collections can be used as encapsulation tools or, in this case, alternatives to defining public and private class methods.&lt;/p&gt;
 
-&lt;p&gt;When a class &lt;code class=&quot;highlighter-rouge&quot;&gt;extends&lt;/code&gt; a module, all the the methods within that module become class methods on the subject class*. This pattern can be used to define the &lt;code class=&quot;highlighter-rouge&quot;&gt;tricks&lt;/code&gt; method on &lt;code class=&quot;highlighter-rouge&quot;&gt;Dog&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;When a class &lt;code class=&quot;highlighter-rouge&quot;&gt;extends&lt;/code&gt; a module, all the methods within that module become class methods on the subject class*. This pattern can be used to define the &lt;code class=&quot;highlighter-rouge&quot;&gt;tricks&lt;/code&gt; method on &lt;code class=&quot;highlighter-rouge&quot;&gt;Dog&lt;/code&gt;.&lt;/p&gt;
 
 &lt;p&gt;&lt;em&gt;*Note: This only pertains to methods defined in a “typical sense” any &lt;code class=&quot;highlighter-rouge&quot;&gt;def self.&lt;/code&gt; or &lt;code class=&quot;highlighter-rouge&quot;&gt;def Dog.&lt;/code&gt; method definitions in a module do not automatically become class methods in the same way when &lt;code class=&quot;highlighter-rouge&quot;&gt;extended&lt;/code&gt;.&lt;/em&gt;&lt;/p&gt;
 
