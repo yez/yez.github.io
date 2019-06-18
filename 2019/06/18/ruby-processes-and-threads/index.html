@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta http-equiv="content-type" content="text/html; charset=utf-8">
   
-    <meta name="description" content="Jake Yesbeck's Technology Blog inspired by Open Source Projects.">
+    <meta name="description" content="Understanding the difference between Processes and Threads in Ruby is crucial when configuring a web server and configuring it.">
   
 
   <!-- Enable responsiveness on mobile devices-->
@@ -14,7 +14,7 @@
 
   <title>
     
-      A Year of Commits
+      Ruby Processes and Threads - Configuring a Web Server
     
   </title>
 
@@ -65,19 +65,11 @@
 
 
     <div class="content container">
-      <div class="posts">
+      <div class="post">
+  <h1 class="post-title">Ruby Processes and Threads - Configuring a Web Server</h1>
+  <span class="post-date">18 Jun 2019</span>
   
-  <div class="post">
-    <h1 class="post-title">
-      <a href="/2019/06/18/ruby-processes-and-threads/">
-        Ruby Processes and Threads - Configuring a Web Server
-      </a>
-    </h1>
-
-    
-
-    <span class="post-date">18 Jun 2019</span>
-    <span class='share-container'><ul class="share-buttons">
+  <span class='share-container'><ul class="share-buttons">
   <li>
     <a href="https://www.facebook.com/sharer/sharer.php?u=http://jakeyesbeck.com/2019/06/18/ruby-processes-and-threads/&t=Ruby Processes and Threads - Configuring a Web Server" title="Share on Facebook" target="_blank">
       <img src="http://jakeyesbeck.com/assets/images/facebook.svg">
@@ -112,8 +104,7 @@
   </li>
 </ul>
 </span>
-
-    <p>Multiple popular Ruby web servers exist. Each Ruby application is different and the ultimate <strong>tl;dr</strong> for configuring a web server is: <em>it depends.</em> This post will not prescribe one web server or configuration over another and will instead explain internal components most popular servers contain.</p>
+  <p>Multiple popular Ruby web servers exist. Each Ruby application is different and the ultimate <strong>tl;dr</strong> for configuring a web server is: <em>it depends.</em> This post will not prescribe one web server or configuration over another and will instead explain internal components most popular servers contain.</p>
 
 <p>In order to facilitate more than one request at a time, a Ruby web server implements <code class="highlighter-rouge">Threads</code>, <code class="highlighter-rouge">Processes</code>, or both. These tools are used to enable concurrency and are beneficial in different ways.</p>
 
@@ -505,17 +496,40 @@ siege -b --content-type <span class="nv">$CONTENT_TYPE</span> -c <span class="nv
 
 <p>Things like thread starvation, semaphores, thread pooling and other concerns regarding concurrent programming were intentionally not mentioned in this post.  Understanding how <code class="highlighter-rouge">Threads</code> and <code class="highlighter-rouge">Processes</code> work at a high level can enable the configuration and choice of web server, but if you want to write your own complex concurrent Ruby code, I’d suggest <a href="https://github.com/ruby-concurrency/concurrent-ruby">concurrent-ruby</a>.</p>
 
-  </div>
-  
 </div>
 
-<div class="pagination">
-  
-    <a class="pagination-item older" href="http://jakeyesbeck.com/page2">Older</a>
-  
-  
-    <span class="pagination-item newer">Newer</span>
-  
+<div class="related">
+  <h2>Related Posts</h2>
+  <ul class="related-posts">
+    
+      <li>
+        <h3>
+          <a href="/2016/02/14/ruby-threads-and-active-record-connections/">
+            Ruby Threads and ActiveRecord Connections
+            <small>14 Feb 2016</small>
+          </a>
+        </h3>
+      </li>
+    
+      <li>
+        <h3>
+          <a href="/2016/02/07/how-to-remove-a-column-with-zero-downtime-in-ruby-on-rails/">
+            How to Remove a Column with Zero Downtime in Ruby on Rails
+            <small>07 Feb 2016</small>
+          </a>
+        </h3>
+      </li>
+    
+      <li>
+        <h3>
+          <a href="/2015/10/11/building-a-simple-web-server-with-ruby-2/">
+            Building a Simple Web Server with Ruby 2.0+
+            <small>11 Oct 2015</small>
+          </a>
+        </h3>
+      </li>
+    
+  </ul>
 </div>
 
     </div>

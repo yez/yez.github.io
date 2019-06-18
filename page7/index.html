@@ -59,7 +59,7 @@
       <a class="sidebar-nav-item" href="/atom.xml">Feed</a>
     </nav>
 
-    <p class='copyright'>&copy; Jake Yesbeck 2018. All rights reserved.</p>
+    <p class='copyright'>&copy; Jake Yesbeck 2019. All rights reserved.</p>
   </div>
 </div>
 
@@ -69,333 +69,154 @@
   
   <div class="post">
     <h1 class="post-title">
-      <a href="/2016/03/27/five-more-active-record-features-you-should-be-using/">
-        Five More Active Record Features You Should Be Using
+      <a href="/2016/04/03/how-to-deal-with-timezones-the-active-support-way/">
+        How to Deal with Timezones the Active Support Way
       </a>
     </h1>
 
     
 
-    <span class="post-date">27 Mar 2016</span>
+    <span class="post-date">03 Apr 2016</span>
     <span class='share-container'><ul class="share-buttons">
   <li>
-    <a href="https://www.facebook.com/sharer/sharer.php?u=http://jakeyesbeck.com/2016/03/27/five-more-active-record-features-you-should-be-using/&t=Five More Active Record Features You Should Be Using" title="Share on Facebook" target="_blank">
+    <a href="https://www.facebook.com/sharer/sharer.php?u=http://jakeyesbeck.com/2016/04/03/how-to-deal-with-timezones-the-active-support-way/&t=How to Deal with Timezones the Active Support Way" title="Share on Facebook" target="_blank">
       <img src="http://jakeyesbeck.com/assets/images/facebook.svg">
     </a>
   </li>
   <li>
-    <a href="https://twitter.com/intent/tweet?source=http%3A%2F%2Fjakeyesbeck.com&text=Five More Active Record Features You Should Be Using%20http://jakeyesbeck.com/2016/03/27/five-more-active-record-features-you-should-be-using/&via=jakeyesbeck" target="_blank" title="Tweet">
+    <a href="https://twitter.com/intent/tweet?source=http%3A%2F%2Fjakeyesbeck.com&text=How to Deal with Timezones the Active Support Way%20http://jakeyesbeck.com/2016/04/03/how-to-deal-with-timezones-the-active-support-way/&via=jakeyesbeck" target="_blank" title="Tweet">
       <img src="http://jakeyesbeck.com/assets/images/twitter.svg">
     </a>
   </li>
   <li>
-    <a href="https://plus.google.com/share?url=http://jakeyesbeck.com/2016/03/27/five-more-active-record-features-you-should-be-using/" target="_blank" title="Share on Google+">
+    <a href="https://plus.google.com/share?url=http://jakeyesbeck.com/2016/04/03/how-to-deal-with-timezones-the-active-support-way/" target="_blank" title="Share on Google+">
       <img src="http://jakeyesbeck.com/assets/images/google_plus.svg">
     </a>
   </li>
 
   <li>
-    <a href="https://news.ycombinator.com/submitlink?u=http://jakeyesbeck.com/2016/03/27/five-more-active-record-features-you-should-be-using/&t=Five More Active Record Features You Should Be Using" target="_blank" title="Share on Hacker News">
+    <a href="https://news.ycombinator.com/submitlink?u=http://jakeyesbeck.com/2016/04/03/how-to-deal-with-timezones-the-active-support-way/&t=How to Deal with Timezones the Active Support Way" target="_blank" title="Share on Hacker News">
       <img src="http://jakeyesbeck.com/assets/images/ycomb.svg">
     </a>
   </li>
 
   <li>
-    <a href="https://getpocket.com/save?url=http://jakeyesbeck.com/2016/03/27/five-more-active-record-features-you-should-be-using/&title=Five More Active Record Features You Should Be Using" target="_blank" title="Add to Pocket">
+    <a href="https://getpocket.com/save?url=http://jakeyesbeck.com/2016/04/03/how-to-deal-with-timezones-the-active-support-way/&title=How to Deal with Timezones the Active Support Way" target="_blank" title="Add to Pocket">
       <img src="http://jakeyesbeck.com/assets/images/pocket.svg">
     </a>
   </li>
   <li>
-    <a href="http://www.reddit.com/submit?url=http://jakeyesbeck.com/2016/03/27/five-more-active-record-features-you-should-be-using/&title=Five More Active Record Features You Should Be Using" target="_blank" title="Submit to Reddit">
+    <a href="http://www.reddit.com/submit?url=http://jakeyesbeck.com/2016/04/03/how-to-deal-with-timezones-the-active-support-way/&title=How to Deal with Timezones the Active Support Way" target="_blank" title="Submit to Reddit">
       <img src="http://jakeyesbeck.com/assets/images/reddit.svg">
     </a>
   </li>
 </ul>
 </span>
 
-    <p>In a <a href="http://jakeyesbeck.com/2015/11/15/five-active-record-features-you-should-be-using/">previous post</a>, I illustrated a few helpful <code class="highlighter-rouge">ActiveRecord</code> features. The entire API of <code class="highlighter-rouge">ActiveRecord</code> cannot possibly be contained within a single or even a handful of digestible posts; but, here are at least five more pieces of that massive API that some might find useful.</p>
+    <p><em>“Well the code is bad because we had to…”</em> is a phrase one might hear when discussing timezone offsets or daylight savings time considerations.</p>
 
-<p>Just like before, the example application used to demonstrate these features will be an imaginary Ruby on Rails application: <em>“booksandreviews.com”</em>:</p>
+<p>Unless a developer is fortunate enough to work at a company whose userbase is entirely located in the UTC timezone, writing software aware of different timezones can be a daunting task. Luckily, Ruby on Rails’ <code class="highlighter-rouge">ActiveSupport</code> library has some very nice built in features that can prove invaluable when facing time related issues.</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Book</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
-  <span class="n">belongs_to</span> <span class="ss">:author</span>
-  <span class="n">has_many</span> <span class="ss">:reviews</span>
+<h2 id="built-in-timezones">Built-in Timezones</h2>
+
+<p><code class="highlighter-rouge">ActiveSupport</code> in Ruby on Rails 4.0+ has a built in list of all supported timezones on the <code class="highlighter-rouge">TimeZone</code> class:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="no">ActiveSupport</span><span class="o">::</span><span class="no">TimeZone</span><span class="p">.</span><span class="nf">all</span><span class="p">.</span><span class="nf">map</span><span class="p">(</span><span class="o">&amp;</span><span class="ss">:name</span><span class="p">)</span>
+<span class="c1">#=&gt; ["American Samoa", "International Date Line West", "Midway Island", "Hawaii", "Alaska", "Pacific Time (US &amp; Canada)", "Tijuana", "Arizona", "Chihuahua", "Mazatlan", "Mountain Time (US &amp; Canada)", "Central America", "Central Time (US &amp; Canada)", "Guadalajara", ...]</span>
+</code></pre>
+</div>
+
+<p>This list of timezones can be used when parsing strings into <code class="highlighter-rouge">Time</code> objects and converting an existing <code class="highlighter-rouge">Time</code> object from one timezone to another. For working with timezones in the United States, a handy <code class="highlighter-rouge">us_zones</code> method is also available on the same class.</p>
+
+<p>One interesting detail about this list of timezones is the lack of daylight savings time qualifiers. Keeping the timezones agnostic of daylight savings helps simplify their use. A developer does not need to worry about using one timezone object over another due to the time of the year.</p>
+
+<h2 id="timeusezone"><code class="highlighter-rouge">Time.use_zone</code></h2>
+
+<p>The <code class="highlighter-rouge">ActiveSupport</code> library adds some functionality to built in Ruby classes. One of those additions is the ability to set and retrieve the <code class="highlighter-rouge">zone</code> attribute on the <code class="highlighter-rouge">Time</code> class. After a <code class="highlighter-rouge">zone</code> is set, it can be used when parsing strings into <code class="highlighter-rouge">Time</code> objects:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="no">Time</span><span class="p">.</span><span class="nf">zone</span> <span class="o">=</span> <span class="s1">'Pacific Time (US &amp; Canada)'</span>
+<span class="no">Time</span><span class="p">.</span><span class="nf">zone</span><span class="p">.</span><span class="nf">parse</span><span class="p">(</span><span class="s1">'2016-04-01 10:00:00'</span><span class="p">)</span>
+<span class="c1">#=&gt; Fri, 01 Apr 2016 10:00:00 PDT -07:00</span>
+</code></pre>
+</div>
+
+<p>This code takes a timestamp string without a timezone specified and uses the value of <code class="highlighter-rouge">Time.zone</code> to correctly represent the time in the Pacific timezone.</p>
+
+<p>However, an immediate red flag is present in this code. The <code class="highlighter-rouge">zone</code> attribute persists for the rest of the Ruby runtime, potentially causing unexpected behaviour at a later time.</p>
+
+<p>Luckily, <code class="highlighter-rouge">ActiveSupport</code> solves this problem with the <code class="highlighter-rouge">use_zone</code> method. This method accepts the same set of strings as its single argument and expects a block.</p>
+
+<p>Within the passed in block is the only place <code class="highlighter-rouge">Time.zone</code> is affected, eliminating the possibility of a <code class="highlighter-rouge">zone</code> sticking around longer than intended:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="no">Time</span><span class="p">.</span><span class="nf">zone</span><span class="p">.</span><span class="nf">name</span>
+<span class="c1">#=&gt; "UTC"</span>
+
+<span class="no">Time</span><span class="p">.</span><span class="nf">use_zone</span><span class="p">(</span><span class="s1">'Pacific Time (US &amp; Canada)'</span><span class="p">)</span> <span class="k">do</span>
+  <span class="no">Time</span><span class="p">.</span><span class="nf">zone</span><span class="p">.</span><span class="nf">name</span>
+  <span class="c1"># =&gt; "Pacific Time (US &amp; Canada)"</span>
+  <span class="no">Time</span><span class="p">.</span><span class="nf">zone</span><span class="p">.</span><span class="nf">parse</span><span class="p">(</span><span class="s1">'2016-04-01 10:00:00'</span><span class="p">)</span>
+  <span class="c1">#=&gt; Fri, 01 Apr 2016 10:00:00 PDT -07:00</span>
 <span class="k">end</span>
 
-<span class="k">class</span> <span class="nc">Author</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
-  <span class="n">has_many</span> <span class="ss">:books</span>
-<span class="k">end</span>
-
-<span class="k">class</span> <span class="nc">Review</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
-  <span class="n">belongs_to</span> <span class="ss">:book</span>
-<span class="k">end</span>
+<span class="no">Time</span><span class="p">.</span><span class="nf">zone</span><span class="p">.</span><span class="nf">name</span>
+<span class="c1">#=&gt; "UTC"</span>
 </code></pre>
 </div>
 
-<h2 id="pluck">1. <code class="highlighter-rouge">pluck</code></h2>
+<p>This temporary <code class="highlighter-rouge">zone</code> setting can be very helpful if a set of users are processed, each with their own respective timezone.</p>
 
-<p>Introduced in Ruby on Rails 4.0, the <code class="highlighter-rouge">pluck</code> method helps keep memory allocation to a minimum when returning results from <code class="highlighter-rouge">ActiveRecord</code> queries. A great use case for the <code class="highlighter-rouge">pluck</code> method is when a database table backing an <code class="highlighter-rouge">ActiveRecord</code> object has a very large number of columns. In this situation, returning an object’s full dataset can be cause unnecessary memory allocation and potentially expensive deserialization (in the case of custom or JSON serialized columns).</p>
+<h2 id="timewithzoneintimezone"><code class="highlighter-rouge">TimeWithZone.in_time_zone</code></h2>
 
-<p>To get a list of <code class="highlighter-rouge">book_ids</code> from the <code class="highlighter-rouge">'fantasy'</code> genre, the <code class="highlighter-rouge">pluck</code> method is a simple to use:</p>
+<p>When dealing with <code class="highlighter-rouge">Time</code>, <code class="highlighter-rouge">Date</code> and <code class="highlighter-rouge">DateTime</code> objects, converting each from one timezone to another can be tedious. The <code class="highlighter-rouge">in_time_zone</code> method removes some complexity from those operations.</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="no">Book</span><span class="p">.</span><span class="nf">where</span><span class="p">(</span><span class="ss">genre: </span><span class="s1">'fantasy'</span><span class="p">).</span><span class="nf">pluck</span><span class="p">(</span><span class="ss">:id</span><span class="p">)</span>
-<span class="c1"># SELECT "books"."id" FROM "books" WHERE "books"."genre" = 'fantasy'</span>
-<span class="o">=&gt;</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">45</span><span class="p">,</span> <span class="p">.</span><span class="nf">.</span><span class="o">.</span><span class="p">]</span>
+<p>Used alone, the <code class="highlighter-rouge">in_time_zone</code> can transform an existing object into an instance of <code class="highlighter-rouge">TimeWithZone</code>:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="n">now</span> <span class="o">=</span> <span class="no">Time</span><span class="p">.</span><span class="nf">now</span>
+<span class="c1"># =&gt; 2016-04-04 03:55:24 +0000</span>
+<span class="n">now</span><span class="p">.</span><span class="nf">in_time_zone</span><span class="p">(</span><span class="s1">'Hawaii'</span><span class="p">)</span>
+<span class="c1"># =&gt; Sun, 03 Apr 2016 17:55:24 HST -10:00</span>
 </code></pre>
 </div>
 
-<p>An important thing to recognize about the <code class="highlighter-rouge">pluck</code> method is its return value. Unlike its cousin, <code class="highlighter-rouge">select</code>, the <code class="highlighter-rouge">pluck</code> method does not return an <code class="highlighter-rouge">ActiveRecord</code> instance.</p>
+<p>In any sane system, timestamps in a database are always stored in UTC, aka Zulu, time. When exposing these timestamps to users, the <code class="highlighter-rouge">in_time_zone</code> method can quickly switch the timestamp to a user’s local time.</p>
 
-<p>Multiple column names may be passed to <code class="highlighter-rouge">pluck</code> and the values of these columns will be returned in a nested <code class="highlighter-rouge">Array</code>. The returned <code class="highlighter-rouge">Array</code> will maintain the order of columns to how they were requested:</p>
+<p>To see a more creative use of <code class="highlighter-rouge">in_time_zone</code>, we can assume that an application must solve a scheduling problem. An example application wants to send its users an email at the exact same time relative to a user’s timezone. Regardless of where a user lives, they should receive an email at 10:30 AM local time.</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="no">Book</span><span class="p">.</span><span class="nf">where</span><span class="p">(</span><span class="ss">genre: </span><span class="s1">'fantasy'</span><span class="p">).</span><span class="nf">pluck</span><span class="p">(</span><span class="ss">:id</span><span class="p">,</span> <span class="ss">:title</span><span class="p">)</span>
-<span class="c1"># SELECT "books"."id", "books"."title" FROM "books" WHERE "books"."genre" = 'fantasy'</span>
-<span class="o">=&gt;</span> <span class="p">[[</span><span class="mi">1</span><span class="p">,</span> <span class="s1">'A Title'</span><span class="p">],</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="s1">'Another One'</span><span class="p">]]</span>
+<p>A naive approach might not yield the intended result:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="n">user</span><span class="p">.</span><span class="nf">time_zone</span>
+<span class="c1"># =&gt; Hawaii</span>
+<span class="n">send_time</span> <span class="o">=</span> <span class="no">Time</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="mi">2016</span><span class="p">,</span> <span class="mo">04</span><span class="p">,</span> <span class="mo">01</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">30</span><span class="p">)</span>
+<span class="c1"># =&gt; 2016-04-01 10:30:00 +0000</span>
+<span class="n">send_time</span><span class="p">.</span><span class="nf">in_time_zone</span><span class="p">(</span><span class="n">user</span><span class="p">.</span><span class="nf">time_zone</span><span class="p">)</span>
+<span class="c1"># =&gt; Fri, 01 Apr 2016 00:30:00 HST -10:00</span>
 </code></pre>
 </div>
 
-<p>While possible, it might not always be the best idea to request multiple columns in a single <code class="highlighter-rouge">pluck</code> call. Too many columns can produce an unruly result and nullify the performance gain <code class="highlighter-rouge">pluck</code> provided in the first place.</p>
+<p>Whoops, that is not right at all. This code initialized a <code class="highlighter-rouge">Time</code> object for the “correct” send time but then <code class="highlighter-rouge">in_time_zone</code> not only moved the timezone of that object, it also modified the actual time. This would result in all users getting an email at the same exact moment but at an inconvenient time relative to where they live.</p>
 
-<h2 id="transaction">2. <code class="highlighter-rouge">transaction</code></h2>
+<p>Potential solutions to this problem might include modifying the timezone part of an outputted string (the <code class="highlighter-rouge">"+0000"</code> at the end) and re-parsing it, but that solution can be prone to error and hard to understand.</p>
 
-<p>An important aspect of relational databases is its atomic behaviour. When creating <code class="highlighter-rouge">ActiveRecord</code> objects, maintaining this aspect is possible through the use of the <code class="highlighter-rouge">transaction</code> method.</p>
+<p>Since the <code class="highlighter-rouge">in_time_zone</code> method works on the <code class="highlighter-rouge">Date</code> class, the simplest approach would be to initialize a new <code class="highlighter-rouge">DateTime</code> object in a user’s timezone and add 10.5 hours to it:</p>
 
-<p>For instance, if an exception occurs during the update of all of a <code class="highlighter-rouge">Book's</code> <code class="highlighter-rouge">Reviews</code>, a <code class="highlighter-rouge">transaction</code> can help mitigate harmful side-effects:</p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="n">book</span> <span class="o">=</span> <span class="no">Book</span><span class="p">.</span><span class="nf">find</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-<span class="n">book</span><span class="p">.</span><span class="nf">reviews</span><span class="p">.</span><span class="nf">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">review</span><span class="o">|</span>
-  <span class="n">review</span><span class="p">.</span><span class="nf">meaningful_update!</span>
-<span class="k">end</span>
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="n">user</span><span class="p">.</span><span class="nf">time_zone</span>
+<span class="c1"># =&gt; Hawaii</span>
+<span class="n">beginning_of_day</span> <span class="o">=</span> <span class="no">Date</span><span class="p">.</span><span class="nf">today</span><span class="p">.</span><span class="nf">in_time_zone</span><span class="p">(</span><span class="n">user</span><span class="p">.</span><span class="nf">time_zone</span><span class="p">)</span>
+<span class="c1"># =&gt; Sun, 03 Apr 2016 00:00:00 HST -10:00</span>
+<span class="n">beginning_of_day</span> <span class="o">+=</span> <span class="p">(</span><span class="mi">10</span><span class="o">.</span><span class="mi">5</span><span class="p">).</span><span class="nf">hours</span>
+<span class="c1"># =&gt; Sun, 03 Apr 2016 10:30:00 HST -10:00</span>
+<span class="n">sender</span> <span class="o">=</span> <span class="no">ImportantEmailSender</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
+<span class="n">sender</span><span class="p">.</span><span class="nf">send_at!</span><span class="p">(</span><span class="n">beginning_of_day</span><span class="p">)</span>
 </code></pre>
 </div>
 
-<p>If the <code class="highlighter-rouge">meaningful_update!</code> method throws an exception, all reviews before the erroring review will update appropriately and all after will not. If this method has a compounding side-effect (like incrementing a field), iterating through all reviews again would be harmful.</p>
+<p>Great! An email will be sent at 10:30 AM Hawaii time and we successfully avoided any time string munging or other strange object casting. A user in London can also receive an email at exactly 10:30 AM their local time and this code need not grow in complexity.</p>
 
-<p>With a <code class="highlighter-rouge">transaction</code>, this problem does not exist:</p>
+<h2 id="saving-time">Saving Time</h2>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span><span class="p">.</span><span class="nf">transaction</span> <span class="k">do</span>
-  <span class="n">book</span> <span class="o">=</span> <span class="no">Book</span><span class="p">.</span><span class="nf">find</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-  <span class="n">book</span><span class="p">.</span><span class="nf">reviews</span><span class="p">.</span><span class="nf">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">review</span><span class="o">|</span>
-    <span class="n">review</span><span class="p">.</span><span class="nf">meaningful_update!</span>
-  <span class="k">end</span>
-<span class="k">end</span>
-</code></pre>
-</div>
+<p>Whether in code or everyday life, it seems that struggling with time is something we as humans are simply destined to do. Some good news is that <code class="highlighter-rouge">ActiveSupport</code> may not grant you any more wall clock time, but could save you some when wrangling different pieces of scheduling code together.</p>
 
-<p>After adding the <code class="highlighter-rouge">transaction</code>, this new code will revert all changes contained within the <code class="highlighter-rouge">transaction</code> if an exception is raised. It is equivalent to updating all records in a single query.</p>
-
-<h2 id="aftercommit">3. <code class="highlighter-rouge">after_commit</code></h2>
-
-<p>Love them or hate them, callbacks in Ruby on Rails are a viable option to solve many problems. <code class="highlighter-rouge">ActiveRecord</code> callbacks are initiated at different times depending on the operation a model is about to undergo.</p>
-
-<p>A fairly common use case for callbacks in Ruby on Rails revolves around what to do after a model is persisted. A model can be persisted by either <code class="highlighter-rouge">save</code>, <code class="highlighter-rouge">create</code> or <code class="highlighter-rouge">update</code>. Since the concept of “saving” is the common denominator for all these methods, it would be reasonable to use the <code class="highlighter-rouge">after_save</code> to trigger logic that should follow one of these persistence operations.</p>
-
-<p>To add a new <code class="highlighter-rouge">Book</code> to a queue for a <code class="highlighter-rouge">Review</code> after it is saved:</p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Book</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
-  <span class="n">after_save</span> <span class="ss">:enqueue_for_review</span>
-
-  <span class="k">def</span> <span class="nf">enqueue_for_review</span>
-    <span class="no">ReviewQueue</span><span class="p">.</span><span class="nf">add</span><span class="p">(</span><span class="ss">book_id: </span><span class="nb">self</span><span class="p">.</span><span class="nf">id</span><span class="p">)</span>
-    <span class="no">Logger</span><span class="p">.</span><span class="nf">info</span><span class="p">(</span><span class="s2">"Added </span><span class="si">#{</span><span class="nb">self</span><span class="p">.</span><span class="nf">id</span><span class="si">}</span><span class="s2"> to ReviewQueue"</span><span class="p">)</span>
-  <span class="k">end</span>
-<span class="k">end</span>
-</code></pre>
-</div>
-
-<p>We can assume that the <code class="highlighter-rouge">ReviewQueue</code> is a key/value storage (Redis or something similar) backed object whose purpose is to place new <code class="highlighter-rouge">Books</code> into a queue for critics to review. The <code class="highlighter-rouge">Logger</code> class simply outputs text to <code class="highlighter-rouge">stdout</code>.</p>
-
-<p>When everything goes well, the callback works beautifully:</p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="no">Book</span><span class="p">.</span><span class="nf">create!</span><span class="p">(</span>
-  <span class="ss">title: </span><span class="s1">'A New Book'</span><span class="p">,</span>
-  <span class="ss">author_id: </span><span class="mi">3</span><span class="p">,</span>
-  <span class="ss">content: </span><span class="s1">'Blah blah...'</span>
-<span class="p">)</span>
-<span class="c1">#=&gt; Added 4 to ReviewQueue</span>
-<span class="c1">#=&gt; &lt;Book id: 4, title: 'A New Book' ..&gt;</span>
-
-<span class="no">ReviewQueue</span><span class="p">.</span><span class="nf">size</span>
-<span class="c1">#=&gt; 1</span>
-</code></pre>
-</div>
-
-<p>However, if this code was wrapped in a <code class="highlighter-rouge">transaction</code>, and that <code class="highlighter-rouge">transaction</code> fails, the <code class="highlighter-rouge">Book</code> will not persist but the element on in the Redis-backed <code class="highlighter-rouge">ReviewQueue</code> remains.</p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span><span class="p">.</span><span class="nf">transaction</span> <span class="k">do</span>
-  <span class="no">Book</span><span class="p">.</span><span class="nf">create!</span><span class="p">(</span>
-    <span class="ss">title: </span><span class="s1">'A New Book'</span><span class="p">,</span>
-    <span class="ss">author_id: </span><span class="mi">3</span><span class="p">,</span>
-    <span class="ss">content: </span><span class="s1">'Blah blah...'</span>
-  <span class="p">)</span>
-
-  <span class="k">raise</span> <span class="no">StandardError</span><span class="p">,</span> <span class="s1">'Something Happened'</span>
-<span class="k">end</span>
-
-<span class="c1">#=&gt; Added 4 to ReviewQueue</span>
-<span class="c1">#=&gt; Error 'Something Happened'</span>
-
-<span class="no">ReviewQueue</span><span class="p">.</span><span class="nf">size</span>
-<span class="c1">#=&gt; 1</span>
-</code></pre>
-</div>
-
-<p>This code has now generated an element on the <code class="highlighter-rouge">ReviewQueue</code> for a non-existent <code class="highlighter-rouge">Book</code>; however, if the <code class="highlighter-rouge">after_commit</code> callback is used, this problem will fade away.</p>
-
-<p>Replacing <code class="highlighter-rouge">after_save</code> with <code class="highlighter-rouge">after_commit</code>:</p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Book</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
-  <span class="n">after_commit</span> <span class="ss">:enqueue_for_review</span>
-
-  <span class="c1"># ...</span>
-<span class="k">end</span>
-</code></pre>
-</div>
-
-<p>The same code results a much more desirable outcome:</p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span><span class="p">.</span><span class="nf">transaction</span> <span class="k">do</span>
-  <span class="no">Book</span><span class="p">.</span><span class="nf">create!</span><span class="p">(</span>
-    <span class="ss">title: </span><span class="s1">'A New Book'</span><span class="p">,</span>
-    <span class="ss">author_id: </span><span class="mi">3</span><span class="p">,</span>
-    <span class="ss">content: </span><span class="s1">'Blah blah...'</span>
-  <span class="p">)</span>
-
-  <span class="k">raise</span> <span class="no">StandardError</span><span class="p">,</span> <span class="s1">'Something Happened'</span>
-<span class="k">end</span>
-
-<span class="c1">#=&gt; Error 'Something Happened'</span>
-
-<span class="no">ReviewQueue</span><span class="p">.</span><span class="nf">size</span>
-<span class="c1">#=&gt; 0</span>
-</code></pre>
-</div>
-
-<p>Awesome, the <code class="highlighter-rouge">after_commit</code> callback is only triggered after the record is persisted to the database, exactly what we wanted. Ruby on Rails provides <a href="http://guides.rubyonrails.org/active_record_callbacks.html">many more callback hooks</a> besides <code class="highlighter-rouge">after_commit</code>.</p>
-
-<h2 id="touch">4. <code class="highlighter-rouge">touch</code></h2>
-
-<p>To update a single timestamp column on an <code class="highlighter-rouge">ActiveRecord</code> object, <code class="highlighter-rouge">touch</code> is a great option. This method can accept the column name which should be updated in addition to an object’s <code class="highlighter-rouge">:updated_at</code> (if present).</p>
-
-<p>A great time to utilize the <code class="highlighter-rouge">touch</code> method is when tracking when a record was last viewed. The good people at <em>“booksandreviews.com”</em> need to be sure their <code class="highlighter-rouge">Reviews</code> are being seen and want to know which <code class="highlighter-rouge">Reviews</code> have not been viewed in a while.</p>
-
-<p>If the <code class="highlighter-rouge">Review</code> table has a <code class="highlighter-rouge">last_viewed_at</code> column which is of type <code class="highlighter-rouge">timestamp</code>, <code class="highlighter-rouge">touch</code> can easily update this column in a controller action:</p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">class</span> <span class="nc">ReviewsController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
-  <span class="k">def</span> <span class="nf">show</span>
-    <span class="vi">@review</span> <span class="o">=</span> <span class="no">Review</span><span class="p">.</span><span class="nf">find</span><span class="p">(</span><span class="n">params</span><span class="p">[</span><span class="ss">:id</span><span class="p">])</span>
-    <span class="vi">@review</span><span class="p">.</span><span class="nf">touch</span><span class="p">(</span><span class="ss">:last_viewed_at</span><span class="p">)</span>
-  <span class="k">end</span>
-<span class="k">end</span>
-</code></pre>
-</div>
-
-<p>A request which calls this controller action will result in the query:</p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">UPDATE</span> <span class="nv">"reviews"</span>
-<span class="k">SET</span> <span class="nv">"updated_at"</span> <span class="o">=</span> <span class="s1">'2016-03-28 00:43:43.616367'</span><span class="p">,</span>
-<span class="nv">"last_viewed_at"</span> <span class="o">=</span> <span class="s1">'2016-03-28 00:43:43.616367'</span>
-<span class="k">WHERE</span> <span class="nv">"reviews"</span><span class="p">.</span><span class="nv">"id"</span> <span class="o">=</span> <span class="mi">1</span>
-</code></pre>
-</div>
-
-<p>Unlike setting other attributes, the <code class="highlighter-rouge">touch</code> method invokes an update query right away.</p>
-
-<h2 id="changes">5. <code class="highlighter-rouge">changes</code></h2>
-
-<p><code class="highlighter-rouge">ActiveRecord</code> keeps a sizable amount of information about an object while it undergoes updates. A hash, accessible via the <code class="highlighter-rouge">changes</code> method, acts a central location for these updates. Additionally, <code class="highlighter-rouge">ActiveRecord</code> exposes a number of per-attribute helper methods to give even more visibility.</p>
-
-<p>Each key in the <code class="highlighter-rouge">changes</code> hash maps to a record’s attribute. The value of each key is an Array with two elements: what the attribute value used to be, and what it is now:</p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="n">review</span> <span class="o">=</span> <span class="no">Review</span><span class="p">.</span><span class="nf">find</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-<span class="n">review</span><span class="p">.</span><span class="nf">book_id</span> <span class="o">=</span> <span class="mi">5</span>
-<span class="n">review</span><span class="p">.</span><span class="nf">changes</span>
-<span class="c1"># =&gt; {"book_id"=&gt;[4, 5]}</span>
-</code></pre>
-</div>
-
-<h3 id="a-changed">a. <code class="highlighter-rouge">changed?</code></h3>
-
-<p>A simple boolean method <code class="highlighter-rouge">changed?</code> is available to determine if anything on the object is different since its retrieval.</p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="n">review</span> <span class="o">=</span> <span class="no">Review</span><span class="p">.</span><span class="nf">find</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-<span class="n">review</span><span class="p">.</span><span class="nf">book_id</span> <span class="o">=</span> <span class="mi">5</span>
-<span class="n">review</span><span class="p">.</span><span class="nf">changed?</span>
-<span class="c1"># =&gt; true</span>
-</code></pre>
-</div>
-
-<p>However, if the same value is set on a model, regardless of the value’s <code class="highlighter-rouge">object_id</code>, <code class="highlighter-rouge">changed?</code> returns <code class="highlighter-rouge">false</code>:</p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="n">book</span> <span class="o">=</span> <span class="no">Book</span><span class="p">.</span><span class="nf">find</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-<span class="n">book</span><span class="p">.</span><span class="nf">title</span>
-<span class="c1"># =&gt; 'A Book'</span>
-<span class="n">book</span><span class="p">.</span><span class="nf">title</span><span class="p">.</span><span class="nf">object_id</span>
-<span class="c1"># =&gt; 2158279020</span>
-<span class="n">book</span><span class="p">.</span><span class="nf">title</span> <span class="o">=</span> <span class="s1">'A Book'</span>
-<span class="n">book</span><span class="p">.</span><span class="nf">changed?</span>
-<span class="c1"># =&gt; false</span>
-<span class="n">book</span><span class="p">.</span><span class="nf">title</span><span class="p">.</span><span class="nf">object_id</span>
-<span class="c1"># =&gt; 2158274600</span>
-</code></pre>
-</div>
-
-<p>Two “different” strings were set to <code class="highlighter-rouge">book.title</code> but since they resolve to the same characters, the object is not <code class="highlighter-rouge">changed?</code>.</p>
-
-<p>When using PostgreSQL, the <code class="highlighter-rouge">changed?</code> method can save unnecessary <code class="highlighter-rouge">begin</code> and <code class="highlighter-rouge">commit</code> transaction calls for objects that have no changes:</p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">class</span> <span class="nc">BooksController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
-  <span class="k">def</span> <span class="nf">update</span>
-    <span class="vi">@book</span> <span class="o">=</span> <span class="no">Book</span><span class="p">.</span><span class="nf">find</span><span class="p">(</span><span class="n">sanitized_params</span><span class="p">[</span><span class="ss">:id</span><span class="p">])</span>
-    <span class="vi">@book</span><span class="p">.</span><span class="nf">assign_attributes</span><span class="p">(</span><span class="n">sanitized_params</span><span class="p">)</span>
-    <span class="vi">@book</span><span class="p">.</span><span class="nf">save!</span> <span class="k">if</span> <span class="vi">@book</span><span class="p">.</span><span class="nf">changed?</span>
-  <span class="k">end</span>
-<span class="k">end</span>
-</code></pre>
-</div>
-
-<h3 id="b-attributewas">b. <code class="highlighter-rouge">&lt;attribute&gt;_was</code></h3>
-
-<p>Accessing the same <code class="highlighter-rouge">changes</code> hash as the <code class="highlighter-rouge">changed?</code> method, <code class="highlighter-rouge">&lt;attribute&gt;_was</code> returns the value of an attribute before it was reassigned:</p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="n">review</span> <span class="o">=</span> <span class="no">Review</span><span class="p">.</span><span class="nf">find</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-<span class="n">review</span><span class="p">.</span><span class="nf">status</span> <span class="o">=</span> <span class="s1">'Approved'</span>
-<span class="n">review</span><span class="p">.</span><span class="nf">status_was</span>
-<span class="c1"># =&gt; 'Pending'</span>
-</code></pre>
-</div>
-
-<p>If a <code class="highlighter-rouge">Review's</code> status moving from <code class="highlighter-rouge">"Pending"</code> to <code class="highlighter-rouge">"Approved"</code> should remove it from an approval queue, the <code class="highlighter-rouge">status_was</code> method can be utilized in a callback:</p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Review</span>
-  <span class="n">before_save</span> <span class="ss">:maybe_remove_from_review_queue</span>
-
-  <span class="k">def</span> <span class="nf">maybe_remove_from_review_queue</span>
-    <span class="k">if</span> <span class="n">status</span> <span class="o">==</span> <span class="s1">'Approved'</span> <span class="o">&amp;&amp;</span>
-        <span class="n">status_was</span> <span class="o">==</span> <span class="s1">'Pending'</span>
-      <span class="no">ReviewQueue</span><span class="p">.</span><span class="nf">remove</span><span class="p">(</span><span class="nb">id</span><span class="p">)</span>
-    <span class="k">end</span>
-  <span class="k">end</span>
-<span class="k">end</span>
-</code></pre>
-</div>
-
-<p>To verify the result, we can check that the <code class="highlighter-rouge">ReviewQueue</code> decrements its internal count of reviews pending review:</p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="no">ReviewQueue</span><span class="p">.</span><span class="nf">size</span>
-<span class="c1">#=&gt; 1</span>
-<span class="n">review</span> <span class="o">=</span> <span class="no">Review</span><span class="p">.</span><span class="nf">find</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-<span class="n">review</span><span class="p">.</span><span class="nf">status</span>
-<span class="c1"># =&gt; 'Pending'</span>
-<span class="n">review</span><span class="p">.</span><span class="nf">status</span> <span class="o">=</span> <span class="s1">'Approved'</span>
-<span class="n">review</span><span class="p">.</span><span class="nf">save!</span>
-<span class="c1"># =&gt; true</span>
-<span class="no">ReviewQueue</span><span class="p">.</span><span class="nf">size</span>
-<span class="c1">#=&gt; 0</span>
-</code></pre>
-</div>
-
-<p><em>Note: Additional considerations might need to be made since the <code class="highlighter-rouge">save</code> is not guaranteed to persist like described above in the <code class="highlighter-rouge">after_commit</code> example.</em></p>
+<p>As usual, the API of the <code class="highlighter-rouge">ActiveSupport::TimeZone</code> class is much larger than just the two methods illustrated here. For more information, the <a href="http://api.rubyonrails.org/classes/ActiveSupport/TimeZone.html">offical ActiveSupport documentation</a> is a great place to read further.</p>
 
   </div>
   

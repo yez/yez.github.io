@@ -13,6 +13,405 @@
 
  
  <entry>
+   <title>Ruby Processes and Threads - Configuring a Web Server</title>
+   <link href="http://jakeyesbeck.com/2019/06/18/ruby-processes-and-threads/"/>
+   <updated>2019-06-18T08:00:00-04:00</updated>
+   <id>http://jakeyesbeck.com/2019/06/18/ruby-processes-and-threads</id>
+   <content type="html">&lt;p&gt;Multiple popular Ruby web servers exist. Each Ruby application is different and the ultimate &lt;strong&gt;tl;dr&lt;/strong&gt; for configuring a web server is: &lt;em&gt;it depends.&lt;/em&gt; This post will not prescribe one web server or configuration over another and will instead explain internal components most popular servers contain.&lt;/p&gt;
+
+&lt;p&gt;In order to facilitate more than one request at a time, a Ruby web server implements &lt;code class=&quot;highlighter-rouge&quot;&gt;Threads&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;Processes&lt;/code&gt;, or both. These tools are used to enable concurrency and are beneficial in different ways.&lt;/p&gt;
+
+&lt;h3 id=&quot;threads&quot;&gt;Threads&lt;/h3&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;Threads&lt;/code&gt; in Ruby are a solution for concurrent programming and can alleviate slow downs due to blocking code. This blocking is usually referred to as “I/O” or Input/Output blocking and occurs when a program must reach out for additional information.  External API calls, reading from disk, and querying a database are all examples of blocking operations. When using multiple &lt;code class=&quot;highlighter-rouge&quot;&gt;Threads&lt;/code&gt;, an application can continue to function while one &lt;code class=&quot;highlighter-rouge&quot;&gt;Thread&lt;/code&gt; is waiting.&lt;/p&gt;
+
+&lt;p&gt;Most Ruby code in the wild is running on MRI (if you’re not sure what you’re using, there is a good chance this is what you use). Because of this, Ruby &lt;code class=&quot;highlighter-rouge&quot;&gt;Threads&lt;/code&gt; are subject to the Global Interpreter Lock or &lt;code class=&quot;highlighter-rouge&quot;&gt;GIL&lt;/code&gt;. The &lt;code class=&quot;highlighter-rouge&quot;&gt;GIL&lt;/code&gt; prevents any two threads in the same process from running at exactly the same time making true parallelism not possible.&lt;/p&gt;
+
+&lt;h3 id=&quot;processes&quot;&gt;Processes&lt;/h3&gt;
+
+&lt;p&gt;One way to allow for true parallelism in Ruby is to use multiple &lt;code class=&quot;highlighter-rouge&quot;&gt;Processes&lt;/code&gt;. A Ruby &lt;code class=&quot;highlighter-rouge&quot;&gt;Process&lt;/code&gt; is the instance of an application or a forked copy. In a traditional Rails application, each &lt;code class=&quot;highlighter-rouge&quot;&gt;Process&lt;/code&gt; contains all the build up, initialization, and resource allocation the app will need.&lt;/p&gt;
+
+&lt;p&gt;Running multiple &lt;code class=&quot;highlighter-rouge&quot;&gt;Proccesses&lt;/code&gt; can enable more efficient usage of some server resources like the CPU but is not without its downsides. Because each process must boot and provision an entire app, memory usage or database connection saturation can become a limiting factor.&lt;/p&gt;
+
+&lt;h2 id=&quot;tempering-the-metal&quot;&gt;Tempering the Metal&lt;/h2&gt;
+
+&lt;p&gt;When configuring on a web server, an application’s request shape is the most important factor to consider. Web application requests can demand I/O operations, computationally taxing operations, both, or neither.&lt;/p&gt;
+
+&lt;p&gt;This example app has one controller named &lt;code class=&quot;highlighter-rouge&quot;&gt;index_controller&lt;/code&gt; and a single route defined: &lt;code class=&quot;highlighter-rouge&quot;&gt;index&lt;/code&gt;.&lt;/p&gt;
+
+&lt;h3 id=&quot;indexcontrollerrb&quot;&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;index_controller.rb&lt;/code&gt;&lt;/h3&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;IndexController&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;ApplicationController&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;index&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;interval_sleep&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;render&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;json: &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;hello: :there&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;interval_sleep&lt;/span&gt;
+    &lt;span class=&quot;nb&quot;&gt;sleep&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;rand&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;10&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;to_f&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;/&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;50&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;To emulate I/O blocking, this code uses a &lt;code class=&quot;highlighter-rouge&quot;&gt;sleep&lt;/code&gt; call to randomly stall between &lt;code class=&quot;highlighter-rouge&quot;&gt;40ms&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;200ms&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;This application’s web server is &lt;code class=&quot;highlighter-rouge&quot;&gt;Puma&lt;/code&gt; since it gives allows scaling of both &lt;code class=&quot;highlighter-rouge&quot;&gt;Threads&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;Processes&lt;/code&gt; independently.&lt;/p&gt;
+
+&lt;p&gt;Most of the configuration is unchanged and the following two lines are all that will change during this testing:&lt;/p&gt;
+
+&lt;h3 id=&quot;configpumarb&quot;&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;config/puma.rb&lt;/code&gt;&lt;/h3&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;threads_count&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;ENV&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;fetch&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;RAILS_MAX_THREADS&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;workers&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;ENV&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;fetch&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;WEB_CONCURRENCY&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Here the configuration sets the number of &lt;code class=&quot;highlighter-rouge&quot;&gt;Threads&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;Processes&lt;/code&gt; the application can use to fulfill requests.&lt;/p&gt;
+
+&lt;p&gt;With the configuration set and ready to go, the server is started with &lt;code class=&quot;highlighter-rouge&quot;&gt;bundle exec rails server&lt;/code&gt;.&lt;/p&gt;
+
+&lt;h2 id=&quot;under-siege&quot;&gt;Under Siege&lt;/h2&gt;
+
+&lt;p&gt;Now that the application code is written and the web server is configured, it can receive requests. To measure throughput, latency, memory usage, and CPU utilization, the tool Siege is used.&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://linux.die.net/man/1/siege&quot;&gt;Siege&lt;/a&gt; is a benchmarking tool that has a very simple interface. Siege can be run via a small bash script with a few configurable options for each test.&lt;/p&gt;
+
+&lt;h3 id=&quot;binsiegesh&quot;&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;bin/siege.sh&lt;/code&gt;&lt;/h3&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;#! /bin/bash&lt;/span&gt;
+
+&lt;span class=&quot;nv&quot;&gt;CONCURRENCY&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;30
+&lt;span class=&quot;nv&quot;&gt;URL&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39;http://localhost:3000/index&#39;&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;CONTENT_TYPE&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39;application/json&#39;&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;REPS&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;20
+
+siege -b --content-type &lt;span class=&quot;nv&quot;&gt;$CONTENT_TYPE&lt;/span&gt; -c &lt;span class=&quot;nv&quot;&gt;$CONCURRENCY&lt;/span&gt; -r &lt;span class=&quot;nv&quot;&gt;$REPS&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$URL&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;This executable will request &lt;code class=&quot;highlighter-rouge&quot;&gt;localhost:3000/index&lt;/code&gt; which routes to &lt;code class=&quot;highlighter-rouge&quot;&gt;index_controller#index&lt;/code&gt; at a concurrency of 30 workers for 20 repetitions resulting in 600 total requests.&lt;/p&gt;
+
+&lt;p&gt;Keeping this script static allows for the web server’s configuration to change and each test to be congruent with others.&lt;/p&gt;
+
+&lt;h3 id=&quot;metrics-for-success&quot;&gt;Metrics for Success&lt;/h3&gt;
+
+&lt;p&gt;&lt;strong&gt;CPU Load Average&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;CPU load average is a measurement of how busy each processor is on a server.  Basically, CPU load average can be used to determine how long a CPU is idling and waiting for something to do. These numbers are very dependent on the number of processors an application has. On a Linux or MacOS machine, you can &lt;code class=&quot;highlighter-rouge&quot;&gt;cat&lt;/code&gt; the &lt;code class=&quot;highlighter-rouge&quot;&gt;/proc/cpuinfo&lt;/code&gt; file to get a break down of how many processors are available to you.&lt;/p&gt;
+
+&lt;p&gt;On the machine used to test this application, 4 processors are available.  Translating that to percentage of usage, we would see a value of &lt;code class=&quot;highlighter-rouge&quot;&gt;4.0&lt;/code&gt; for our CPU load average if all processors were being completely used. Any value higher than that and we’d have work waiting to be done by a processor. Conversely, a value much lower than &lt;code class=&quot;highlighter-rouge&quot;&gt;4.0&lt;/code&gt; indicates that some processors are not doing anything.&lt;/p&gt;
+
+&lt;p&gt;CPU load average is displayed with 3 numbers ex: &lt;code class=&quot;highlighter-rouge&quot;&gt;0.1 0.4 0.8&lt;/code&gt; which translates to &lt;code class=&quot;highlighter-rouge&quot;&gt;1 min 5 min 10 min&lt;/code&gt; averages. If the &lt;code class=&quot;highlighter-rouge&quot;&gt;1 min&lt;/code&gt; average is higher than the &lt;code class=&quot;highlighter-rouge&quot;&gt;5 min&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;10 min&lt;/code&gt; averages, server load is increasing. If the &lt;code class=&quot;highlighter-rouge&quot;&gt;1 min&lt;/code&gt; average is lower than the &lt;code class=&quot;highlighter-rouge&quot;&gt;5 min&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;10 min&lt;/code&gt; averages, server load is decreasing. The only metric reported in this summary will be the &lt;code class=&quot;highlighter-rouge&quot;&gt;1 min&lt;/code&gt; load average since it is measured while the server is under siege.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Memory Usage&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;Memory Usage is the amount of memory (RAM) used by the application. When a server runs out of RAM, it creates virtual memory out of partitioned space on the disk to overflow into. This is called swapping and it can greatly reduce the efficiency of a server. Along with CPU load average, making sure a server’s memory usage is below capacity is an important way to keep a healthy and happy application.&lt;/p&gt;
+
+&lt;p&gt;The amount of memory an application uses in total should be balanced by any other processes running on that server while leaving some amount of room for utility applications. Using more than the memory available on a server will lead to performance issues.&lt;/p&gt;
+
+&lt;h3 id=&quot;io-intensive-threads-v-processes-and-throughput&quot;&gt;I/O Intensive Threads v Processes and Throughput&lt;/h3&gt;
+
+&lt;p&gt;With the metrics explained, let’s see the results of the siege on the I/O blocking application:&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;Processes&lt;/th&gt;
+      &lt;th&gt;Threads&lt;/th&gt;
+      &lt;th&gt;Duration(seconds)&lt;/th&gt;
+      &lt;th&gt;Transactions/second&lt;/th&gt;
+      &lt;th&gt;Memory(mb)&lt;/th&gt;
+      &lt;th&gt;CPU Load&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;1&lt;/td&gt;
+      &lt;td&gt;1&lt;/td&gt;
+      &lt;td&gt;77.45&lt;/td&gt;
+      &lt;td&gt;7.75&lt;/td&gt;
+      &lt;td&gt;73&lt;/td&gt;
+      &lt;td&gt;0.57&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;1&lt;/td&gt;
+      &lt;td&gt;10&lt;/td&gt;
+      &lt;td&gt;16.06&lt;/td&gt;
+      &lt;td&gt;37.36&lt;/td&gt;
+      &lt;td&gt;75&lt;/td&gt;
+      &lt;td&gt;0.54&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;1&lt;/td&gt;
+      &lt;td&gt;100&lt;/td&gt;
+      &lt;td&gt;15.89&lt;/td&gt;
+      &lt;td&gt;37.76&lt;/td&gt;
+      &lt;td&gt;77&lt;/td&gt;
+      &lt;td&gt;0.39&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;2&lt;/td&gt;
+      &lt;td&gt;1&lt;/td&gt;
+      &lt;td&gt;39.64&lt;/td&gt;
+      &lt;td&gt;15.14&lt;/td&gt;
+      &lt;td&gt;136&lt;/td&gt;
+      &lt;td&gt;0.52&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;2&lt;/td&gt;
+      &lt;td&gt;10&lt;/td&gt;
+      &lt;td&gt;8.14&lt;/td&gt;
+      &lt;td&gt;73.71&lt;/td&gt;
+      &lt;td&gt;146&lt;/td&gt;
+      &lt;td&gt;0.78&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;10&lt;/td&gt;
+      &lt;td&gt;1&lt;/td&gt;
+      &lt;td&gt;8.16&lt;/td&gt;
+      &lt;td&gt;73.53&lt;/td&gt;
+      &lt;td&gt;680&lt;/td&gt;
+      &lt;td&gt;0.79&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;10&lt;/td&gt;
+      &lt;td&gt;10&lt;/td&gt;
+      &lt;td&gt;3.89&lt;/td&gt;
+      &lt;td&gt;154.24&lt;/td&gt;
+      &lt;td&gt;715&lt;/td&gt;
+      &lt;td&gt;0.54&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;p&gt;For the example I/O bound application, CPU load average never rises above &lt;code class=&quot;highlighter-rouge&quot;&gt;1.0&lt;/code&gt; regardless of &lt;code class=&quot;highlighter-rouge&quot;&gt;Process&lt;/code&gt; count. This means that the server is not using its processing power to its full potential because the requests do not demand it.&lt;/p&gt;
+
+&lt;p&gt;On the other hand, the number of &lt;code class=&quot;highlighter-rouge&quot;&gt;Threads&lt;/code&gt; makes a big difference for I/O blocking operations.  With a single &lt;code class=&quot;highlighter-rouge&quot;&gt;Thread&lt;/code&gt;, it takes 77 seconds to complete all 600 requests. Just increasing that number of &lt;code class=&quot;highlighter-rouge&quot;&gt;Threads&lt;/code&gt; to 10 makes the same work take 16 seconds!  But look at what happens when &lt;code class=&quot;highlighter-rouge&quot;&gt;Threads&lt;/code&gt; are increased to 100: the same jump in throughput doesn’t happen. This shows that the number of &lt;code class=&quot;highlighter-rouge&quot;&gt;Threads&lt;/code&gt; an application can utilize has an upper limit .&lt;/p&gt;
+
+&lt;p&gt;Additionally, the memory usage quickly increases with the number of processes on the machine. For a very simple application like this with no database, the maximum memory usage of 715mb isn’t huge but on a traditional Rails application, &lt;em&gt;each&lt;/em&gt; process could easily have a few hundred mb of memory usage. Along with hard caps for database connections, maintaining too many processes can quickly use more memory than a server has available.&lt;/p&gt;
+
+&lt;p&gt;Similar to &lt;code class=&quot;highlighter-rouge&quot;&gt;Threads&lt;/code&gt;, infinitely scaling &lt;code class=&quot;highlighter-rouge&quot;&gt;Processes&lt;/code&gt; is not a sure way to get the best results. In this example, a balance of 10 &lt;code class=&quot;highlighter-rouge&quot;&gt;Processes&lt;/code&gt; and 10 &lt;code class=&quot;highlighter-rouge&quot;&gt;Threads&lt;/code&gt; gives the best throughput at nearly a 700% memory increase.&lt;/p&gt;
+
+&lt;h2 id=&quot;cpu-intensive-application&quot;&gt;CPU Intensive Application&lt;/h2&gt;
+
+&lt;p&gt;To see how the number of &lt;code class=&quot;highlighter-rouge&quot;&gt;Threads&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;Processes&lt;/code&gt; impact a more CPU intensive application the &lt;code class=&quot;highlighter-rouge&quot;&gt;index_controller&lt;/code&gt; has been changed:&lt;/p&gt;
+
+&lt;h3 id=&quot;indexcontrollerrb-1&quot;&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;index_controller.rb&lt;/code&gt;&lt;/h3&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;IndexController&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;ApplicationController&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;index&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;tax_cpu&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;render&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;json: &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;hello: :there&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;tax_cpu&lt;/span&gt;
+    &lt;span class=&quot;no&quot;&gt;Array&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;new&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;100_000&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;rand&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;100_000&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;sort!&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Now each request will create an array of &lt;code class=&quot;highlighter-rouge&quot;&gt;100,000&lt;/code&gt; integers and sort them.&lt;/p&gt;
+
+&lt;p&gt;The same siege command is run against the same &lt;code class=&quot;highlighter-rouge&quot;&gt;Thread&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;Process&lt;/code&gt; configuration counts.&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;Processes&lt;/th&gt;
+      &lt;th&gt;Threads&lt;/th&gt;
+      &lt;th&gt;Duration(seconds)&lt;/th&gt;
+      &lt;th&gt;Transactions/second&lt;/th&gt;
+      &lt;th&gt;Memory(mb)&lt;/th&gt;
+      &lt;th&gt;CPU Load&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;1&lt;/td&gt;
+      &lt;td&gt;1&lt;/td&gt;
+      &lt;td&gt;18.34&lt;/td&gt;
+      &lt;td&gt;32.72&lt;/td&gt;
+      &lt;td&gt;114&lt;/td&gt;
+      &lt;td&gt;0.64&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;1&lt;/td&gt;
+      &lt;td&gt;10&lt;/td&gt;
+      &lt;td&gt;18.16&lt;/td&gt;
+      &lt;td&gt;33.04&lt;/td&gt;
+      &lt;td&gt;134&lt;/td&gt;
+      &lt;td&gt;0.79&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;1&lt;/td&gt;
+      &lt;td&gt;100&lt;/td&gt;
+      &lt;td&gt;18.45&lt;/td&gt;
+      &lt;td&gt;32.52&lt;/td&gt;
+      &lt;td&gt;184&lt;/td&gt;
+      &lt;td&gt;1.05&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;2&lt;/td&gt;
+      &lt;td&gt;1&lt;/td&gt;
+      &lt;td&gt;10.26&lt;/td&gt;
+      &lt;td&gt;58.48&lt;/td&gt;
+      &lt;td&gt;230&lt;/td&gt;
+      &lt;td&gt;1.12&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;2&lt;/td&gt;
+      &lt;td&gt;10&lt;/td&gt;
+      &lt;td&gt;11.73&lt;/td&gt;
+      &lt;td&gt;51.15&lt;/td&gt;
+      &lt;td&gt;270&lt;/td&gt;
+      &lt;td&gt;0.89&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;10&lt;/td&gt;
+      &lt;td&gt;1&lt;/td&gt;
+      &lt;td&gt;8.73&lt;/td&gt;
+      &lt;td&gt;68.73&lt;/td&gt;
+      &lt;td&gt;1040&lt;/td&gt;
+      &lt;td&gt;2.13&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;10&lt;/td&gt;
+      &lt;td&gt;10&lt;/td&gt;
+      &lt;td&gt;8.95&lt;/td&gt;
+      &lt;td&gt;67.04&lt;/td&gt;
+      &lt;td&gt;1180&lt;/td&gt;
+      &lt;td&gt;2.65&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;h3 id=&quot;cpu-intensive-threads-v-processes-and-throughput&quot;&gt;CPU Intensive Threads v Processes and Throughput&lt;/h3&gt;
+
+&lt;p&gt;For the CPU intensive code, only increasing &lt;code class=&quot;highlighter-rouge&quot;&gt;Threads&lt;/code&gt; does nothing for overall execution time. The 600 requests require around 18 seconds no with 1 &lt;code class=&quot;highlighter-rouge&quot;&gt;Thread&lt;/code&gt; and with 100 &lt;code class=&quot;highlighter-rouge&quot;&gt;Threads&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;On the other hand, doubling the number of &lt;code class=&quot;highlighter-rouge&quot;&gt;Processes&lt;/code&gt; cuts execution time by almost half! However, increasing the number of &lt;code class=&quot;highlighter-rouge&quot;&gt;Processes&lt;/code&gt; from 2 to 10 (a 500% increase) does not decrease the execution time by another 500%.  Just like in the I/O bound application, scaling &lt;code class=&quot;highlighter-rouge&quot;&gt;Processes&lt;/code&gt; will eventually experience diminishing returns, making each additional process less valuable.&lt;/p&gt;
+
+&lt;p&gt;During the CPU intensive code testing, the server never experienced a fully saturated load average of &lt;code class=&quot;highlighter-rouge&quot;&gt;4.0&lt;/code&gt;. This is because the example code was not all that taxing. In a real application serving end users, it is surprisingly easy to make full use of all CPU resources with enough &lt;code class=&quot;highlighter-rouge&quot;&gt;Processes&lt;/code&gt;.&lt;/p&gt;
+
+&lt;h2 id=&quot;a-little-realism&quot;&gt;A Little Realism&lt;/h2&gt;
+
+&lt;p&gt;In the real world, an application is not likely to be only CPU or I/O intensive but rather some mixture of both. To help add a little bit of variety to this test, the two operations are combined and run at a percentage:&lt;/p&gt;
+
+&lt;h3 id=&quot;indexcontrollerrb-2&quot;&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;index_controller.rb&lt;/code&gt;&lt;/h3&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;IndexController&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;ApplicationController&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;index&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;rand&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;
+      &lt;span class=&quot;n&quot;&gt;tax_cpu&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;else&lt;/span&gt;
+      &lt;span class=&quot;n&quot;&gt;interval_sleep&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;render&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;json: &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;hello: :there&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;tax_cpu&lt;/span&gt;
+    &lt;span class=&quot;no&quot;&gt;Array&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;new&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;100_000&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;rand&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;100_000&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;sort!&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;interval_sleep&lt;/span&gt;
+    &lt;span class=&quot;nb&quot;&gt;sleep&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;rand&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;10&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;to_f&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;/&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;50&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Now this controller will be I/O bound approximately 66% of the time and CPU bound the other 33%.&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;&lt;strong&gt;Note&lt;/strong&gt;: While more realistic, this application is not a perfect representation of any real request structure out there and every individual app should be evaluated on its own.&lt;/em&gt;&lt;/p&gt;
+
+&lt;p&gt;Running the same siege command a final time on this application yields:&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;Processes&lt;/th&gt;
+      &lt;th&gt;Threads&lt;/th&gt;
+      &lt;th&gt;Duration(seconds)&lt;/th&gt;
+      &lt;th&gt;Transactions/second&lt;/th&gt;
+      &lt;th&gt;Memory(mb)&lt;/th&gt;
+      &lt;th&gt;CPU Load&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;1&lt;/td&gt;
+      &lt;td&gt;1&lt;/td&gt;
+      &lt;td&gt;61.40&lt;/td&gt;
+      &lt;td&gt;9.7&lt;/td&gt;
+      &lt;td&gt;86&lt;/td&gt;
+      &lt;td&gt;0.65&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;1&lt;/td&gt;
+      &lt;td&gt;10&lt;/td&gt;
+      &lt;td&gt;14.28&lt;/td&gt;
+      &lt;td&gt;42.02&lt;/td&gt;
+      &lt;td&gt;111&lt;/td&gt;
+      &lt;td&gt;0.58&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;1&lt;/td&gt;
+      &lt;td&gt;100&lt;/td&gt;
+      &lt;td&gt;14.03&lt;/td&gt;
+      &lt;td&gt;42.77&lt;/td&gt;
+      &lt;td&gt;167&lt;/td&gt;
+      &lt;td&gt;1.31&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;2&lt;/td&gt;
+      &lt;td&gt;1&lt;/td&gt;
+      &lt;td&gt;30.24&lt;/td&gt;
+      &lt;td&gt;19.84&lt;/td&gt;
+      &lt;td&gt;174&lt;/td&gt;
+      &lt;td&gt;0.91&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;2&lt;/td&gt;
+      &lt;td&gt;10&lt;/td&gt;
+      &lt;td&gt;6.97&lt;/td&gt;
+      &lt;td&gt;86.08&lt;/td&gt;
+      &lt;td&gt;206&lt;/td&gt;
+      &lt;td&gt;0.93&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;10&lt;/td&gt;
+      &lt;td&gt;1&lt;/td&gt;
+      &lt;td&gt;6.74&lt;/td&gt;
+      &lt;td&gt;89.02&lt;/td&gt;
+      &lt;td&gt;790&lt;/td&gt;
+      &lt;td&gt;0.79&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;10&lt;/td&gt;
+      &lt;td&gt;10&lt;/td&gt;
+      &lt;td&gt;4.44&lt;/td&gt;
+      &lt;td&gt;135.14&lt;/td&gt;
+      &lt;td&gt;960&lt;/td&gt;
+      &lt;td&gt;1.43&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;p&gt;The number of &lt;code class=&quot;highlighter-rouge&quot;&gt;Threads&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;Processes&lt;/code&gt; each have an impact in these results.  Unlike the other versions of &lt;code class=&quot;highlighter-rouge&quot;&gt;index_controller.rb&lt;/code&gt;, if too few &lt;code class=&quot;highlighter-rouge&quot;&gt;Threads&lt;/code&gt; are allocated, the application will wait on I/O operations. Likewise, too few &lt;code class=&quot;highlighter-rouge&quot;&gt;Processes&lt;/code&gt; tie up the CPU, blocking other requests from being served.&lt;/p&gt;
+
+&lt;p&gt;While the fastest possible results is 10 &lt;code class=&quot;highlighter-rouge&quot;&gt;Processes&lt;/code&gt; and 10 &lt;code class=&quot;highlighter-rouge&quot;&gt;Threads&lt;/code&gt;, it is important to look at the load average and memory usage. For nearly 1/5th the memory, 2 &lt;code class=&quot;highlighter-rouge&quot;&gt;Processes&lt;/code&gt; and 10 &lt;code class=&quot;highlighter-rouge&quot;&gt;Threads&lt;/code&gt; accomplishes the task in only 2 more seconds. A server that has memory issues or an application that is memory starved might adopt this more modest configuration to save memory. The 10 &lt;code class=&quot;highlighter-rouge&quot;&gt;Processes&lt;/code&gt;, 10 &lt;code class=&quot;highlighter-rouge&quot;&gt;Threads&lt;/code&gt; configuration also has the highest CPU load average. Just like memory concerns, a server with lower processing power might be better &lt;em&gt;served&lt;/em&gt; with fewer &lt;code class=&quot;highlighter-rouge&quot;&gt;Processes&lt;/code&gt; competing for CPU time.&lt;/p&gt;
+
+&lt;h2 id=&quot;summary&quot;&gt;Summary&lt;/h2&gt;
+
+&lt;p&gt;The number of &lt;code class=&quot;highlighter-rouge&quot;&gt;Threads&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;Processes&lt;/code&gt; can be the deciding factor on a web application’s performance. Additionally, understanding how the number of &lt;code class=&quot;highlighter-rouge&quot;&gt;Procesess&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;Threads&lt;/code&gt; impact a server is useful for choosing and configuring a web server. Any code which uses concurrency can benefit from this knowledge. Balancing memory usage, external resource connection limits, and CPU load average is a great way to make sure a server is provisioned correctly and might even save some money.&lt;/p&gt;
+
+&lt;p&gt;Things like thread starvation, semaphores, thread pooling and other concerns regarding concurrent programming were intentionally not mentioned in this post.  Understanding how &lt;code class=&quot;highlighter-rouge&quot;&gt;Threads&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;Processes&lt;/code&gt; work at a high level can enable the configuration and choice of web server, but if you want to write your own complex concurrent Ruby code, I’d suggest &lt;a href=&quot;https://github.com/ruby-concurrency/concurrent-ruby&quot;&gt;concurrent-ruby&lt;/a&gt;.&lt;/p&gt;
+</content>
+ </entry>
+ 
+ <entry>
    <title>Improving Remote Work as a Software Engineer</title>
    <link href="http://jakeyesbeck.com/2018/02/18/improving-remote-work-as-a-software-engineer/"/>
    <updated>2018-02-18T07:00:00-05:00</updated>
@@ -2995,7 +3394,7 @@ Routes &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;Passages::Engine:
 
 &lt;h2 id=&quot;further-reading&quot;&gt;Further Reading&lt;/h2&gt;
 
-&lt;p&gt;The aforementioned solutions will get the job done but might not answer lingering questions about &lt;em&gt;why&lt;/em&gt; things work the way they do. A few great articles on &lt;a href=&quot;http://madebydna.com/all/code/2011/06/24/eigenclasses-demystified.html&quot;&gt;the ruby eigenclass&lt;/a&gt; and &lt;a href=&quot;http://junichiito.blogspot.com/2012/03/matz-answers-why-ruby-lets-sub-classes.html&quot;&gt;Matz’s thoughts on Ruby method design&lt;/a&gt; should help paint a more concise picture of why Ruby works the way that it does.&lt;/p&gt;
+&lt;p&gt;The aforementioned solutions will get the job done but might not answer lingering questions about &lt;em&gt;why&lt;/em&gt; things work the way they do. A few great articles on &lt;a href=&quot;http://madebydna.com/all/code/2011/06/24/eigenclasses-demystified.html&quot;&gt;the ruby eigenclass&lt;/a&gt; and &lt;a href=&quot;http://junichiito.blogspot.com/2012/03/matz-answers-why-ruby-lets-sub-classes.html&quot;&gt;Matz’s thoughts on Ruby method design&lt;/a&gt; should help paint a more concise picture of why Ruby’s private class method definition is complex.&lt;/p&gt;
 </content>
  </entry>
  

@@ -59,7 +59,7 @@
       <a class="sidebar-nav-item" href="/atom.xml">Feed</a>
     </nav>
 
-    <p class='copyright'>&copy; Jake Yesbeck 2018. All rights reserved.</p>
+    <p class='copyright'>&copy; Jake Yesbeck 2019. All rights reserved.</p>
   </div>
 </div>
 
@@ -69,134 +69,141 @@
   
   <div class="post">
     <h1 class="post-title">
-      <a href="/2015/09/13/rescue-groups/">
-        Rescue Groups Ruby Wrapper
+      <a href="/2015/09/20/rails-http-status-codes/">
+        Just learn Rails (Part 3) HTTP status codes
       </a>
     </h1>
 
     
 
-    <span class="post-date">13 Sep 2015</span>
+    <span class="post-date">20 Sep 2015</span>
     <span class='share-container'><ul class="share-buttons">
   <li>
-    <a href="https://www.facebook.com/sharer/sharer.php?u=http://jakeyesbeck.com/2015/09/13/rescue-groups/&t=Rescue Groups Ruby Wrapper" title="Share on Facebook" target="_blank">
+    <a href="https://www.facebook.com/sharer/sharer.php?u=http://jakeyesbeck.com/2015/09/20/rails-http-status-codes/&t=Just learn Rails (Part 3) HTTP status codes" title="Share on Facebook" target="_blank">
       <img src="http://jakeyesbeck.com/assets/images/facebook.svg">
     </a>
   </li>
   <li>
-    <a href="https://twitter.com/intent/tweet?source=http%3A%2F%2Fjakeyesbeck.com&text=Rescue Groups Ruby Wrapper%20http://jakeyesbeck.com/2015/09/13/rescue-groups/&via=jakeyesbeck" target="_blank" title="Tweet">
+    <a href="https://twitter.com/intent/tweet?source=http%3A%2F%2Fjakeyesbeck.com&text=Just learn Rails (Part 3) HTTP status codes%20http://jakeyesbeck.com/2015/09/20/rails-http-status-codes/&via=jakeyesbeck" target="_blank" title="Tweet">
       <img src="http://jakeyesbeck.com/assets/images/twitter.svg">
     </a>
   </li>
   <li>
-    <a href="https://plus.google.com/share?url=http://jakeyesbeck.com/2015/09/13/rescue-groups/" target="_blank" title="Share on Google+">
+    <a href="https://plus.google.com/share?url=http://jakeyesbeck.com/2015/09/20/rails-http-status-codes/" target="_blank" title="Share on Google+">
       <img src="http://jakeyesbeck.com/assets/images/google_plus.svg">
     </a>
   </li>
 
   <li>
-    <a href="https://news.ycombinator.com/submitlink?u=http://jakeyesbeck.com/2015/09/13/rescue-groups/&t=Rescue Groups Ruby Wrapper" target="_blank" title="Share on Hacker News">
+    <a href="https://news.ycombinator.com/submitlink?u=http://jakeyesbeck.com/2015/09/20/rails-http-status-codes/&t=Just learn Rails (Part 3) HTTP status codes" target="_blank" title="Share on Hacker News">
       <img src="http://jakeyesbeck.com/assets/images/ycomb.svg">
     </a>
   </li>
 
   <li>
-    <a href="https://getpocket.com/save?url=http://jakeyesbeck.com/2015/09/13/rescue-groups/&title=Rescue Groups Ruby Wrapper" target="_blank" title="Add to Pocket">
+    <a href="https://getpocket.com/save?url=http://jakeyesbeck.com/2015/09/20/rails-http-status-codes/&title=Just learn Rails (Part 3) HTTP status codes" target="_blank" title="Add to Pocket">
       <img src="http://jakeyesbeck.com/assets/images/pocket.svg">
     </a>
   </li>
   <li>
-    <a href="http://www.reddit.com/submit?url=http://jakeyesbeck.com/2015/09/13/rescue-groups/&title=Rescue Groups Ruby Wrapper" target="_blank" title="Submit to Reddit">
+    <a href="http://www.reddit.com/submit?url=http://jakeyesbeck.com/2015/09/20/rails-http-status-codes/&title=Just learn Rails (Part 3) HTTP status codes" target="_blank" title="Submit to Reddit">
       <img src="http://jakeyesbeck.com/assets/images/reddit.svg">
     </a>
   </li>
 </ul>
 </span>
 
-    <p>People need companions. We are a social species that enjoys surrounding itself with family and friends. But sometimes, and maybe more often than just sometimes, people crave companionship from something that cannot talk back. This is probably one of the reasons so many people like pets. A pet cannot disagree with you or say judgmental remarks as you fill up that wine glass for a fourth time. No, a good pet will simply exist near you, occasionally asking for pets and food. Pets can be obtained from breeders for huge stacks of cash, or they can be adopted for significantly cheaper.</p>
+    <p>So you want to be a Rails superstar? To live large, big servers, requesting tars. Writing code all over the world, gotta make commits constantly. Great, I feel the same way.</p>
 
-<h2 id="the-adoption-option">The Adoption Option</h2>
+<p>Assuming you have already had that <em>“I should <a href="http://jakeyesbeck.com/2015/05/17/just-learn-rails/">just learn Rails</a>”</em> moment, the idea of writing an API for a super awesome application might be on the horizon. And, of course, the framework that makes the most sense is Ruby on Rails. Given that is the direction things might naturally evolve, creating an API with Rails can gloss over a few crucial design concepts and considerations.</p>
 
-<p>About 2.7 million animals are euthanized each year in animal shelters across the United States. That is some sad stuff right there. These animals could be hanging out with you at your house, clawing up the couch or barking at nothing. Does that not sound like just the best time? If only there was a Ruby library that some super awesome Software Artisans could use to make discoverable pet data a reality. Well now, there is! Over the past few months, as part of the <a href="http://jakeyesbeck.com/2015/04/23/a-year-of-commits/">Year of Commits</a> initiative, I have built a <a href="https://github.com/yez/rescue_groups">wrapper for the RescueGroups.org API</a>.</p>
+<h2 id="http-status-codes-are-important">HTTP status codes are important</h2>
 
-<h2 id="sign-up-for-an-api-key">0. Sign up for an API key</h2>
+<p>When the <strong>Hypertext Transfer Protocol</strong> (or HTTP) was conceived, the idea of a server responding with multiple distinct pieces of data came into existence. Officially, HTTP is a stateless application-level protocol for distributed, collaborative, hypertext information system. In other words, it is a standard way that one server can talk to another in a predefined fashion. This is especially useful when writing a system that will facilitate requests from someone other than the person which built it; e.g. an HTTP API.</p>
 
-<p>The RescueGroups API is free to use, but requires signing up for an API key. To do that, fill out <a href="https://www.rescuegroups.org/services/request-an-api-key/">this form</a> and they will email you an API key for you to use.</p>
+<p>The aspect of HTTP that is most relevant in this post are <a href="https://en.wikipedia.org/wiki/List_of_HTTP_status_codes">status codes</a>. These codes explicitly tell consumers of an application how they should react to a request. From authorization issues to an incorrect arity of parameters, a large amount of information is exposed via HTTP status codes.</p>
 
-<h2 id="install-the-rescuegroups-gem">1. Install the <code class="highlighter-rouge">rescue_groups</code> Gem</h2>
+<h2 id="rails-status-code-support">Rails status code support</h2>
 
-<p>To install the gem, simply add <code class="highlighter-rouge">rescue_groups</code> to a ruby project’s Gemfile:</p>
+<p>Let us assume that an application exists to look up information about books. To get a specific book, a RESTful route is provided by the application at <code class="highlighter-rouge">https://mycoolbookapp.com/books/12</code>. This route might execute the following controller action:</p>
 
-<p><strong>Gemfile</strong></p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="n">source</span> <span class="s1">'rubygems'</span>
-
-<span class="n">gem</span> <span class="s1">'rescue_groups'</span>
-</code></pre>
-</div>
-
-<p>Then in an initializer or at the beginning of the execution flow for using the library, add your new fancy API key to the configuration.</p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="no">RescueGroups</span><span class="p">.</span><span class="nf">configuration</span> <span class="k">do</span> <span class="o">|</span><span class="n">config</span><span class="o">|</span>
-  <span class="n">config</span><span class="p">.</span><span class="nf">apikey</span> <span class="o">=</span> <span class="s1">'your api key'</span>
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">class</span> <span class="nc">BooksController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
+  <span class="k">def</span> <span class="nf">show</span>
+    <span class="n">render</span> <span class="ss">json: </span><span class="no">Book</span><span class="p">.</span><span class="nf">find</span><span class="p">(</span><span class="n">params</span><span class="p">[</span><span class="ss">:id</span><span class="p">])</span>
+  <span class="k">end</span>
 <span class="k">end</span>
 </code></pre>
 </div>
 
-<h2 id="use-the-gem">2. Use the Gem!</h2>
+<p>This simple controller action can respond with three HTTP status codes. A <code class="highlighter-rouge">200</code> will be in the response of any <code class="highlighter-rouge">Book</code> which matches the <code class="highlighter-rouge">:id</code> supplied. Likewise, a <code class="highlighter-rouge">404</code> will automatically be returned if the <code class="highlighter-rouge">Book</code> requested does not exist. Finally, if some “code in need of improvement” is accessed and fails, a <code class="highlighter-rouge">500</code> is returned to let the user know that the server has almost certainly caught fire <em>(surely no code pushed to production has bugs in it)</em>.</p>
 
-<p>After the gem is installed, some handy dandy search functionality is right at your fingertips. Call me biased but I rather like the ActiveRecord <code class="highlighter-rouge">find</code> and <code class="highlighter-rouge">where</code> API. In fact, I like it so much that the <code class="highlighter-rouge">rescue_groups</code> gem implemented its own version of both.</p>
+<p>For a very simple API, this response structure is adequate. However, achieving more complicated responses might not be so straight forward. For instance, if a user must be logged in to access a <code class="highlighter-rouge">Book</code>, the correct response might be <code class="highlighter-rouge">401</code>, to explicitly let the user know that they are not authorized to see that resource.</p>
 
-<h3 id="searching">Searching</h3>
+<p>If HTTP status codes are unknown or underutilized, an inexperienced developer might write that response that attempts to only use the text body of a response.</p>
 
-<p>If an ID is known for an animal, simply pass it to <code class="highlighter-rouge">find</code> and it will return an <code class="highlighter-rouge">Animal</code> object. If an <code class="highlighter-rouge">Array</code> is given to <code class="highlighter-rouge">find</code>, it will return an <code class="highlighter-rouge">Array</code> of <code class="highlighter-rouge">Animal</code>s.</p>
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">class</span> <span class="nc">BooksController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
+  <span class="n">before_filter</span> <span class="ss">:authenticate_user</span>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="no">Animal</span><span class="p">.</span><span class="nf">find</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-<span class="c1">#=&gt; &lt;Animal id: 1, name: 'Fluffy' ...&gt;</span>
+  <span class="k">def</span> <span class="nf">show</span>
+    <span class="k">if</span> <span class="vi">@user</span><span class="p">.</span><span class="nf">nil?</span>
+      <span class="n">response</span> <span class="o">=</span> <span class="p">{</span> <span class="ss">error: </span><span class="s1">'User is not logged in'</span> <span class="p">}</span>
+    <span class="k">else</span>
+      <span class="n">response</span> <span class="o">=</span> <span class="no">Book</span><span class="p">.</span><span class="nf">find</span><span class="p">(</span><span class="n">params</span><span class="p">[</span><span class="ss">:id</span><span class="p">])</span>
+    <span class="k">end</span>
 
-<span class="no">Animal</span><span class="p">.</span><span class="nf">find</span><span class="p">([</span><span class="mi">20</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">40</span><span class="p">])</span>
-<span class="c1">#=&gt; [&lt;Animal id: 20, name: 'Mittens' ...&gt;, &lt;Animal id: 30, name: 'Mr. Doom' ...&gt;, &lt;Animal id: 40, name: 'CatDog' ...&gt;]</span>
+    <span class="n">render</span> <span class="ss">json: </span><span class="n">response</span>
+  <span class="k">end</span>
+<span class="k">end</span>
 </code></pre>
 </div>
 
-<p><code class="highlighter-rouge">Where</code> is very similar, any of the supported fields for <a href="https://github.com/yez/rescue_groups/blob/master/docs/animal_field.md">Animals</a>, <a href="https://github.com/yez/rescue_groups/blob/master/docs/organization_field.md">Organizations</a>, and <a href="https://github.com/yez/rescue_groups/blob/master/docs/event_field.md">Events</a> can be used to find the matching records.</p>
+<p>This code will respond with a <code class="highlighter-rouge">200</code> and a message denoting an error. This is not the correct way to return a result. This is the equivalent of someone allowing you to leave a store with an item and not pay, then arresting you for it. It just does not make sense and should be avoided.</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="no">Organization</span><span class="p">.</span><span class="nf">where</span><span class="p">(</span><span class="ss">name: </span><span class="s1">'Pets-R-Us'</span><span class="p">)</span>
-<span class="c1"># =&gt; [&lt;Organization id: 1, name: 'Pets-R-Us' ...&gt;]</span>
+<p>Instead, Ruby on Rails gives us <a href="http://billpatrianakos.me/blog/2013/10/13/list-of-rails-status-code-symbols/">very helpful symbols</a> that can be used to accurately convey the appropriate response to end users.</p>
 
-<span class="no">Animal</span><span class="p">.</span><span class="nf">where</span><span class="p">(</span><span class="ss">color: </span><span class="p">[</span><span class="s1">'black'</span><span class="p">,</span> <span class="s1">'brown'</span><span class="p">])</span>
-<span class="c1"># =&gt; [&lt;Animal id: 1, color: 'black' ..&gt;, &lt;Animal id: 5, color: 'brown' ..&gt;]</span>
+<p>To only return the correct HTTP status code, the books controller can be rewritten to:</p>
 
-<span class="no">Animal</span><span class="p">.</span><span class="nf">where</span><span class="p">(</span><span class="ss">location_postal_code: </span><span class="mi">94117</span><span class="p">)</span>
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">class</span> <span class="nc">BooksController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
+  <span class="n">before_filter</span> <span class="ss">:authenticate_user</span>
+
+  <span class="k">def</span> <span class="nf">show</span>
+    <span class="k">if</span> <span class="vi">@user</span><span class="p">.</span><span class="nf">nil?</span>
+      <span class="k">return</span> <span class="n">head</span> <span class="ss">:unauthorized</span>
+    <span class="k">end</span>
+
+    <span class="n">render</span> <span class="ss">json: </span><span class="no">Book</span><span class="p">.</span><span class="nf">find</span><span class="p">(</span><span class="n">params</span><span class="p">[</span><span class="ss">:id</span><span class="p">])</span>
+  <span class="k">end</span>
+<span class="k">end</span>
 </code></pre>
 </div>
 
-<p>The default behavior asserts that the fields are equal, i.e. An animal that is brown will be returned when <code class="highlighter-rouge">Animal.where(color: 'brown')</code> is used. Other comparisons are possible for more complex queries.</p>
+<p>Additionally, you can provide even more information to the consumer of your API with a combination of HTTP status codes and a response body:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="no">Animal</span><span class="p">.</span><span class="nf">where</span><span class="p">(</span><span class="ss">general_age: </span><span class="p">{</span> <span class="ss">less_than: </span><span class="mi">5</span><span class="p">})</span>
-<span class="c1"># =&gt; [&lt;Animal id: 1, age: 2 ..&gt;, &lt;Animal id: 3, age: 1 ..&gt;]</span>
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">class</span> <span class="nc">BooksController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
+  <span class="n">before_filter</span> <span class="ss">:authenticate_user</span>
 
-<span class="no">Organization</span><span class="p">.</span><span class="nf">where</span><span class="p">(</span><span class="ss">name: </span><span class="p">{</span> <span class="ss">contains: </span><span class="s1">'shelter'</span><span class="p">},</span> <span class="ss">location: </span><span class="mi">90210</span><span class="p">)</span>
-<span class="c1"># =&gt; [&lt;Organization id: 1, name: 'Big Animal Shelter', location: 90210 ...&gt;, &lt;Organization id: 2, name: 'Small Animal Shelter', location: 90210 ...&gt;,]</span>
+  <span class="k">def</span> <span class="nf">show</span>
+    <span class="k">if</span> <span class="vi">@user</span><span class="p">.</span><span class="nf">nil?</span>
+      <span class="n">response</span> <span class="o">=</span> <span class="p">{</span> <span class="ss">error: </span><span class="s1">'User is not logged in'</span> <span class="p">}</span>
+      <span class="n">status</span> <span class="o">=</span> <span class="ss">:unauthorized</span>
+    <span class="k">else</span>
+      <span class="n">response</span> <span class="o">=</span> <span class="no">Book</span><span class="p">.</span><span class="nf">find</span><span class="p">(</span><span class="n">params</span><span class="p">[</span><span class="ss">:id</span><span class="p">])</span>
+      <span class="n">status</span> <span class="o">=</span> <span class="ss">:ok</span>
+    <span class="k">end</span>
+
+    <span class="n">render</span> <span class="ss">json: </span><span class="n">response</span><span class="p">,</span> <span class="ss">status: </span><span class="n">status</span>
+  <span class="k">end</span>
+<span class="k">end</span>
 </code></pre>
 </div>
 
-<h2 id="relationships">Relationships</h2>
+<h2 id="communicate-effectively">Communicate effectively</h2>
 
-<p>While I was in the spirit of borrowing, I did so with Ruby on Rails style relationships. In the <code class="highlighter-rouge">rescue_groups</code> gem Animals and Events <code class="highlighter-rouge">belongs_to</code> Organizations and, inversely, Organizations <code class="highlighter-rouge">has_many</code> Animals and Events. When one of these models’ relationship is called, the respective relationship is automagically fetched from the RescueGroups.org API.</p>
+<p>This example has exposed the difference between a decent API and one that understands how HTTP should work. While the specific problem <a href="https://github.com/CanCanCommunity/cancancan">could be solved with CanCanCan</a>, it is important to understand how and why those libraries work the way that they do.</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="n">organization</span> <span class="o">=</span> <span class="no">Organization</span><span class="p">.</span><span class="nf">find</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-<span class="c1"># =&gt; &lt;Organization id: 1, name: 'Pets', city: 'Dallas' ...&gt;</span>
+<p>If one were to continue down the naive path, returning hashes or strings with incorrect HTTP status codes, things would become messy quickly. That response structure unjustly handcuffs the API clients to be unnecessarily tolerant of ad-hoc text responses. But, if the API conforms to HTTP standards, a client knows exactly what each response means. A <code class="highlighter-rouge">400</code> status code in the response will give context to what a supplied error means. The client can respond correctly and know that their request resulted in an error. However, if a response body is the only way to denote that something went wrong, what stops a new developer on the API from changing the <code class="highlighter-rouge">error</code> key to <code class="highlighter-rouge">Error</code> and ruin everyone’s day?</p>
 
-<span class="c1"># This will issue a remote call that is equivalent to Animal.where(organization_id: 1)</span>
-<span class="n">organization</span><span class="p">.</span><span class="nf">animals</span>
-<span class="c1"># =&gt; [&lt;Animal id: 1, organization_id: 1 ...&gt;, &lt;Animal id: 2, organization_id: 1 ...&gt;, ...]</span>
-</code></pre>
-</div>
-
-<h2 id="make-a-pet-project">3. Make a Pet Project</h2>
-
-<p>Now with all this pet data available, put it to work. I have really enjoyed making this library but am always looking for feedback. If anyone would like to know more or help contribute to this project please feel free! Github PRs and issues are always welcome.</p>
+<p>Instead of capturing in text every single detail about why a request did not result in an expected response, use HTTP status codes to supplement and communicate effectively.</p>
 
   </div>
   

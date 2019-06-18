@@ -59,7 +59,7 @@
       <a class="sidebar-nav-item" href="/atom.xml">Feed</a>
     </nav>
 
-    <p class='copyright'>&copy; Jake Yesbeck 2018. All rights reserved.</p>
+    <p class='copyright'>&copy; Jake Yesbeck 2019. All rights reserved.</p>
   </div>
 </div>
 
@@ -69,142 +69,383 @@
   
   <div class="post">
     <h1 class="post-title">
-      <a href="/2016/04/26/a-successful-year-of-commits/">
-        A Successful Year of Commits
+      <a href="/2017/07/12/a-few-rspec-helpful-hints/">
+        A Few RSpec Helpful Hints
       </a>
     </h1>
 
     
 
-    <span class="post-date">26 Apr 2016</span>
+    <span class="post-date">12 Jul 2017</span>
     <span class='share-container'><ul class="share-buttons">
   <li>
-    <a href="https://www.facebook.com/sharer/sharer.php?u=http://jakeyesbeck.com/2016/04/26/a-successful-year-of-commits/&t=A Successful Year of Commits" title="Share on Facebook" target="_blank">
+    <a href="https://www.facebook.com/sharer/sharer.php?u=http://jakeyesbeck.com/2017/07/12/a-few-rspec-helpful-hints/&t=A Few RSpec Helpful Hints" title="Share on Facebook" target="_blank">
       <img src="http://jakeyesbeck.com/assets/images/facebook.svg">
     </a>
   </li>
   <li>
-    <a href="https://twitter.com/intent/tweet?source=http%3A%2F%2Fjakeyesbeck.com&text=A Successful Year of Commits%20http://jakeyesbeck.com/2016/04/26/a-successful-year-of-commits/&via=jakeyesbeck" target="_blank" title="Tweet">
+    <a href="https://twitter.com/intent/tweet?source=http%3A%2F%2Fjakeyesbeck.com&text=A Few RSpec Helpful Hints%20http://jakeyesbeck.com/2017/07/12/a-few-rspec-helpful-hints/&via=jakeyesbeck" target="_blank" title="Tweet">
       <img src="http://jakeyesbeck.com/assets/images/twitter.svg">
     </a>
   </li>
   <li>
-    <a href="https://plus.google.com/share?url=http://jakeyesbeck.com/2016/04/26/a-successful-year-of-commits/" target="_blank" title="Share on Google+">
+    <a href="https://plus.google.com/share?url=http://jakeyesbeck.com/2017/07/12/a-few-rspec-helpful-hints/" target="_blank" title="Share on Google+">
       <img src="http://jakeyesbeck.com/assets/images/google_plus.svg">
     </a>
   </li>
 
   <li>
-    <a href="https://news.ycombinator.com/submitlink?u=http://jakeyesbeck.com/2016/04/26/a-successful-year-of-commits/&t=A Successful Year of Commits" target="_blank" title="Share on Hacker News">
+    <a href="https://news.ycombinator.com/submitlink?u=http://jakeyesbeck.com/2017/07/12/a-few-rspec-helpful-hints/&t=A Few RSpec Helpful Hints" target="_blank" title="Share on Hacker News">
       <img src="http://jakeyesbeck.com/assets/images/ycomb.svg">
     </a>
   </li>
 
   <li>
-    <a href="https://getpocket.com/save?url=http://jakeyesbeck.com/2016/04/26/a-successful-year-of-commits/&title=A Successful Year of Commits" target="_blank" title="Add to Pocket">
+    <a href="https://getpocket.com/save?url=http://jakeyesbeck.com/2017/07/12/a-few-rspec-helpful-hints/&title=A Few RSpec Helpful Hints" target="_blank" title="Add to Pocket">
       <img src="http://jakeyesbeck.com/assets/images/pocket.svg">
     </a>
   </li>
   <li>
-    <a href="http://www.reddit.com/submit?url=http://jakeyesbeck.com/2016/04/26/a-successful-year-of-commits/&title=A Successful Year of Commits" target="_blank" title="Submit to Reddit">
+    <a href="http://www.reddit.com/submit?url=http://jakeyesbeck.com/2017/07/12/a-few-rspec-helpful-hints/&title=A Few RSpec Helpful Hints" target="_blank" title="Submit to Reddit">
       <img src="http://jakeyesbeck.com/assets/images/reddit.svg">
     </a>
   </li>
 </ul>
 </span>
 
-    <p>At Rails Conf 2015, I met a lot of great people from the Ruby community. These people had a profound effect on me, instilling in me a new motivation to become part of something larger than myself. A year ago today, I embarked on a journey to better myself as a Software Engineer. <a href="http://jakeyesbeck.com/2015/04/23/a-year-of-commits/">I decided to commit to open source software every day for a year</a>.</p>
+    <p>Two main frameworks dominate the Ruby testing world: Rspec and MiniTest. RSpec
+is a very expressive testing framework with many great features and helpers to
+make tests readable. When writing RSpec tests, here are just a few not so
+obvious hints that could make tests even easier to write, read, and maintain.</p>
 
-<p>Even though open source software has been around for decades, up until a year ago I had thought it mostly magic and far beyond my reach. After Rails Conf 2015, it became clear to me that contributing to and becoming part of the open source community was not so far fetched.</p>
+<p>Assuming a system exists with <code class="highlighter-rouge">Books</code> and <code class="highlighter-rouge">Authors</code>, let’s utilize these hints
+to make testing easy.</p>
 
-<h2 id="the-plan">The Plan</h2>
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Book</span>
+  <span class="kp">attr_reader</span> <span class="ss">:title</span><span class="p">,</span> <span class="ss">:genre</span>
 
-<p>The word “plan” might be a bit generous for what I decided to do. I was going to “just keep doing commits for a year”. Surely doing something over and over again will yield good results…right? It has to have at least <em>some</em> effect on <em>some</em> aspect of my programming ability.</p>
+  <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="n">title</span><span class="p">,</span> <span class="n">genre</span><span class="p">)</span>
+    <span class="vi">@title</span> <span class="o">=</span> <span class="n">title</span>
+    <span class="vi">@genre</span> <span class="o">=</span> <span class="n">genre</span>
+  <span class="k">end</span>
+<span class="k">end</span>
 
-<p>And so that is what I did. For one year, I made at least one commit to an open source repository (someone else’s or my own) every day:</p>
+<span class="k">class</span> <span class="nc">Author</span>
+  <span class="kp">attr_reader</span> <span class="ss">:books</span>
 
-<p><img src="http://jakeyesbeck.com/assets/images/complete_year_of_commits_graph.png" alt="Completed Year of Commits Github Graph" /></p>
+  <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="nb">name</span><span class="p">,</span> <span class="n">books</span><span class="p">)</span>
+    <span class="vi">@name</span> <span class="o">=</span> <span class="nb">name</span>
+    <span class="vi">@books</span> <span class="o">=</span> <span class="no">Array</span><span class="p">(</span><span class="n">books</span><span class="p">)</span>
+  <span class="k">end</span>
 
-<p>I started this endeavor on April 26th 2015 and ended it today, April 26 2016.</p>
+  <span class="k">def</span> <span class="nf">has_written_a_book?</span>
+    <span class="o">!</span><span class="n">books</span><span class="p">.</span><span class="nf">empty?</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre>
+</div>
 
-<h2 id="reality-check">Reality Check</h2>
+<h2 id="subject-and--let-variables"><code class="highlighter-rouge">subject</code> and  <code class="highlighter-rouge">let</code> Variables</h2>
 
-<p>At the beginning of the year, I was under the impression that I was going to be able to contribute to other people’s repositories every day without too much effort. That idea was soon shattered due to the short time constraints I had to work with. After all, I am happily employed and unable to devote more than a few hours a day to open source work. Exploring someone else’s code base, reproducing an issue and finding a solution can take more than a few hours.</p>
+<p>A great way to keep specs DRY and readable are via <code class="highlighter-rouge">subject</code> and <code class="highlighter-rouge">let</code> variable
+declarations.</p>
 
-<p>It became clear that I needed to fill in gaps of time with my own projects. This ended up being much more fun than I had anticipated and I got to build some cool libraries that people would actually use:</p>
+<p>For example, if we want to assert an <code class="highlighter-rouge">Author</code> has a <code class="highlighter-rouge">name</code>, a test without <code class="highlighter-rouge">let</code>
+and <code class="highlighter-rouge">subject</code> variables might look something like:</p>
 
-<ol>
-  <li><a href="https://github.com/yez/passages">Passages</a></li>
-  <li><a href="https://github.com/yez/validates_type">validates_type</a></li>
-  <li><a href="https://github.com/yez/rescue_groups">Rescue Groups</a></li>
-  <li><a href="https://github.com/yez/validates_subset">validates_subset</a></li>
-  <li><a href="https://github.com/yez/honest_renter">Honest Renter</a></li>
-</ol>
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="n">describe</span> <span class="no">Author</span> <span class="k">do</span>
+  <span class="n">before</span> <span class="k">do</span>
+    <span class="vi">@book_genre</span> <span class="o">=</span> <span class="s1">'Historical Fiction'</span>
+    <span class="vi">@book_title</span> <span class="o">=</span> <span class="s1">'A Tale of Two Cities'</span>
+    <span class="vi">@book</span> <span class="o">=</span> <span class="no">Book</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="vi">@book_genre</span><span class="p">,</span> <span class="vi">@book_title</span><span class="p">)</span>
+    <span class="vi">@author_name</span> <span class="o">=</span> <span class="s1">'Charles Dickens'</span>
+    <span class="vi">@author</span> <span class="o">=</span> <span class="no">Author</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="vi">@author_name</span><span class="p">,</span> <span class="p">[</span><span class="vi">@book</span><span class="p">])</span>
+  <span class="k">end</span>
 
-<p>However, this does not mean that my only contributions were to my own projects. Oh no, far from it, I forked repositories on Github like crazy and ended up contributing to a lot of great projects:</p>
+  <span class="n">describe</span> <span class="s1">'#name'</span><span class="k">do</span>
+    <span class="n">it</span> <span class="s1">'has a name set'</span> <span class="k">do</span>
+      <span class="n">expect</span><span class="p">(</span><span class="vi">@author</span><span class="p">.</span><span class="nf">name</span><span class="p">).</span><span class="nf">to</span> <span class="n">eq</span><span class="p">(</span><span class="vi">@author_name</span><span class="p">)</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre>
+</div>
 
-<ol>
-  <li><a href="https://github.com/codetriage/codetriage">Code Triage</a></li>
-  <li><a href="https://github.com/Growstuff/growstuff">Growstuff</a></li>
-  <li><a href="https://github.com/sendgrid/sendgrid-ruby">SendGrid Ruby</a></li>
-  <li><a href="https://github.com/girishso/pluck_to_hash">Pluck to Hash</a></li>
-  <li><a href="https://github.com/covermymeds/fetching-gem">Fetching</a></li>
-  <li><a href="https://github.com/codegram/date_validator">Date Validator</a></li>
-</ol>
+<p>While correct, additional tests asserting number of books, a different name, or
+other things about this <code class="highlighter-rouge">Author</code> could become very verbose.</p>
 
-<p>…and many more</p>
+<p>Instead, we can introduce <code class="highlighter-rouge">subject</code> and <code class="highlighter-rouge">let</code> variables to keep things DRY and
+reusable:</p>
 
-<p>Each of these projects taught me something new and introduced me to many different coding styles. My contributions ranged from one-liners to entire spec suite creations. If any maintainers of these libraries end up reading this post: Thank you for all the work you do. Open source development is done for free and I value the time you put into it.</p>
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="n">describe</span> <span class="no">Author</span> <span class="k">do</span>
+  <span class="n">let</span><span class="p">(</span><span class="ss">:book_genre</span><span class="p">)</span> <span class="p">{</span> <span class="s1">'Historical Fiction'</span> <span class="p">}</span>
+  <span class="n">let</span><span class="p">(</span><span class="ss">:book_title</span><span class="p">)</span> <span class="p">{</span> <span class="s1">'A Tale of Two Cities'</span> <span class="p">}</span>
+  <span class="n">let</span><span class="p">(</span><span class="ss">:book</span><span class="p">)</span> <span class="p">{</span> <span class="no">Book</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="n">book_genre</span><span class="p">,</span> <span class="n">book_title</span><span class="p">)</span> <span class="p">}</span>
+  <span class="n">let</span><span class="p">(</span><span class="ss">:book_array</span><span class="p">)</span> <span class="p">{</span> <span class="p">[</span><span class="n">book</span><span class="p">]</span> <span class="p">}</span>
+  <span class="n">let</span><span class="p">(</span><span class="ss">:author_name</span><span class="p">)</span> <span class="p">{</span> <span class="s1">'Charles Dickens'</span> <span class="p">}</span>
+  <span class="n">subject</span> <span class="p">{</span> <span class="no">Author</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="n">author_name</span><span class="p">,</span> <span class="n">book_array</span><span class="p">)</span> <span class="p">}</span>
 
-<h2 id="expect-the-unexpected">Expect the Unexpected</h2>
+  <span class="n">describe</span> <span class="s1">'#name'</span><span class="k">do</span>
+    <span class="n">it</span> <span class="s1">'has a name set'</span> <span class="k">do</span>
+      <span class="n">expect</span><span class="p">(</span><span class="n">subject</span><span class="p">.</span><span class="nf">name</span><span class="p">).</span><span class="nf">to</span> <span class="n">eq</span><span class="p">(</span><span class="n">author_name</span><span class="p">)</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
 
-<p>A delightful surprise during this project was writing this blog. I had a feeling that I would enjoy writing every week and originally intended to only write about the Year of Commits project. However, a few weeks into the posts and I quickly found new inspiration. It turns out that people actually like reading my explanations of coding patterns, designs, and tutorials:</p>
+  <span class="n">describe</span> <span class="s1">'#books'</span> <span class="k">do</span>
+    <span class="n">context</span> <span class="s1">'with books'</span> <span class="k">do</span>
+      <span class="n">it</span> <span class="s1">'has books set'</span> <span class="k">do</span>
+        <span class="n">expect</span><span class="p">(</span><span class="n">subject</span><span class="p">.</span><span class="nf">books</span><span class="p">).</span><span class="nf">to</span> <span class="n">eq</span><span class="p">(</span><span class="n">book_array</span><span class="p">)</span>
+      <span class="k">end</span>
+    <span class="k">end</span>
 
-<blockquote class="twitter-tweet" data-lang="en">
-  <p lang="en" dir="ltr"><a href="https://twitter.com/jakeyesbeck">@jakeyesbeck</a> Hey man! Your blog is awesome! Keep going! Also thanks for sharing your thoughts and learned things! 👍</p>&mdash; Gabriel Francisco (@fgbreel) <a href="https://twitter.com/fgbreel/status/700493892861485056">February 19, 2016</a>
-</blockquote>
-<script async="" src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+    <span class="n">context</span> <span class="s1">'without books'</span> <span class="k">do</span>
+      <span class="n">context</span> <span class="s1">'books variable is nil'</span> <span class="k">do</span>
+        <span class="n">let</span><span class="p">(</span><span class="ss">:book_array</span><span class="p">)</span> <span class="p">{</span> <span class="kp">nil</span> <span class="p">}</span>
 
-<blockquote class="twitter-tweet" data-lang="en">
-  <p lang="en" dir="ltr">Been really impressed with <a href="https://twitter.com/jakeyesbeck">@jakeyesbeck</a>&#39;s blog recently for great <a href="https://twitter.com/hashtag/Ruby?src=hash">#Ruby</a> and <a href="https://twitter.com/hashtag/RubyOnRails?src=hash">#RubyOnRails</a> posts. Check it out! <a href="https://t.co/cIGGTdzqlL">https://t.co/cIGGTdzqlL</a></p>&mdash; Brad Urani (@bradurani) <a href="https://twitter.com/bradurani/status/701544221224755200">February 21, 2016</a>
-</blockquote>
-<script async="" src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+        <span class="n">it</span> <span class="s1">'sets books to an empty array'</span> <span class="k">do</span>
+          <span class="n">expect</span><span class="p">(</span><span class="n">subject</span><span class="p">.</span><span class="nf">books</span><span class="p">).</span><span class="nf">to</span> <span class="n">eq</span><span class="p">([])</span>
+        <span class="k">end</span>
+      <span class="k">end</span>
 
-<p>Of course, not all feedback on my posts was positive, but all of it was useful. Having my opinion out there, my content distributed and consumed has been extremely motivating and completely unexpected. Finding topics I thought would be useful and interesting to others was always a hard challenge, but having a self-imposed obligation of one post per week kept me honest.</p>
+      <span class="n">context</span> <span class="s1">'books variable is an empty array'</span> <span class="k">do</span>
+        <span class="n">let</span><span class="p">(</span><span class="ss">:book_array</span><span class="p">)</span> <span class="p">{</span> <span class="p">[]</span> <span class="p">}</span>
 
-<p>I now believe all software engineers should write. There are a lot of parallels between writing code and writing paragraphs; both are done with great care. Writing about something is a great way to express your ideas, share knowledge, and solidify concepts for yourself. Aside from the growth in my technical skills during this past year, having my writing appreciated made all my hard work worth it.</p>
+        <span class="n">it</span> <span class="s1">'sets books to an empty array'</span> <span class="k">do</span>
+          <span class="n">expect</span><span class="p">(</span><span class="n">subject</span><span class="p">.</span><span class="nf">books</span><span class="p">).</span><span class="nf">to</span> <span class="n">eq</span><span class="p">([])</span>
+        <span class="k">end</span>
+      <span class="k">end</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre>
+</div>
 
-<p>I was lucky enough to be <a href="http://rubyweekly.com/issues/284">featured in Ruby Weekly</a> a <a href="http://rubyweekly.com/issues/285">few times</a> and was even mentioned in a couple podcasts.</p>
+<p>Instead of needing multiple <code class="highlighter-rouge">before</code> blocks to set and reset instance variables,
+this code utilizing <code class="highlighter-rouge">let</code> variables is concise and easy to read. More specifically,
+the way these tests work is: each time an <code class="highlighter-rouge">it</code> block is run, the <code class="highlighter-rouge">let</code> variables
+within the nearest <code class="highlighter-rouge">context</code> are used to initialize the <code class="highlighter-rouge">subject</code>.</p>
 
-<p>This support completely validated my commitment and helped make this project so productive.</p>
+<p>By setting important <code class="highlighter-rouge">let</code> variables, a context that tests if <code class="highlighter-rouge">subject.books</code> is
+an array based on an input of <code class="highlighter-rouge">nil</code> or <code class="highlighter-rouge">[]</code> is as simple as changing the <code class="highlighter-rouge">let</code>
+definition: <code class="highlighter-rouge">let(:book_array) { nil }</code>.</p>
 
-<h2 id="what-i-learned">What I Learned</h2>
+<h2 id="loose-expectations">Loose Expectations</h2>
 
-<p>The big question that most people I talk about this project ask is: “What have I learned while doing it?” Early on in the year, I would answer by explaining some new software pattern or Ruby library that I came across. But, after a few months, I realised something much more important: <em>the value of perseverance</em>.</p>
+<p>When a test does not care about specifics, <code class="highlighter-rouge">RSpec</code> allows the use of general
+expectations and placeholders. These placeholders can help mitigate a test’s
+complexity by only focusing on what is truly important.</p>
 
-<p>Committing code every day for a week is not difficult. Writing software every day for a month is a little harder, and every day for a year is harder still. Within a year’s time, inconveniences are bound to appear. Be it an unexpected spell of food poisoning, an impromptu vacation to Las Vegas, or a simple release of a new Netflix show to binge watch, the coding must continue. All of these things did indeed happen to me over the course of a year and it was very tempting to say to myself: “What is the harm in missing one day?”</p>
+<h3 id="anything">1. <code class="highlighter-rouge">anything</code></h3>
 
-<p>But one missed day meant more and more as time went on. At 100 consecutive days, missing one day would have been disappointing, at 200 days it would have been devastating and at 300 days, it was unthinkable. When people did not seem to care about libraries I worked on or blog posts I published, it was easier to think about skipping a day.</p>
+<p>Just like it sounds, the <code class="highlighter-rouge">anything</code> argument matcher can be used when a method
+requires an argument but the specifics do not matter for the test.</p>
 
-<p>And here, a year later, I stand without missing a single day. Persevering through criticism and rejection, I kept going until my task was done. If a blog post was not well received, I had next week to try again. If a library was not found useful, I could tweak it until it was. Perseverance was my hammer and everything started to look like a nail.</p>
+<p>If an <code class="highlighter-rouge">Author</code> test wants to assert that a <code class="highlighter-rouge">Book</code> has been written, but doesn’t
+care about the <code class="highlighter-rouge">title</code> or <code class="highlighter-rouge">genre</code> of the book, <code class="highlighter-rouge">anything</code> can be used:</p>
 
-<p>And it worked. I learned a lot, met some great people, and hopefully helped a few people along the way. Believing in myself and my ability to persevere was my biggest lesson during this project and I will not soon forget it.</p>
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="n">describe</span> <span class="no">Author</span> <span class="k">do</span>
+  <span class="n">describe</span> <span class="c1">#has_written_a_book?' do</span>
+    <span class="n">context</span> <span class="s1">'when books are passed in'</span> <span class="k">do</span>
+      <span class="n">subject</span> <span class="p">{</span> <span class="no">Author</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="nb">name</span><span class="p">,</span> <span class="n">books</span><span class="p">)</span> <span class="p">}</span>
+      <span class="n">let</span><span class="p">(</span><span class="ss">:books</span><span class="p">)</span> <span class="p">{</span> <span class="p">[</span><span class="no">Book</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="n">anything</span><span class="p">,</span> <span class="n">anything</span><span class="p">)]</span> <span class="p">}</span>
+      <span class="n">it</span> <span class="s1">'is true'</span> <span class="k">do</span>
+        <span class="n">expect</span><span class="p">(</span><span class="n">subject</span><span class="p">.</span><span class="nf">has_written_a_book?</span><span class="p">).</span><span class="nf">to</span> <span class="n">eq</span><span class="p">(</span><span class="kp">true</span><span class="p">)</span>
+      <span class="k">end</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre>
+</div>
 
-<h2 id="would-i-do-it-again">Would I do it Again?</h2>
+<h3 id="hashincluding">2. <code class="highlighter-rouge">hash_including</code></h3>
 
-<p>In short, heck yes I would. This experience has been one of the most beneficial, positive, and growth inducing tasks I have ever done. Thinking back to a year ago, my attitude towards open source software and my own abilities as a software engineer have completely changed. Working with many different types of people and receiving a variety of feedback has been a very eye opening experience.</p>
+<p>When testing a method that expects a <code class="highlighter-rouge">Hash</code>, some elements of the <code class="highlighter-rouge">Hash</code> may be more
+important than others. The <code class="highlighter-rouge">hash_including</code> matcher allows a developer to assert one
+or many key/value pairs within a hash without needing to specify the entire hash.</p>
 
-<p>Too often in our daily lives are we subject to repetition. These patterns can be confining while not appearing as such. Breaking out of one’s routine and exposing yourself to a variety of new stimuli can help maintain an open mind about new ideas or technology.</p>
+<p>Assuming the <code class="highlighter-rouge">Book</code> class has a method which instantiates a new HTTP client (for
+fetching additional information), it might look something like:</p>
 
-<p>This project is not for everyone. I was lucky enough to have the time and energy to complete a task of this scale and for that I am supremely thankful.</p>
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Book</span>
+  <span class="c1"># ...</span>
+  <span class="k">def</span> <span class="nf">fetch_information</span>
+    <span class="no">HTTPClient</span><span class="p">.</span><span class="nf">new</span><span class="p">({</span> <span class="ss">title: </span><span class="n">title</span><span class="p">,</span> <span class="ss">genre: </span><span class="n">genre</span><span class="p">,</span> <span class="ss">time: </span><span class="no">Time</span><span class="p">.</span><span class="nf">now</span> <span class="p">})</span>
+              <span class="p">.</span><span class="nf">get</span><span class="p">(</span><span class="s1">'/information'</span><span class="p">)</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre>
+</div>
 
-<h2 id="looking-forward">Looking Forward</h2>
+<p>The test for this method should assert that the client is initialized with a few
+crucial pieces. The <code class="highlighter-rouge">hash_including</code> argument matcher works nicely here.</p>
 
-<p>I plan to keep writing and contributing to open source projects as frequently as time allows. I doubt I will ever obtain the same level of Github streak that this project allotted me, but I hope to continue to make meaningful contributions to open source projects.</p>
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="n">describe</span> <span class="no">Book</span> <span class="k">do</span>
+  <span class="n">describe</span> <span class="s1">'#fetch_information'</span> <span class="k">do</span>
+    <span class="n">let</span><span class="p">(</span><span class="ss">:book_genre</span><span class="p">)</span> <span class="p">{</span> <span class="s1">'Historical Fiction'</span> <span class="p">}</span>
+    <span class="n">let</span><span class="p">(</span><span class="ss">:book_title</span><span class="p">)</span> <span class="p">{</span> <span class="s1">'A Tale of Two Cities'</span> <span class="p">}</span>
+    <span class="n">subject</span> <span class="p">{</span> <span class="no">Book</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="n">title</span><span class="p">,</span> <span class="n">genre</span><span class="p">)</span> <span class="p">}</span>
 
-<p>The confidence and exposure to many different types of codebases is something that I will value for a long time. I am more than thankful for all the people who said kind things to me or gave me words of encouragement. Without those people, there is no way that I could have accomplished this.</p>
+    <span class="n">it</span> <span class="s1">'instantiates the client correctly'</span> <span class="k">do</span>
+      <span class="n">expect</span><span class="p">(</span><span class="no">HTTPClient</span><span class="p">).</span><span class="nf">to</span> <span class="n">receive</span><span class="p">(</span><span class="ss">:new</span><span class="p">)</span>
+                        <span class="p">.</span><span class="nf">with</span><span class="p">(</span><span class="n">hash_including</span><span class="p">(</span><span class="ss">title: </span><span class="n">book_title</span><span class="p">,</span>
+                                             <span class="ss">genre: </span><span class="n">book_genre</span><span class="p">))</span>
+      <span class="n">subject</span><span class="p">.</span><span class="nf">fetch_information</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre>
+</div>
 
-<p>Thank you all so much, now I think its time for me to take a little break. I plan to be back in a few weeks, refreshed and ready to write more.</p>
+<p>The versatile <code class="highlighter-rouge">hash_including</code> argument matcher can specify key/value pairs of an
+expected hash or just keys. Here, the test only care that the <code class="highlighter-rouge">Book</code>’s <code class="highlighter-rouge">title</code>
+and <code class="highlighter-rouge">genre</code> are passed along.</p>
+
+<h3 id="matcharray">3. <code class="highlighter-rouge">match_array</code></h3>
+
+<p>In Ruby, two <code class="highlighter-rouge">Arrays</code> are equal if and only if they contain the same elements in
+the same order. In some tests, this strict equality criteria might not always
+be necessary. For those cases, RSpec provides a <code class="highlighter-rouge">match_array</code> matcher to
+make tests less brittle.</p>
+
+<p>If the <code class="highlighter-rouge">Author</code> class retrieved its list of <code class="highlighter-rouge">books</code> from a database, the order
+of <code class="highlighter-rouge">books</code> might not be consistent due to default scopes or when records are
+updated.</p>
+
+<p>Given a <code class="highlighter-rouge">fetch_books</code> method that looks something like:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Author</span>
+  <span class="kp">attr_reader</span> <span class="ss">:name</span>
+
+  <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="nb">name</span><span class="p">)</span>
+    <span class="vi">@name</span> <span class="o">=</span> <span class="nb">name</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">fetch_books</span>
+    <span class="no">BookDB</span><span class="p">.</span><span class="nf">find_by</span><span class="p">(</span><span class="ss">author_name: </span><span class="nb">name</span><span class="p">)</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre>
+</div>
+
+<p>Utilizing <code class="highlighter-rouge">match_array</code>, a test can assert that the proper <code class="highlighter-rouge">books</code> are returned
+regardless of order:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="n">describe</span> <span class="no">Author</span> <span class="k">do</span>
+  <span class="n">describe</span> <span class="s1">'#fetch_books'</span> <span class="k">do</span>
+    <span class="n">let</span><span class="p">(</span><span class="ss">:name</span><span class="p">)</span> <span class="p">{</span> <span class="s1">'Jane Austen'</span> <span class="p">}</span>
+    <span class="n">let!</span><span class="p">(</span><span class="ss">:books</span><span class="p">)</span> <span class="k">do</span>
+      <span class="no">Array</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="k">do</span>
+        <span class="no">BookDB</span><span class="p">.</span><span class="nf">create_book</span><span class="p">(</span><span class="ss">author_name: </span><span class="nb">name</span><span class="p">)</span>
+      <span class="k">end</span>
+    <span class="k">end</span>
+
+    <span class="n">subject</span> <span class="p">{</span> <span class="no">Author</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="ss">name: </span><span class="nb">name</span><span class="p">)</span> <span class="p">}</span>
+
+    <span class="n">it</span> <span class="s1">'fetches the books correctly'</span> <span class="k">do</span>
+      <span class="n">expect</span><span class="p">(</span><span class="n">subject</span><span class="p">.</span><span class="nf">fetch_books</span><span class="p">).</span><span class="nf">to</span> <span class="n">match_array</span><span class="p">(</span><span class="n">books</span><span class="p">)</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre>
+</div>
+
+<h2 id="verifying-doubles">Verifying Doubles</h2>
+
+<p>Mocking in RSpec is a simple way to ensure code that is expected to run, has
+indeed done so.</p>
+
+<p>To fetch reviews for a <code class="highlighter-rouge">Book</code>, a third party API is used. The unit test
+surrounding that functionality should not actually call out to that API.
+Instead, a test should assert that the proper request is made.</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Book</span>
+  <span class="c1"># ..</span>
+  <span class="k">def</span> <span class="nf">reviews</span>
+    <span class="no">Review</span><span class="o">::</span><span class="no">API</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="no">SUPER_SECRET_API_KEY</span><span class="p">)</span>
+               <span class="p">.</span><span class="nf">get</span><span class="p">(</span><span class="s2">"reviews/?title=</span><span class="si">#{</span> <span class="n">title</span> <span class="si">}</span><span class="s2">&amp;genre=</span><span class="si">#{</span> <span class="n">genre</span> <span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre>
+</div>
+
+<p>One way to test this code would be to write a stubbing method and return some
+test data:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="n">describe</span> <span class="no">Book</span> <span class="k">do</span>
+  <span class="n">let</span><span class="p">(</span><span class="ss">:book_genre</span><span class="p">)</span> <span class="p">{</span> <span class="s1">'Historical Fiction'</span> <span class="p">}</span>
+  <span class="n">let</span><span class="p">(</span><span class="ss">:book_title</span><span class="p">)</span> <span class="p">{</span> <span class="s1">'A Tale of Two Cities'</span> <span class="p">}</span>
+  <span class="n">subject</span> <span class="p">{</span> <span class="no">Book</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="n">book_title</span><span class="p">,</span> <span class="n">book_genre</span><span class="p">)</span>  <span class="p">}</span>
+
+  <span class="n">describe</span> <span class="s1">'#reviews'</span> <span class="k">do</span>
+    <span class="n">let</span><span class="p">(</span><span class="ss">:fake_reviews</span><span class="p">)</span> <span class="k">do</span>
+      <span class="p">[</span>
+        <span class="p">{</span> <span class="ss">critic: </span><span class="s1">'Pat M.'</span><span class="p">,</span> <span class="ss">stars: </span><span class="mi">5</span><span class="p">,</span> <span class="ss">comments: </span><span class="s1">'Great Read!'</span> <span class="p">},</span>
+        <span class="p">{</span> <span class="ss">critic: </span><span class="s1">'Sanjay R.'</span><span class="p">,</span> <span class="ss">stars: </span><span class="mi">5</span><span class="p">,</span> <span class="ss">comments: </span><span class="s1">'Interesting!'</span> <span class="p">},</span>
+        <span class="p">{</span> <span class="ss">critic: </span><span class="s1">'Rupa T.'</span><span class="p">,</span> <span class="ss">stars: </span><span class="mi">4</span><span class="p">,</span> <span class="ss">comments: </span><span class="s1">'It was nice!'</span> <span class="p">}</span>
+      <span class="p">]</span>
+    <span class="k">end</span>
+    <span class="n">let</span><span class="p">(</span><span class="ss">:test_api_client</span><span class="p">)</span> <span class="p">{</span> <span class="no">Review</span><span class="o">::</span><span class="no">API</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="no">TEST_API_KEY</span><span class="p">)</span> <span class="p">}</span>
+
+    <span class="n">before</span> <span class="k">do</span>
+      <span class="n">allow</span><span class="p">(</span><span class="no">Review</span><span class="o">::</span><span class="no">API</span><span class="p">).</span><span class="nf">to</span> <span class="n">receive</span><span class="p">(</span><span class="ss">:new</span><span class="p">).</span><span class="nf">and_return</span><span class="p">(</span><span class="n">test_api_client</span><span class="p">)</span>
+      <span class="n">allow</span><span class="p">(</span><span class="n">test_api_client</span><span class="p">).</span><span class="nf">to</span> <span class="n">receive</span><span class="p">(</span><span class="ss">:get</span><span class="p">).</span><span class="nf">and_return</span><span class="p">(</span><span class="n">fake_reviews</span><span class="p">)</span>
+    <span class="k">end</span>
+
+    <span class="n">it</span> <span class="s1">'fetches them from the API'</span> <span class="k">do</span>
+      <span class="n">expect</span><span class="p">(</span><span class="n">subject</span><span class="p">.</span><span class="nf">reviews</span><span class="p">).</span><span class="nf">to</span> <span class="n">eq</span><span class="p">(</span><span class="n">fake_reviews</span><span class="p">)</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre>
+</div>
+
+<p>This will work as long as the <code class="highlighter-rouge">Review::API</code> contract does not change how it
+fetches reviews. However, if the method does change for some reason, this code
+will pass and the application will fail in production.</p>
+
+<p>Instead, an <code class="highlighter-rouge">instance_double</code> can be used to assert that a specific method is
+called while still returning test data:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="n">describe</span> <span class="no">Book</span> <span class="k">do</span>
+  <span class="n">let</span><span class="p">(</span><span class="ss">:book_genre</span><span class="p">)</span> <span class="p">{</span> <span class="s1">'Historical Fiction'</span> <span class="p">}</span>
+  <span class="n">let</span><span class="p">(</span><span class="ss">:book_title</span><span class="p">)</span> <span class="p">{</span> <span class="s1">'A Tale of Two Cities'</span> <span class="p">}</span>
+  <span class="n">subject</span> <span class="p">{</span> <span class="no">Book</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="n">book_title</span><span class="p">,</span> <span class="n">book_genre</span><span class="p">)</span>  <span class="p">}</span>
+
+  <span class="n">describe</span> <span class="s1">'#reviews'</span> <span class="k">do</span>
+    <span class="n">let</span><span class="p">(</span><span class="ss">:fake_reviews</span><span class="p">)</span> <span class="k">do</span>
+      <span class="p">[</span>
+        <span class="p">{</span> <span class="ss">critic: </span><span class="s1">'Pat M.'</span><span class="p">,</span> <span class="ss">stars: </span><span class="mi">5</span><span class="p">,</span> <span class="ss">comments: </span><span class="s1">'Great Read!'</span> <span class="p">},</span>
+        <span class="p">{</span> <span class="ss">critic: </span><span class="s1">'Sanjay R.'</span><span class="p">,</span> <span class="ss">stars: </span><span class="mi">5</span><span class="p">,</span> <span class="ss">comments: </span><span class="s1">'Interesting!'</span> <span class="p">},</span>
+        <span class="p">{</span> <span class="ss">critic: </span><span class="s1">'Rupa T.'</span><span class="p">,</span> <span class="ss">stars: </span><span class="mi">4</span><span class="p">,</span> <span class="ss">comments: </span><span class="s1">'It was nice!'</span> <span class="p">}</span>
+      <span class="p">]</span>
+    <span class="k">end</span>
+    <span class="n">let</span><span class="p">(</span><span class="ss">:test_api_client</span><span class="p">)</span> <span class="k">do</span>
+      <span class="n">instance_double</span><span class="p">(</span><span class="no">Review</span><span class="o">::</span><span class="no">API</span><span class="p">,</span> <span class="ss">get: </span><span class="n">fake_reviews</span><span class="p">)</span>
+    <span class="k">end</span>
+
+    <span class="n">before</span> <span class="k">do</span>
+      <span class="n">allow</span><span class="p">(</span><span class="no">Review</span><span class="o">::</span><span class="no">API</span><span class="p">).</span><span class="nf">to</span> <span class="n">receive</span><span class="p">(</span><span class="ss">:new</span><span class="p">).</span><span class="nf">and_return</span><span class="p">(</span><span class="n">test_api_client</span><span class="p">)</span>
+    <span class="k">end</span>
+
+    <span class="n">it</span> <span class="s1">'fetches them from the API'</span> <span class="k">do</span>
+      <span class="n">expect</span><span class="p">(</span><span class="n">subject</span><span class="p">.</span><span class="nf">reviews</span><span class="p">).</span><span class="nf">to</span> <span class="n">eq</span><span class="p">(</span><span class="n">fake_reviews</span><span class="p">)</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre>
+</div>
+
+<p>In one line, <code class="highlighter-rouge">instance_double(Review::API, get: fake_reviews)</code>, the client
+class has been instantiated as an verifying double and the method <code class="highlighter-rouge">get</code> has
+been stubbed to return <code class="highlighter-rouge">fake_reviews</code>. The final important piece is:
+<code class="highlighter-rouge">allow(Review::API).to receive(:new).and_return(test_api_client)</code> which tells
+the class <code class="highlighter-rouge">Review::API</code> to use the double instead a new instance when calling
+<code class="highlighter-rouge">new</code>.</p>
+
+<p>Now, if the <code class="highlighter-rouge">Review::API</code> instance method for fetching reviews changes the
+test will break, throwing a <code class="highlighter-rouge">NoMethodError</code> and hopefully saving a lot of
+debugging time.</p>
+
 
   </div>
   

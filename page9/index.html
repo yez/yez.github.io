@@ -59,7 +59,7 @@
       <a class="sidebar-nav-item" href="/atom.xml">Feed</a>
     </nav>
 
-    <p class='copyright'>&copy; Jake Yesbeck 2018. All rights reserved.</p>
+    <p class='copyright'>&copy; Jake Yesbeck 2019. All rights reserved.</p>
   </div>
 </div>
 
@@ -69,300 +69,315 @@
   
   <div class="post">
     <h1 class="post-title">
-      <a href="/2016/03/13/the-power-of-arel/">
-        The Power of Arel
+      <a href="/2016/03/20/how-to-build-a-ruby-on-rails-engine/">
+        How to Build a Ruby on Rails Engine
       </a>
     </h1>
 
     
 
-    <span class="post-date">13 Mar 2016</span>
+    <span class="post-date">20 Mar 2016</span>
     <span class='share-container'><ul class="share-buttons">
   <li>
-    <a href="https://www.facebook.com/sharer/sharer.php?u=http://jakeyesbeck.com/2016/03/13/the-power-of-arel/&t=The Power of Arel" title="Share on Facebook" target="_blank">
+    <a href="https://www.facebook.com/sharer/sharer.php?u=http://jakeyesbeck.com/2016/03/20/how-to-build-a-ruby-on-rails-engine/&t=How to Build a Ruby on Rails Engine" title="Share on Facebook" target="_blank">
       <img src="http://jakeyesbeck.com/assets/images/facebook.svg">
     </a>
   </li>
   <li>
-    <a href="https://twitter.com/intent/tweet?source=http%3A%2F%2Fjakeyesbeck.com&text=The Power of Arel%20http://jakeyesbeck.com/2016/03/13/the-power-of-arel/&via=jakeyesbeck" target="_blank" title="Tweet">
+    <a href="https://twitter.com/intent/tweet?source=http%3A%2F%2Fjakeyesbeck.com&text=How to Build a Ruby on Rails Engine%20http://jakeyesbeck.com/2016/03/20/how-to-build-a-ruby-on-rails-engine/&via=jakeyesbeck" target="_blank" title="Tweet">
       <img src="http://jakeyesbeck.com/assets/images/twitter.svg">
     </a>
   </li>
   <li>
-    <a href="https://plus.google.com/share?url=http://jakeyesbeck.com/2016/03/13/the-power-of-arel/" target="_blank" title="Share on Google+">
+    <a href="https://plus.google.com/share?url=http://jakeyesbeck.com/2016/03/20/how-to-build-a-ruby-on-rails-engine/" target="_blank" title="Share on Google+">
       <img src="http://jakeyesbeck.com/assets/images/google_plus.svg">
     </a>
   </li>
 
   <li>
-    <a href="https://news.ycombinator.com/submitlink?u=http://jakeyesbeck.com/2016/03/13/the-power-of-arel/&t=The Power of Arel" target="_blank" title="Share on Hacker News">
+    <a href="https://news.ycombinator.com/submitlink?u=http://jakeyesbeck.com/2016/03/20/how-to-build-a-ruby-on-rails-engine/&t=How to Build a Ruby on Rails Engine" target="_blank" title="Share on Hacker News">
       <img src="http://jakeyesbeck.com/assets/images/ycomb.svg">
     </a>
   </li>
 
   <li>
-    <a href="https://getpocket.com/save?url=http://jakeyesbeck.com/2016/03/13/the-power-of-arel/&title=The Power of Arel" target="_blank" title="Add to Pocket">
+    <a href="https://getpocket.com/save?url=http://jakeyesbeck.com/2016/03/20/how-to-build-a-ruby-on-rails-engine/&title=How to Build a Ruby on Rails Engine" target="_blank" title="Add to Pocket">
       <img src="http://jakeyesbeck.com/assets/images/pocket.svg">
     </a>
   </li>
   <li>
-    <a href="http://www.reddit.com/submit?url=http://jakeyesbeck.com/2016/03/13/the-power-of-arel/&title=The Power of Arel" target="_blank" title="Submit to Reddit">
+    <a href="http://www.reddit.com/submit?url=http://jakeyesbeck.com/2016/03/20/how-to-build-a-ruby-on-rails-engine/&title=How to Build a Ruby on Rails Engine" target="_blank" title="Submit to Reddit">
       <img src="http://jakeyesbeck.com/assets/images/reddit.svg">
     </a>
   </li>
 </ul>
 </span>
 
-    <p>Many modern web applications have at least a few overlapping responsibilities. One of these responsibilities deals with maintaining state. A common choice for storing this state is by way of a relational database. Ruby on Rails applications assume the presence of a database by default and communicate with it via <code class="highlighter-rouge">ActiveRecord</code>.</p>
+    <p>Ruby on Rails Engines are miniature applications whose purpose is to supplement a larger Ruby on Rails application. If functionality can exist independent from a main application, an Engine can provide a wonderful degree of encapsulation.</p>
 
-<p><code class="highlighter-rouge">ActiveRecord</code> is an <strong>O</strong>bject <strong>R</strong>elational <strong>M</strong>apping (ORM). Under the hood, <code class="highlighter-rouge">ActiveRecord</code> uses a relational algebra library called <code class="highlighter-rouge">Arel</code> to compose queries for execution. <code class="highlighter-rouge">Arel</code> is a very powerful library readily available for when <code class="highlighter-rouge">ActiveRecord</code> falls short.</p>
+<p>Recently, I created the and “gemified” the <a href="http://jakeyesbeck.com/2016/01/03/passages/">Passages Ruby on Rails Engine</a> to help alleviate some routing frustration. This gem will be the be used as the example for demonstrating what goes into creating a Ruby on Rails Engine.</p>
 
-<h2 id="the-basics">The Basics</h2>
+<h2 id="revving-up">Revving Up</h2>
 
-<p>Keeping up with tradition, assume a standard Ruby on Rails application exists with at least two models, <code class="highlighter-rouge">User</code> and <code class="highlighter-rouge">Post</code>:</p>
+<p>There are two ways to start building an Engine. One option is to use the built in generators to create directories and dummy classes. These generators behave in the same way as standard Rails generators.</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="n">create_table</span> <span class="s2">"posts"</span> <span class="k">do</span> <span class="o">|</span><span class="n">t</span><span class="o">|</span>
-  <span class="n">t</span><span class="p">.</span><span class="nf">integer</span>  <span class="s2">"user_id"</span>
-  <span class="n">t</span><span class="p">.</span><span class="nf">string</span>   <span class="s2">"category"</span>
-  <span class="n">t</span><span class="p">.</span><span class="nf">datetime</span> <span class="s2">"created_at"</span><span class="p">,</span> <span class="ss">null: </span><span class="kp">false</span>
-  <span class="n">t</span><span class="p">.</span><span class="nf">datetime</span> <span class="s2">"updated_at"</span><span class="p">,</span> <span class="ss">null: </span><span class="kp">false</span>
-<span class="k">end</span>
+<p>To generate an Engine in this way, use the <code class="highlighter-rouge">plugins</code> built in generator:</p>
 
-<span class="n">create_table</span> <span class="s2">"users"</span> <span class="k">do</span> <span class="o">|</span><span class="n">t</span><span class="o">|</span>
-  <span class="n">t</span><span class="p">.</span><span class="nf">string</span>   <span class="s2">"first_name"</span>
-  <span class="n">t</span><span class="p">.</span><span class="nf">string</span>   <span class="s2">"last_name"</span>
-  <span class="n">t</span><span class="p">.</span><span class="nf">string</span>   <span class="s2">"email"</span>
-  <span class="n">t</span><span class="p">.</span><span class="nf">datetime</span> <span class="s2">"created_at"</span><span class="p">,</span> <span class="ss">null: </span><span class="kp">false</span>
-  <span class="n">t</span><span class="p">.</span><span class="nf">datetime</span> <span class="s2">"updated_at"</span><span class="p">,</span> <span class="ss">null: </span><span class="kp">false</span>
-<span class="k">end</span>
-
-<span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
-  <span class="n">has_many</span> <span class="ss">:posts</span>
-<span class="k">end</span>
-
-<span class="k">class</span> <span class="nc">Post</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
-  <span class="n">belongs_to</span> <span class="ss">:user</span>
-<span class="k">end</span>
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="gp">$ </span>rails plugin new passages --mountable
 </code></pre>
 </div>
 
-<h4 id="ask-find-all-posts-within-a-category-belonging-to-a-user">Ask: Find all posts within a category belonging to a user.</h4>
+<p><em>Note: Engines and Plugins are not exactly the same in the Ruby on Rails world but the <code class="highlighter-rouge">--mountable</code> flag tells the plugin generator to generate a full Engine.</em></p>
 
-<p>For such a simple query, <code class="highlighter-rouge">ActiveRecord</code> is capable of generating the appropriate SQL statement:</p>
+<p>The other approach is to simply create the needed directories and files by hand. This is was the way the Passages Engine was built, resulting in the following directory structure:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="no">Post</span><span class="p">.</span><span class="nf">where</span><span class="p">(</span><span class="ss">user_id: </span><span class="mi">123</span><span class="p">,</span>
-           <span class="ss">category: </span><span class="s1">'news'</span><span class="p">)</span>
-    <span class="p">.</span><span class="nf">to_sql</span>
-
-<span class="c1"># =&gt; SELECT "posts".* FROM "posts"  WHERE "posts"."user_id" = 123 AND "posts"."category" = 'news'</span>
+<div class="highlighter-rouge"><pre class="highlight"><code> |-app
+ |--controllers
+ |---passages
+ |----&lt;controller directories&gt;
+ |--views
+ |---passages
+ |----&lt;views directories&gt;
+ |-config
+ |--routes.rb
+ |--initializers
+ |---assets.rb
+ |-lib
+ |--passages
+ |---engine.rb
 </code></pre>
 </div>
 
-<p>However, if the query needed to be more complex, this simple <code class="highlighter-rouge">where</code> clause is not sufficient. For example, instead of all <code class="highlighter-rouge">posts</code> within a <code class="highlighter-rouge">category</code> for a <code class="highlighter-rouge">user</code>, only the <code class="highlighter-rouge">posts</code> which have a <code class="highlighter-rouge">created_at</code> in the current month are desired.</p>
+<p>Some directories that the <code class="highlighter-rouge">rails</code> generator would have added are missing (i.e. <code class="highlighter-rouge">models</code>, <code class="highlighter-rouge">helpers</code>, <code class="highlighter-rouge">mailers</code>). These directories might be necessary for some projects, but the Passages Engine did not have use for them.</p>
 
-<p>A naive <code class="highlighter-rouge">ActiveRecord</code> only solution might look like:</p>
+<p>The file at the heart of it all is <code class="highlighter-rouge">engine.rb</code>. This file is responsible for defining the engine and will also be utilized later to add optional enhancements an Engine can take advantage of:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="n">beginning_of_month</span> <span class="o">=</span> <span class="no">Date</span><span class="p">.</span><span class="nf">today</span>
-                         <span class="p">.</span><span class="nf">beginning_of_month</span>
-
-<span class="no">Post</span><span class="p">.</span><span class="nf">where</span><span class="p">(</span><span class="ss">user_id: </span><span class="mi">123</span><span class="p">,</span>
-           <span class="ss">category: </span><span class="s1">'news'</span><span class="p">)</span>
-    <span class="p">.</span><span class="nf">where</span><span class="p">(</span><span class="s1">'created_at &gt;= ?'</span><span class="p">,</span>
-           <span class="n">beginning_of_month</span><span class="p">)</span>
-    <span class="p">.</span><span class="nf">to_sql</span>
-
-<span class="c1"># =&gt; SELECT "posts".* FROM "posts"  WHERE "posts"."user_id" = 123 AND "posts"."category" = 'news' AND (created_at &gt;= '2016-03-01' )</span>
-</code></pre>
-</div>
-
-<p>This query will give the desired results but uses raw SQL. Using raw SQL is not always a bad practice, but in this case it seems unnecessary and could cause issue later.</p>
-
-<h2 id="modelareltable"><code class="highlighter-rouge">Model.arel_table</code></h2>
-
-<p>Every <code class="highlighter-rouge">ActiveRecord</code> model can access its underlying <code class="highlighter-rouge">Arel</code> representation with the <code class="highlighter-rouge">arel_table</code> class method.</p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="no">Post</span><span class="p">.</span><span class="nf">arel_table</span>
-
-<span class="c1"># =&gt; #&lt;Arel::Table:0x00000103ae7f00 @name="posts", ...&gt;</span>
-</code></pre>
-</div>
-
-<p>This <code class="highlighter-rouge">Arel</code> table exposes each column of the underlying table. These columns provide many <a href="https://github.com/rails/arel/blob/f50de54/lib/arel/predications.rb">available methods</a> used for comparison with either another column or scalar value.</p>
-
-<p>The same <code class="highlighter-rouge">Post</code> query from above using its <code class="highlighter-rouge">arel_table</code> looks like:</p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="n">beginning_of_month</span> <span class="o">=</span> <span class="no">Date</span><span class="p">.</span><span class="nf">today</span><span class="p">.</span><span class="nf">beginning_of_month</span>
-<span class="n">arel</span> <span class="o">=</span> <span class="no">Post</span><span class="p">.</span><span class="nf">arel_table</span>
-
-<span class="no">Post</span><span class="p">.</span><span class="nf">where</span><span class="p">(</span>
-      <span class="n">arel</span><span class="p">[</span><span class="ss">:user_id</span><span class="p">]</span>
-        <span class="p">.</span><span class="nf">eq</span><span class="p">(</span><span class="mi">1234</span><span class="p">)</span>
-        <span class="p">.</span><span class="nf">and</span><span class="p">(</span><span class="n">arel</span><span class="p">[</span><span class="ss">:category</span><span class="p">]</span>
-             <span class="p">.</span><span class="nf">eq</span><span class="p">(</span><span class="s1">'news'</span><span class="p">))</span>
-        <span class="p">.</span><span class="nf">and</span><span class="p">(</span><span class="n">arel</span><span class="p">[</span><span class="ss">:created_at</span><span class="p">]</span>
-             <span class="p">.</span><span class="nf">gteq</span><span class="p">(</span><span class="n">beginning_of_month</span><span class="p">)))</span>
-    <span class="p">.</span><span class="nf">to_sql</span>
-
-<span class="c1"># =&gt; SELECT "posts".* FROM "posts"  WHERE ("posts"."user_id" = 1234 AND "posts"."category" = 'news' AND "posts"."created_at" &gt;= '2016-03-01')</span>
-</code></pre>
-</div>
-
-<p>After all the necessary conditions are applied to the <code class="highlighter-rouge">arel</code> variable, it is given to the <code class="highlighter-rouge">Post</code> class via the <code class="highlighter-rouge">where</code> method.</p>
-
-<p>With this pure Ruby query generation, something looks a little different. Instead of:</p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">AND</span> <span class="p">(</span><span class="n">created_at</span> <span class="o">&gt;=</span> <span class="s1">'2016-03-01'</span><span class="p">)</span>
-</code></pre>
-</div>
-
-<p>The query has changed to:</p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">AND</span> <span class="nv">"posts"</span><span class="p">.</span><span class="nv">"created_at"</span> <span class="o">&gt;=</span> <span class="s1">'2016-03-01'</span>
-</code></pre>
-</div>
-
-<p>This change points to one of the issues of the raw SQL approach: its inflexibility when dealing with multiple tables.</p>
-
-<h2 id="join-resistance">Join Resistance</h2>
-
-<p>Iterating on the <code class="highlighter-rouge">Post</code> query, it now needs to return the relevant <code class="highlighter-rouge">User</code>. If the original raw SQL solution was used the <code class="highlighter-rouge">user.created_at</code> column and the <code class="highlighter-rouge">posts.created_at</code> column would clash, resulting in an error:</p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="no">Post</span><span class="p">.</span><span class="nf">where</span><span class="p">(</span><span class="ss">user_id: </span><span class="mi">123</span><span class="p">,</span>
-           <span class="ss">category: </span><span class="s1">'news'</span><span class="p">)</span>
-    <span class="p">.</span><span class="nf">where</span><span class="p">(</span><span class="s1">'created_at &gt;= ? '</span><span class="p">,</span>
-           <span class="n">beginning_of_month</span><span class="p">)</span>
-    <span class="p">.</span><span class="nf">joins</span><span class="p">(</span><span class="ss">:user</span><span class="p">)</span>
-    <span class="p">.</span><span class="nf">includes</span><span class="p">(</span><span class="ss">:user</span><span class="p">)</span>
-
-<span class="c1"># =&gt; ActiveRecord::StatementInvalid: PG::AmbiguousColumn: ERROR:  column reference "created_at" is ambiguous</span>
-</code></pre>
-</div>
-
-<p>The problem is clearly seen in the generated SQL:</p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">SELECT</span> <span class="nv">"posts"</span><span class="p">.</span><span class="o">*</span> <span class="k">FROM</span> <span class="nv">"posts"</span> <span class="k">INNER</span> <span class="k">JOIN</span> <span class="nv">"users"</span> <span class="k">ON</span> <span class="nv">"users"</span><span class="p">.</span><span class="nv">"id"</span> <span class="o">=</span> <span class="nv">"posts"</span><span class="p">.</span><span class="nv">"user_id"</span> <span class="k">WHERE</span> <span class="nv">"posts"</span><span class="p">.</span><span class="nv">"user_id"</span> <span class="o">=</span> <span class="mi">123</span> <span class="k">AND</span> <span class="nv">"posts"</span><span class="p">.</span><span class="nv">"category"</span> <span class="o">=</span> <span class="s1">'news'</span> <span class="k">AND</span> <span class="p">(</span><span class="n">created_at</span> <span class="o">&gt;=</span> <span class="s1">'2016-03-01'</span> <span class="p">)</span>
-</code></pre>
-</div>
-
-<p>Since PosgreSQL does not know which <code class="highlighter-rouge">created_at</code> column to compare against this date, it can not fulfill the query.</p>
-
-<p>This problem does not exist in the <code class="highlighter-rouge">Arel</code> solution:</p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="n">arel</span> <span class="o">=</span> <span class="no">Post</span><span class="p">.</span><span class="nf">arel_table</span>
-<span class="no">Post</span><span class="p">.</span><span class="nf">where</span><span class="p">(</span>
-      <span class="n">arel</span><span class="p">[</span><span class="ss">:user_id</span><span class="p">]</span>
-        <span class="p">.</span><span class="nf">eq</span><span class="p">(</span><span class="mi">1234</span><span class="p">)</span>
-        <span class="p">.</span><span class="nf">and</span><span class="p">(</span><span class="n">arel</span><span class="p">[</span><span class="ss">:category</span><span class="p">]</span>
-              <span class="p">.</span><span class="nf">eq</span><span class="p">(</span><span class="s1">'news'</span><span class="p">))</span>
-        <span class="p">.</span><span class="nf">and</span><span class="p">(</span><span class="n">arel</span><span class="p">[</span><span class="ss">:created_at</span><span class="p">]</span>
-              <span class="p">.</span><span class="nf">gteq</span><span class="p">(</span><span class="n">beginning_of_month</span><span class="p">)))</span>
-    <span class="p">.</span><span class="nf">joins</span><span class="p">(</span><span class="ss">:user</span><span class="p">)</span>
-    <span class="p">.</span><span class="nf">includes</span><span class="p">(</span><span class="ss">:user</span><span class="p">)</span>
-    <span class="p">.</span><span class="nf">to_sql</span>
-
-<span class="c1"># =&gt; SELECT "posts".*, "users.*" FROM "posts" INNER JOIN "users" ON "users"."id" = "posts"."user_id" WHERE ("posts"."user_id" = 1234 AND "posts"."category" = 'news' AND "posts"."created_at" &gt;= '2016-03-01')</span>
-</code></pre>
-</div>
-
-<p><em>Note: The actual generated query has many column aliases in the select clause for the <code class="highlighter-rouge">includes</code> behaviour but is irrelevant for these examples.</em></p>
-
-<p>With each element specifying both table and column names, this query is still pure Ruby and <code class="highlighter-rouge">join</code> friendly.</p>
-
-<h2 id="advanced-selecting">Advanced Selecting</h2>
-
-<p>Simple joins and comparison operators are useful but barely begin to explore the vast API contained within <code class="highlighter-rouge">Arel</code>. An interesting feature that <code class="highlighter-rouge">Arel</code> provides is how to create and utilize <strong>C</strong>ommon <strong>T</strong>able <strong>E</strong>xpressions (CTEs).</p>
-
-<p>A CTE is a temporary named result in an SQL database, derived from a <code class="highlighter-rouge">SELECT</code> query. This derived result remains present in the scope for additional <code class="highlighter-rouge">SELECT</code>, <code class="highlighter-rouge">INSERT</code>, <code class="highlighter-rouge">UPDATE</code>, or <code class="highlighter-rouge">DELETE</code> queries. CTEs can be thought of as alternatives to temporary tables, sub-queries, views, or other in-line user-defined functions.</p>
-
-<h4 id="ask-find-all-posts-written-within-the-last-month-then-return-the-email-of-each-user-who-wrote-the-post">Ask: Find all posts written within the last month, then return the email of each user who wrote the post.</h4>
-
-<p>Since no <code class="highlighter-rouge">Post</code> data is required, this ask is a great candidate for a CTE. A new <code class="highlighter-rouge">Arel::Table</code> can be created to house the CTE and then the <code class="highlighter-rouge">join</code> method on the <code class="highlighter-rouge">User.arel_table</code> makes it accessible:</p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="n">post_arel</span> <span class="o">=</span> <span class="no">Post</span><span class="p">.</span><span class="nf">arel_table</span>
-<span class="n">user_arel</span> <span class="o">=</span> <span class="no">User</span><span class="p">.</span><span class="nf">arel_table</span>
-
-<span class="n">common_table_results</span> <span class="o">=</span> <span class="k">begin</span>
-  <span class="n">post_arel</span>
-    <span class="p">.</span><span class="nf">project</span><span class="p">(</span><span class="n">post_arel</span><span class="p">[</span><span class="ss">:user_id</span><span class="p">])</span>
-    <span class="p">.</span><span class="nf">where</span><span class="p">(</span><span class="n">post_arel</span><span class="p">[</span><span class="ss">:created_at</span><span class="p">]</span>
-            <span class="p">.</span><span class="nf">gteq</span><span class="p">(</span><span class="n">beginning_of_month</span><span class="p">))</span>
-<span class="k">end</span>
-
-<span class="n">cte_table</span> <span class="o">=</span> <span class="no">Arel</span><span class="o">::</span><span class="no">Table</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span>
-              <span class="ss">:posts_last_month</span><span class="p">)</span>
-<span class="n">composed_cte</span> <span class="o">=</span> <span class="no">Arel</span><span class="o">::</span><span class="no">Nodes</span><span class="o">::</span><span class="no">As</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span>
-                <span class="n">cte_table</span><span class="p">,</span>
-                <span class="n">common_table_results</span><span class="p">)</span>
-
-<span class="n">user_arel</span>
-  <span class="p">.</span><span class="nf">project</span><span class="p">(</span><span class="n">users</span><span class="p">[</span><span class="ss">:email</span><span class="p">])</span>
-  <span class="p">.</span><span class="nf">join</span><span class="p">(</span><span class="n">cte_table</span><span class="p">)</span>
-    <span class="p">.</span><span class="nf">on</span><span class="p">(</span><span class="n">users</span><span class="p">[</span><span class="ss">:id</span><span class="p">]</span>
-         <span class="p">.</span><span class="nf">eq</span><span class="p">(</span><span class="n">cte_table</span><span class="p">[</span><span class="ss">:user_id</span><span class="p">]))</span>
-  <span class="p">.</span><span class="nf">with</span><span class="p">(</span><span class="n">composed_cte</span><span class="p">)</span>
-  <span class="p">.</span><span class="nf">to_sql</span>
-
-<span class="c1"># =&gt; WITH "posts_last_month" AS (SELECT "posts"."user_id" FROM "posts" WHERE "posts"."created_at" &gt;= '2016-03-01') SELECT "users"."email" FROM "users" INNER JOIN "posts_last_month" ON "users"."id" = "posts_last_month"."user_id"</span>
-</code></pre>
-</div>
-
-<p>At first glance, this code can be a bit intimidating but it is actually quite simple. Both the <code class="highlighter-rouge">Post</code> model and <code class="highlighter-rouge">User</code> model have had their underlying <code class="highlighter-rouge">Arel</code> representation referenced. Then, the CTE result is computed:</p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="n">common_table_results</span> <span class="o">=</span> <span class="k">begin</span>
-  <span class="n">post_arel</span>
-    <span class="p">.</span><span class="nf">project</span><span class="p">(</span><span class="n">post_arel</span><span class="p">[</span><span class="ss">:user_id</span><span class="p">])</span>
-    <span class="p">.</span><span class="nf">where</span><span class="p">(</span><span class="n">post_arel</span><span class="p">[</span><span class="ss">:created_at</span><span class="p">]</span>
-            <span class="p">.</span><span class="nf">gteq</span><span class="p">(</span><span class="n">beginning_of_month</span><span class="p">))</span>
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">module</span> <span class="nn">Passages</span>
+  <span class="k">class</span> <span class="nc">Engine</span> <span class="o">&lt;</span> <span class="o">::</span><span class="no">Rails</span><span class="o">::</span><span class="no">Engine</span>
+    <span class="n">isolate_namespace</span><span class="p">(</span><span class="no">Passages</span><span class="p">)</span>
+  <span class="k">end</span>
 <span class="k">end</span>
 </code></pre>
 </div>
 
-<p>The most noticeable attribute here is the <code class="highlighter-rouge">project</code> method. This method tells the query what to <code class="highlighter-rouge">SELECT</code>. Since only <code class="highlighter-rouge">user_ids</code> are relevant in this CTE, that is all that is requested.</p>
+<p>An interesting line in this file is the <code class="highlighter-rouge">isolate_namespace</code> method call. This method helps ensure encapsulation for the Engine by isolating its controllers, helpers, views, routes, and any other shared resources between the main application and the Engine.</p>
 
-<p>Next, the actual CTE is created (in <code class="highlighter-rouge">Arel</code> representation only, not in the database):</p>
+<p>With isolation, an Engine does not need to worry about conflicting class or module names in the main application. Additionally, an isolated Engine will set its own name according to its namespace, accessible later via <code class="highlighter-rouge">Passages::Engine.engine_name</code>.</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="n">cte_table</span> <span class="o">=</span> <span class="no">Arel</span><span class="o">::</span><span class="no">Table</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span>
-              <span class="ss">:posts_last_month</span><span class="p">)</span>
-<span class="n">composed_cte</span> <span class="o">=</span> <span class="no">Arel</span><span class="o">::</span><span class="no">Nodes</span><span class="o">::</span><span class="no">As</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span>
-                <span class="n">cte_table</span><span class="p">,</span>
-                <span class="n">common_table_results</span><span class="p">)</span>
+<p>Since the Passages Engine is also a gem, it has a file named <code class="highlighter-rouge">passages.rb</code> in its <code class="highlighter-rouge">lib</code> directory:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">module</span> <span class="nn">Passages</span>
+<span class="k">end</span>
+
+<span class="nb">require</span> <span class="s1">'passages/engine'</span>
+<span class="nb">require</span> <span class="s1">'controllers/passages/routes_controller'</span>
 </code></pre>
 </div>
 
-<p>The <code class="highlighter-rouge">As</code> class under the <code class="highlighter-rouge">Arel::Nodes</code> namespace is created and then fed into the end of the main query via the <code class="highlighter-rouge">with</code> method:</p>
+<p>This file is responsible for defining the <code class="highlighter-rouge">Passages</code> module and requiring the engine. It is the entry point for this gem’s logic.</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="n">user_arel</span>
-  <span class="p">.</span><span class="nf">project</span><span class="p">(</span><span class="n">users</span><span class="p">[</span><span class="ss">:email</span><span class="p">])</span>
-  <span class="p">.</span><span class="nf">join</span><span class="p">(</span><span class="n">cte_table</span><span class="p">)</span>
-    <span class="p">.</span><span class="nf">on</span><span class="p">(</span><span class="n">users</span><span class="p">[</span><span class="ss">:id</span><span class="p">]</span>
-         <span class="p">.</span><span class="nf">eq</span><span class="p">(</span><span class="n">cte_table</span><span class="p">[</span><span class="ss">:user_id</span><span class="p">]))</span>
-  <span class="p">.</span><span class="nf">with</span><span class="p">(</span><span class="n">composed_cte</span><span class="p">)</span>
-  <span class="p">.</span><span class="nf">to_sql</span>
+<h2 id="encapsulate-everywhere">Encapsulate Everywhere</h2>
+
+<p>The overarching theme of designing a good Ruby on Rails Engine is encapsulation. An application should not be negatively affected by its underlying Engines, they should simply support and bring new functionality the application.</p>
+
+<p>To help reinforce this theme, Ruby on Rails requires that an Engine’s controllers, views, and assets all be nested in namespace modules and corresponding directory folders.</p>
+
+<h3 id="controllers">Controllers</h3>
+
+<p>In the Passages Engine, the <code class="highlighter-rouge">RoutesController</code> demonstrates this nesting.</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code> |-app
+ |--controllers
+ |---passages
+ |----routes_controller.rb
 </code></pre>
 </div>
 
-<p>Again, since only the <code class="highlighter-rouge">email</code> of the <code class="highlighter-rouge">User</code> is desired, the <code class="highlighter-rouge">project</code> method is used. The <code class="highlighter-rouge">join</code> method is similar to the <code class="highlighter-rouge">ActiveRecord</code> method <code class="highlighter-rouge">joins</code> but requires the <code class="highlighter-rouge">on</code> clause to tell the query how to join the tables. Finally, the <code class="highlighter-rouge">with</code> method receives the computed CTE representation and the query is successfully generated.</p>
-
-<p>To actually use this query, another helpful method on <code class="highlighter-rouge">ActiveRecord</code>, <code class="highlighter-rouge">find_by_sql</code> can accept the full <code class="highlighter-rouge">Arel</code> representation, returning the desired <code class="highlighter-rouge">User</code> models with only the <code class="highlighter-rouge">email</code> column retrieved:</p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="no">User</span><span class="p">.</span><span class="nf">find_by_sql</span><span class="p">(</span>
-  <span class="n">user_arel</span>
-  <span class="p">.</span><span class="nf">project</span><span class="p">(</span><span class="n">users</span><span class="p">[</span><span class="ss">:email</span><span class="p">])</span>
-  <span class="p">.</span><span class="nf">join</span><span class="p">(</span><span class="n">cte_table</span><span class="p">)</span>
-    <span class="p">.</span><span class="nf">on</span><span class="p">(</span><span class="n">users</span><span class="p">[</span><span class="ss">:id</span><span class="p">]</span>
-         <span class="p">.</span><span class="nf">eq</span><span class="p">(</span><span class="n">cte_table</span><span class="p">[</span><span class="ss">:user_id</span><span class="p">]))</span>
-  <span class="p">.</span><span class="nf">with</span><span class="p">(</span><span class="n">composed_cte</span><span class="p">)</span>
-<span class="p">)</span>
-
-<span class="c1"># =&gt; [#&lt;User id: nil, email: "foo@bar.com"&gt;]</span>
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">module</span> <span class="nn">Passages</span>
+  <span class="k">class</span> <span class="nc">RoutesController</span> <span class="o">&lt;</span> <span class="no">ActionController</span><span class="o">::</span><span class="no">Base</span>
+    <span class="c1"># ...</span>
+  <span class="k">end</span>
+<span class="k">end</span>
 </code></pre>
 </div>
 
-<h2 id="why">Why?</h2>
+<p>The same folder structure is used for views and assets.</p>
 
-<p>Like most tools, <code class="highlighter-rouge">Arel</code> may not be applicable in every situation. However, when used appropriately, it can make for some very well maintainable code that is resistant to unexpected failures. When dealing with multiple levels of an application stack, abstracting away complexities around their communication can help vastly simplify a codebase. <code class="highlighter-rouge">ActiveRecord</code> and <code class="highlighter-rouge">Arel</code> do a great job of insulating application developers from the nitty-gritty of database communication. Where <code class="highlighter-rouge">ActiveRecord</code> falls short, <code class="highlighter-rouge">Arel</code> is there to pick up the slack.</p>
+<h3 id="routes">Routes</h3>
 
-<p>For extremely specific or complex database interactions, using <code class="highlighter-rouge">Arel</code> may not be the correct choice, but should at least be evaluated. Only interacting with the lowest level necessary for a resource has many benefits. An <code class="highlighter-rouge">Arel</code> solution to a problem has the potential to be more resilient to future changes.</p>
+<p>Of course what good is a controller without a route to use it? A Ruby on Rails Engine also can define its own routes similarly to a stand-alone application.</p>
+
+<p>Unlike the controllers, the <code class="highlighter-rouge">routes.rb</code> file is not contained in a <code class="highlighter-rouge">passages</code> folder, nor is it within the <code class="highlighter-rouge">module Passages</code>.</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code> |-config
+ |--routes.rb
+</code></pre>
+</div>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="no">Passages</span><span class="o">::</span><span class="no">Engine</span><span class="p">.</span><span class="nf">routes</span><span class="p">.</span><span class="nf">draw</span> <span class="k">do</span>
+  <span class="n">root</span> <span class="ss">to: </span><span class="s1">'routes#index'</span>
+<span class="k">end</span>
+</code></pre>
+</div>
+
+<p>In a standard Ruby on Rails application, the first line in a routes file is: <code class="highlighter-rouge">Rails.application.routes.draw</code>; however, within an Engine, the name of the Engine replaces <code class="highlighter-rouge">Rails.application</code>.</p>
+
+<p>With a simple routes file in place, an application using the Passages Engine can run <code class="highlighter-rouge">rake routes</code> to see the new routes in action:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="gp">$ </span>rake routes
+     Prefix Verb   URI Pattern
+   passages        /passages
+      users GET    /users
+            POST   /users
+   new_user GET    /users/new
+  edit_user GET    /users/:id/edit
+       user GET    /users/:id
+            PATCH  /users/:id
+            PUT    /users/:id
+            DELETE /users/:id
+Routes <span class="k">for </span>Passages::Engine:
+  root GET  /      passages/routes#index
+</code></pre>
+</div>
+<p><em>Note: This assumes the engine is mounted at <code class="highlighter-rouge">/passages</code>, <a href="#mount-up">more about mounting routes below</a>.</em></p>
+
+<p>Neat, the Passages routes are in a separate section to help differentiate them from normal application routes.</p>
+
+<p>Remember the <code class="highlighter-rouge">isolate_namespace</code> method? One of the side-effects of <strong>not</strong> using an isolated namespace can be seen when asking for an applications routes.</p>
+
+<p>If the namespace isolation is commented out:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">module</span> <span class="nn">Passages</span>
+  <span class="k">class</span> <span class="nc">Engine</span> <span class="o">&lt;</span> <span class="o">::</span><span class="no">Rails</span><span class="o">::</span><span class="no">Engine</span>
+    <span class="c1"># isolate_namespace(Passages)</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre>
+</div>
+
+<p>Then <code class="highlighter-rouge">rake routes</code> gives a different output:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="gp">$ </span>rake routes
+         Prefix Verb   URI Pattern
+passages_engine        /passages
+          users GET    /users
+                POST   /users
+       new_user GET    /users/new
+      edit_user GET    /users/:id/edit
+           user GET    /users/:id
+                PATCH  /users/:id
+                PUT    /users/:id
+                DELETE /users/:id
+
+Routes <span class="k">for </span>Passages::Engine:
+  root GET  /          routes#routes
+</code></pre>
+</div>
+
+<p>Notice that now the <code class="highlighter-rouge">root</code> for the Passages Engine has had its prefix removed. This will cause Rails to look in the wrong place for the <code class="highlighter-rouge">routes_controller</code>:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="no">ActionController</span><span class="o">::</span><span class="no">RoutingError</span>
+<span class="p">(</span><span class="n">uninitialized</span> <span class="n">constant</span> <span class="no">RoutesController</span><span class="p">):</span>
+</code></pre>
+</div>
+
+<p>While this might not be a huge deal for some applications, the fact that an Engine triggers a top level controller to be fetched is worrysome. What if the main application had its own <code class="highlighter-rouge">RoutesController</code>, the Passages Engine could incorrectly fetch that instead. Or if things are reversed, an Engine without an isolated namespace might incorrectly override an important controller in the main application.</p>
+
+<h3 id="assets">Assets</h3>
+
+<p>Like controllers and views, an Engine’s assets are also nested under a folder bearing the Engine’s name.</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code> |-app
+ |--assets
+ |---javascripts
+ |----passages
+ |-----application.js
+ |---stylesheets
+ |----passages
+ |-----application.css
+</code></pre>
+</div>
+
+<p>This organization enables the layouts and other views in the Engine to only load the files it needs and not accidentally reference the main application’s <code class="highlighter-rouge">application.js</code> and <code class="highlighter-rouge">application.css</code>:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="cp">&lt;%=</span> <span class="n">stylesheet_link_tag</span> <span class="s1">'passages/application'</span><span class="p">,</span> <span class="ss">media: </span><span class="s1">'all'</span> <span class="cp">%&gt;</span>
+<span class="cp">&lt;%=</span> <span class="n">javascript_include_tag</span> <span class="s1">'passages/application'</span> <span class="cp">%&gt;</span>
+</code></pre>
+</div>
+
+<p>To enable precompiled assets, a few more lines need to be added in the same <code class="highlighter-rouge">engine.rb</code> file:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">module</span> <span class="nn">Passages</span>
+  <span class="k">class</span> <span class="nc">Engine</span> <span class="o">&lt;</span> <span class="o">::</span><span class="no">Rails</span><span class="o">::</span><span class="no">Engine</span>
+    <span class="n">isolate_namespace</span><span class="p">(</span><span class="no">Passages</span><span class="p">)</span>
+
+    <span class="n">initializer</span><span class="p">(</span><span class="s2">"passages.assets.precompile"</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">app</span><span class="o">|</span>
+      <span class="n">app</span><span class="p">.</span><span class="nf">config</span><span class="p">.</span><span class="nf">assets</span><span class="p">.</span><span class="nf">precompile</span> <span class="o">+=</span> <span class="p">[</span>
+          <span class="s1">'application.css'</span><span class="p">,</span>
+          <span class="s1">'application.js'</span>
+        <span class="p">]</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre>
+</div>
+
+<p>This <code class="highlighter-rouge">initializer</code> line creates an initializer in the underlying railties to be evaluated when assets are precompiled via <code class="highlighter-rouge">rake assets:precompile</code>. With this, an application can successfully compile its own assets and those of the Passages Engine.</p>
+
+<h2 id="mount-up">Mount Up</h2>
+
+<p>A Ruby on Rails Engine must be mounted by an application for it to be accessible.</p>
+
+<p>The normal place for this to occur is in a main application’s <code class="highlighter-rouge">routes.rb</code>:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="no">Rails</span><span class="p">.</span><span class="nf">application</span><span class="p">.</span><span class="nf">routes</span><span class="p">.</span><span class="nf">draw</span> <span class="k">do</span>
+  <span class="n">mount</span> <span class="no">Passages</span><span class="o">::</span><span class="no">Engine</span><span class="p">,</span> <span class="ss">at: </span><span class="s1">'/passages'</span>
+<span class="k">end</span>
+</code></pre>
+</div>
+
+<p>The <code class="highlighter-rouge">'/passages'</code> string can be replaced with any desired endpoint, the Engine does not care about the name.</p>
+
+<p>Alternatively, an Engine can <strong>mount itself</strong> using the same <code class="highlighter-rouge">initializer</code> method in <code class="highlighter-rouge">engine.rb</code>:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">module</span> <span class="nn">Passages</span>
+  <span class="k">class</span> <span class="nc">Engine</span> <span class="o">&lt;</span> <span class="o">::</span><span class="no">Rails</span><span class="o">::</span><span class="no">Engine</span>
+    <span class="n">isolate_namespace</span><span class="p">(</span><span class="no">Passages</span><span class="p">)</span>
+
+    <span class="n">initializer</span><span class="p">(</span><span class="s1">'passages'</span><span class="p">,</span>
+                <span class="ss">after: :load_config_initializers</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">app</span><span class="o">|</span>
+      <span class="no">Rails</span><span class="p">.</span><span class="nf">application</span><span class="p">.</span><span class="nf">routes</span><span class="p">.</span><span class="nf">prepend</span> <span class="k">do</span>
+        <span class="n">mount</span> <span class="no">Passages</span><span class="o">::</span><span class="no">Engine</span><span class="p">,</span> <span class="ss">at: </span><span class="s1">'/passages'</span>
+      <span class="k">end</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre>
+</div>
+
+<p>In this case, the initializer has a specific placement: after the configuration initializers are loaded. This initializer then writes to the main application with <code class="highlighter-rouge">Rails.application.routes.prepend</code> and, as the name suggests, prepends the mount to the application’s routes.</p>
+
+<p>Since the mount is added to the beginning of an application’s routes, it is possible that this mounted path (in this case <code class="highlighter-rouge">'/passages'</code>) will be overridden by a route with the same name later on in the main application’s <code class="highlighter-rouge">routes.rb</code> file.</p>
+
+<p>After an application mounts the Passages Engine, it can navigate to <code class="highlighter-rouge">/passages</code>. This request would be served by the Passages Engine like a normal Ruby on Rails application request.</p>
+
+<h4 id="use-with-caution">Use With Caution</h4>
+
+<p>Auto-mounted Engines may sound like a great idea but it might be best to leave that decision to the consumer. A suggested approach to this is have an opt-in functionality with auto-mounting. Placing this logic behind a conditional (based on some kind of configuration variable) gives consumers of this Engine the power of auto-mounting without the worry of “magic” they did not ask for.</p>
+
+<h2 id="next-steps">Next Steps</h2>
+
+<p>With the basic structure in place, a new Engine can be built like any other Ruby on Rails application. Controllers and their respective views can be created and placed under the appropriate namespaces and folders. Routes that utilize these controllers can be added as well. Assuming that both the main application and the Engine use the same ORM (or are at least compatible), even models can be created.</p>
+
+<p>The Passages Engine was built as a standalone gem. Making it available was the same process as creating any other gem. A <code class="highlighter-rouge">.gemspec</code> file was created, the gem was cut to a version, and then finally hosted on Rubygems.org. An application that wishes to use the Passages Engine can install it by adding a new line to the Gemfile: <code class="highlighter-rouge">gem 'passages'</code>.</p>
+
+<p>This same pattern can be used to make any stand alone Ruby on Rails Engine. However, it would be a wise decision to choose specific versions of Ruby on Rails to support. For example, the Passages Engine was built to support Ruby on Rails 4.X, it is not compatible with Ruby on Rails 3.X at all.</p>
+
+<h2 id="built-to-last">Built to Last</h2>
+
+<p>Going further, the creation of views, initializer files, migrations, and models can all be accomplished the same way one would in a regular Ruby on Rails application.</p>
+
+<p>Not all of the Passages Engine was discussed in this guide, but feel free to <a href="https://github.com/yez/passages">read the source</a> to find out more information. Also, I am always looking for eager contributors to either submit issues or pull requests with features they need.</p>
 
   </div>
   

@@ -59,7 +59,7 @@
       <a class="sidebar-nav-item" href="/atom.xml">Feed</a>
     </nav>
 
-    <p class='copyright'>&copy; Jake Yesbeck 2018. All rights reserved.</p>
+    <p class='copyright'>&copy; Jake Yesbeck 2019. All rights reserved.</p>
   </div>
 </div>
 
@@ -69,75 +69,148 @@
   
   <div class="post">
     <h1 class="post-title">
-      <a href="/2015/07/26/ninety-days-of-commits/">
-        Ninety Days of Commits
+      <a href="/2015/08/02/test-only-what-matters/">
+        Faster Ruby Testing: Only Test What Matters
       </a>
     </h1>
 
     
 
-    <span class="post-date">26 Jul 2015</span>
+    <span class="post-date">02 Aug 2015</span>
     <span class='share-container'><ul class="share-buttons">
   <li>
-    <a href="https://www.facebook.com/sharer/sharer.php?u=http://jakeyesbeck.com/2015/07/26/ninety-days-of-commits/&t=Ninety Days of Commits" title="Share on Facebook" target="_blank">
+    <a href="https://www.facebook.com/sharer/sharer.php?u=http://jakeyesbeck.com/2015/08/02/test-only-what-matters/&t=Faster Ruby Testing: Only Test What Matters" title="Share on Facebook" target="_blank">
       <img src="http://jakeyesbeck.com/assets/images/facebook.svg">
     </a>
   </li>
   <li>
-    <a href="https://twitter.com/intent/tweet?source=http%3A%2F%2Fjakeyesbeck.com&text=Ninety Days of Commits%20http://jakeyesbeck.com/2015/07/26/ninety-days-of-commits/&via=jakeyesbeck" target="_blank" title="Tweet">
+    <a href="https://twitter.com/intent/tweet?source=http%3A%2F%2Fjakeyesbeck.com&text=Faster Ruby Testing: Only Test What Matters%20http://jakeyesbeck.com/2015/08/02/test-only-what-matters/&via=jakeyesbeck" target="_blank" title="Tweet">
       <img src="http://jakeyesbeck.com/assets/images/twitter.svg">
     </a>
   </li>
   <li>
-    <a href="https://plus.google.com/share?url=http://jakeyesbeck.com/2015/07/26/ninety-days-of-commits/" target="_blank" title="Share on Google+">
+    <a href="https://plus.google.com/share?url=http://jakeyesbeck.com/2015/08/02/test-only-what-matters/" target="_blank" title="Share on Google+">
       <img src="http://jakeyesbeck.com/assets/images/google_plus.svg">
     </a>
   </li>
 
   <li>
-    <a href="https://news.ycombinator.com/submitlink?u=http://jakeyesbeck.com/2015/07/26/ninety-days-of-commits/&t=Ninety Days of Commits" target="_blank" title="Share on Hacker News">
+    <a href="https://news.ycombinator.com/submitlink?u=http://jakeyesbeck.com/2015/08/02/test-only-what-matters/&t=Faster Ruby Testing: Only Test What Matters" target="_blank" title="Share on Hacker News">
       <img src="http://jakeyesbeck.com/assets/images/ycomb.svg">
     </a>
   </li>
 
   <li>
-    <a href="https://getpocket.com/save?url=http://jakeyesbeck.com/2015/07/26/ninety-days-of-commits/&title=Ninety Days of Commits" target="_blank" title="Add to Pocket">
+    <a href="https://getpocket.com/save?url=http://jakeyesbeck.com/2015/08/02/test-only-what-matters/&title=Faster Ruby Testing: Only Test What Matters" target="_blank" title="Add to Pocket">
       <img src="http://jakeyesbeck.com/assets/images/pocket.svg">
     </a>
   </li>
   <li>
-    <a href="http://www.reddit.com/submit?url=http://jakeyesbeck.com/2015/07/26/ninety-days-of-commits/&title=Ninety Days of Commits" target="_blank" title="Submit to Reddit">
+    <a href="http://www.reddit.com/submit?url=http://jakeyesbeck.com/2015/08/02/test-only-what-matters/&title=Faster Ruby Testing: Only Test What Matters" target="_blank" title="Submit to Reddit">
       <img src="http://jakeyesbeck.com/assets/images/reddit.svg">
     </a>
   </li>
 </ul>
 </span>
 
-    <p><img src="http://jakeyesbeck.com/assets/images/90_day_streak.png" alt="90 Days of Commits" /></p>
+    <p>Automated testing is important. Fast, exhaustive automated testing is even more important. Tests are responsible for ensuring the code you spend hours creating actually works. A great test suite can be a safeguard against bugs, a directional guide towards extending the code, and an accurate measurement of the codebase’s health. The key to writing good tests is understanding where pieces of responsibility begin and end. Maintaining small concise automated tests can make all the difference.</p>
 
-<p>It has been ninety days since I started the <a href="http://jakeyesbeck.com/2015/04/23/a-year-of-commits/">Year of Commits</a> initiative. The criteria behind this challenge was to make a commit to a public Github repository every day. Technically, a commit like the following satisfies that criteria:</p>
+<h2 id="speed-is-king">Speed is King</h2>
 
-<p><img src="http://jakeyesbeck.com/assets/images/example_small_commit.png" alt="Small daily commit" /></p>
+<p>Aside from the general importance of <a href="http://jakeyesbeck.com/2015/06/07/short-feedback-cycles/">short feedback cycles</a>, a fast test suite will greatly improve your work-flow and mood. Conversely, a slow test suite can make your development cycle a living nightmare. How many unfortunate software artisans have dealt with something like:</p>
 
-<p>However, if I allowed this commit to be my sole contribution for a day, I would be cheating no one except myself. In reality, I have been averaging 3 to 4 decent size commits a day. Spending around an hour or two total per night. Github is an awesome piece of software that tells a visual tale of when I am most productive:</p>
+<p><img src="http://jakeyesbeck.com/assets/images/slow_tests.png" alt="slow test suite screenshot" /></p>
 
-<p><img src="http://jakeyesbeck.com/assets/images/time_of_commits.png" alt="Times of Commits" /></p>
+<p>Bleh! What a horrible thing to deal with. What, am I supposed to just wait 5 whole minutes every time I want to test my system? A test suite this slow is simply unacceptable.</p>
 
-<p>Over this quarter of a year, I have accrued some interesting learnings about developing open source software.</p>
+<p>So what could be causing this slowness? More than likely, a number of tests in this application are doing too much. To try and replicate and solve this problem, let’s assume we have a Ruby on Rails application we test using RSpec.</p>
 
-<h2 id="writing-software-every-day-just-feels-good">1. Writing software every day just feels good.</h2>
+<h2 id="testing-database-models-is-slow">Testing Database Models is Slow</h2>
 
-<p>Not missing a single day of writing software has made a significant improvement in my confidence and attitude. In the same way exercising daily makes your body feel more sturdy, developing software daily keeps my mind focused and clear. Like warming up a car before a drive, writing software every day makes it very easy for me to jump into a new project or build a new feature. I think most of my fellow software artisans have been in this situation: You go on vacation or maybe just a very relaxing weekend, then the next day at work or when you open that side project again, you end up spending a lot of time getting familiar with the software. Even if you just wrote it a few days ago, the break has made some tiny details less sharp. Writing software every single day helps eliminate this.</p>
+<p>We can assume that there exists a very important class called <code class="highlighter-rouge">MyAwesomeClass</code>:</p>
 
-<h2 id="immature-software-is-expected">2. Immature software is expected</h2>
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">class</span> <span class="nc">MyAwesomeClass</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
+  <span class="k">def</span> <span class="nf">assign_and_save!</span>
+    <span class="n">saved_on_the_weekend</span> <span class="o">=</span> <span class="n">weekend?</span>
+    <span class="nb">self</span><span class="p">.</span><span class="nf">save!</span>
+  <span class="k">end</span>
 
-<p>While writing software, there are a total of 0 people that look at what they just wrote and say: “This software is already bad and I have only just written it”. However, this statement can be more true than we would like. The potential in a new project is always the best part, right? Developers around the world usually jump at a change to do green field development. After all, with no legacy software around we can make what ever our heart desires. It can be clean, DRY, clever software with all the best design patterns. But, at least in my experience, all software starts off painfully immature. This is just fine. The shape and structure of good software grows over time. This is particularly true for my Year of Commits projects. Since I must write software every single day, I revisit my software extremely frequently. This re-visitation greatly increases the iterations my software goes through and I end up with much more polished work.</p>
+  <span class="k">def</span> <span class="nf">weekend?</span>
+    <span class="no">Time</span><span class="p">.</span><span class="nf">now</span><span class="p">.</span><span class="nf">saturday?</span> <span class="o">||</span> <span class="no">Time</span><span class="p">.</span><span class="nf">now</span><span class="p">.</span><span class="nf">sunday?</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre>
+</div>
 
-<h2 id="software-development-is-not-just-making-it-work">3. Software development is not just making it work</h2>
+<p>If we wanted to test that the <code class="highlighter-rouge">assign_and_save!</code> method works correctly, we might write a test like:</p>
 
-<p>If you take away business requirements, deadlines, conversion rates, etc., you are left with something pure: software development. Year of Commits has enabled me to experience developing software at a slower pace without these extra degrees of “purpose”. Because of this, I have learned the difference between software that just works and carefully architect-ed software. I am not boasting that the software I write is now amazingly designed and executed, I have just noticed that when I invest more time, it makes a difference. We, as Software Aristans need time to stop and smell the ones and zeros. Given a decent amount of time and attention, all software can mature to something really extraordinary.</p>
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="n">describe</span> <span class="s1">'#assign_and_save!'</span> <span class="k">do</span>
+  <span class="n">it</span> <span class="s1">'assigns and saves'</span> <span class="k">do</span>
+    <span class="n">awesome_test</span> <span class="o">=</span> <span class="no">MyAwesomeClass</span><span class="p">.</span><span class="nf">new</span>
 
-<p>I am optimistic about completing my goal of a Year of Commits. With 3/4 the distance ahead of me, let’s hope I can keep that graph solid green.</p>
+    <span class="n">expect</span> <span class="k">do</span>
+      <span class="n">awesome_test</span><span class="p">.</span><span class="nf">assign_and_save!</span>
+    <span class="k">end</span><span class="p">.</span><span class="nf">to</span> <span class="n">change</span><span class="p">(</span><span class="no">MyAwesomeClass</span><span class="p">,</span> <span class="ss">:count</span><span class="p">).</span><span class="nf">by</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="n">expect</span><span class="p">(</span><span class="n">awesome_test</span><span class="p">.</span><span class="nf">saved_on_the_weekend</span><span class="p">).</span><span class="nf">to_not</span> <span class="n">be_nil</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre>
+</div>
+
+<p>These tests make sure that the model is saved correctly to the database and a value is assigned to <code class="highlighter-rouge">saved_on_the_weekend</code>. However, the test code is overstepping the boundaries of the method it is testing. The <code class="highlighter-rouge">assign_and_save!</code> method’s job is to simply assign a value to an object and then save it. It does not care about how the actual saving works, that is the job of other validations on the model and <code class="highlighter-rouge">ActiveRecord</code>.</p>
+
+<p>To avoid this, we can assert that the <code class="highlighter-rouge">save!</code> method is called, which will not actually write to our database:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="n">describe</span> <span class="s1">'#assign_and_save!'</span> <span class="k">do</span>
+  <span class="n">it</span> <span class="s1">'assigns and saves'</span> <span class="k">do</span>
+    <span class="n">awesome_test</span> <span class="o">=</span> <span class="no">MyAwesomeClass</span><span class="p">.</span><span class="nf">new</span>
+    <span class="n">expect</span><span class="p">(</span><span class="n">awesome_test</span><span class="p">).</span><span class="nf">to</span> <span class="n">receive</span><span class="p">(</span><span class="ss">:save!</span><span class="p">)</span>
+    <span class="n">awesome_test</span><span class="p">.</span><span class="nf">assign_and_save!</span>
+    <span class="n">expect</span><span class="p">(</span><span class="n">awesome_test</span><span class="p">.</span><span class="nf">saved_on_the_weekend</span><span class="p">).</span><span class="nf">to_not</span> <span class="n">be_nil</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre>
+</div>
+
+<p>Voila! We have made the same assertions about our code and did not do any slow input/output operations.</p>
+
+<p>Now I know what some of the more detail oriented Software Artisans reading this will initially think: <em>“What about validation concerns with the model?”</em> and <em>“If you stub out <code class="highlighter-rouge">save!</code> like that you can’t be sure it worked”</em>. While these are totally valid points, there exists a simple solution for dealing with the uncertainty of the save:</p>
+
+<h2 id="the-valid-method">The <code class="highlighter-rouge">valid?</code> method</h2>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="n">describe</span> <span class="s1">'#assign_and_save!'</span> <span class="k">do</span>
+  <span class="n">it</span> <span class="s1">'assigns and saves'</span> <span class="k">do</span>
+    <span class="n">awesome_test</span> <span class="o">=</span> <span class="no">MyAwesomeClass</span><span class="p">.</span><span class="nf">new</span>
+    <span class="n">expect</span><span class="p">(</span><span class="n">awesome_test</span><span class="p">).</span><span class="nf">to</span> <span class="n">receive</span><span class="p">(</span><span class="ss">:save!</span><span class="p">)</span>
+    <span class="n">awesome_test</span><span class="p">.</span><span class="nf">assign_and_save!</span>
+    <span class="n">expect</span><span class="p">(</span><span class="n">awesome_test</span><span class="p">.</span><span class="nf">saved_on_the_weekend</span><span class="p">).</span><span class="nf">to_not</span> <span class="n">be_nil</span>
+  <span class="k">end</span>
+
+  <span class="n">it</span> <span class="s1">'is save-able'</span> <span class="k">do</span>
+    <span class="n">awesome_test</span> <span class="o">=</span> <span class="no">MyAwesomeClass</span><span class="p">.</span><span class="nf">new</span>
+    <span class="n">allow</span><span class="p">(</span><span class="n">awesome_test</span><span class="p">).</span><span class="nf">to</span> <span class="n">receive</span><span class="p">(</span><span class="ss">:save!</span><span class="p">)</span>
+
+    <span class="n">awesome_test</span><span class="p">.</span><span class="nf">assign_and_save!</span>
+    <span class="n">expect</span><span class="p">(</span><span class="n">awesome_test</span><span class="p">).</span><span class="nf">to</span> <span class="n">be_valid</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre>
+</div>
+
+<p>With the new test assertion, we make sure that the model’s <code class="highlighter-rouge">valid?</code> method returns true, ensuring the model will be saved properly.</p>
+
+<p>The <code class="highlighter-rouge">valid?</code> method is what <code class="highlighter-rouge">ActiveRecord</code> uses before saving the model to the database. This method returns either <code class="highlighter-rouge">true</code> or <code class="highlighter-rouge">false</code> and writes the data to the database if <code class="highlighter-rouge">true</code> was returned. Now the code is tested and <code class="highlighter-rouge">ActiveRecord</code>’s’ validation errors are considered.</p>
+
+<h2 id="not-perfect-but-good-enough">Not Perfect, but Good Enough</h2>
+
+<p>However, there is one more thing that this test will not catch: database specific uniqueness constraints. If your application uses a database to enforce uniqueness and not in <code class="highlighter-rouge">ActiveRecord</code> validations, this testing method will fail. For that you will need a more robust integration tests which guard against duplicate data.</p>
+
+<p>All that aside, not actually saving data will be fine for the 90% case which is most codebases.</p>
+
+<h2 id="only-test-what-matters">Only Test What Matters</h2>
+
+<p>In this example, removing the testing of <code class="highlighter-rouge">save!</code> resulted in a speed increase. However, the idea of only testing the crucial parts of a method is not only about speed, <strong>it is about encapsulation</strong>. If a method’s only responsibility is to call helper methods, that is the only thing that should be tested. The test should simply assert that the helper methods are called, not the logic within them. Following this pattern will help keep test code small, concise, readable, and input/output operations to a minimum.</p>
 
   </div>
   
