@@ -108,17 +108,17 @@
 
 <p>In order to facilitate more than one request at a time, a Ruby web server implements <code class="highlighter-rouge">Threads</code>, <code class="highlighter-rouge">Processes</code>, or both. These tools are used to enable concurrency and are beneficial in different ways.</p>
 
-<h3 id="threads">Threads</h3>
+<h3 id="threads"><code class="highlighter-rouge">Threads</code></h3>
 
 <p><code class="highlighter-rouge">Threads</code> in Ruby are a solution for concurrent programming and can alleviate slow downs due to blocking code. This blocking is usually referred to as “I/O” or Input/Output blocking and occurs when a program must reach out for additional information.  External API calls, reading from disk, and querying a database are all examples of blocking operations. When using multiple <code class="highlighter-rouge">Threads</code>, an application can continue to function while one <code class="highlighter-rouge">Thread</code> is waiting.</p>
 
-<p>Most Ruby code in the wild is running on MRI (if you’re not sure what you’re using, there is a good chance this is what you use). Because of this, Ruby <code class="highlighter-rouge">Threads</code> are subject to the Global Interpreter Lock or <code class="highlighter-rouge">GIL</code>. The <code class="highlighter-rouge">GIL</code> prevents any two threads in the same process from running at exactly the same time making true parallelism not possible.</p>
+<p>Most Ruby code in the wild is running on MRI (if you’re not sure what you’re using, there is a good chance this is what you use). Because of this, Ruby <code class="highlighter-rouge">Threads</code> are subject to the Global Interpreter Lock or <code class="highlighter-rouge">GIL</code>. The <code class="highlighter-rouge">GIL</code> prevents any two <code class="highlighter-rouge">threads</code> in the same <code class="highlighter-rouge">process</code> from running at exactly the same time making true parallelism not possible.</p>
 
-<h3 id="processes">Processes</h3>
+<h3 id="processes"><code class="highlighter-rouge">Processes</code></h3>
 
 <p>One way to allow for true parallelism in Ruby is to use multiple <code class="highlighter-rouge">Processes</code>. A Ruby <code class="highlighter-rouge">Process</code> is the instance of an application or a forked copy. In a traditional Rails application, each <code class="highlighter-rouge">Process</code> contains all the build up, initialization, and resource allocation the app will need.</p>
 
-<p>Running multiple <code class="highlighter-rouge">Proccesses</code> can enable more efficient usage of some server resources like the CPU but is not without its downsides. Because each process must boot and provision an entire app, memory usage or database connection saturation can become a limiting factor.</p>
+<p>Running multiple <code class="highlighter-rouge">Proccesses</code> can enable more efficient usage of some server resources like the CPU but is not without its downsides. Because each <code class="highlighter-rouge">process</code> must boot and provision an entire app, memory usage or database connection saturation can become a limiting factor.</p>
 
 <h2 id="tempering-the-metal">Tempering the Metal</h2>
 
@@ -150,7 +150,7 @@
 <h3 id="configpumarb"><code class="highlighter-rouge">config/puma.rb</code></h3>
 
 <div class="highlighter-rouge"><pre class="highlight"><code><span class="n">threads_count</span> <span class="o">=</span> <span class="no">ENV</span><span class="p">.</span><span class="nf">fetch</span><span class="p">(</span><span class="s2">"RAILS_MAX_THREADS"</span><span class="p">)</span> <span class="p">{</span> <span class="mi">1</span> <span class="p">}</span>
-<span class="n">workers</span> <span class="no">ENV</span><span class="p">.</span><span class="nf">fetch</span><span class="p">(</span><span class="s2">"WEB_CONCURRENCY"</span><span class="p">)</span> <span class="p">{</span> <span class="mi">1</span> <span class="p">}</span>
+<span class="n">workers</span><span class="p">(</span><span class="no">ENV</span><span class="p">.</span><span class="nf">fetch</span><span class="p">(</span><span class="s2">"WEB_CONCURRENCY"</span><span class="p">)</span> <span class="p">{</span> <span class="mi">1</span> <span class="p">})</span>
 </code></pre>
 </div>
 
@@ -174,6 +174,12 @@
 <span class="nv">REPS</span><span class="o">=</span>20
 
 siege -b --content-type <span class="nv">$CONTENT_TYPE</span> -c <span class="nv">$CONCURRENCY</span> -r <span class="nv">$REPS</span> <span class="nv">$URL</span>
+
+<span class="c"># flags:</span>
+<span class="c">#   -b - benchmark means no gap between requests</span>
+<span class="c">#   -c - concurrency is number of requests to make at one time</span>
+<span class="c">#   -r - repititions is the number of times to run</span>
+<span class="c">#         the same amount of concurrent requests</span>
 </code></pre>
 </div>
 
@@ -195,7 +201,7 @@ siege -b --content-type <span class="nv">$CONTENT_TYPE</span> -c <span class="nv
 
 <p>Memory Usage is the amount of memory (RAM) used by the application. When a server runs out of RAM, it creates virtual memory out of partitioned space on the disk to overflow into. This is called swapping and it can greatly reduce the efficiency of a server. Along with CPU load average, making sure a server’s memory usage is below capacity is an important way to keep a healthy and happy application.</p>
 
-<p>The amount of memory an application uses in total should be balanced by any other processes running on that server while leaving some amount of room for utility applications. Using more than the memory available on a server will lead to performance issues.</p>
+<p>The amount of memory an application uses in total should be balanced by any other <code class="highlighter-rouge">processes</code> running on that server while leaving some amount of room for utility applications. Using more than the memory available on a server will lead to performance issues.</p>
 
 <h3 id="io-intensive-threads-v-processes-and-throughput">I/O Intensive Threads v Processes and Throughput</h3>
 
@@ -276,7 +282,7 @@ siege -b --content-type <span class="nv">$CONTENT_TYPE</span> -c <span class="nv
 
 <p>On the other hand, the number of <code class="highlighter-rouge">Threads</code> makes a big difference for I/O blocking operations.  With a single <code class="highlighter-rouge">Thread</code>, it takes 77 seconds to complete all 600 requests. Just increasing that number of <code class="highlighter-rouge">Threads</code> to 10 makes the same work take 16 seconds!  But look at what happens when <code class="highlighter-rouge">Threads</code> are increased to 100: the same jump in throughput doesn’t happen. This shows that the number of <code class="highlighter-rouge">Threads</code> an application can utilize has an upper limit .</p>
 
-<p>Additionally, the memory usage quickly increases with the number of processes on the machine. For a very simple application like this with no database, the maximum memory usage of 715mb isn’t huge but on a traditional Rails application, <em>each</em> process could easily have a few hundred mb of memory usage. Along with hard caps for database connections, maintaining too many processes can quickly use more memory than a server has available.</p>
+<p>Additionally, the memory usage quickly increases with the number of <code class="highlighter-rouge">processes</code> on the machine. For a very simple application like this with no database, the maximum memory usage of 715mb isn’t huge but on a traditional Rails application, <em>each</em> <code class="highlighter-rouge">process</code> could easily have a few hundred mb of memory usage. Along with hard caps for database connections, maintaining too many <code class="highlighter-rouge">processes</code> can quickly use more memory than a server has available.</p>
 
 <p>Similar to <code class="highlighter-rouge">Threads</code>, infinitely scaling <code class="highlighter-rouge">Processes</code> is not a sure way to get the best results. In this example, a balance of 10 <code class="highlighter-rouge">Processes</code> and 10 <code class="highlighter-rouge">Threads</code> gives the best throughput at nearly a 700% memory increase.</p>
 
@@ -378,7 +384,7 @@ siege -b --content-type <span class="nv">$CONTENT_TYPE</span> -c <span class="nv
 
 <p>For the CPU intensive code, only increasing <code class="highlighter-rouge">Threads</code> does nothing for overall execution time. The 600 requests require around 18 seconds no with 1 <code class="highlighter-rouge">Thread</code> and with 100 <code class="highlighter-rouge">Threads</code>.</p>
 
-<p>On the other hand, doubling the number of <code class="highlighter-rouge">Processes</code> cuts execution time by almost half! However, increasing the number of <code class="highlighter-rouge">Processes</code> from 2 to 10 (a 500% increase) does not decrease the execution time by another 500%.  Just like in the I/O bound application, scaling <code class="highlighter-rouge">Processes</code> will eventually experience diminishing returns, making each additional process less valuable.</p>
+<p>On the other hand, doubling the number of <code class="highlighter-rouge">Processes</code> cuts execution time by almost half! However, increasing the number of <code class="highlighter-rouge">Processes</code> from 2 to 10 (a 500% increase) does not decrease the execution time by another 500%.  Just like in the I/O bound application, scaling <code class="highlighter-rouge">Processes</code> will eventually experience diminishing returns, making each additional <code class="highlighter-rouge">process</code> less valuable.</p>
 
 <p>During the CPU intensive code testing, the server never experienced a fully saturated load average of <code class="highlighter-rouge">4.0</code>. This is because the example code was not all that taxing. In a real application serving end users, it is surprisingly easy to make full use of all CPU resources with enough <code class="highlighter-rouge">Processes</code>.</p>
 
@@ -494,7 +500,15 @@ siege -b --content-type <span class="nv">$CONTENT_TYPE</span> -c <span class="nv
 
 <p>The number of <code class="highlighter-rouge">Threads</code> and <code class="highlighter-rouge">Processes</code> can be the deciding factor on a web application’s performance. Additionally, understanding how the number of <code class="highlighter-rouge">Procesess</code> and <code class="highlighter-rouge">Threads</code> impact a server is useful for choosing and configuring a web server. Any code which uses concurrency can benefit from this knowledge. Balancing memory usage, external resource connection limits, and CPU load average is a great way to make sure a server is provisioned correctly and might even save some money.</p>
 
-<p>Things like thread starvation, semaphores, thread pooling and other concerns regarding concurrent programming were intentionally not mentioned in this post.  Understanding how <code class="highlighter-rouge">Threads</code> and <code class="highlighter-rouge">Processes</code> work at a high level can enable the configuration and choice of web server, but if you want to write your own complex concurrent Ruby code, I’d suggest <a href="https://github.com/ruby-concurrency/concurrent-ruby">concurrent-ruby</a>.</p>
+<p>When evaluating the best configuration for your web server, this simple list is a great starting point:</p>
+
+<ol>
+  <li>Use only the available memory for the server.</li>
+  <li>Use <code class="highlighter-rouge">Threads</code> for blocking code and <code class="highlighter-rouge">Processes</code> for CPU intensive code.</li>
+  <li>Use tools like <code class="highlighter-rouge">siege</code> for benchmarking and testing different configurations.</li>
+</ol>
+
+<p>Things like <code class="highlighter-rouge">thread</code> starvation, semaphores, <code class="highlighter-rouge">thread</code> pooling and other concerns regarding concurrent programming were intentionally not mentioned in this post.  Understanding how <code class="highlighter-rouge">Threads</code> and <code class="highlighter-rouge">Processes</code> work at a high level can enable the configuration and choice of web server, but if you want to write your own complex concurrent Ruby code, I’d suggest <a href="https://github.com/ruby-concurrency/concurrent-ruby">concurrent-ruby</a>.</p>
 
 </div>
 
@@ -522,9 +536,9 @@ siege -b --content-type <span class="nv">$CONTENT_TYPE</span> -c <span class="nv
     
       <li>
         <h3>
-          <a href="/2015/10/11/building-a-simple-web-server-with-ruby-2/">
-            Building a Simple Web Server with Ruby 2.0+
-            <small>11 Oct 2015</small>
+          <a href="/2016/04/10/things-to-consider-when-metaprogramming-in-ruby/">
+            Things to Consider when Metaprogramming in Ruby
+            <small>10 Apr 2016</small>
           </a>
         </h3>
       </li>

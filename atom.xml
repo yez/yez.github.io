@@ -21,17 +21,17 @@
 
 &lt;p&gt;In order to facilitate more than one request at a time, a Ruby web server implements &lt;code class=&quot;highlighter-rouge&quot;&gt;Threads&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;Processes&lt;/code&gt;, or both. These tools are used to enable concurrency and are beneficial in different ways.&lt;/p&gt;
 
-&lt;h3 id=&quot;threads&quot;&gt;Threads&lt;/h3&gt;
+&lt;h3 id=&quot;threads&quot;&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;Threads&lt;/code&gt;&lt;/h3&gt;
 
 &lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;Threads&lt;/code&gt; in Ruby are a solution for concurrent programming and can alleviate slow downs due to blocking code. This blocking is usually referred to as “I/O” or Input/Output blocking and occurs when a program must reach out for additional information.  External API calls, reading from disk, and querying a database are all examples of blocking operations. When using multiple &lt;code class=&quot;highlighter-rouge&quot;&gt;Threads&lt;/code&gt;, an application can continue to function while one &lt;code class=&quot;highlighter-rouge&quot;&gt;Thread&lt;/code&gt; is waiting.&lt;/p&gt;
 
-&lt;p&gt;Most Ruby code in the wild is running on MRI (if you’re not sure what you’re using, there is a good chance this is what you use). Because of this, Ruby &lt;code class=&quot;highlighter-rouge&quot;&gt;Threads&lt;/code&gt; are subject to the Global Interpreter Lock or &lt;code class=&quot;highlighter-rouge&quot;&gt;GIL&lt;/code&gt;. The &lt;code class=&quot;highlighter-rouge&quot;&gt;GIL&lt;/code&gt; prevents any two threads in the same process from running at exactly the same time making true parallelism not possible.&lt;/p&gt;
+&lt;p&gt;Most Ruby code in the wild is running on MRI (if you’re not sure what you’re using, there is a good chance this is what you use). Because of this, Ruby &lt;code class=&quot;highlighter-rouge&quot;&gt;Threads&lt;/code&gt; are subject to the Global Interpreter Lock or &lt;code class=&quot;highlighter-rouge&quot;&gt;GIL&lt;/code&gt;. The &lt;code class=&quot;highlighter-rouge&quot;&gt;GIL&lt;/code&gt; prevents any two &lt;code class=&quot;highlighter-rouge&quot;&gt;threads&lt;/code&gt; in the same &lt;code class=&quot;highlighter-rouge&quot;&gt;process&lt;/code&gt; from running at exactly the same time making true parallelism not possible.&lt;/p&gt;
 
-&lt;h3 id=&quot;processes&quot;&gt;Processes&lt;/h3&gt;
+&lt;h3 id=&quot;processes&quot;&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;Processes&lt;/code&gt;&lt;/h3&gt;
 
 &lt;p&gt;One way to allow for true parallelism in Ruby is to use multiple &lt;code class=&quot;highlighter-rouge&quot;&gt;Processes&lt;/code&gt;. A Ruby &lt;code class=&quot;highlighter-rouge&quot;&gt;Process&lt;/code&gt; is the instance of an application or a forked copy. In a traditional Rails application, each &lt;code class=&quot;highlighter-rouge&quot;&gt;Process&lt;/code&gt; contains all the build up, initialization, and resource allocation the app will need.&lt;/p&gt;
 
-&lt;p&gt;Running multiple &lt;code class=&quot;highlighter-rouge&quot;&gt;Proccesses&lt;/code&gt; can enable more efficient usage of some server resources like the CPU but is not without its downsides. Because each process must boot and provision an entire app, memory usage or database connection saturation can become a limiting factor.&lt;/p&gt;
+&lt;p&gt;Running multiple &lt;code class=&quot;highlighter-rouge&quot;&gt;Proccesses&lt;/code&gt; can enable more efficient usage of some server resources like the CPU but is not without its downsides. Because each &lt;code class=&quot;highlighter-rouge&quot;&gt;process&lt;/code&gt; must boot and provision an entire app, memory usage or database connection saturation can become a limiting factor.&lt;/p&gt;
 
 &lt;h2 id=&quot;tempering-the-metal&quot;&gt;Tempering the Metal&lt;/h2&gt;
 
@@ -63,7 +63,7 @@
 &lt;h3 id=&quot;configpumarb&quot;&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;config/puma.rb&lt;/code&gt;&lt;/h3&gt;
 
 &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;threads_count&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;ENV&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;fetch&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;RAILS_MAX_THREADS&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;workers&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;ENV&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;fetch&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;WEB_CONCURRENCY&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;workers&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;ENV&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;fetch&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;WEB_CONCURRENCY&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;})&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 
@@ -87,6 +87,12 @@
 &lt;span class=&quot;nv&quot;&gt;REPS&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;20
 
 siege -b --content-type &lt;span class=&quot;nv&quot;&gt;$CONTENT_TYPE&lt;/span&gt; -c &lt;span class=&quot;nv&quot;&gt;$CONCURRENCY&lt;/span&gt; -r &lt;span class=&quot;nv&quot;&gt;$REPS&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$URL&lt;/span&gt;
+
+&lt;span class=&quot;c&quot;&gt;# flags:&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;#   -b - benchmark means no gap between requests&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;#   -c - concurrency is number of requests to make at one time&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;#   -r - repititions is the number of times to run&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;#         the same amount of concurrent requests&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 
@@ -108,7 +114,7 @@ siege -b --content-type &lt;span class=&quot;nv&quot;&gt;$CONTENT_TYPE&lt;/span&
 
 &lt;p&gt;Memory Usage is the amount of memory (RAM) used by the application. When a server runs out of RAM, it creates virtual memory out of partitioned space on the disk to overflow into. This is called swapping and it can greatly reduce the efficiency of a server. Along with CPU load average, making sure a server’s memory usage is below capacity is an important way to keep a healthy and happy application.&lt;/p&gt;
 
-&lt;p&gt;The amount of memory an application uses in total should be balanced by any other processes running on that server while leaving some amount of room for utility applications. Using more than the memory available on a server will lead to performance issues.&lt;/p&gt;
+&lt;p&gt;The amount of memory an application uses in total should be balanced by any other &lt;code class=&quot;highlighter-rouge&quot;&gt;processes&lt;/code&gt; running on that server while leaving some amount of room for utility applications. Using more than the memory available on a server will lead to performance issues.&lt;/p&gt;
 
 &lt;h3 id=&quot;io-intensive-threads-v-processes-and-throughput&quot;&gt;I/O Intensive Threads v Processes and Throughput&lt;/h3&gt;
 
@@ -189,7 +195,7 @@ siege -b --content-type &lt;span class=&quot;nv&quot;&gt;$CONTENT_TYPE&lt;/span&
 
 &lt;p&gt;On the other hand, the number of &lt;code class=&quot;highlighter-rouge&quot;&gt;Threads&lt;/code&gt; makes a big difference for I/O blocking operations.  With a single &lt;code class=&quot;highlighter-rouge&quot;&gt;Thread&lt;/code&gt;, it takes 77 seconds to complete all 600 requests. Just increasing that number of &lt;code class=&quot;highlighter-rouge&quot;&gt;Threads&lt;/code&gt; to 10 makes the same work take 16 seconds!  But look at what happens when &lt;code class=&quot;highlighter-rouge&quot;&gt;Threads&lt;/code&gt; are increased to 100: the same jump in throughput doesn’t happen. This shows that the number of &lt;code class=&quot;highlighter-rouge&quot;&gt;Threads&lt;/code&gt; an application can utilize has an upper limit .&lt;/p&gt;
 
-&lt;p&gt;Additionally, the memory usage quickly increases with the number of processes on the machine. For a very simple application like this with no database, the maximum memory usage of 715mb isn’t huge but on a traditional Rails application, &lt;em&gt;each&lt;/em&gt; process could easily have a few hundred mb of memory usage. Along with hard caps for database connections, maintaining too many processes can quickly use more memory than a server has available.&lt;/p&gt;
+&lt;p&gt;Additionally, the memory usage quickly increases with the number of &lt;code class=&quot;highlighter-rouge&quot;&gt;processes&lt;/code&gt; on the machine. For a very simple application like this with no database, the maximum memory usage of 715mb isn’t huge but on a traditional Rails application, &lt;em&gt;each&lt;/em&gt; &lt;code class=&quot;highlighter-rouge&quot;&gt;process&lt;/code&gt; could easily have a few hundred mb of memory usage. Along with hard caps for database connections, maintaining too many &lt;code class=&quot;highlighter-rouge&quot;&gt;processes&lt;/code&gt; can quickly use more memory than a server has available.&lt;/p&gt;
 
 &lt;p&gt;Similar to &lt;code class=&quot;highlighter-rouge&quot;&gt;Threads&lt;/code&gt;, infinitely scaling &lt;code class=&quot;highlighter-rouge&quot;&gt;Processes&lt;/code&gt; is not a sure way to get the best results. In this example, a balance of 10 &lt;code class=&quot;highlighter-rouge&quot;&gt;Processes&lt;/code&gt; and 10 &lt;code class=&quot;highlighter-rouge&quot;&gt;Threads&lt;/code&gt; gives the best throughput at nearly a 700% memory increase.&lt;/p&gt;
 
@@ -291,7 +297,7 @@ siege -b --content-type &lt;span class=&quot;nv&quot;&gt;$CONTENT_TYPE&lt;/span&
 
 &lt;p&gt;For the CPU intensive code, only increasing &lt;code class=&quot;highlighter-rouge&quot;&gt;Threads&lt;/code&gt; does nothing for overall execution time. The 600 requests require around 18 seconds no with 1 &lt;code class=&quot;highlighter-rouge&quot;&gt;Thread&lt;/code&gt; and with 100 &lt;code class=&quot;highlighter-rouge&quot;&gt;Threads&lt;/code&gt;.&lt;/p&gt;
 
-&lt;p&gt;On the other hand, doubling the number of &lt;code class=&quot;highlighter-rouge&quot;&gt;Processes&lt;/code&gt; cuts execution time by almost half! However, increasing the number of &lt;code class=&quot;highlighter-rouge&quot;&gt;Processes&lt;/code&gt; from 2 to 10 (a 500% increase) does not decrease the execution time by another 500%.  Just like in the I/O bound application, scaling &lt;code class=&quot;highlighter-rouge&quot;&gt;Processes&lt;/code&gt; will eventually experience diminishing returns, making each additional process less valuable.&lt;/p&gt;
+&lt;p&gt;On the other hand, doubling the number of &lt;code class=&quot;highlighter-rouge&quot;&gt;Processes&lt;/code&gt; cuts execution time by almost half! However, increasing the number of &lt;code class=&quot;highlighter-rouge&quot;&gt;Processes&lt;/code&gt; from 2 to 10 (a 500% increase) does not decrease the execution time by another 500%.  Just like in the I/O bound application, scaling &lt;code class=&quot;highlighter-rouge&quot;&gt;Processes&lt;/code&gt; will eventually experience diminishing returns, making each additional &lt;code class=&quot;highlighter-rouge&quot;&gt;process&lt;/code&gt; less valuable.&lt;/p&gt;
 
 &lt;p&gt;During the CPU intensive code testing, the server never experienced a fully saturated load average of &lt;code class=&quot;highlighter-rouge&quot;&gt;4.0&lt;/code&gt;. This is because the example code was not all that taxing. In a real application serving end users, it is surprisingly easy to make full use of all CPU resources with enough &lt;code class=&quot;highlighter-rouge&quot;&gt;Processes&lt;/code&gt;.&lt;/p&gt;
 
@@ -407,7 +413,15 @@ siege -b --content-type &lt;span class=&quot;nv&quot;&gt;$CONTENT_TYPE&lt;/span&
 
 &lt;p&gt;The number of &lt;code class=&quot;highlighter-rouge&quot;&gt;Threads&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;Processes&lt;/code&gt; can be the deciding factor on a web application’s performance. Additionally, understanding how the number of &lt;code class=&quot;highlighter-rouge&quot;&gt;Procesess&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;Threads&lt;/code&gt; impact a server is useful for choosing and configuring a web server. Any code which uses concurrency can benefit from this knowledge. Balancing memory usage, external resource connection limits, and CPU load average is a great way to make sure a server is provisioned correctly and might even save some money.&lt;/p&gt;
 
-&lt;p&gt;Things like thread starvation, semaphores, thread pooling and other concerns regarding concurrent programming were intentionally not mentioned in this post.  Understanding how &lt;code class=&quot;highlighter-rouge&quot;&gt;Threads&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;Processes&lt;/code&gt; work at a high level can enable the configuration and choice of web server, but if you want to write your own complex concurrent Ruby code, I’d suggest &lt;a href=&quot;https://github.com/ruby-concurrency/concurrent-ruby&quot;&gt;concurrent-ruby&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;When evaluating the best configuration for your web server, this simple list is a great starting point:&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;Use only the available memory for the server.&lt;/li&gt;
+  &lt;li&gt;Use &lt;code class=&quot;highlighter-rouge&quot;&gt;Threads&lt;/code&gt; for blocking code and &lt;code class=&quot;highlighter-rouge&quot;&gt;Processes&lt;/code&gt; for CPU intensive code.&lt;/li&gt;
+  &lt;li&gt;Use tools like &lt;code class=&quot;highlighter-rouge&quot;&gt;siege&lt;/code&gt; for benchmarking and testing different configurations.&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;Things like &lt;code class=&quot;highlighter-rouge&quot;&gt;thread&lt;/code&gt; starvation, semaphores, &lt;code class=&quot;highlighter-rouge&quot;&gt;thread&lt;/code&gt; pooling and other concerns regarding concurrent programming were intentionally not mentioned in this post.  Understanding how &lt;code class=&quot;highlighter-rouge&quot;&gt;Threads&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;Processes&lt;/code&gt; work at a high level can enable the configuration and choice of web server, but if you want to write your own complex concurrent Ruby code, I’d suggest &lt;a href=&quot;https://github.com/ruby-concurrency/concurrent-ruby&quot;&gt;concurrent-ruby&lt;/a&gt;.&lt;/p&gt;
 </content>
  </entry>
  
