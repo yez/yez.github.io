@@ -4,13 +4,265 @@
  <title>A Year of Commits</title>
  <link href="http://jakeyesbeck.com/atom.xml" rel="self"/>
  <link href="http://jakeyesbeck.com/"/>
- <updated>2018-02-26T12:15:59-05:00</updated>
+ <updated>2020-07-19T14:48:37-04:00</updated>
  <id>http://jakeyesbeck.com/</id>
  <author>
    <name>Jake Yesbeck</name>
    <email>yesbeckjs@gmail.com</email>
  </author>
 
+ 
+ <entry>
+   <title>Making RSpec Tests More Robust</title>
+   <link href="http://jakeyesbeck.com/2020/07/19/making-rspec-tests-more-robust/"/>
+   <updated>2020-07-19T08:00:00-04:00</updated>
+   <id>http://jakeyesbeck.com/2020/07/19/making-rspec-tests-more-robust</id>
+   <content type="html">&lt;p&gt;RSpec is a popular framework for testing Ruby code. With an &lt;code class=&quot;highlighter-rouge&quot;&gt;expect&lt;/code&gt;
+assertion, a developer can make sure their code calls the proper method or
+an acceptable result is returned. The &lt;code class=&quot;highlighter-rouge&quot;&gt;expect().to receive&lt;/code&gt; matcher in a test
+overrides the default implementation and can cause some unintended side
+effects.&lt;/p&gt;
+
+&lt;p&gt;To demonstrate this potential problem, assume a very simple API client exists that
+can update models.&lt;/p&gt;
+
+&lt;h2 id=&quot;testing-an-api-client&quot;&gt;Testing an API Client&lt;/h2&gt;
+
+&lt;p&gt;An example &lt;code class=&quot;highlighter-rouge&quot;&gt;api_client.rb&lt;/code&gt; class defines a single &lt;code class=&quot;highlighter-rouge&quot;&gt;put&lt;/code&gt; method that calls the underlying API with a &lt;code class=&quot;highlighter-rouge&quot;&gt;Faraday&lt;/code&gt; connection.&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# api_client.rb&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;APIClient&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;put&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;url&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;body&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;client&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;put&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;url&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;body&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+  &lt;span class=&quot;kp&quot;&gt;private&lt;/span&gt;
+
+  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;client&lt;/span&gt;
+    &lt;span class=&quot;no&quot;&gt;Faraday&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;new&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39;https://some-cool-api.com&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Inheriting from &lt;code class=&quot;highlighter-rouge&quot;&gt;api_client.rb&lt;/code&gt; is &lt;code class=&quot;highlighter-rouge&quot;&gt;my_model.rb&lt;/code&gt; which defines an &lt;code class=&quot;highlighter-rouge&quot;&gt;update&lt;/code&gt;
+method.&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# my_model.rb&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;MyModel&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;APIClient&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;update&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;payload&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;put&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39;/my_models/1&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;payload&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;A typical test for the &lt;code class=&quot;highlighter-rouge&quot;&gt;update&lt;/code&gt; method on &lt;code class=&quot;highlighter-rouge&quot;&gt;MyModel&lt;/code&gt; in RSpec might look like:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# my_model_spec.rb&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;describe&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;MyModel&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;describe&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;update&#39;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;it&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;updates the model&#39;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
+      &lt;span class=&quot;n&quot;&gt;expect&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;subject&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;to&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;receive&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:put&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+      &lt;span class=&quot;n&quot;&gt;subject&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;update&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;({&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;foo: :bar&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;})&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;The &lt;code class=&quot;highlighter-rouge&quot;&gt;subject&lt;/code&gt; in the above test is &lt;code class=&quot;highlighter-rouge&quot;&gt;MyModel.new&lt;/code&gt; and is expected to receive the
+method &lt;code class=&quot;highlighter-rouge&quot;&gt;put&lt;/code&gt;. Since &lt;code class=&quot;highlighter-rouge&quot;&gt;MyModel#update&lt;/code&gt; calls the &lt;code class=&quot;highlighter-rouge&quot;&gt;put&lt;/code&gt; method, this seems like
+a reasonable test.&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$:&lt;/span&gt; rspec my_model_spec.rb
+.
+
+Finished &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;0.0054 seconds &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;files took 0.07101 seconds to load&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+1 example, 0 failures
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Running the test produces a passing result, the &lt;code class=&quot;highlighter-rouge&quot;&gt;MyModel&lt;/code&gt; class calls
+its parent method correctly and all is well. Until something changes that the
+test is unable to detect.&lt;/p&gt;
+
+&lt;h2 id=&quot;breaking-the-contract&quot;&gt;Breaking the Contract&lt;/h2&gt;
+
+&lt;p&gt;If &lt;code class=&quot;highlighter-rouge&quot;&gt;MyModel&lt;/code&gt;’s contract changes, the test should fail. If, for
+instance, the &lt;code class=&quot;highlighter-rouge&quot;&gt;put&lt;/code&gt; method on the &lt;code class=&quot;highlighter-rouge&quot;&gt;APIClient&lt;/code&gt; class is removed or commented
+out, the &lt;code class=&quot;highlighter-rouge&quot;&gt;update&lt;/code&gt; method on &lt;code class=&quot;highlighter-rouge&quot;&gt;MyModel&lt;/code&gt; would no longer work.&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# api_client.rb&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;APIClient&lt;/span&gt;
+  &lt;span class=&quot;c1&quot;&gt;# def put(url, body)&lt;/span&gt;
+  &lt;span class=&quot;c1&quot;&gt;#   client.put(url, body)&lt;/span&gt;
+  &lt;span class=&quot;c1&quot;&gt;# end&lt;/span&gt;
+
+  &lt;span class=&quot;kp&quot;&gt;private&lt;/span&gt;
+
+  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;client&lt;/span&gt;
+    &lt;span class=&quot;no&quot;&gt;Faraday&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;new&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39;https://some-cool-api.com&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;However, the test still passes despite this method being removed.&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$:&lt;/span&gt; rspec my_model_spec.rb
+.
+
+Finished &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;0.00523 seconds &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;files took 0.0699 seconds to load&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+1 example, 0 failures
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;So what is going on here?&lt;/p&gt;
+
+&lt;p&gt;The culprit is this line: &lt;code class=&quot;highlighter-rouge&quot;&gt;expect(subject).to receive(:put)&lt;/code&gt;. The test happily
+accepts the call to &lt;code class=&quot;highlighter-rouge&quot;&gt;APIClient#put&lt;/code&gt; despite it being removed. This is
+obviously problematic and, in a worst case scenario, could lead to an outage if
+a test suite is the only gateway to production code.&lt;/p&gt;
+
+&lt;p&gt;Starting an &lt;code class=&quot;highlighter-rouge&quot;&gt;irb&lt;/code&gt; repl and calling the problematic method reveals that the code
+is no longer working despite the test’s result.&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;5&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;5&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;mo&quot;&gt;001&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;model&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;MyModel&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;new&lt;/span&gt;
+ &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;#&amp;lt;MyModel:0x00005585f950ca10&amp;gt;&lt;/span&gt;
+&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;5&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;5&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;mo&quot;&gt;002&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;model&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;update&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;foo: :bar&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;no&quot;&gt;Traceback&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;most&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;recent&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;call&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;last&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
+        &lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;from&lt;/span&gt; &lt;span class=&quot;sr&quot;&gt;/home/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;yez&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;rvm&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;rubies&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ruby&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;5&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;5&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;bin&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;irb&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;11&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:in&lt;/span&gt; &lt;span class=&quot;sb&quot;&gt;`&amp;lt;main&amp;gt;&#39;
+        2: from (irb):2
+        1: from /tmp/foo.rb:8:in `&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;update&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39;
+NoMethodError (undefined method `put&#39;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;#&amp;lt;MyModel:0x00005585f950ca10&amp;gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Since this code communicates to an API, validating that the underlying &lt;code class=&quot;highlighter-rouge&quot;&gt;put&lt;/code&gt;
+request is done successfully can be tricky. Unlike tests in a Rails application,
+&lt;code class=&quot;highlighter-rouge&quot;&gt;MyModel#update&lt;/code&gt; can not be validated in a local database.&lt;/p&gt;
+
+&lt;p&gt;With a passing test and broken code, it is clear that wrong thing has been tested.
+As is, the test only asserts that a method calls another method and happily ignores
+everything else. One possible solution could be to add &lt;code class=&quot;highlighter-rouge&quot;&gt;and_call_original&lt;/code&gt; to
+the end of the &lt;code class=&quot;highlighter-rouge&quot;&gt;expect(). to receive&lt;/code&gt; line. This would make sure the &lt;code class=&quot;highlighter-rouge&quot;&gt;put&lt;/code&gt;
+method is really there but would also make a real HTTP request in a test (which
+is generally bad practice).&lt;/p&gt;
+
+&lt;p&gt;An easy way to make this test more robust without going overboard is to stub
+the response of the HTTP client. Instead of mocking the &lt;code class=&quot;highlighter-rouge&quot;&gt;put&lt;/code&gt; method in &lt;code class=&quot;highlighter-rouge&quot;&gt;api_client.rb&lt;/code&gt;,
+tools like &lt;code class=&quot;highlighter-rouge&quot;&gt;webmock&lt;/code&gt; can be utilized to stub the &lt;code class=&quot;highlighter-rouge&quot;&gt;Faraday&lt;/code&gt; response. This
+enables the code to fake an HTTP request instead of of calling out to
+&lt;code class=&quot;highlighter-rouge&quot;&gt;https://some-cool-api.com&lt;/code&gt;.&lt;/p&gt;
+
+&lt;h2 id=&quot;testing-with-webmock&quot;&gt;Testing with &lt;code class=&quot;highlighter-rouge&quot;&gt;Webmock&lt;/code&gt;&lt;/h2&gt;
+
+&lt;p&gt;The &lt;code class=&quot;highlighter-rouge&quot;&gt;webmock&lt;/code&gt; gem allows developers to define custom responses for specific HTTP
+requests.&lt;/p&gt;
+
+&lt;p&gt;After installing the gem with &lt;code class=&quot;highlighter-rouge&quot;&gt;gem install webmock&lt;/code&gt;, a stub can be written that
+matches the URL and request body to return a specific response.&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;no&quot;&gt;WebMock&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;stub_request&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:put&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;https://some-cool-api.com/my_models/1&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;
+  &lt;span class=&quot;nf&quot;&gt;with&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;body: &lt;/span&gt;&lt;span class=&quot;sr&quot;&gt;/foo.*bar$/&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;
+  &lt;span class=&quot;nf&quot;&gt;to_return&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;body: &lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39;{ &quot;success&quot;: true }&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;In this case the stubbed response is &lt;code class=&quot;highlighter-rouge&quot;&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;nt&quot;&gt;&quot;success&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;kc&quot;&gt;true&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt; and will be returned
+for any &lt;code class=&quot;highlighter-rouge&quot;&gt;put&lt;/code&gt; requests to &lt;code class=&quot;highlighter-rouge&quot;&gt;https://some-cool-api.com/my_models/1&lt;/code&gt; with a request body
+matching &lt;code class=&quot;highlighter-rouge&quot;&gt;foo&lt;/code&gt; followed by &lt;code class=&quot;highlighter-rouge&quot;&gt;bar&lt;/code&gt;. This stub can be added in a shared file or
+at the beginning of &lt;code class=&quot;highlighter-rouge&quot;&gt;my_model_spec.rb&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;With the stub added, &lt;code class=&quot;highlighter-rouge&quot;&gt;my_model_spec.rb&lt;/code&gt; can be updated to remove the old
+&lt;code class=&quot;highlighter-rouge&quot;&gt;expect().to receive&lt;/code&gt; line and instead validate the response.&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# my_model_spec.rb&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;describe&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;MyModel&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;describe&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;update&#39;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;it&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;updates the model&#39;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
+      &lt;span class=&quot;n&quot;&gt;response&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;subject&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;update&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;({&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;foo: :bar&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;})&lt;/span&gt;
+      &lt;span class=&quot;n&quot;&gt;expect&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;JSON&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;parse&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;response&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;body&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)[&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39;success&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]).&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;to&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;eq&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kp&quot;&gt;true&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;The stub works and running &lt;code class=&quot;highlighter-rouge&quot;&gt;my_model_spec.rb&lt;/code&gt; shows the test passes.&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$:&lt;/span&gt; rspec my_model_spec.rb
+.
+
+Finished &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;0.00531 seconds &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;files took 0.33028 seconds to load&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+1 example, 0 failures
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Now, if &lt;code class=&quot;highlighter-rouge&quot;&gt;APIClient&lt;/code&gt; is changed in the same way as before, the test will
+appropriately fail and alert the developer that the &lt;code class=&quot;highlighter-rouge&quot;&gt;put&lt;/code&gt; method does not
+exist.&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# api_client.rb&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;APIClient&lt;/span&gt;
+  &lt;span class=&quot;c1&quot;&gt;# def put(url, body)&lt;/span&gt;
+  &lt;span class=&quot;c1&quot;&gt;#   client.put(url, body)&lt;/span&gt;
+  &lt;span class=&quot;c1&quot;&gt;# end&lt;/span&gt;
+
+  &lt;span class=&quot;kp&quot;&gt;private&lt;/span&gt;
+
+  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;client&lt;/span&gt;
+    &lt;span class=&quot;no&quot;&gt;Faraday&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;new&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39;https://some-cool-api.com&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$:&lt;/span&gt; rspec my_model_spec.rb
+F
+
+Failures:
+
+  1&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; MyModel update updates the model
+     Failure/Error: put&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39;/my_models/1&#39;&lt;/span&gt;, body&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+
+     NoMethodError:
+       undefined method &lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;put&lt;span class=&quot;s1&quot;&gt;&#39; for #&amp;lt;MyModel:0x000055f148a80018&amp;gt;
+       Did you mean?  puts
+                      putc
+     # ./my_model_spec.rb:17:in `update&#39;&lt;/span&gt;
+     &lt;span class=&quot;c&quot;&gt;# ./my_model_spec.rb:30:in `block (3 levels) in &amp;lt;top (required)&amp;gt;&#39;&lt;/span&gt;
+
+Finished &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;0.00298 seconds &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;files took 0.4606 seconds to load&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+1 example, 1 failure
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;h2 id=&quot;keep-tests-robust&quot;&gt;Keep Tests Robust&lt;/h2&gt;
+
+&lt;p&gt;Mocks and stubs in RSpec allow developers to make important assertions about
+their code. Unfortunately, mocking can also cause false positives when
+modifying real code.&lt;/p&gt;
+
+&lt;p&gt;Stubbing the response for the underlying API in this example enables a much
+more robust test that can alert developers when they make breaking changes.
+However, if the API response from &lt;code class=&quot;highlighter-rouge&quot;&gt;https://some-cool-api.com&lt;/code&gt; changes, the
+&lt;code class=&quot;highlighter-rouge&quot;&gt;webmock&lt;/code&gt; stub must be updated.&lt;/p&gt;
+
+&lt;p&gt;Stubbing and mocking tools should be used on a case by case basis. In the case
+of testing a third party API integration, providing canned responses in the test
+suite makes sense. In other “normal” Ruby or Rails tests, &lt;a href=&quot;http://jakeyesbeck.com/2017/07/12/a-few-rspec-helpful-hints/#verifying-doubles&quot;&gt;verifying doubles&lt;/a&gt;
+or other built in RSpec matchers could be all that’s needed.&lt;/p&gt;
+
+</content>
+ </entry>
  
  <entry>
    <title>Ruby Processes and Threads - Configuring a Web Server</title>

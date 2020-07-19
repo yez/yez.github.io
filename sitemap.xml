@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>http://jakeyesbeck.com/2020/07/19/making-rspec-tests-more-robust/</loc>
+    <lastmod>2020-07-19T08:00:00-04:00</lastmod>
+  </url>
+  <url>
     <loc>http://jakeyesbeck.com/2019/06/18/ruby-processes-and-threads/</loc>
     <lastmod>2019-06-18T08:00:00-04:00</lastmod>
   </url>

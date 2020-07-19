@@ -53,7 +53,7 @@
       <a class="sidebar-nav-item" href="/atom.xml">Feed</a>
     </nav>
 
-    <p class='copyright'>&copy; Jake Yesbeck 2019. All rights reserved.</p>
+    <p class='copyright'>&copy; Jake Yesbeck 2020. All rights reserved.</p>
   </div>
 </div>
 
@@ -63,154 +63,360 @@
   
   <div class="post">
     <h1 class="post-title">
-      <a href="/2016/04/03/how-to-deal-with-timezones-the-active-support-way/">
-        How to Deal with Timezones the Active Support Way
+      <a href="/2016/04/10/things-to-consider-when-metaprogramming-in-ruby/">
+        Things to Consider when Metaprogramming in Ruby
       </a>
     </h1>
 
     
 
-    <span class="post-date">03 Apr 2016</span>
+    <span class="post-date">10 Apr 2016</span>
     <span class='share-container'><ul class="share-buttons">
   <li>
-    <a href="https://www.facebook.com/sharer/sharer.php?u=http://jakeyesbeck.com/2016/04/03/how-to-deal-with-timezones-the-active-support-way/&t=How to Deal with Timezones the Active Support Way" title="Share on Facebook" target="_blank">
+    <a href="https://www.facebook.com/sharer/sharer.php?u=http://jakeyesbeck.com/2016/04/10/things-to-consider-when-metaprogramming-in-ruby/&t=Things to Consider when Metaprogramming in Ruby" title="Share on Facebook" target="_blank">
       <img src="http://jakeyesbeck.com/assets/images/facebook.svg">
     </a>
   </li>
   <li>
-    <a href="https://twitter.com/intent/tweet?source=http%3A%2F%2Fjakeyesbeck.com&text=How to Deal with Timezones the Active Support Way%20http://jakeyesbeck.com/2016/04/03/how-to-deal-with-timezones-the-active-support-way/&via=jakeyesbeck" target="_blank" title="Tweet">
+    <a href="https://twitter.com/intent/tweet?source=http%3A%2F%2Fjakeyesbeck.com&text=Things to Consider when Metaprogramming in Ruby%20http://jakeyesbeck.com/2016/04/10/things-to-consider-when-metaprogramming-in-ruby/&via=jakeyesbeck" target="_blank" title="Tweet">
       <img src="http://jakeyesbeck.com/assets/images/twitter.svg">
     </a>
   </li>
   <li>
-    <a href="https://plus.google.com/share?url=http://jakeyesbeck.com/2016/04/03/how-to-deal-with-timezones-the-active-support-way/" target="_blank" title="Share on Google+">
+    <a href="https://plus.google.com/share?url=http://jakeyesbeck.com/2016/04/10/things-to-consider-when-metaprogramming-in-ruby/" target="_blank" title="Share on Google+">
       <img src="http://jakeyesbeck.com/assets/images/google_plus.svg">
     </a>
   </li>
 
   <li>
-    <a href="https://news.ycombinator.com/submitlink?u=http://jakeyesbeck.com/2016/04/03/how-to-deal-with-timezones-the-active-support-way/&t=How to Deal with Timezones the Active Support Way" target="_blank" title="Share on Hacker News">
+    <a href="https://news.ycombinator.com/submitlink?u=http://jakeyesbeck.com/2016/04/10/things-to-consider-when-metaprogramming-in-ruby/&t=Things to Consider when Metaprogramming in Ruby" target="_blank" title="Share on Hacker News">
       <img src="http://jakeyesbeck.com/assets/images/ycomb.svg">
     </a>
   </li>
 
   <li>
-    <a href="https://getpocket.com/save?url=http://jakeyesbeck.com/2016/04/03/how-to-deal-with-timezones-the-active-support-way/&title=How to Deal with Timezones the Active Support Way" target="_blank" title="Add to Pocket">
+    <a href="https://getpocket.com/save?url=http://jakeyesbeck.com/2016/04/10/things-to-consider-when-metaprogramming-in-ruby/&title=Things to Consider when Metaprogramming in Ruby" target="_blank" title="Add to Pocket">
       <img src="http://jakeyesbeck.com/assets/images/pocket.svg">
     </a>
   </li>
   <li>
-    <a href="http://www.reddit.com/submit?url=http://jakeyesbeck.com/2016/04/03/how-to-deal-with-timezones-the-active-support-way/&title=How to Deal with Timezones the Active Support Way" target="_blank" title="Submit to Reddit">
+    <a href="http://www.reddit.com/submit?url=http://jakeyesbeck.com/2016/04/10/things-to-consider-when-metaprogramming-in-ruby/&title=Things to Consider when Metaprogramming in Ruby" target="_blank" title="Submit to Reddit">
       <img src="http://jakeyesbeck.com/assets/images/reddit.svg">
     </a>
   </li>
 </ul>
 </span>
 
-    <p><em>“Well the code is bad because we had to…”</em> is a phrase one might hear when discussing timezone offsets or daylight savings time considerations.</p>
+    <p>Metaprogramming in Ruby is a polarizing topic. The most common purpose of Ruby metaprogramming is for code to alter itself at runtime. Metaprogramming can be used to achieve terse and more flexible code. However, it is not without its cost. As with most things, nothing of value is free, even metaprogramming.</p>
 
-<p>Unless a developer is fortunate enough to work at a company whose userbase is entirely located in the UTC timezone, writing software aware of different timezones can be a daunting task. Luckily, Ruby on Rails’ <code class="highlighter-rouge">ActiveSupport</code> library has some very nice built in features that can prove invaluable when facing time related issues.</p>
+<p>Undoubtedly, there is a time and place for metaprogramming; but, awareness of concessions that need to be made to support a metaprogrammed solution is important.</p>
 
-<h2 id="built-in-timezones">Built-in Timezones</h2>
+<h2 id="code-discovery-and-readability">Code Discovery and Readability</h2>
 
-<p><code class="highlighter-rouge">ActiveSupport</code> in Ruby on Rails 4.0+ has a built in list of all supported timezones on the <code class="highlighter-rouge">TimeZone</code> class:</p>
+<p>One problem with metaprogramming solutions are their obstruction of code discovery. When entering a new project or simply trying to re-familiarize oneself with an existing one, tracing code execution in a text editor can be quite difficult if method definitions do not exist.</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="no">ActiveSupport</span><span class="o">::</span><span class="no">TimeZone</span><span class="p">.</span><span class="nf">all</span><span class="p">.</span><span class="nf">map</span><span class="p">(</span><span class="o">&amp;</span><span class="ss">:name</span><span class="p">)</span>
-<span class="c1">#=&gt; ["American Samoa", "International Date Line West", "Midway Island", "Hawaii", "Alaska", "Pacific Time (US &amp; Canada)", "Tijuana", "Arizona", "Chihuahua", "Mazatlan", "Mountain Time (US &amp; Canada)", "Central America", "Central Time (US &amp; Canada)", "Guadalajara", ...]</span>
+<p>For example, we can assume that a <code class="highlighter-rouge">User</code> class exists with a set of metaprogrammed methods:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">class</span> <span class="nc">User</span>
+  <span class="p">[</span>
+    <span class="ss">:password</span><span class="p">,</span>
+    <span class="ss">:email</span><span class="p">,</span>
+    <span class="ss">:first_name</span><span class="p">,</span>
+    <span class="ss">:last_name</span>
+  <span class="p">].</span><span class="nf">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">attribute</span><span class="o">|</span>
+    <span class="n">define_method</span><span class="p">(</span><span class="ss">:"has_</span><span class="si">#{</span><span class="n">attribute</span><span class="si">}</span><span class="ss">?"</span><span class="p">)</span> <span class="k">do</span>
+      <span class="nb">self</span><span class="p">.</span><span class="nf">send</span><span class="p">(</span><span class="n">attribute</span><span class="p">).</span><span class="nf">nil?</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span>
 </code></pre>
 </div>
 
-<p>This list of timezones can be used when parsing strings into <code class="highlighter-rouge">Time</code> objects and converting an existing <code class="highlighter-rouge">Time</code> object from one timezone to another. For working with timezones in the United States, a handy <code class="highlighter-rouge">us_zones</code> method is also available on the same class.</p>
+<p>Although a little contrived, this code is a list of simple convenience methods on a <code class="highlighter-rouge">User</code> class. This solution is easily extended to include additional attributes without a full method definition per attribute.</p>
 
-<p>One interesting detail about this list of timezones is the lack of daylight savings time qualifiers. Keeping the timezones agnostic of daylight savings helps simplify their use. A developer does not need to worry about using one timezone object over another due to the time of the year.</p>
+<p>However, these methods can not be found using <code class="highlighter-rouge">grep</code>, silver searcher, or other “find all” tools. Since the method <code class="highlighter-rouge">has_password?</code> is never explicitly defined in the code, it is not discoverable.</p>
 
-<h2 id="timeusezone"><code class="highlighter-rouge">Time.use_zone</code></h2>
+<h3 id="a-work-around">A Work Around:</h3>
 
-<p>The <code class="highlighter-rouge">ActiveSupport</code> library adds some functionality to built in Ruby classes. One of those additions is the ability to set and retrieve the <code class="highlighter-rouge">zone</code> attribute on the <code class="highlighter-rouge">Time</code> class. After a <code class="highlighter-rouge">zone</code> is set, it can be used when parsing strings into <code class="highlighter-rouge">Time</code> objects:</p>
+<p>To combat this issue, some developers choose to write a comment listing the defined method names above the metaprogramming block. This simple solution can greatly help the readability of the code:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="no">Time</span><span class="p">.</span><span class="nf">zone</span> <span class="o">=</span> <span class="s1">'Pacific Time (US &amp; Canada)'</span>
-<span class="no">Time</span><span class="p">.</span><span class="nf">zone</span><span class="p">.</span><span class="nf">parse</span><span class="p">(</span><span class="s1">'2016-04-01 10:00:00'</span><span class="p">)</span>
-<span class="c1">#=&gt; Fri, 01 Apr 2016 10:00:00 PDT -07:00</span>
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">class</span> <span class="nc">User</span>
+  <span class="c1"># has_password?, has_email?, has_first_name?,</span>
+  <span class="c1">#  has_last_name? method definitions</span>
+  <span class="p">[</span>
+    <span class="ss">:password</span><span class="p">,</span>
+    <span class="ss">:email</span><span class="p">,</span>
+    <span class="ss">:first_name</span><span class="p">,</span>
+    <span class="ss">:last_name</span>
+  <span class="p">].</span><span class="nf">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">attribute</span><span class="o">|</span>
+    <span class="n">define_method</span><span class="p">(</span><span class="ss">:"has_</span><span class="si">#{</span><span class="n">attribute</span><span class="si">}</span><span class="ss">?"</span><span class="p">)</span> <span class="k">do</span>
+      <span class="nb">self</span><span class="p">.</span><span class="nf">send</span><span class="p">(</span><span class="n">attribute</span><span class="p">).</span><span class="nf">nil?</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span>
 </code></pre>
 </div>
 
-<p>This code takes a timestamp string without a timezone specified and uses the value of <code class="highlighter-rouge">Time.zone</code> to correctly represent the time in the Pacific timezone.</p>
+<h2 id="performance">Performance</h2>
 
-<p>However, an immediate red flag is present in this code. The <code class="highlighter-rouge">zone</code> attribute persists for the rest of the Ruby runtime, potentially causing unexpected behaviour at a later time.</p>
+<p>Depending on the amount of times a piece of code is executed, performance considerations can be extremely important. “Hot code” is a term used to describe code that is called frequently during an application’s request cycle. Since not all code is created equally, understanding the performance implications of different metaprogramming approaches is imperative when writing or modifying hot code.</p>
 
-<p>Luckily, <code class="highlighter-rouge">ActiveSupport</code> solves this problem with the <code class="highlighter-rouge">use_zone</code> method. This method accepts the same set of strings as its single argument and expects a block.</p>
+<h3 id="the-setup">The Setup</h3>
 
-<p>Within the passed in block is the only place <code class="highlighter-rouge">Time.zone</code> is affected, eliminating the possibility of a <code class="highlighter-rouge">zone</code> sticking around longer than intended:</p>
+<p>An example application needs to handle incoming data at scale. Upon receiving the data, it must make it accessible to the rest of the application. Myriad options exist to solve this problem, but we can assume that only a few are feasible for this Ruby codebase.</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="no">Time</span><span class="p">.</span><span class="nf">zone</span><span class="p">.</span><span class="nf">name</span>
-<span class="c1">#=&gt; "UTC"</span>
+<p>The incoming data looks like the following:</p>
 
-<span class="no">Time</span><span class="p">.</span><span class="nf">use_zone</span><span class="p">(</span><span class="s1">'Pacific Time (US &amp; Canada)'</span><span class="p">)</span> <span class="k">do</span>
-  <span class="no">Time</span><span class="p">.</span><span class="nf">zone</span><span class="p">.</span><span class="nf">name</span>
-  <span class="c1"># =&gt; "Pacific Time (US &amp; Canada)"</span>
-  <span class="no">Time</span><span class="p">.</span><span class="nf">zone</span><span class="p">.</span><span class="nf">parse</span><span class="p">(</span><span class="s1">'2016-04-01 10:00:00'</span><span class="p">)</span>
-  <span class="c1">#=&gt; Fri, 01 Apr 2016 10:00:00 PDT -07:00</span>
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nt">"user"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Some User"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"phones"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+      </span><span class="s2">"818-555-5555"</span><span class="p">,</span><span class="w">
+      </span><span class="s2">"415-555-5555"</span><span class="w">
+    </span><span class="p">],</span><span class="w">
+    </span><span class="nt">"email"</span><span class="p">:</span><span class="w"> </span><span class="s2">"email@whatever.com"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"birthday"</span><span class="p">:</span><span class="w"> </span><span class="s2">"12-12-1900"</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+</div>
+
+<p><em>Note: This data will be referred to in the following examples as <code class="highlighter-rouge">incoming_data</code> and we can assume it was been decoded from <code class="highlighter-rouge">JSON</code> into a Ruby <code class="highlighter-rouge">Hash</code>.</em></p>
+
+<h3 id="all-methods">1. All Methods</h3>
+
+<p>One way to accept and integrate this incoming data would be create a class which maps all attributes under the <code class="highlighter-rouge">'user'</code> key to methods:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">class</span> <span class="nc">UserMetaMethods</span>
+  <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="nb">hash</span><span class="p">)</span>
+    <span class="nb">hash</span><span class="p">.</span><span class="nf">each_pair</span> <span class="k">do</span> <span class="o">|</span><span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="o">|</span>
+      <span class="nb">self</span><span class="p">.</span><span class="nf">class</span><span class="p">.</span><span class="nf">send</span><span class="p">(</span><span class="ss">:attr_accessor</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span>
+      <span class="nb">self</span><span class="p">.</span><span class="nf">send</span><span class="p">(</span><span class="ss">:"</span><span class="si">#{</span><span class="n">key</span><span class="si">}</span><span class="ss">="</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
 <span class="k">end</span>
 
-<span class="no">Time</span><span class="p">.</span><span class="nf">zone</span><span class="p">.</span><span class="nf">name</span>
-<span class="c1">#=&gt; "UTC"</span>
+<span class="n">user</span> <span class="o">=</span> <span class="no">UserMetaMethods</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="n">incoming_data</span><span class="p">[</span><span class="s1">'user'</span><span class="p">])</span>
+<span class="n">user</span><span class="p">.</span><span class="nf">email</span>
+<span class="c1"># =&gt; email@whatever.com</span>
 </code></pre>
 </div>
 
-<p>This temporary <code class="highlighter-rouge">zone</code> setting can be very helpful if a set of users are processed, each with their own respective timezone.</p>
+<p>This solution makes accessing the incoming data very consumer friendly. All attributes appear as methods that return positively to <code class="highlighter-rouge">respond_to?</code> and have corresponding instance variables per attribute.</p>
 
-<h2 id="timewithzoneintimezone"><code class="highlighter-rouge">TimeWithZone.in_time_zone</code></h2>
+<h3 id="methodmissing">2. <code class="highlighter-rouge">method_missing</code></h3>
 
-<p>When dealing with <code class="highlighter-rouge">Time</code>, <code class="highlighter-rouge">Date</code> and <code class="highlighter-rouge">DateTime</code> objects, converting each from one timezone to another can be tedious. The <code class="highlighter-rouge">in_time_zone</code> method removes some complexity from those operations.</p>
+<p>A group of metaprogramming solutions would not be complete without one utilizing <code class="highlighter-rouge">method_missing</code>. With <code class="highlighter-rouge">method_missing</code>, a non-existent method call can be intercepted on an object and evaluated with additional data unbeknownst to the original caller.</p>
 
-<p>Used alone, the <code class="highlighter-rouge">in_time_zone</code> can transform an existing object into an instance of <code class="highlighter-rouge">TimeWithZone</code>:</p>
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">class</span> <span class="nc">UserMethodMissing</span>
+  <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="nb">hash</span><span class="p">)</span>
+    <span class="vi">@hash</span> <span class="o">=</span> <span class="nb">hash</span>
+  <span class="k">end</span>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="n">now</span> <span class="o">=</span> <span class="no">Time</span><span class="p">.</span><span class="nf">now</span>
-<span class="c1"># =&gt; 2016-04-04 03:55:24 +0000</span>
-<span class="n">now</span><span class="p">.</span><span class="nf">in_time_zone</span><span class="p">(</span><span class="s1">'Hawaii'</span><span class="p">)</span>
-<span class="c1"># =&gt; Sun, 03 Apr 2016 17:55:24 HST -10:00</span>
+  <span class="k">def</span> <span class="nf">method_missing</span><span class="p">(</span><span class="n">method_name</span><span class="p">,</span> <span class="o">*</span><span class="n">arguments</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">block</span><span class="p">)</span>
+    <span class="n">key</span> <span class="o">=</span> <span class="n">method_name</span><span class="p">.</span><span class="nf">to_s</span>
+    <span class="k">if</span> <span class="vi">@hash</span><span class="p">.</span><span class="nf">key?</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+      <span class="vi">@hash</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+    <span class="k">else</span>
+      <span class="k">super</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">respond_to_missing?</span><span class="p">(</span><span class="n">method_name</span><span class="p">,</span> <span class="n">include_private</span> <span class="o">=</span> <span class="kp">false</span><span class="p">)</span>
+    <span class="vi">@hash</span><span class="p">.</span><span class="nf">key?</span><span class="p">(</span><span class="n">method_name</span><span class="p">.</span><span class="nf">to_s</span><span class="p">)</span> <span class="o">||</span> <span class="k">super</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="n">user</span> <span class="o">=</span> <span class="no">UserMethodMissing</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="n">incoming_data</span><span class="p">[</span><span class="s1">'user'</span><span class="p">])</span>
+<span class="n">user</span><span class="p">.</span><span class="nf">email</span>
+<span class="c1"># =&gt; email@whatever.com</span>
 </code></pre>
 </div>
 
-<p>In any sane system, timestamps in a database are always stored in UTC, aka Zulu, time. When exposing these timestamps to users, the <code class="highlighter-rouge">in_time_zone</code> method can quickly switch the timestamp to a user’s local time.</p>
+<p>The <code class="highlighter-rouge">respond_to_missing?</code> method is also defined to enable <code class="highlighter-rouge">respond_to?</code> and <code class="highlighter-rouge">method</code> calls to execute successfully. <a href="https://robots.thoughtbot.com/always-define-respond-to-missing-when-overriding">Read more information about <code class="highlighter-rouge">respond_to_missing?</code> here.</a></p>
 
-<p>To see a more creative use of <code class="highlighter-rouge">in_time_zone</code>, we can assume that an application must solve a scheduling problem. An example application wants to send its users an email at the exact same time relative to a user’s timezone. Regardless of where a user lives, they should receive an email at 10:30 AM local time.</p>
+<p><em>Note: Patterns equivalent to this are used in some popular libraries like <code class="highlighter-rouge">OpenStruct</code> and <code class="highlighter-rouge">Hashie</code> to achieve similar results.</em></p>
 
-<p>A naive approach might not yield the intended result:</p>
+<h3 id="regular-object">3. “Regular” Object</h3>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="n">user</span><span class="p">.</span><span class="nf">time_zone</span>
-<span class="c1"># =&gt; Hawaii</span>
-<span class="n">send_time</span> <span class="o">=</span> <span class="no">Time</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="mi">2016</span><span class="p">,</span> <span class="mo">04</span><span class="p">,</span> <span class="mo">01</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">30</span><span class="p">)</span>
-<span class="c1"># =&gt; 2016-04-01 10:30:00 +0000</span>
-<span class="n">send_time</span><span class="p">.</span><span class="nf">in_time_zone</span><span class="p">(</span><span class="n">user</span><span class="p">.</span><span class="nf">time_zone</span><span class="p">)</span>
-<span class="c1"># =&gt; Fri, 01 Apr 2016 00:30:00 HST -10:00</span>
+<p>As a control, a regular Ruby object can be created with specific attributes defined:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">class</span> <span class="nc">UserRegular</span>
+  <span class="kp">attr_reader</span> <span class="ss">:name</span><span class="p">,</span>
+              <span class="ss">:phones</span><span class="p">,</span>
+              <span class="ss">:email</span><span class="p">,</span>
+              <span class="ss">:birthday</span>
+
+  <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="nb">hash</span><span class="p">)</span>
+    <span class="vi">@name</span> <span class="o">=</span> <span class="nb">hash</span><span class="p">[</span><span class="s1">'name'</span><span class="p">]</span>
+    <span class="vi">@phones</span> <span class="o">=</span> <span class="nb">hash</span><span class="p">[</span><span class="s1">'phones'</span><span class="p">]</span>
+    <span class="vi">@email</span> <span class="o">=</span> <span class="nb">hash</span><span class="p">[</span><span class="s1">'email'</span><span class="p">]</span>
+    <span class="vi">@birthday</span> <span class="o">=</span> <span class="nb">hash</span><span class="p">[</span><span class="s1">'birthday'</span><span class="p">]</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="n">user</span> <span class="o">=</span> <span class="no">UserRegular</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="n">incoming_data</span><span class="p">[</span><span class="s1">'user'</span><span class="p">])</span>
+<span class="n">user</span><span class="p">.</span><span class="nf">email</span>
+<span class="c1"># =&gt; email@whatever.com</span>
 </code></pre>
 </div>
 
-<p>Whoops, that is not right at all. This code initialized a <code class="highlighter-rouge">Time</code> object for the “correct” send time but then <code class="highlighter-rouge">in_time_zone</code> not only moved the timezone of that object, it also modified the actual time. This would result in all users getting an email at the same exact moment but at an inconvenient time relative to where they live.</p>
+<p>An immediate downside to this approach is: if the contract of the external service changes this object may not be initialized with all pertinent data.</p>
 
-<p>Potential solutions to this problem might include modifying the timezone part of an outputted string (the <code class="highlighter-rouge">"+0000"</code> at the end) and re-parsing it, but that solution can be prone to error and hard to understand.</p>
+<h3 id="a-hash">4. A <code class="highlighter-rouge">Hash</code></h3>
 
-<p>Since the <code class="highlighter-rouge">in_time_zone</code> method works on the <code class="highlighter-rouge">Date</code> class, the simplest approach would be to initialize a new <code class="highlighter-rouge">DateTime</code> object in a user’s timezone and add 10.5 hours to it:</p>
+<p>No additional code is required for this approach, a consumer would simply use the resulting Ruby <code class="highlighter-rouge">Hash</code> after the received <code class="highlighter-rouge">JSON</code> is parsed:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="n">user</span><span class="p">.</span><span class="nf">time_zone</span>
-<span class="c1"># =&gt; Hawaii</span>
-<span class="n">beginning_of_day</span> <span class="o">=</span> <span class="no">Date</span><span class="p">.</span><span class="nf">today</span><span class="p">.</span><span class="nf">in_time_zone</span><span class="p">(</span><span class="n">user</span><span class="p">.</span><span class="nf">time_zone</span><span class="p">)</span>
-<span class="c1"># =&gt; Sun, 03 Apr 2016 00:00:00 HST -10:00</span>
-<span class="n">beginning_of_day</span> <span class="o">+=</span> <span class="p">(</span><span class="mi">10</span><span class="o">.</span><span class="mi">5</span><span class="p">).</span><span class="nf">hours</span>
-<span class="c1"># =&gt; Sun, 03 Apr 2016 10:30:00 HST -10:00</span>
-<span class="n">sender</span> <span class="o">=</span> <span class="no">ImportantEmailSender</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
-<span class="n">sender</span><span class="p">.</span><span class="nf">send_at!</span><span class="p">(</span><span class="n">beginning_of_day</span><span class="p">)</span>
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="n">incoming_data</span><span class="p">[</span><span class="s1">'user'</span><span class="p">][</span><span class="s1">'email'</span><span class="p">]</span>
+<span class="c1"># =&gt; email@whatever.com</span>
 </code></pre>
 </div>
 
-<p>Great! An email will be sent at 10:30 AM Hawaii time and we successfully avoided any time string munging or other strange object casting. A user in London can also receive an email at exactly 10:30 AM their local time and this code need not grow in complexity.</p>
+<p>Not a metaprogramming solution, but still a valid way of handling the passed in data. Using a simple <code class="highlighter-rouge">Hash</code> does not grant the flexibility of the other solutions but can be a great base-case for performance testing.</p>
 
-<h2 id="saving-time">Saving Time</h2>
+<h3 id="how-they-compare">How They Compare</h3>
 
-<p>Whether in code or everyday life, it seems that struggling with time is something we as humans are simply destined to do. Some good news is that <code class="highlighter-rouge">ActiveSupport</code> may not grant you any more wall clock time, but could save you some when wrangling different pieces of scheduling code together.</p>
+<p>Finally, the exciting part: potentially relevant performance benchmarks.</p>
 
-<p>As usual, the API of the <code class="highlighter-rouge">ActiveSupport::TimeZone</code> class is much larger than just the two methods illustrated here. For more information, the <a href="http://api.rubyonrails.org/classes/ActiveSupport/TimeZone.html">offical ActiveSupport documentation</a> is a great place to read further.</p>
+<p>The library we will use to test how each of these solutions does is <a href="https://github.com/evanphx/benchmark-ips"><code class="highlighter-rouge">benchmark/ips</code></a>.</p>
+
+<p>This library makes it simple to define different implementation sections and then compare them:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="nb">require</span> <span class="s1">'benchmark/ips'</span>
+
+<span class="no">Benchmark</span><span class="p">.</span><span class="nf">ips</span> <span class="k">do</span> <span class="o">|</span><span class="n">x</span><span class="o">|</span>
+  <span class="n">x</span><span class="p">.</span><span class="nf">report</span><span class="p">(</span><span class="s1">'UserMetaMethods'</span><span class="p">)</span> <span class="k">do</span>
+    <span class="mi">1000</span><span class="p">.</span><span class="nf">times</span> <span class="k">do</span>
+      <span class="n">u</span> <span class="o">=</span> <span class="no">UserMetaMethods</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="n">incoming_data</span><span class="p">[</span><span class="s1">'user'</span><span class="p">])</span>
+      <span class="n">u</span><span class="p">.</span><span class="nf">email</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+
+  <span class="n">x</span><span class="p">.</span><span class="nf">report</span><span class="p">(</span><span class="s1">'UserMethodMissing'</span><span class="p">)</span> <span class="k">do</span>
+    <span class="mi">1000</span><span class="p">.</span><span class="nf">times</span> <span class="k">do</span>
+      <span class="n">u</span> <span class="o">=</span> <span class="no">UserMethodMissing</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="n">incoming_data</span><span class="p">[</span><span class="s1">'user'</span><span class="p">])</span>
+      <span class="n">u</span><span class="p">.</span><span class="nf">email</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+
+  <span class="n">x</span><span class="p">.</span><span class="nf">report</span><span class="p">(</span><span class="s1">'UserRegular'</span><span class="p">)</span> <span class="k">do</span>
+    <span class="mi">1000</span><span class="p">.</span><span class="nf">times</span> <span class="k">do</span>
+      <span class="n">u</span> <span class="o">=</span> <span class="no">UserRegular</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="n">incoming_data</span><span class="p">[</span><span class="s1">'user'</span><span class="p">])</span>
+      <span class="n">u</span><span class="p">.</span><span class="nf">email</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+
+  <span class="n">x</span><span class="p">.</span><span class="nf">report</span><span class="p">(</span><span class="s1">'Hash'</span><span class="p">)</span> <span class="k">do</span>
+    <span class="mi">1000</span><span class="p">.</span><span class="nf">times</span> <span class="k">do</span>
+      <span class="n">u</span> <span class="o">=</span> <span class="no">Hash</span><span class="p">(</span><span class="n">incoming_data</span><span class="p">[</span><span class="s1">'user'</span><span class="p">])</span>
+      <span class="n">u</span><span class="p">[</span><span class="s1">'email'</span><span class="p">]</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+
+  <span class="n">x</span><span class="p">.</span><span class="nf">compare!</span>
+<span class="k">end</span>
+</code></pre>
+</div>
+
+<p>Each <code class="highlighter-rouge">report</code> corresponds to a solution described above. The <code class="highlighter-rouge">Hash</code> report did not <em>need</em> to initialize a new object, but for consistency’s sake, a new <code class="highlighter-rouge">Hash</code> is initialized from everything under the <code class="highlighter-rouge">'user'</code> key of the original <code class="highlighter-rouge">Hash</code>.</p>
+
+<p>Running this code results in:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>Calculating -------------------------------------
+   UserMetaMethods     79.294  <span class="o">(</span>± 2.5%<span class="o">)</span> i/s -    399.000
+ UserMethodMissing      1.531k <span class="o">(</span>± 1.2%<span class="o">)</span> i/s -      7.791k
+       UserRegular    913.295  <span class="o">(</span>± 1.4%<span class="o">)</span> i/s -      4.628k
+              Hash      3.141k <span class="o">(</span>± 1.0%<span class="o">)</span> i/s -     15.860k
+
+Comparison:
+              Hash:     3141.2 i/s
+ UserMethodMissing:     1530.5 i/s - 2.05x slower
+       UserRegular:      913.3 i/s - 3.44x slower
+   UserMetaMethods:       79.3 i/s - 39.61x slower
+</code></pre>
+</div>
+
+<p>Wow! Aside from simply using a <code class="highlighter-rouge">Hash</code>, the <code class="highlighter-rouge">method_missing</code> implementation is the fastest. Quick, everyone go change all the code to use <code class="highlighter-rouge">method_missing</code>! No. Stop. Do not do that.</p>
+
+<p>While it might be faster than the <code class="highlighter-rouge">UserRegular</code> implementation, it is not without its drawbacks. A <code class="highlighter-rouge">method_missing</code> solution certainly has value in a variety of situations but a simple benchmark should not persuade anyone to simply switch their code around to gain the “speed up”.</p>
+
+<p>What about existing libraries that have similar behaviour to <code class="highlighter-rouge">method_missing</code> (i.e. <code class="highlighter-rouge">Hashie</code> and <code class="highlighter-rouge">OpenStruct</code>)?</p>
+
+<p>To add them to the existing benchmark, the corresponding classes must be made:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="nb">require</span> <span class="s1">'ostruct'</span>
+
+<span class="k">class</span> <span class="nc">UserOpenStruct</span> <span class="o">&lt;</span> <span class="no">OpenStruct</span>
+<span class="k">end</span>
+
+<span class="nb">require</span> <span class="s1">'hashie'</span>
+
+<span class="k">class</span> <span class="nc">UserMash</span> <span class="o">&lt;</span> <span class="no">Hashie</span><span class="o">::</span><span class="no">Mash</span>
+<span class="k">end</span>
+</code></pre>
+</div>
+
+<p>Then two new <code class="highlighter-rouge">report</code> calls can add them to the existing benchmark:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="no">Benchmark</span><span class="p">.</span><span class="nf">ips</span> <span class="k">do</span> <span class="o">|</span><span class="n">x</span><span class="o">|</span>
+  <span class="c1"># ...</span>
+
+  <span class="n">x</span><span class="p">.</span><span class="nf">report</span><span class="p">(</span><span class="s1">'OpenStruct'</span><span class="p">)</span> <span class="k">do</span>
+    <span class="mi">1000</span><span class="p">.</span><span class="nf">times</span> <span class="k">do</span>
+      <span class="n">u</span> <span class="o">=</span> <span class="no">UserOpenStruct</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="n">incoming_data</span><span class="p">[</span><span class="s1">'user'</span><span class="p">])</span>
+      <span class="n">u</span><span class="p">.</span><span class="nf">email</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+
+  <span class="n">x</span><span class="p">.</span><span class="nf">report</span><span class="p">(</span><span class="s1">'UserMash'</span><span class="p">)</span> <span class="k">do</span>
+    <span class="mi">1000</span><span class="p">.</span><span class="nf">times</span> <span class="k">do</span>
+      <span class="n">u</span> <span class="o">=</span> <span class="no">UserMash</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="n">incoming_data</span><span class="p">[</span><span class="s1">'user'</span><span class="p">])</span>
+      <span class="n">u</span><span class="p">.</span><span class="nf">email</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+
+  <span class="c1"># ...</span>
+<span class="k">end</span>
+</code></pre>
+</div>
+
+<p>The results of these two additions is a bit of a surprise:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>Calculating -------------------------------------
+   UserMetaMethods     79.050  <span class="o">(</span>± 2.5%<span class="o">)</span> i/s -    399.000
+ UserMethodMissing      1.537k <span class="o">(</span>± 1.3%<span class="o">)</span> i/s -      7.752k
+       UserRegular    914.824  <span class="o">(</span>± 1.4%<span class="o">)</span> i/s -      4.576k
+        OpenStruct     49.954  <span class="o">(</span>± 6.0%<span class="o">)</span> i/s -    250.000
+          UserMash    194.411  <span class="o">(</span>± 1.5%<span class="o">)</span> i/s -    988.000
+              Hash      3.140k <span class="o">(</span>± 0.9%<span class="o">)</span> i/s -     15.759k
+
+Comparison:
+              Hash:     3140.1 i/s
+ UserMethodMissing:     1536.9 i/s - 2.04x slower
+       UserRegular:      914.8 i/s - 3.43x slower
+          UserMash:      194.4 i/s - 16.15x slower
+   UserMetaMethods:       79.0 i/s - 39.72x slower
+        OpenStruct:       50.0 i/s - 62.86x slower
+</code></pre>
+</div>
+
+<p>Despite <code class="highlighter-rouge">OpenStruct</code> and <code class="highlighter-rouge">Hashie</code> seeming very similar to our homegrown <code class="highlighter-rouge">method_missing</code> solution, both yielded worse results. However, like other metaprogramming solutions, both <code class="highlighter-rouge">OpenStruct</code> and  <code class="highlighter-rouge">Hashie</code> make up for this speed deficiency with flexibility.</p>
+
+<p>If this were a real problem in a production application, <code class="highlighter-rouge">OpenStruct</code> and <code class="highlighter-rouge">Hashie</code> could certainly both be viable solutions. Unless the code path to utilize these libraries was scorching hot, their performance issues might not be a factor.</p>
+
+<h2 id="why-the-slowdown">Why the Slowdown?</h2>
+
+<p>The reason that some metaprogramming solutions are slow has partially to do with the Ruby inline method cache. In Ruby, the inline method cache is responsible for storing methods that it knows about so as to avoid a costly look up operation every time. Metaprogramming interferes with this built in cache by invalidating its cache key.</p>
+
+<p>Every time a class is reopened or a method is defined on a class, pieces of the inline method cache key change, resulting in a cache miss and method lookup. Metaprogrammed code (especially code that executes at every <code class="highlighter-rouge">Object.new</code> like <code class="highlighter-rouge">UserMetaMethods</code>) does not benefit from the inline method caching in the same ways as “normal” code does. For much more information, <a href="http://tenderlovemaking.com/2015/12/23/inline-caching-in-mri.html">a man much smarter than I wrote a great article explaining Ruby inline method caching in detail</a>.</p>
+
+<h2 id="use-the-right-tool-for-the-job">Use the Right Tool for the Job</h2>
+
+<p>When iterating through a list of options, no single data point is sufficient enough to rule one option superior to all others. Benchmarks should be treated as a single data point and bring depth to a comparison, not rule it. After all, who cares how slow a piece of code is if it is never run?</p>
+
+<p>Metaprogramming is a very powerful tool in the Ruby language that should be wielded with care. Like anything, using metaprogramming too much can cause unmaintainable code. This sort of code might be great for job security, but could be less performant, unreadable, and unmaintainable by coworkers.</p>
+
+<p>When used correctly and in appropriate circumstances, metaprogramming can be a great asset. The trick is knowing when to use it and when to refrain. Sometimes just using a <code class="highlighter-rouge">Hash</code> might be the best solution.</p>
 
   </div>
   

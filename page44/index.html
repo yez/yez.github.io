@@ -53,7 +53,7 @@
       <a class="sidebar-nav-item" href="/atom.xml">Feed</a>
     </nav>
 
-    <p class='copyright'>&copy; Jake Yesbeck 2019. All rights reserved.</p>
+    <p class='copyright'>&copy; Jake Yesbeck 2020. All rights reserved.</p>
   </div>
 </div>
 
@@ -63,171 +63,75 @@
   
   <div class="post">
     <h1 class="post-title">
-      <a href="/2015/07/19/just-learn-rails-part-2/">
-        Just learn Rails (Part 2)
+      <a href="/2015/07/26/ninety-days-of-commits/">
+        Ninety Days of Commits
       </a>
     </h1>
 
     
 
-    <span class="post-date">19 Jul 2015</span>
+    <span class="post-date">26 Jul 2015</span>
     <span class='share-container'><ul class="share-buttons">
   <li>
-    <a href="https://www.facebook.com/sharer/sharer.php?u=http://jakeyesbeck.com/2015/07/19/just-learn-rails-part-2/&t=Just learn Rails (Part 2)" title="Share on Facebook" target="_blank">
+    <a href="https://www.facebook.com/sharer/sharer.php?u=http://jakeyesbeck.com/2015/07/26/ninety-days-of-commits/&t=Ninety Days of Commits" title="Share on Facebook" target="_blank">
       <img src="http://jakeyesbeck.com/assets/images/facebook.svg">
     </a>
   </li>
   <li>
-    <a href="https://twitter.com/intent/tweet?source=http%3A%2F%2Fjakeyesbeck.com&text=Just learn Rails (Part 2)%20http://jakeyesbeck.com/2015/07/19/just-learn-rails-part-2/&via=jakeyesbeck" target="_blank" title="Tweet">
+    <a href="https://twitter.com/intent/tweet?source=http%3A%2F%2Fjakeyesbeck.com&text=Ninety Days of Commits%20http://jakeyesbeck.com/2015/07/26/ninety-days-of-commits/&via=jakeyesbeck" target="_blank" title="Tweet">
       <img src="http://jakeyesbeck.com/assets/images/twitter.svg">
     </a>
   </li>
   <li>
-    <a href="https://plus.google.com/share?url=http://jakeyesbeck.com/2015/07/19/just-learn-rails-part-2/" target="_blank" title="Share on Google+">
+    <a href="https://plus.google.com/share?url=http://jakeyesbeck.com/2015/07/26/ninety-days-of-commits/" target="_blank" title="Share on Google+">
       <img src="http://jakeyesbeck.com/assets/images/google_plus.svg">
     </a>
   </li>
 
   <li>
-    <a href="https://news.ycombinator.com/submitlink?u=http://jakeyesbeck.com/2015/07/19/just-learn-rails-part-2/&t=Just learn Rails (Part 2)" target="_blank" title="Share on Hacker News">
+    <a href="https://news.ycombinator.com/submitlink?u=http://jakeyesbeck.com/2015/07/26/ninety-days-of-commits/&t=Ninety Days of Commits" target="_blank" title="Share on Hacker News">
       <img src="http://jakeyesbeck.com/assets/images/ycomb.svg">
     </a>
   </li>
 
   <li>
-    <a href="https://getpocket.com/save?url=http://jakeyesbeck.com/2015/07/19/just-learn-rails-part-2/&title=Just learn Rails (Part 2)" target="_blank" title="Add to Pocket">
+    <a href="https://getpocket.com/save?url=http://jakeyesbeck.com/2015/07/26/ninety-days-of-commits/&title=Ninety Days of Commits" target="_blank" title="Add to Pocket">
       <img src="http://jakeyesbeck.com/assets/images/pocket.svg">
     </a>
   </li>
   <li>
-    <a href="http://www.reddit.com/submit?url=http://jakeyesbeck.com/2015/07/19/just-learn-rails-part-2/&title=Just learn Rails (Part 2)" target="_blank" title="Submit to Reddit">
+    <a href="http://www.reddit.com/submit?url=http://jakeyesbeck.com/2015/07/26/ninety-days-of-commits/&title=Ninety Days of Commits" target="_blank" title="Submit to Reddit">
       <img src="http://jakeyesbeck.com/assets/images/reddit.svg">
     </a>
   </li>
 </ul>
 </span>
 
-    <p>In a <a href="http://jakeyesbeck.com/2015/05/17/just-learn-rails/">previous post</a> I explained how <em>“just learning Rails”</em> is not as straight forward as the phrase portrays. Even the novice programmer who learns Ruby on Rails in a methodical progression may still run into hardship. However, this is not entirely the fault of young programmer, he or she was simply enabled into bad habits. <strong>Ruby on Rails enables the complete disregard of encapsulation.</strong> Notice how I did not say that Ruby on Rails prescribes less encapsulation, it simply enables it.</p>
+    <p><img src="http://jakeyesbeck.com/assets/images/90_day_streak.png" alt="90 Days of Commits" /></p>
 
-<p>This idea, much like any idea posted to the Internet, is not new. Many intelligent people have come to this same realization. One such example is the <a href="https://github.com/apotonick/trailblazer">Trailblazer framework</a>, which aims to help inject some encapsulation and abstraction mechanisms Rails is lacking. (For those interested, <a href="https://leanpub.com/trailblazer">a book has been written</a> to more fully explain this framework).</p>
+<p>It has been ninety days since I started the <a href="http://jakeyesbeck.com/2015/04/23/a-year-of-commits/">Year of Commits</a> initiative. The criteria behind this challenge was to make a commit to a public Github repository every day. Technically, a commit like the following satisfies that criteria:</p>
 
-<p>Alright, so what am I really talking about? Ruby on Rails has certain features that make it easy to forget about encapsulation.</p>
+<p><img src="http://jakeyesbeck.com/assets/images/example_small_commit.png" alt="Small daily commit" /></p>
 
-<h3 id="the-autoloader">The Autoloader</h3>
+<p>However, if I allowed this commit to be my sole contribution for a day, I would be cheating no one except myself. In reality, I have been averaging 3 to 4 decent size commits a day. Spending around an hour or two total per night. Github is an awesome piece of software that tells a visual tale of when I am most productive:</p>
 
-<p>A keyword that most Ruby on Rails developers rarely see on a daily basis is <code class="highlighter-rouge">require</code>. A piece of Ruby on Rails magic called <a href="http://guides.rubyonrails.org/autoloading_and_reloading_constants.html">autoloading</a> greatly decreased the frequency of the <code class="highlighter-rouge">require</code> keyword in Ruby on Rails applications. This has many positive aspects for new and seasoned developers alike. But, it is not without drawbacks. One such drawback is that it makes <code class="highlighter-rouge">ActiveRecord</code> objects ubiquitous. Whenever a developer has the urge to reach into the database, regardless of the context, they are able to do so.</p>
+<p><img src="http://jakeyesbeck.com/assets/images/time_of_commits.png" alt="Times of Commits" /></p>
 
-<p><strong>This enables horrific code.</strong></p>
+<p>Over this quarter of a year, I have accrued some interesting learnings about developing open source software.</p>
 
-<p>Imagine we have a view template that we want to display a user’s username and their pictures. Without any guidance, this following code could come into existence:</p>
+<h2 id="writing-software-every-day-just-feels-good">1. Writing software every day just feels good.</h2>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>#
-# Reminder, this is terrible code. Never do this.
-#
+<p>Not missing a single day of writing software has made a significant improvement in my confidence and attitude. In the same way exercising daily makes your body feel more sturdy, developing software daily keeps my mind focused and clear. Like warming up a car before a drive, writing software every day makes it very easy for me to jump into a new project or build a new feature. I think most of my fellow software artisans have been in this situation: You go on vacation or maybe just a very relaxing weekend, then the next day at work or when you open that side project again, you end up spending a lot of time getting familiar with the software. Even if you just wrote it a few days ago, the break has made some tiny details less sharp. Writing software every single day helps eliminate this.</p>
 
-<span class="nt">&lt;div&gt;</span>
-  <span class="c">&lt;!--
-    Let's just go through all the users in the database.
-    This is a new application so we don't have that many users,
-     it will never run into scalability issues.
-     --&gt;</span>
-  <span class="cp">&lt;%</span> <span class="no">User</span><span class="p">.</span><span class="nf">all</span><span class="p">.</span><span class="nf">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">user</span><span class="o">|</span> <span class="cp">%&gt;</span>
-    <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">'username'</span><span class="nt">&gt;</span>
-      <span class="cp">&lt;%=</span> <span class="n">user</span><span class="p">.</span><span class="nf">username</span> <span class="cp">%&gt;</span>
-    <span class="nt">&lt;/div&gt;</span>
+<h2 id="immature-software-is-expected">2. Immature software is expected</h2>
 
-    <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">'pictures'</span><span class="nt">&gt;</span>
-      <span class="c">&lt;!--
-       Make sure we have the only the picture url, just go ahead
-        directly to the database and let it handle
-        the downcasing that we, for some reason, need.
-       Also, Jim in Business Ops thinks it will be
-        super great to order the pictures randomly each time!
-      --&gt;</span>
-      <span class="cp">&lt;%</span> <span class="no">Pictures</span><span class="p">.</span><span class="nf">select</span><span class="p">(</span><span class="s1">'downcase(url)'</span><span class="p">)</span>
-                <span class="p">.</span><span class="nf">where</span><span class="p">(</span><span class="ss">user_id: </span><span class="n">user</span><span class="p">.</span><span class="nf">id</span><span class="p">)</span>
-                <span class="p">.</span><span class="nf">order</span><span class="p">(</span><span class="s1">'random()'</span><span class="p">).</span><span class="nf">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">url</span><span class="o">|</span> <span class="cp">%&gt;</span>
-        <span class="nt">&lt;img</span> <span class="na">src=</span><span class="s">"</span><span class="cp">&lt;%=</span> <span class="n">url</span> <span class="cp">%&gt;</span><span class="s">"</span><span class="nt">/&gt;</span>
-      <span class="cp">&lt;%</span> <span class="k">end</span> <span class="cp">%&gt;</span>
-    <span class="nt">&lt;/div&gt;</span>
-  <span class="cp">&lt;%</span> <span class="k">end</span> <span class="cp">%&gt;</span>
-<span class="nt">&lt;/div&gt;</span>
+<p>While writing software, there are a total of 0 people that look at what they just wrote and say: “This software is already bad and I have only just written it”. However, this statement can be more true than we would like. The potential in a new project is always the best part, right? Developers around the world usually jump at a change to do green field development. After all, with no legacy software around we can make what ever our heart desires. It can be clean, DRY, clever software with all the best design patterns. But, at least in my experience, all software starts off painfully immature. This is just fine. The shape and structure of good software grows over time. This is particularly true for my Year of Commits projects. Since I must write software every single day, I revisit my software extremely frequently. This re-visitation greatly increases the iterations my software goes through and I end up with much more polished work.</p>
 
-#
-# Never replicate the above code or you will be very sad
-#
-</code></pre>
-</div>
+<h2 id="software-development-is-not-just-making-it-work">3. Software development is not just making it work</h2>
 
-<p>Notice how deep in the presentation layer (the view) we have direct database calls. This completely violates the encapsulations that an MVC framework should provide. Since all the models exist everywhere, nothing stops a programmer from writing it in this way. The code above should make every ruby programmer cringe.</p>
+<p>If you take away business requirements, deadlines, conversion rates, etc., you are left with something pure: software development. Year of Commits has enabled me to experience developing software at a slower pace without these extra degrees of “purpose”. Because of this, I have learned the difference between software that just works and carefully architect-ed software. I am not boasting that the software I write is now amazingly designed and executed, I have just noticed that when I invest more time, it makes a difference. We, as Software Aristans need time to stop and smell the ones and zeros. Given a decent amount of time and attention, all software can mature to something really extraordinary.</p>
 
-<p>Separating concerns and responsibilities helps prevent repetition and boosts comprehension. The above code should be a composition of multiple objects with entirely different responsibilities. That concept is not always intuitive for some developers, especially those just starting out. One might ask: <em>“Why would I make a whole mess of objects to do the same thing that these 14 lines can do?”</em>. The simple answer is because these problems are not new. Ruby on Rails did not expose these abstraction and encapsulation issues for the first time in the history of software engineering. They have been around for <a href="https://en.wikipedia.org/wiki/Encapsulation_(computer_programming)">a very long time</a>. Smarter software artisans than I saw these problems and created guidelines to solve them. Following their lead will save all of us in the long run.</p>
-
-<p>So what can we do about our misguided code above? Let us try moving some responsibilities around and see how it changes.</p>
-
-<h3 id="add-a-dash-of-encapsulation">Add a dash of encapsulation</h3>
-
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="c1"># The user class just needs to know about the database connection.</span>
-<span class="c1"># ActiveRecord takes care of that detail for us, adding a scope</span>
-<span class="c1">#   is a supplementary addition to that logic.</span>
-<span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
-  <span class="n">scope</span> <span class="ss">:with_pictures</span><span class="p">,</span> <span class="o">-&gt;</span><span class="p">{</span> <span class="n">includes</span><span class="p">(</span><span class="ss">:pictures</span><span class="p">)</span> <span class="p">}</span>
-<span class="k">end</span>
-
-<span class="c1"># We can create a PORO (Plain Old Ruby Object) to house the user</span>
-<span class="c1">#  object and extract, downcase, and randomize its picture urls.</span>
-<span class="k">class</span> <span class="nc">UserPresenter</span>
-  <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
-    <span class="vi">@user</span> <span class="o">=</span> <span class="n">user</span>
-    <span class="vi">@pictures</span> <span class="o">=</span> <span class="n">user</span><span class="p">.</span><span class="nf">pictures</span>
-  <span class="k">end</span>
-
-  <span class="k">def</span> <span class="nf">username</span>
-    <span class="vi">@user</span><span class="p">.</span><span class="nf">username</span>
-  <span class="k">end</span>
-
-  <span class="k">def</span> <span class="nf">picture_urls</span>
-    <span class="vi">@pictures</span><span class="p">.</span><span class="nf">map</span> <span class="k">do</span> <span class="o">|</span><span class="n">photo</span><span class="o">|</span>
-      <span class="n">photo</span><span class="p">.</span><span class="nf">url</span><span class="p">.</span><span class="nf">downcase</span>
-    <span class="k">end</span><span class="p">.</span><span class="nf">shuffle</span>
-  <span class="k">end</span>
-<span class="k">end</span>
-
-<span class="c1"># The controller handles linking up each User with a UserPresenter</span>
-<span class="c1">#  then saves the list to a variable to be used by the view.</span>
-<span class="k">class</span> <span class="nc">UsersController</span> <span class="o">&lt;</span> <span class="no">ActionController</span>
-  <span class="k">def</span> <span class="nf">show</span>
-    <span class="vi">@user_presenters</span> <span class="o">=</span> <span class="p">[]</span>
-
-    <span class="no">User</span><span class="p">.</span><span class="nf">all</span><span class="p">.</span><span class="nf">with_pictures</span><span class="p">.</span><span class="nf">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">user</span><span class="o">|</span>
-      <span class="vi">@user_presenters</span> <span class="o">&lt;&lt;</span> <span class="no">UserPresenter</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
-    <span class="k">end</span>
-  <span class="k">end</span>
-<span class="k">end</span>
-</code></pre>
-</div>
-
-<p>Finally, the view logic only knows about a presenter for each user. From the views perspective, the presenter object only has two methods: username and picture_urls. It does not need to know about database structure, schema, syntax or business logic. It has one job, to display data:</p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="nt">&lt;div&gt;</span>
-  <span class="cp">&lt;%</span> <span class="vi">@user_presenters</span><span class="p">.</span><span class="nf">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">presenter</span><span class="o">|</span> <span class="cp">%&gt;</span>
-    <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">'username'</span><span class="nt">&gt;</span>
-      <span class="cp">&lt;%=</span> <span class="n">presenter</span><span class="p">.</span><span class="nf">username</span> <span class="cp">%&gt;</span>
-    <span class="nt">&lt;/div&gt;</span>
-    <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">'pictures'</span><span class="nt">&gt;</span>
-      <span class="cp">&lt;%</span> <span class="n">presenter</span><span class="p">.</span><span class="nf">picture_urls</span><span class="p">.</span><span class="nf">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">url</span><span class="o">|</span> <span class="cp">%&gt;</span>
-        <span class="nt">&lt;img</span> <span class="na">src=</span><span class="s">"</span><span class="cp">&lt;%=</span> <span class="n">url</span> <span class="cp">%&gt;</span><span class="s">"</span><span class="nt">/&gt;</span>
-      <span class="cp">&lt;%</span> <span class="k">end</span> <span class="cp">%&gt;</span>
-    <span class="nt">&lt;/div&gt;</span>
-  <span class="cp">&lt;%</span> <span class="k">end</span> <span class="cp">%&gt;</span>
-<span class="nt">&lt;/div&gt;</span>
-</code></pre>
-</div>
-
-<h3 id="conclusion">Conclusion</h3>
-
-<p>The code that was rewritten is far from perfect. However, it is a noticeable improvement over its original version. I am in no way claiming to be the creator of these design patters, simply a spokesperson for good encapsulation and object oriented design. When respected and correctly utilized, Ruby on Rails is a fantastic tool for web development. When learning Ruby on Rails, it is imperative to stand by software engineering paradigms. Just because a framework allows it, doesn’t mean that it is necessarily a good thing to do.</p>
-
+<p>I am optimistic about completing my goal of a Year of Commits. With 3/4 the distance ahead of me, let’s hope I can keep that graph solid green.</p>
 
   </div>
   
