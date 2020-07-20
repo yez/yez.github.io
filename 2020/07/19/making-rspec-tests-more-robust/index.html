@@ -326,11 +326,81 @@ Finished <span class="k">in </span>0.00298 seconds <span class="o">(</span>files
 </code></pre>
 </div>
 
+<h2 id="stricter-settings">Stricter Settings</h2>
+
+<p><code class="highlighter-rouge">RSpec</code> allows developers to enable the flag <code class="highlighter-rouge">verify_partial_doubles</code> which
+will cause the original test to fail when the <code class="highlighter-rouge">put</code> method is removed.  This setting
+is turned off by default.</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="no">RSpec</span><span class="p">.</span><span class="nf">configure</span> <span class="k">do</span> <span class="o">|</span><span class="n">config</span><span class="o">|</span>
+  <span class="n">config</span><span class="p">.</span><span class="nf">mock_with</span> <span class="ss">:rspec</span> <span class="k">do</span> <span class="o">|</span><span class="n">mocks</span><span class="o">|</span>
+    <span class="n">mocks</span><span class="p">.</span><span class="nf">verify_partial_doubles</span> <span class="o">=</span> <span class="kp">true</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre>
+</div>
+
+<p>With this setting in place, running the original code and test produces
+a failing result.</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="c1"># api_client.rb</span>
+
+<span class="k">class</span> <span class="nc">APIClient</span>
+  <span class="c1"># def put(url, body)</span>
+  <span class="c1">#   client.put(url, body)</span>
+  <span class="c1"># end</span>
+
+  <span class="kp">private</span>
+
+  <span class="k">def</span> <span class="nf">client</span>
+    <span class="no">Faraday</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="s1">'https://some-cool-api.com'</span><span class="p">)</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="c1"># my_model_spec.rb</span>
+
+<span class="n">describe</span> <span class="no">MyModel</span> <span class="k">do</span>
+  <span class="n">describe</span> <span class="s1">'update'</span> <span class="k">do</span>
+    <span class="n">it</span> <span class="s1">'updates the model'</span> <span class="k">do</span>
+      <span class="n">expect</span><span class="p">(</span><span class="n">subject</span><span class="p">).</span><span class="nf">to</span> <span class="n">receive</span><span class="p">(</span><span class="ss">:put</span><span class="p">)</span>
+      <span class="n">subject</span><span class="p">.</span><span class="nf">update</span><span class="p">({</span> <span class="ss">foo: :bar</span> <span class="p">})</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre>
+</div>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="nv">$:</span> rspec my_model_spec.rb
+F
+
+Failures:
+
+  1<span class="o">)</span> MyModel update updates the model
+     Failure/Error: expect<span class="o">(</span>subject<span class="o">)</span>.to receive<span class="o">(</span>:put<span class="o">)</span>
+       <span class="c">#&lt;MyModel:0x000055d4a4f740a8&gt; does not implement: put</span>
+     <span class="c"># ./my_model_spec.rb:35:in `block (3 levels) in &lt;top (required)&gt;'</span>
+
+Finished <span class="k">in </span>0.00877 seconds <span class="o">(</span>files took 0.46471 seconds to load<span class="o">)</span>
+1 example, 1 failure
+</code></pre>
+</div>
+
+<p>This alternative does not require the use of a new gem and will fail correctly
+if the underlying contract is removed. However, if the <code class="highlighter-rouge">put</code> method or any
+layer between it and the API request changes, this test is not guaranteed to
+save a developer from that issue.</p>
+
+<p>Determining what layer to mock and what to explicitly test is a very case by case
+basis.</p>
+
 <h2 id="keep-tests-robust">Keep Tests Robust</h2>
 
 <p>Mocks and stubs in RSpec allow developers to make important assertions about
 their code. Unfortunately, mocking can also cause false positives when
 modifying real code.</p>
+
+<p>Validating that the proper settings are in an application is a great first step
+towards more a more robust test suite.</p>
 
 <p>Stubbing the response for the underlying API in this example enables a much
 more robust test that can alert developers when they make breaking changes.

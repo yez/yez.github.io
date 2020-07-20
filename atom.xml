@@ -245,11 +245,81 @@ Finished &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;0.00298 seconds &lt;spa
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 
+&lt;h2 id=&quot;stricter-settings&quot;&gt;Stricter Settings&lt;/h2&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;RSpec&lt;/code&gt; allows developers to enable the flag &lt;code class=&quot;highlighter-rouge&quot;&gt;verify_partial_doubles&lt;/code&gt; which
+will cause the original test to fail when the &lt;code class=&quot;highlighter-rouge&quot;&gt;put&lt;/code&gt; method is removed.  This setting
+is turned off by default.&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;no&quot;&gt;RSpec&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;configure&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;config&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;config&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;mock_with&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:rspec&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;mocks&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;mocks&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;verify_partial_doubles&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kp&quot;&gt;true&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;With this setting in place, running the original code and test produces
+a failing result.&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# api_client.rb&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;APIClient&lt;/span&gt;
+  &lt;span class=&quot;c1&quot;&gt;# def put(url, body)&lt;/span&gt;
+  &lt;span class=&quot;c1&quot;&gt;#   client.put(url, body)&lt;/span&gt;
+  &lt;span class=&quot;c1&quot;&gt;# end&lt;/span&gt;
+
+  &lt;span class=&quot;kp&quot;&gt;private&lt;/span&gt;
+
+  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;client&lt;/span&gt;
+    &lt;span class=&quot;no&quot;&gt;Faraday&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;new&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39;https://some-cool-api.com&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;# my_model_spec.rb&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;describe&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;MyModel&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;describe&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;update&#39;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;it&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;updates the model&#39;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
+      &lt;span class=&quot;n&quot;&gt;expect&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;subject&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;to&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;receive&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;:put&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+      &lt;span class=&quot;n&quot;&gt;subject&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;update&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;({&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;foo: :bar&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;})&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$:&lt;/span&gt; rspec my_model_spec.rb
+F
+
+Failures:
+
+  1&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; MyModel update updates the model
+     Failure/Error: expect&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;subject&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;.to receive&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;:put&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+       &lt;span class=&quot;c&quot;&gt;#&amp;lt;MyModel:0x000055d4a4f740a8&amp;gt; does not implement: put&lt;/span&gt;
+     &lt;span class=&quot;c&quot;&gt;# ./my_model_spec.rb:35:in `block (3 levels) in &amp;lt;top (required)&amp;gt;&#39;&lt;/span&gt;
+
+Finished &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;0.00877 seconds &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;files took 0.46471 seconds to load&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+1 example, 1 failure
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;This alternative does not require the use of a new gem and will fail correctly
+if the underlying contract is removed. However, if the &lt;code class=&quot;highlighter-rouge&quot;&gt;put&lt;/code&gt; method or any
+layer between it and the API request changes, this test is not guaranteed to
+save a developer from that issue.&lt;/p&gt;
+
+&lt;p&gt;Determining what layer to mock and what to explicitly test is a very case by case
+basis.&lt;/p&gt;
+
 &lt;h2 id=&quot;keep-tests-robust&quot;&gt;Keep Tests Robust&lt;/h2&gt;
 
 &lt;p&gt;Mocks and stubs in RSpec allow developers to make important assertions about
 their code. Unfortunately, mocking can also cause false positives when
 modifying real code.&lt;/p&gt;
+
+&lt;p&gt;Validating that the proper settings are in an application is a great first step
+towards more a more robust test suite.&lt;/p&gt;
 
 &lt;p&gt;Stubbing the response for the underlying API in this example enables a much
 more robust test that can alert developers when they make breaking changes.
