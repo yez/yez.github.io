@@ -1,22 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom">
+<feed xmlns="https://www.w3.org/2005/Atom">
 
  <title>A Year of Commits</title>
- <link href="http://jakeyesbeck.com/atom.xml" rel="self"/>
- <link href="http://jakeyesbeck.com/"/>
+ <link href="https://jakeyesbeck.com/atom.xml" rel="self"/>
+ <link href="https://jakeyesbeck.com/"/>
  <updated>2020-07-19T14:48:37-04:00</updated>
- <id>http://jakeyesbeck.com/</id>
+ <id>https://jakeyesbeck.com/</id>
  <author>
    <name>Jake Yesbeck</name>
    <email>yesbeckjs@gmail.com</email>
  </author>
 
- 
+
  <entry>
    <title>Making RSpec Tests More Robust</title>
-   <link href="http://jakeyesbeck.com/2020/07/19/making-rspec-tests-more-robust/"/>
+   <link href="https://jakeyesbeck.com/2020/07/19/making-rspec-tests-more-robust/"/>
    <updated>2020-07-19T08:00:00-04:00</updated>
-   <id>http://jakeyesbeck.com/2020/07/19/making-rspec-tests-more-robust</id>
+   <id>https://jakeyesbeck.com/2020/07/19/making-rspec-tests-more-robust</id>
    <content type="html">&lt;p&gt;RSpec is a popular framework for testing Ruby code. With an &lt;code class=&quot;highlighter-rouge&quot;&gt;expect&lt;/code&gt;
 assertion, a developer can make sure their code calls the proper method or
 an acceptable result is returned. The &lt;code class=&quot;highlighter-rouge&quot;&gt;expect().to receive&lt;/code&gt; matcher in a test
@@ -328,17 +328,17 @@ However, if the API response from &lt;code class=&quot;highlighter-rouge&quot;&g
 
 &lt;p&gt;Stubbing and mocking tools should be used on a case by case basis. In the case
 of testing a third party API integration, providing canned responses in the test
-suite makes sense. In other “normal” Ruby or Rails tests, &lt;a href=&quot;http://jakeyesbeck.com/2017/07/12/a-few-rspec-helpful-hints/#verifying-doubles&quot;&gt;verifying doubles&lt;/a&gt;
+suite makes sense. In other “normal” Ruby or Rails tests, &lt;a href=&quot;https://jakeyesbeck.com/2017/07/12/a-few-rspec-helpful-hints/#verifying-doubles&quot;&gt;verifying doubles&lt;/a&gt;
 or other built in RSpec matchers could be all that’s needed.&lt;/p&gt;
 
 </content>
  </entry>
- 
+
  <entry>
    <title>Ruby Processes and Threads - Configuring a Web Server</title>
-   <link href="http://jakeyesbeck.com/2019/06/18/ruby-processes-and-threads/"/>
+   <link href="https://jakeyesbeck.com/2019/06/18/ruby-processes-and-threads/"/>
    <updated>2019-06-18T08:00:00-04:00</updated>
-   <id>http://jakeyesbeck.com/2019/06/18/ruby-processes-and-threads</id>
+   <id>https://jakeyesbeck.com/2019/06/18/ruby-processes-and-threads</id>
    <content type="html">&lt;p&gt;Multiple popular Ruby web servers exist. Each Ruby application is different and the ultimate &lt;strong&gt;tl;dr&lt;/strong&gt; for configuring a web server is: &lt;em&gt;it depends.&lt;/em&gt; This post will not prescribe one web server or configuration over another and will instead explain internal components most popular servers contain.&lt;/p&gt;
 
 &lt;p&gt;In order to facilitate more than one request at a time, a Ruby web server implements &lt;code class=&quot;highlighter-rouge&quot;&gt;Threads&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;Processes&lt;/code&gt;, or both. These tools are used to enable concurrency and are beneficial in different ways.&lt;/p&gt;
@@ -746,13 +746,13 @@ siege -b --content-type &lt;span class=&quot;nv&quot;&gt;$CONTENT_TYPE&lt;/span&
 &lt;p&gt;Things like &lt;code class=&quot;highlighter-rouge&quot;&gt;thread&lt;/code&gt; starvation, semaphores, &lt;code class=&quot;highlighter-rouge&quot;&gt;thread&lt;/code&gt; pooling and other concerns regarding concurrent programming were intentionally not mentioned in this post.  Understanding how &lt;code class=&quot;highlighter-rouge&quot;&gt;Threads&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;Processes&lt;/code&gt; work at a high level can enable the configuration and choice of web server, but if you want to write your own complex concurrent Ruby code, I’d suggest &lt;a href=&quot;https://github.com/ruby-concurrency/concurrent-ruby&quot;&gt;concurrent-ruby&lt;/a&gt;.&lt;/p&gt;
 </content>
  </entry>
- 
+
  <entry>
    <title>Improving Remote Work as a Software Engineer</title>
-   <link href="http://jakeyesbeck.com/2018/02/18/improving-remote-work-as-a-software-engineer/"/>
+   <link href="https://jakeyesbeck.com/2018/02/18/improving-remote-work-as-a-software-engineer/"/>
    <updated>2018-02-18T07:00:00-05:00</updated>
-   <id>http://jakeyesbeck.com/2018/02/18/improving-remote-work-as-a-software-engineer</id>
-   <content type="html">&lt;p&gt;&lt;img src=&quot;http://jakeyesbeck.com/assets/images/remote_working.jpg&quot; alt=&quot;Remote Working&quot; /&gt;&lt;/p&gt;
+   <id>https://jakeyesbeck.com/2018/02/18/improving-remote-work-as-a-software-engineer</id>
+   <content type="html">&lt;p&gt;&lt;img src=&quot;https://jakeyesbeck.com/assets/images/remote_working.jpg&quot; alt=&quot;Remote Working&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;After working in the Bay Area for many years, I decided that being able to
 afford a house was something I’d like to do. That and family led me back to the East
@@ -842,12 +842,12 @@ to be flexible and work with a remote software engineer, shouldn’t that engine
 be flexible?&lt;/p&gt;
 </content>
  </entry>
- 
+
  <entry>
    <title>A Few RSpec Helpful Hints</title>
-   <link href="http://jakeyesbeck.com/2017/07/12/a-few-rspec-helpful-hints/"/>
+   <link href="https://jakeyesbeck.com/2017/07/12/a-few-rspec-helpful-hints/"/>
    <updated>2017-07-12T08:00:00-04:00</updated>
-   <id>http://jakeyesbeck.com/2017/07/12/a-few-rspec-helpful-hints</id>
+   <id>https://jakeyesbeck.com/2017/07/12/a-few-rspec-helpful-hints</id>
    <content type="html">&lt;p&gt;Two main frameworks dominate the Ruby testing world: Rspec and MiniTest. RSpec
 is a very expressive testing framework with many great features and helpers to
 make tests readable. When writing RSpec tests, here are just a few not so
@@ -1183,13 +1183,13 @@ debugging time.&lt;/p&gt;
 
 </content>
  </entry>
- 
+
  <entry>
    <title>A Successful Year of Commits</title>
-   <link href="http://jakeyesbeck.com/2016/04/26/a-successful-year-of-commits/"/>
-   <updated>2016-04-26T05:00:00-07:00</updated>
-   <id>http://jakeyesbeck.com/2016/04/26/a-successful-year-of-commits</id>
-   <content type="html">&lt;p&gt;At Rails Conf 2015, I met a lot of great people from the Ruby community. These people had a profound effect on me, instilling in me a new motivation to become part of something larger than myself. A year ago today, I embarked on a journey to better myself as a Software Engineer. &lt;a href=&quot;http://jakeyesbeck.com/2015/04/23/a-year-of-commits/&quot;&gt;I decided to commit to open source software every day for a year&lt;/a&gt;.&lt;/p&gt;
+   <link href="https://jakeyesbeck.com/2016/04/26/a-successful-year-of-commits/"/>
+   <updated>2016-04-26T08:00:00-04:00</updated>
+   <id>https://jakeyesbeck.com/2016/04/26/a-successful-year-of-commits</id>
+   <content type="html">&lt;p&gt;At Rails Conf 2015, I met a lot of great people from the Ruby community. These people had a profound effect on me, instilling in me a new motivation to become part of something larger than myself. A year ago today, I embarked on a journey to better myself as a Software Engineer. &lt;a href=&quot;https://jakeyesbeck.com/2015/04/23/a-year-of-commits/&quot;&gt;I decided to commit to open source software every day for a year&lt;/a&gt;.&lt;/p&gt;
 
 &lt;p&gt;Even though open source software has been around for decades, up until a year ago I had thought it mostly magic and far beyond my reach. After Rails Conf 2015, it became clear to me that contributing to and becoming part of the open source community was not so far fetched.&lt;/p&gt;
 
@@ -1199,7 +1199,7 @@ debugging time.&lt;/p&gt;
 
 &lt;p&gt;And so that is what I did. For one year, I made at least one commit to an open source repository (someone else’s or my own) every day:&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;http://jakeyesbeck.com/assets/images/complete_year_of_commits_graph.png&quot; alt=&quot;Completed Year of Commits Github Graph&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://jakeyesbeck.com/assets/images/complete_year_of_commits_graph.png&quot; alt=&quot;Completed Year of Commits Github Graph&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;I started this endeavor on April 26th 2015 and ended it today, April 26 2016.&lt;/p&gt;
 
@@ -1250,7 +1250,7 @@ debugging time.&lt;/p&gt;
 
 &lt;p&gt;I now believe all software engineers should write. There are a lot of parallels between writing code and writing paragraphs; both are done with great care. Writing about something is a great way to express your ideas, share knowledge, and solidify concepts for yourself. Aside from the growth in my technical skills during this past year, having my writing appreciated made all my hard work worth it.&lt;/p&gt;
 
-&lt;p&gt;I was lucky enough to be &lt;a href=&quot;http://rubyweekly.com/issues/284&quot;&gt;featured in Ruby Weekly&lt;/a&gt; a &lt;a href=&quot;http://rubyweekly.com/issues/285&quot;&gt;few times&lt;/a&gt; and was even mentioned in a couple podcasts.&lt;/p&gt;
+&lt;p&gt;I was lucky enough to be &lt;a href=&quot;https://rubyweekly.com/issues/284&quot;&gt;featured in Ruby Weekly&lt;/a&gt; a &lt;a href=&quot;https://rubyweekly.com/issues/285&quot;&gt;few times&lt;/a&gt; and was even mentioned in a couple podcasts.&lt;/p&gt;
 
 &lt;p&gt;This support completely validated my commitment and helped make this project so productive.&lt;/p&gt;
 
@@ -1283,12 +1283,12 @@ debugging time.&lt;/p&gt;
 &lt;p&gt;Thank you all so much, now I think its time for me to take a little break. I plan to be back in a few weeks, refreshed and ready to write more.&lt;/p&gt;
 </content>
  </entry>
- 
+
  <entry>
    <title>How to Diagnose Ruby on Rails N + 1 Query Problems</title>
-   <link href="http://jakeyesbeck.com/2016/04/17/how-to-diagnose-ruby-on-rails-n-plus-1-query-problems/"/>
-   <updated>2016-04-17T05:00:00-07:00</updated>
-   <id>http://jakeyesbeck.com/2016/04/17/how-to-diagnose-ruby-on-rails-n-plus-1-query-problems</id>
+   <link href="https://jakeyesbeck.com/2016/04/17/how-to-diagnose-ruby-on-rails-n-plus-1-query-problems/"/>
+   <updated>2016-04-17T08:00:00-04:00</updated>
+   <id>https://jakeyesbeck.com/2016/04/17/how-to-diagnose-ruby-on-rails-n-plus-1-query-problems</id>
    <content type="html">&lt;p&gt;Diagnosing performance problems in a production Ruby on Rails application can be deceptively complex. When constructing a new application or expanding the features of an existing one, development environments that are not subject to typical production web traffic may not make performance issues evident. In those instances, the use of some simple (and mostly free) tools can help diagnose performance issues in production.&lt;/p&gt;
 
 &lt;p&gt;If an application is hosted on Heroku, the New Relic add-on can be added to the application for free. Despite it having a few limitations, the free version of New Relic can be extremely valuable for diagnosing some common performance issues.&lt;/p&gt;
@@ -1382,11 +1382,11 @@ debugging time.&lt;/p&gt;
 
 &lt;p&gt;At first glance, the graph of this simple endpoint is telling a alarming story. A large amount of time is spent in the database, fetching records necessary to render the page:&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;http://jakeyesbeck.com/assets/images/graph_before_fix.png&quot; alt=&quot;New Relic Transaction Trace Graph for N + 1&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://jakeyesbeck.com/assets/images/graph_before_fix.png&quot; alt=&quot;New Relic Transaction Trace Graph for N + 1&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;Below this graph, New Relic conveniently displays the call count breakdown for this transaction:&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;http://jakeyesbeck.com/assets/images/call_count_table_before_fix.png&quot; alt=&quot;New Relic Transaction Call Count Table for N + 1&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://jakeyesbeck.com/assets/images/call_count_table_before_fix.png&quot; alt=&quot;New Relic Transaction Call Count Table for N + 1&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;Immediately, we can see that the &lt;code class=&quot;highlighter-rouge&quot;&gt;Postgres Theme find&lt;/code&gt; is called an average of &lt;strong&gt;20&lt;/strong&gt; times per transaction. Compared to the single call count of the surrounding methods in this table, &lt;strong&gt;20&lt;/strong&gt; seems excessive.&lt;/p&gt;
 
@@ -1431,13 +1431,13 @@ debugging time.&lt;/p&gt;
 
 &lt;p&gt;Opening up New Relic shows the the improvement:&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;http://jakeyesbeck.com/assets/images/graph_after_fix.png&quot; alt=&quot;New Relic Transaction Trace Graph After Fix&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://jakeyesbeck.com/assets/images/graph_after_fix.png&quot; alt=&quot;New Relic Transaction Trace Graph After Fix&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;A request previously rendering in 200ms is now as low as 40ms.&lt;/p&gt;
 
 &lt;p&gt;The breakdown of the transaction call count shows improvement as well:&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;http://jakeyesbeck.com/assets/images/call_count_table_after_fix.png&quot; alt=&quot;New Relic Transaction Call Count Table After Fix&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://jakeyesbeck.com/assets/images/call_count_table_after_fix.png&quot; alt=&quot;New Relic Transaction Call Count Table After Fix&quot; /&gt;&lt;/p&gt;
 
 &lt;h2 id=&quot;measure-twice-measure-again-just-keep-measuring&quot;&gt;Measure Twice, Measure Again, Just Keep Measuring&lt;/h2&gt;
 
@@ -1446,12 +1446,12 @@ debugging time.&lt;/p&gt;
 &lt;p&gt;New Relic was a crucial element in this example but it is not the only tool available. Many other analysis tools for Ruby on Rails applications exist and Rails itself gives developers insight into an application’s behaviour via its logs.&lt;/p&gt;
 </content>
  </entry>
- 
+
  <entry>
    <title>Things to Consider when Metaprogramming in Ruby</title>
-   <link href="http://jakeyesbeck.com/2016/04/10/things-to-consider-when-metaprogramming-in-ruby/"/>
-   <updated>2016-04-10T05:00:00-07:00</updated>
-   <id>http://jakeyesbeck.com/2016/04/10/things-to-consider-when-metaprogramming-in-ruby</id>
+   <link href="https://jakeyesbeck.com/2016/04/10/things-to-consider-when-metaprogramming-in-ruby/"/>
+   <updated>2016-04-10T08:00:00-04:00</updated>
+   <id>https://jakeyesbeck.com/2016/04/10/things-to-consider-when-metaprogramming-in-ruby</id>
    <content type="html">&lt;p&gt;Metaprogramming in Ruby is a polarizing topic. The most common purpose of Ruby metaprogramming is for code to alter itself at runtime. Metaprogramming can be used to achieve terse and more flexible code. However, it is not without its cost. As with most things, nothing of value is free, even metaprogramming.&lt;/p&gt;
 
 &lt;p&gt;Undoubtedly, there is a time and place for metaprogramming; but, awareness of concessions that need to be made to support a metaprogrammed solution is important.&lt;/p&gt;
@@ -1753,7 +1753,7 @@ Comparison:
 
 &lt;p&gt;The reason that some metaprogramming solutions are slow has partially to do with the Ruby inline method cache. In Ruby, the inline method cache is responsible for storing methods that it knows about so as to avoid a costly look up operation every time. Metaprogramming interferes with this built in cache by invalidating its cache key.&lt;/p&gt;
 
-&lt;p&gt;Every time a class is reopened or a method is defined on a class, pieces of the inline method cache key change, resulting in a cache miss and method lookup. Metaprogrammed code (especially code that executes at every &lt;code class=&quot;highlighter-rouge&quot;&gt;Object.new&lt;/code&gt; like &lt;code class=&quot;highlighter-rouge&quot;&gt;UserMetaMethods&lt;/code&gt;) does not benefit from the inline method caching in the same ways as “normal” code does. For much more information, &lt;a href=&quot;http://tenderlovemaking.com/2015/12/23/inline-caching-in-mri.html&quot;&gt;a man much smarter than I wrote a great article explaining Ruby inline method caching in detail&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Every time a class is reopened or a method is defined on a class, pieces of the inline method cache key change, resulting in a cache miss and method lookup. Metaprogrammed code (especially code that executes at every &lt;code class=&quot;highlighter-rouge&quot;&gt;Object.new&lt;/code&gt; like &lt;code class=&quot;highlighter-rouge&quot;&gt;UserMetaMethods&lt;/code&gt;) does not benefit from the inline method caching in the same ways as “normal” code does. For much more information, &lt;a href=&quot;https://tenderlovemaking.com/2015/12/23/inline-caching-in-mri.html&quot;&gt;a man much smarter than I wrote a great article explaining Ruby inline method caching in detail&lt;/a&gt;.&lt;/p&gt;
 
 &lt;h2 id=&quot;use-the-right-tool-for-the-job&quot;&gt;Use the Right Tool for the Job&lt;/h2&gt;
 
@@ -1764,12 +1764,12 @@ Comparison:
 &lt;p&gt;When used correctly and in appropriate circumstances, metaprogramming can be a great asset. The trick is knowing when to use it and when to refrain. Sometimes just using a &lt;code class=&quot;highlighter-rouge&quot;&gt;Hash&lt;/code&gt; might be the best solution.&lt;/p&gt;
 </content>
  </entry>
- 
+
  <entry>
    <title>How to Deal with Timezones the Active Support Way</title>
-   <link href="http://jakeyesbeck.com/2016/04/03/how-to-deal-with-timezones-the-active-support-way/"/>
-   <updated>2016-04-03T05:00:00-07:00</updated>
-   <id>http://jakeyesbeck.com/2016/04/03/how-to-deal-with-timezones-the-active-support-way</id>
+   <link href="https://jakeyesbeck.com/2016/04/03/how-to-deal-with-timezones-the-active-support-way/"/>
+   <updated>2016-04-03T08:00:00-04:00</updated>
+   <id>https://jakeyesbeck.com/2016/04/03/how-to-deal-with-timezones-the-active-support-way</id>
    <content type="html">&lt;p&gt;&lt;em&gt;“Well the code is bad because we had to…”&lt;/em&gt; is a phrase one might hear when discussing timezone offsets or daylight savings time considerations.&lt;/p&gt;
 
 &lt;p&gt;Unless a developer is fortunate enough to work at a company whose userbase is entirely located in the UTC timezone, writing software aware of different timezones can be a daunting task. Luckily, Ruby on Rails’ &lt;code class=&quot;highlighter-rouge&quot;&gt;ActiveSupport&lt;/code&gt; library has some very nice built in features that can prove invaluable when facing time related issues.&lt;/p&gt;
@@ -1873,16 +1873,16 @@ Comparison:
 
 &lt;p&gt;Whether in code or everyday life, it seems that struggling with time is something we as humans are simply destined to do. Some good news is that &lt;code class=&quot;highlighter-rouge&quot;&gt;ActiveSupport&lt;/code&gt; may not grant you any more wall clock time, but could save you some when wrangling different pieces of scheduling code together.&lt;/p&gt;
 
-&lt;p&gt;As usual, the API of the &lt;code class=&quot;highlighter-rouge&quot;&gt;ActiveSupport::TimeZone&lt;/code&gt; class is much larger than just the two methods illustrated here. For more information, the &lt;a href=&quot;http://api.rubyonrails.org/classes/ActiveSupport/TimeZone.html&quot;&gt;offical ActiveSupport documentation&lt;/a&gt; is a great place to read further.&lt;/p&gt;
+&lt;p&gt;As usual, the API of the &lt;code class=&quot;highlighter-rouge&quot;&gt;ActiveSupport::TimeZone&lt;/code&gt; class is much larger than just the two methods illustrated here. For more information, the &lt;a href=&quot;https://api.rubyonrails.org/classes/ActiveSupport/TimeZone.html&quot;&gt;offical ActiveSupport documentation&lt;/a&gt; is a great place to read further.&lt;/p&gt;
 </content>
  </entry>
- 
+
  <entry>
    <title>Five More Active Record Features You Should Be Using</title>
-   <link href="http://jakeyesbeck.com/2016/03/27/five-more-active-record-features-you-should-be-using/"/>
-   <updated>2016-03-27T05:00:00-07:00</updated>
-   <id>http://jakeyesbeck.com/2016/03/27/five-more-active-record-features-you-should-be-using</id>
-   <content type="html">&lt;p&gt;In a &lt;a href=&quot;http://jakeyesbeck.com/2015/11/15/five-active-record-features-you-should-be-using/&quot;&gt;previous post&lt;/a&gt;, I illustrated a few helpful &lt;code class=&quot;highlighter-rouge&quot;&gt;ActiveRecord&lt;/code&gt; features. The entire API of &lt;code class=&quot;highlighter-rouge&quot;&gt;ActiveRecord&lt;/code&gt; cannot possibly be contained within a single or even a handful of digestible posts; but, here are at least five more pieces of that massive API that some might find useful.&lt;/p&gt;
+   <link href="https://jakeyesbeck.com/2016/03/27/five-more-active-record-features-you-should-be-using/"/>
+   <updated>2016-03-27T08:00:00-04:00</updated>
+   <id>https://jakeyesbeck.com/2016/03/27/five-more-active-record-features-you-should-be-using</id>
+   <content type="html">&lt;p&gt;In a &lt;a href=&quot;https://jakeyesbeck.com/2015/11/15/five-active-record-features-you-should-be-using/&quot;&gt;previous post&lt;/a&gt;, I illustrated a few helpful &lt;code class=&quot;highlighter-rouge&quot;&gt;ActiveRecord&lt;/code&gt; features. The entire API of &lt;code class=&quot;highlighter-rouge&quot;&gt;ActiveRecord&lt;/code&gt; cannot possibly be contained within a single or even a handful of digestible posts; but, here are at least five more pieces of that massive API that some might find useful.&lt;/p&gt;
 
 &lt;p&gt;Just like before, the example application used to demonstrate these features will be an imaginary Ruby on Rails application: &lt;em&gt;“booksandreviews.com”&lt;/em&gt;:&lt;/p&gt;
 
@@ -2040,7 +2040,7 @@ Comparison:
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 
-&lt;p&gt;Awesome, the &lt;code class=&quot;highlighter-rouge&quot;&gt;after_commit&lt;/code&gt; callback is only triggered after the record is persisted to the database, exactly what we wanted. Ruby on Rails provides &lt;a href=&quot;http://guides.rubyonrails.org/active_record_callbacks.html&quot;&gt;many more callback hooks&lt;/a&gt; besides &lt;code class=&quot;highlighter-rouge&quot;&gt;after_commit&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;Awesome, the &lt;code class=&quot;highlighter-rouge&quot;&gt;after_commit&lt;/code&gt; callback is only triggered after the record is persisted to the database, exactly what we wanted. Ruby on Rails provides &lt;a href=&quot;https://guides.rubyonrails.org/active_record_callbacks.html&quot;&gt;many more callback hooks&lt;/a&gt; besides &lt;code class=&quot;highlighter-rouge&quot;&gt;after_commit&lt;/code&gt;.&lt;/p&gt;
 
 &lt;h2 id=&quot;touch&quot;&gt;4. &lt;code class=&quot;highlighter-rouge&quot;&gt;touch&lt;/code&gt;&lt;/h2&gt;
 
@@ -2167,15 +2167,15 @@ Comparison:
 &lt;p&gt;&lt;em&gt;Note: Additional considerations might need to be made since the &lt;code class=&quot;highlighter-rouge&quot;&gt;save&lt;/code&gt; is not guaranteed to persist like described above in the &lt;code class=&quot;highlighter-rouge&quot;&gt;after_commit&lt;/code&gt; example.&lt;/em&gt;&lt;/p&gt;
 </content>
  </entry>
- 
+
  <entry>
    <title>How to Build a Ruby on Rails Engine</title>
-   <link href="http://jakeyesbeck.com/2016/03/20/how-to-build-a-ruby-on-rails-engine/"/>
-   <updated>2016-03-20T05:00:00-07:00</updated>
-   <id>http://jakeyesbeck.com/2016/03/20/how-to-build-a-ruby-on-rails-engine</id>
+   <link href="https://jakeyesbeck.com/2016/03/20/how-to-build-a-ruby-on-rails-engine/"/>
+   <updated>2016-03-20T08:00:00-04:00</updated>
+   <id>https://jakeyesbeck.com/2016/03/20/how-to-build-a-ruby-on-rails-engine</id>
    <content type="html">&lt;p&gt;Ruby on Rails Engines are miniature applications whose purpose is to supplement a larger Ruby on Rails application. If functionality can exist independent from a main application, an Engine can provide a wonderful degree of encapsulation.&lt;/p&gt;
 
-&lt;p&gt;Recently, I created the and “gemified” the &lt;a href=&quot;http://jakeyesbeck.com/2016/01/03/passages/&quot;&gt;Passages Ruby on Rails Engine&lt;/a&gt; to help alleviate some routing frustration. This gem will be the be used as the example for demonstrating what goes into creating a Ruby on Rails Engine.&lt;/p&gt;
+&lt;p&gt;Recently, I created the and “gemified” the &lt;a href=&quot;https://jakeyesbeck.com/2016/01/03/passages/&quot;&gt;Passages Ruby on Rails Engine&lt;/a&gt; to help alleviate some routing frustration. This gem will be the be used as the example for demonstrating what goes into creating a Ruby on Rails Engine.&lt;/p&gt;
 
 &lt;h2 id=&quot;revving-up&quot;&gt;Revving Up&lt;/h2&gt;
 
@@ -2440,12 +2440,12 @@ Routes &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;Passages::Engine:
 &lt;p&gt;Not all of the Passages Engine was discussed in this guide, but feel free to &lt;a href=&quot;https://github.com/yez/passages&quot;&gt;read the source&lt;/a&gt; to find out more information. Also, I am always looking for eager contributors to either submit issues or pull requests with features they need.&lt;/p&gt;
 </content>
  </entry>
- 
+
  <entry>
    <title>The Power of Arel</title>
-   <link href="http://jakeyesbeck.com/2016/03/13/the-power-of-arel/"/>
-   <updated>2016-03-13T05:00:00-07:00</updated>
-   <id>http://jakeyesbeck.com/2016/03/13/the-power-of-arel</id>
+   <link href="https://jakeyesbeck.com/2016/03/13/the-power-of-arel/"/>
+   <updated>2016-03-13T08:00:00-04:00</updated>
+   <id>https://jakeyesbeck.com/2016/03/13/the-power-of-arel</id>
    <content type="html">&lt;p&gt;Many modern web applications have at least a few overlapping responsibilities. One of these responsibilities deals with maintaining state. A common choice for storing this state is by way of a relational database. Ruby on Rails applications assume the presence of a database by default and communicate with it via &lt;code class=&quot;highlighter-rouge&quot;&gt;ActiveRecord&lt;/code&gt;.&lt;/p&gt;
 
 &lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;ActiveRecord&lt;/code&gt; is an &lt;strong&gt;O&lt;/strong&gt;bject &lt;strong&gt;R&lt;/strong&gt;elational &lt;strong&gt;M&lt;/strong&gt;apping (ORM). Under the hood, &lt;code class=&quot;highlighter-rouge&quot;&gt;ActiveRecord&lt;/code&gt; uses a relational algebra library called &lt;code class=&quot;highlighter-rouge&quot;&gt;Arel&lt;/code&gt; to compose queries for execution. &lt;code class=&quot;highlighter-rouge&quot;&gt;Arel&lt;/code&gt; is a very powerful library readily available for when &lt;code class=&quot;highlighter-rouge&quot;&gt;ActiveRecord&lt;/code&gt; falls short.&lt;/p&gt;
@@ -2698,12 +2698,12 @@ Routes &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;Passages::Engine:
 &lt;p&gt;For extremely specific or complex database interactions, using &lt;code class=&quot;highlighter-rouge&quot;&gt;Arel&lt;/code&gt; may not be the correct choice, but should at least be evaluated. Only interacting with the lowest level necessary for a resource has many benefits. An &lt;code class=&quot;highlighter-rouge&quot;&gt;Arel&lt;/code&gt; solution to a problem has the potential to be more resilient to future changes.&lt;/p&gt;
 </content>
  </entry>
- 
+
  <entry>
    <title>The Real Cost of Technical Debt</title>
-   <link href="http://jakeyesbeck.com/2016/03/06/the-real-cost-of-technical-debt/"/>
-   <updated>2016-03-06T04:00:00-08:00</updated>
-   <id>http://jakeyesbeck.com/2016/03/06/the-real-cost-of-technical-debt</id>
+   <link href="https://jakeyesbeck.com/2016/03/06/the-real-cost-of-technical-debt/"/>
+   <updated>2016-03-06T07:00:00-05:00</updated>
+   <id>https://jakeyesbeck.com/2016/03/06/the-real-cost-of-technical-debt</id>
    <content type="html">&lt;p&gt;Writing software is an iterative process. Rarely is software written and then never revisited. When this iteration occurs, a software engineer is presented with multiple options. Usually, a single objectively correct option is present but may not be chosen due to time constraints or other outside pressures. When shortcuts are taken to alleviate these external pressures, technical debt is often accrued.&lt;/p&gt;
 
 &lt;h2 id=&quot;permit-today-pay-tomorrow&quot;&gt;Permit Today, Pay Tomorrow&lt;/h2&gt;
@@ -2764,17 +2764,17 @@ Routes &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;Passages::Engine:
 &lt;p&gt;Technical debt will happen. When it does, leave notes for your future self to work with and remember that even the best in the business have cut a corner or two under pressure.&lt;/p&gt;
 
 &lt;center&gt;
-  &lt;img title=&quot;Maybe I haven&#39;t been to Iceland because I&#39;m busy dealing with YOUR crummy code.&quot; alt=&quot;technical debt future self&quot; src=&quot;http://imgs.xkcd.com/comics/future_self.png&quot; /&gt;
-  &lt;a href=&quot;http://xkcd.com/1421/&quot;&gt;credit: xkcd&lt;/a&gt;
+  &lt;img title=&quot;Maybe I haven&#39;t been to Iceland because I&#39;m busy dealing with YOUR crummy code.&quot; alt=&quot;technical debt future self&quot; src=&quot;https://imgs.xkcd.com/comics/future_self.png&quot; /&gt;
+  &lt;a href=&quot;https://xkcd.com/1421/&quot;&gt;credit: xkcd&lt;/a&gt;
 &lt;/center&gt;
 </content>
  </entry>
- 
+
  <entry>
    <title>Ruby Spaceship &lt;=&gt; Operator</title>
-   <link href="http://jakeyesbeck.com/2016/02/28/ruby-spaceship-operator/"/>
-   <updated>2016-02-28T04:00:00-08:00</updated>
-   <id>http://jakeyesbeck.com/2016/02/28/ruby-spaceship-operator</id>
+   <link href="https://jakeyesbeck.com/2016/02/28/ruby-spaceship-operator/"/>
+   <updated>2016-02-28T07:00:00-05:00</updated>
+   <id>https://jakeyesbeck.com/2016/02/28/ruby-spaceship-operator</id>
    <content type="html">&lt;p&gt;Adhering to the law of trichotomy, the &lt;code class=&quot;highlighter-rouge&quot;&gt;&amp;lt;=&amp;gt;&lt;/code&gt; operator (sometimes called the “Spaceship Operator”) works by comparing two elements and returning a &lt;code class=&quot;highlighter-rouge&quot;&gt;-1&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;0&lt;/code&gt;, or &lt;code class=&quot;highlighter-rouge&quot;&gt;1&lt;/code&gt;. While the original mathematical criteria applies to only real numbers, many programming languages implement the law of trichotomy as a general comparison between equivalent types.&lt;/p&gt;
 
 &lt;h2 id=&quot;basics&quot;&gt;Basics&lt;/h2&gt;
@@ -2958,12 +2958,12 @@ Routes &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;Passages::Engine:
 &lt;p&gt;The &lt;code class=&quot;highlighter-rouge&quot;&gt;Comparable&lt;/code&gt; mixin provides very useful functionality that can easily turn a custom class into a sortable list element. As with most patterns in software, using the right tool at the right time is very important. It may not always be appropriate to write a custom comparison mechanism for a class, but when it is, the collaboration of &lt;code class=&quot;highlighter-rouge&quot;&gt;&amp;lt;=&amp;gt;&lt;/code&gt; and the &lt;code class=&quot;highlighter-rouge&quot;&gt;Comparable&lt;/code&gt; mixin is worth evaluating.&lt;/p&gt;
 </content>
  </entry>
- 
+
  <entry>
    <title>Four PostgreSQL Tips</title>
-   <link href="http://jakeyesbeck.com/2016/02/21/four-postgresql-tips/"/>
-   <updated>2016-02-21T04:00:00-08:00</updated>
-   <id>http://jakeyesbeck.com/2016/02/21/four-postgresql-tips</id>
+   <link href="https://jakeyesbeck.com/2016/02/21/four-postgresql-tips/"/>
+   <updated>2016-02-21T07:00:00-05:00</updated>
+   <id>https://jakeyesbeck.com/2016/02/21/four-postgresql-tips</id>
    <content type="html">&lt;p&gt;PostgreSQL is an open source object-relational database used to power many production web applications. While many web applications interact with relational databases through Object Relational Mappers (&lt;strong&gt;ORM&lt;/strong&gt;), direct SQL queries via a command line interface or graphical client are still common. When writing these queries, these four tips may come in handy.&lt;/p&gt;
 
 &lt;p&gt;All examples will assume the presence of a simple users table:&lt;/p&gt;
@@ -3009,7 +3009,7 @@ Routes &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;Passages::Engine:
 
 &lt;p&gt;This query will identify all the rows of the &lt;code class=&quot;highlighter-rouge&quot;&gt;users&lt;/code&gt; table which share the same defined columns and return the primary key (&lt;code class=&quot;highlighter-rouge&quot;&gt;id&lt;/code&gt;) of rows &lt;em&gt;after&lt;/em&gt; the first via the &lt;code class=&quot;highlighter-rouge&quot;&gt;duplicates.user_row_number &amp;gt; 1&lt;/code&gt; condition. The result of this query can then be fed into a &lt;code class=&quot;highlighter-rouge&quot;&gt;DELETE&lt;/code&gt; query to remove the duplicates.&lt;/p&gt;
 
-&lt;p&gt;The &lt;code class=&quot;highlighter-rouge&quot;&gt;ROW_NUMBER()&lt;/code&gt; built-in function returns an incremented value assigned to each row that matches the criteria in the provided &lt;code class=&quot;highlighter-rouge&quot;&gt;OVER&lt;/code&gt; clause. This &lt;code class=&quot;highlighter-rouge&quot;&gt;OVER&lt;/code&gt; clause is followed by the window function: &lt;code class=&quot;highlighter-rouge&quot;&gt;PARTITION&lt;/code&gt;, which divides matching rows into groups or partitions using the columns or functions which follow it. Learn more about window functions at the &lt;a href=&quot;http://www.postgresql.org/docs/current/static/tutorial-window.html&quot;&gt;official PostgreSQL documentation page&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;The &lt;code class=&quot;highlighter-rouge&quot;&gt;ROW_NUMBER()&lt;/code&gt; built-in function returns an incremented value assigned to each row that matches the criteria in the provided &lt;code class=&quot;highlighter-rouge&quot;&gt;OVER&lt;/code&gt; clause. This &lt;code class=&quot;highlighter-rouge&quot;&gt;OVER&lt;/code&gt; clause is followed by the window function: &lt;code class=&quot;highlighter-rouge&quot;&gt;PARTITION&lt;/code&gt;, which divides matching rows into groups or partitions using the columns or functions which follow it. Learn more about window functions at the &lt;a href=&quot;https://www.postgresql.org/docs/current/static/tutorial-window.html&quot;&gt;official PostgreSQL documentation page&lt;/a&gt;.&lt;/p&gt;
 
 &lt;h2 id=&quot;interval&quot;&gt;2. &lt;code class=&quot;highlighter-rouge&quot;&gt;interval&lt;/code&gt;&lt;/h2&gt;
 
@@ -3023,7 +3023,7 @@ Routes &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;Passages::Engine:
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 
-&lt;p&gt;The &lt;code class=&quot;highlighter-rouge&quot;&gt;interval&lt;/code&gt; function accepts a variety of input types. Days, Hours, Minutes, Weeks, and more options &lt;a href=&quot;http://www.postgresql.org/docs/current/interactive/datatype-datetime.html&quot;&gt;are available&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;The &lt;code class=&quot;highlighter-rouge&quot;&gt;interval&lt;/code&gt; function accepts a variety of input types. Days, Hours, Minutes, Weeks, and more options &lt;a href=&quot;https://www.postgresql.org/docs/current/interactive/datatype-datetime.html&quot;&gt;are available&lt;/a&gt;.&lt;/p&gt;
 
 &lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;interval&lt;/code&gt; subtraction can be used on any &lt;code class=&quot;highlighter-rouge&quot;&gt;timestamp&lt;/code&gt;:&lt;/p&gt;
 
@@ -3100,13 +3100,13 @@ Routes &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;Passages::Engine:
 &lt;p&gt;As with anything, the use of numerical referencing should be deliberate and thoughtful.&lt;/p&gt;
 </content>
  </entry>
- 
+
  <entry>
    <title>Ruby Threads and ActiveRecord Connections</title>
-   <link href="http://jakeyesbeck.com/2016/02/14/ruby-threads-and-active-record-connections/"/>
-   <updated>2016-02-14T04:00:00-08:00</updated>
-   <id>http://jakeyesbeck.com/2016/02/14/ruby-threads-and-active-record-connections</id>
-   <content type="html">&lt;p&gt;Processing large data sets is a common problem faced by many production web applications. &lt;a href=&quot;http://jakeyesbeck.com/2015/08/09/how-to-process-large-data-sets-with-ruby/&quot;&gt;One solution&lt;/a&gt; is to divide the work amongst multiple processes and have each responsible for a single or significantly smaller batch of data. However, this solution is not without its problems. Machine provisioning limitations or financial barriers may invalidate this solution for a very large N.&lt;/p&gt;
+   <link href="https://jakeyesbeck.com/2016/02/14/ruby-threads-and-active-record-connections/"/>
+   <updated>2016-02-14T07:00:00-05:00</updated>
+   <id>https://jakeyesbeck.com/2016/02/14/ruby-threads-and-active-record-connections</id>
+   <content type="html">&lt;p&gt;Processing large data sets is a common problem faced by many production web applications. &lt;a href=&quot;https://jakeyesbeck.com/2015/08/09/how-to-process-large-data-sets-with-ruby/&quot;&gt;One solution&lt;/a&gt; is to divide the work amongst multiple processes and have each responsible for a single or significantly smaller batch of data. However, this solution is not without its problems. Machine provisioning limitations or financial barriers may invalidate this solution for a very large N.&lt;/p&gt;
 
 &lt;p&gt;Within the same vein as “divide and conquer” exists another solution, one which requires far fewer parallel processes: &lt;code class=&quot;highlighter-rouge&quot;&gt;Threads&lt;/code&gt;. In the Ruby programming language, a &lt;code class=&quot;highlighter-rouge&quot;&gt;Thread&lt;/code&gt; is a built-in object for concurrent programming.&lt;/p&gt;
 
@@ -3211,7 +3211,7 @@ Routes &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;Passages::Engine:
 
 &lt;h2 id=&quot;pool-full-of-connections-then-we-dive-in-it&quot;&gt;Pool Full of Connections, then We Dive in it&lt;/h2&gt;
 
-&lt;p&gt;To help &lt;code class=&quot;highlighter-rouge&quot;&gt;ActiveRecord&lt;/code&gt; handle connection allocation and deallocation, the &lt;a href=&quot;http://api.rubyonrails.org/classes/ActiveRecord/ConnectionAdapters/ConnectionPool.html#method-i-with_connection&quot;&gt;with_connection&lt;/a&gt; block is used. &lt;code class=&quot;highlighter-rouge&quot;&gt;with_connection&lt;/code&gt; is a method that &lt;code class=&quot;highlighter-rouge&quot;&gt;yields&lt;/code&gt; a connection to a block, then returns that same connection to the pool when the block has completed.&lt;/p&gt;
+&lt;p&gt;To help &lt;code class=&quot;highlighter-rouge&quot;&gt;ActiveRecord&lt;/code&gt; handle connection allocation and deallocation, the &lt;a href=&quot;https://api.rubyonrails.org/classes/ActiveRecord/ConnectionAdapters/ConnectionPool.html#method-i-with_connection&quot;&gt;with_connection&lt;/a&gt; block is used. &lt;code class=&quot;highlighter-rouge&quot;&gt;with_connection&lt;/code&gt; is a method that &lt;code class=&quot;highlighter-rouge&quot;&gt;yields&lt;/code&gt; a connection to a block, then returns that same connection to the pool when the block has completed.&lt;/p&gt;
 
 &lt;p&gt;Basically, it ensures that the life cycle for a single database connection is only active within the block provided.&lt;/p&gt;
 
@@ -3268,19 +3268,19 @@ Routes &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;Passages::Engine:
 
 &lt;p&gt;Handling database connections and using raw &lt;code class=&quot;highlighter-rouge&quot;&gt;Threads&lt;/code&gt; this explicitly can make some developers uncomfortable. Luckily, a few great libraries have been written to alleviate this problem.&lt;/p&gt;
 
-&lt;p&gt;In a previous post, &lt;a href=&quot;http://jakeyesbeck.com/2016/01/10/how-to-parallelize-ruby-http-requests/#enter-em-synchrony&quot;&gt;EM Synchrony&lt;/a&gt; was utilized to make parallel HTTP requests. It also has the ability to parallelize &lt;code class=&quot;highlighter-rouge&quot;&gt;ActiveRecord&lt;/code&gt; reading and writing without consuming excess database connections.&lt;/p&gt;
+&lt;p&gt;In a previous post, &lt;a href=&quot;https://jakeyesbeck.com/2016/01/10/how-to-parallelize-ruby-http-requests/#enter-em-synchrony&quot;&gt;EM Synchrony&lt;/a&gt; was utilized to make parallel HTTP requests. It also has the ability to parallelize &lt;code class=&quot;highlighter-rouge&quot;&gt;ActiveRecord&lt;/code&gt; reading and writing without consuming excess database connections.&lt;/p&gt;
 
 &lt;p&gt;Another helpful library quickly becoming the most popular concurrency library is &lt;a href=&quot;https://github.com/ruby-concurrency/concurrent-ruby&quot;&gt;concurrent-ruby&lt;/a&gt;. The &lt;code class=&quot;highlighter-rouge&quot;&gt;concurrent-ruby&lt;/code&gt; library provides convenient models for dealing with futures, promises and other parallelization data structures. However, the same &lt;code class=&quot;highlighter-rouge&quot;&gt;ActiveRecord&lt;/code&gt; connections issues will occur with concurrent ruby objects as with plain old &lt;code class=&quot;highlighter-rouge&quot;&gt;Threads&lt;/code&gt;.&lt;/p&gt;
 
 &lt;p&gt;Additionally, this code has been written for the sake of making a point. There are many ways to solve a problem and this is simply one of them.&lt;/p&gt;
 </content>
  </entry>
- 
+
  <entry>
    <title>How to Remove a Column with Zero Downtime in Ruby on Rails</title>
-   <link href="http://jakeyesbeck.com/2016/02/07/how-to-remove-a-column-with-zero-downtime-in-ruby-on-rails/"/>
-   <updated>2016-02-07T04:00:00-08:00</updated>
-   <id>http://jakeyesbeck.com/2016/02/07/how-to-remove-a-column-with-zero-downtime-in-ruby-on-rails</id>
+   <link href="https://jakeyesbeck.com/2016/02/07/how-to-remove-a-column-with-zero-downtime-in-ruby-on-rails/"/>
+   <updated>2016-02-07T07:00:00-05:00</updated>
+   <id>https://jakeyesbeck.com/2016/02/07/how-to-remove-a-column-with-zero-downtime-in-ruby-on-rails</id>
    <content type="html">&lt;p&gt;For a production Ruby on Rails application, uptime is paramount. Altering the structure of an application’s persistence layer is an operation that competes directly with uptime. Specifically, removing a table column within a relational database causes issues with the &lt;code class=&quot;highlighter-rouge&quot;&gt;ActiveRecord&lt;/code&gt; ORM (the default relational mapping within a Ruby on Rails application).&lt;/p&gt;
 
 &lt;p&gt;However, this particular pain point has been removed as of &lt;strong&gt;Ruby on Rails 4.0.0&lt;/strong&gt;, saving developers a lot of headache and greatly reducing the need for structural change coordination.&lt;/p&gt;
@@ -3342,7 +3342,7 @@ Routes &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;Passages::Engine:
 
 &lt;h2 id=&quot;yesterdays-jam&quot;&gt;Yesterday’s Jam&lt;/h2&gt;
 
-&lt;p&gt;As it turns out, &lt;a href=&quot;http://blog.codeship.com/rails-migrations-zero-downtime/&quot;&gt;a few&lt;/a&gt; different &lt;a href=&quot;http://www.codinginthecrease.com/news_article/show/85364?referrer_id=&quot;&gt;blog posts&lt;/a&gt; have been written about the solution to this very problem.&lt;/p&gt;
+&lt;p&gt;As it turns out, &lt;a href=&quot;https://blog.codeship.com/rails-migrations-zero-downtime/&quot;&gt;a few&lt;/a&gt; different &lt;a href=&quot;https://www.codinginthecrease.com/news_article/show/85364?referrer_id=&quot;&gt;blog posts&lt;/a&gt; have been written about the solution to this very problem.&lt;/p&gt;
 
 &lt;p&gt;The TL;DR of these posts is that a multiple phase solution is required under the given circumstances:&lt;/p&gt;
 
@@ -3410,7 +3410,7 @@ Routes &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;Passages::Engine:
 
 &lt;p&gt;Unfortunately, the amazing change responsible for this vast improvement regarding Ruby on Rails column removal did not receive the attention is deserves. Many blog posts and guides were written about how to circumvent the older 3.2 behaviour, but when looking for information about this modern implementation, resources were scarce.&lt;/p&gt;
 
-&lt;p&gt;After reading through a very large amount of change logs and coming up empty, a &lt;a href=&quot;http://jakeyesbeck.com/2015/10/25/how-to-traverse-foreign-ruby-code/&quot;&gt;bit of previous wisdom&lt;/a&gt; was utilized in order to track down the commit responsible.&lt;/p&gt;
+&lt;p&gt;After reading through a very large amount of change logs and coming up empty, a &lt;a href=&quot;https://jakeyesbeck.com/2015/10/25/how-to-traverse-foreign-ruby-code/&quot;&gt;bit of previous wisdom&lt;/a&gt; was utilized in order to track down the commit responsible.&lt;/p&gt;
 
 &lt;p&gt;The first step is to identify the offending code in 3.2. This way, the 4.0.0 version of the code can be analyzed, the discrepancy identified and the git revision responsible brought to light.&lt;/p&gt;
 
@@ -3520,15 +3520,15 @@ Routes &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;Passages::Engine:
 &lt;p&gt;Databases that power web applications are powerful and oddly fragile beasts. Manipulating these beasts while maintaining superb end user experiences requires one to constantly be learning. Hopefully with this behaviour, one more thing can be crossed off the check list of “things to remember when manipulating the database” and we can all just get back to work.&lt;/p&gt;
 </content>
  </entry>
- 
+
  <entry>
    <title>Nine Months of Commits</title>
-   <link href="http://jakeyesbeck.com/2016/01/30/nine-months-of-commits/"/>
-   <updated>2016-01-30T04:00:00-08:00</updated>
-   <id>http://jakeyesbeck.com/2016/01/30/nine-months-of-commits</id>
-   <content type="html">&lt;p&gt;&lt;img src=&quot;http://jakeyesbeck.com/assets/images/280_day_streak.png&quot; alt=&quot;280 days of commits&quot; /&gt;&lt;/p&gt;
+   <link href="https://jakeyesbeck.com/2016/01/30/nine-months-of-commits/"/>
+   <updated>2016-01-30T07:00:00-05:00</updated>
+   <id>https://jakeyesbeck.com/2016/01/30/nine-months-of-commits</id>
+   <content type="html">&lt;p&gt;&lt;img src=&quot;https://jakeyesbeck.com/assets/images/280_day_streak.png&quot; alt=&quot;280 days of commits&quot; /&gt;&lt;/p&gt;
 
-&lt;p&gt;It is hard to believe that already nine months have passed since the onset of my &lt;a href=&quot;http://jakeyesbeck.com/2015/04/23/a-year-of-commits/&quot;&gt;Year of Commits&lt;/a&gt;. In these past nine months, I have experienced a wide range of new aspects of open source development. This has truly been an eye opening experience, with many facets I doubt I would have experienced otherwise.&lt;/p&gt;
+&lt;p&gt;It is hard to believe that already nine months have passed since the onset of my &lt;a href=&quot;https://jakeyesbeck.com/2015/04/23/a-year-of-commits/&quot;&gt;Year of Commits&lt;/a&gt;. In these past nine months, I have experienced a wide range of new aspects of open source development. This has truly been an eye opening experience, with many facets I doubt I would have experienced otherwise.&lt;/p&gt;
 
 &lt;h2 id=&quot;confidence&quot;&gt;Confidence&lt;/h2&gt;
 
@@ -3536,11 +3536,11 @@ Routes &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;Passages::Engine:
 
 &lt;p&gt;Writing software can be a very subjective endeavor. Especially in languages like Ruby, there are many solutions to the same problem. These subtle differences can spark myriad conversations or criticisms of a person’s code. For those fortunate enough to write code for a living, think back to the times a pull request saw the most attention and accrued the most comments. Chances are, those comments pointed out style choice discrepancies or “we do not do it that way” assertions.&lt;/p&gt;
 
-&lt;p&gt;Maintaining a steady level of confidence in the midst of such feedback is paramount. I am lucky enough to have received feedback from many different people in many different situations. This feedback and perspective help inoculate a developer and encourage them to remember &lt;a href=&quot;http://jakeyesbeck.com/2015/06/14/you-are-not-your-code/&quot;&gt;they are not their code&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Maintaining a steady level of confidence in the midst of such feedback is paramount. I am lucky enough to have received feedback from many different people in many different situations. This feedback and perspective help inoculate a developer and encourage them to remember &lt;a href=&quot;https://jakeyesbeck.com/2015/06/14/you-are-not-your-code/&quot;&gt;they are not their code&lt;/a&gt;.&lt;/p&gt;
 
 &lt;h2 id=&quot;github-issues&quot;&gt;Github Issues&lt;/h2&gt;
 
-&lt;p&gt;Another exciting event since my last &lt;a href=&quot;http://jakeyesbeck.com/2015/11/01/six-months-of-commits/&quot;&gt;year of commits update&lt;/a&gt; pertains to Github issues. Github is a fantastic piece of software responsible for managing git repositories and enabling collaboration amongst developers. An issue may be opened by anyone with a Github account on any public repository of their choosing. These issues have been the primary avenue I have used to find which projects need help and what I can do to help them.&lt;/p&gt;
+&lt;p&gt;Another exciting event since my last &lt;a href=&quot;https://jakeyesbeck.com/2015/11/01/six-months-of-commits/&quot;&gt;year of commits update&lt;/a&gt; pertains to Github issues. Github is a fantastic piece of software responsible for managing git repositories and enabling collaboration amongst developers. An issue may be opened by anyone with a Github account on any public repository of their choosing. These issues have been the primary avenue I have used to find which projects need help and what I can do to help them.&lt;/p&gt;
 
 &lt;p&gt;My excitement stems from the fact that, for the first time since I started Year of Commits, other developers have engaged with one of my projects (&lt;a href=&quot;https://github.com/yez/passages&quot;&gt;passages&lt;/a&gt;) and submitted some issues! Having consumers of software one builds is a great feeling. An even greater feeling is when those people care enough to submit issues they think can better the project.&lt;/p&gt;
 
@@ -3550,7 +3550,7 @@ Routes &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;Passages::Engine:
 
 &lt;p&gt;Practice makes perfect. When reading code you did not write, knowing where to start and identifying patterns in code organization helps a great deal. Since the goal of Year of Commits was to contribute to my own &lt;strong&gt;and&lt;/strong&gt; other people’s code, I have been reading &lt;em&gt;a lot&lt;/em&gt; of code that I did not write. This has been a fantastic learning experience for me. At a typical software engineering job, coworkers’ code starts to blend styles and eventually become fairly homogeneous.&lt;/p&gt;
 
-&lt;p&gt;By reading code written by many different people, new patterns and styles add a level of depth to code grokking that is hard to replicate in other ways. I came to appreciate this accidentally discovered benefit of Year of Commits so much, &lt;a href=&quot;http://jakeyesbeck.com/2015/10/25/how-to-traverse-foreign-ruby-code/&quot;&gt;I wrote a whole post describing the process for foreign code traversal.&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;By reading code written by many different people, new patterns and styles add a level of depth to code grokking that is hard to replicate in other ways. I came to appreciate this accidentally discovered benefit of Year of Commits so much, &lt;a href=&quot;https://jakeyesbeck.com/2015/10/25/how-to-traverse-foreign-ruby-code/&quot;&gt;I wrote a whole post describing the process for foreign code traversal.&lt;/a&gt;&lt;/p&gt;
 
 &lt;h2 id=&quot;the-home-stretch&quot;&gt;The Home Stretch&lt;/h2&gt;
 
@@ -3559,12 +3559,12 @@ Routes &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;Passages::Engine:
 &lt;p&gt;The positive feedback I have received about this blog and the work that I have been doing helps make this easy. I would like to say thank you again to everyone on this journey with me.&lt;/p&gt;
 </content>
  </entry>
- 
+
  <entry>
    <title>Ruby Private Class Methods</title>
-   <link href="http://jakeyesbeck.com/2016/01/24/ruby-private-class-methods/"/>
-   <updated>2016-01-24T04:00:00-08:00</updated>
-   <id>http://jakeyesbeck.com/2016/01/24/ruby-private-class-methods</id>
+   <link href="https://jakeyesbeck.com/2016/01/24/ruby-private-class-methods/"/>
+   <updated>2016-01-24T07:00:00-05:00</updated>
+   <id>https://jakeyesbeck.com/2016/01/24/ruby-private-class-methods</id>
    <content type="html">&lt;p&gt;In the Ruby programming language, defined methods come in two variants: instance methods and class methods. Instance methods are available after an object has been initialized, creating an instance. Class methods, on the other hand, are available without creating an instance of the class they are defined upon.&lt;/p&gt;
 
 &lt;p&gt;Ruby methods can vary in visibility. Public methods are available in any context, while private methods’ availability is restricted within the instance of a class and its descendants. A third visibility scope, protected, behaves similarly to private methods, but protected methods can be called by other instances of the same class.&lt;/p&gt;
@@ -3630,7 +3630,7 @@ Routes &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;Passages::Engine:
 
 &lt;h2 id=&quot;why&quot;&gt;Why?&lt;/h2&gt;
 
-&lt;p&gt;The reason that the above code did not produce a private method has to do with Ruby’s object hierarchy, interactions amongst  internal classes, instances of those classes, and eigenclasses. A detailed write up about how Ruby’s objects work with one another can be found in a &lt;a href=&quot;http://jakeyesbeck.com/2015/08/23/ruby-objects/&quot;&gt;previous post&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;The reason that the above code did not produce a private method has to do with Ruby’s object hierarchy, interactions amongst  internal classes, instances of those classes, and eigenclasses. A detailed write up about how Ruby’s objects work with one another can be found in a &lt;a href=&quot;https://jakeyesbeck.com/2015/08/23/ruby-objects/&quot;&gt;previous post&lt;/a&gt;.&lt;/p&gt;
 
 &lt;p&gt;When defining methods in a class, the default context and the context introduced by the &lt;code class=&quot;highlighter-rouge&quot;&gt;self.&lt;/code&gt; method declaration are distinct.&lt;/p&gt;
 
@@ -3730,24 +3730,24 @@ Routes &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;Passages::Engine:
 
 &lt;h2 id=&quot;further-reading&quot;&gt;Further Reading&lt;/h2&gt;
 
-&lt;p&gt;The aforementioned solutions will get the job done but might not answer lingering questions about &lt;em&gt;why&lt;/em&gt; things work the way they do. A few great articles on &lt;a href=&quot;http://madebydna.com/all/code/2011/06/24/eigenclasses-demystified.html&quot;&gt;the ruby eigenclass&lt;/a&gt; and &lt;a href=&quot;http://junichiito.blogspot.com/2012/03/matz-answers-why-ruby-lets-sub-classes.html&quot;&gt;Matz’s thoughts on Ruby method design&lt;/a&gt; should help paint a more concise picture of why Ruby’s private class method definition is complex.&lt;/p&gt;
+&lt;p&gt;The aforementioned solutions will get the job done but might not answer lingering questions about &lt;em&gt;why&lt;/em&gt; things work the way they do. A few great articles on &lt;a href=&quot;https://madebydna.com/all/code/2011/06/24/eigenclasses-demystified.html&quot;&gt;the ruby eigenclass&lt;/a&gt; and &lt;a href=&quot;https://junichiito.blogspot.com/2012/03/matz-answers-why-ruby-lets-sub-classes.html&quot;&gt;Matz’s thoughts on Ruby method design&lt;/a&gt; should help paint a more concise picture of why Ruby’s private class method definition is complex.&lt;/p&gt;
 </content>
  </entry>
- 
+
  <entry>
    <title>Contributing to Open Source in 7 Steps</title>
-   <link href="http://jakeyesbeck.com/2016/01/17/contributing-to-open-source-in-7-steps/"/>
-   <updated>2016-01-17T04:00:00-08:00</updated>
-   <id>http://jakeyesbeck.com/2016/01/17/contributing-to-open-source-in-7-steps</id>
+   <link href="https://jakeyesbeck.com/2016/01/17/contributing-to-open-source-in-7-steps/"/>
+   <updated>2016-01-17T07:00:00-05:00</updated>
+   <id>https://jakeyesbeck.com/2016/01/17/contributing-to-open-source-in-7-steps</id>
    <content type="html">&lt;p&gt;Making contributions to open source repositories is a great way to give back to the community. Open source software has a rich history and is a crucial component in many successful software applications. Most open source projects are maintained by either one or many developers for free. Since “free” is not usually the price of food and shelter, these maintainers are not available to work on their projects at all hours, most of them have day jobs so they can eat and buy clothing.&lt;/p&gt;
 
-&lt;p&gt;To help keep open source projects up to date and bug free, members of the community regularly contribute a portion of their own free time. Since the start of the &lt;a href=&quot;http://jakeyesbeck.com/2015/04/23/a-year-of-commits/&quot;&gt;Year of Commits&lt;/a&gt; project, I have made quite a few contributes to open source software and distilled the process down to these seven basic steps.&lt;/p&gt;
+&lt;p&gt;To help keep open source projects up to date and bug free, members of the community regularly contribute a portion of their own free time. Since the start of the &lt;a href=&quot;https://jakeyesbeck.com/2015/04/23/a-year-of-commits/&quot;&gt;Year of Commits&lt;/a&gt; project, I have made quite a few contributes to open source software and distilled the process down to these seven basic steps.&lt;/p&gt;
 
 &lt;h2 id=&quot;find-a-repository-that-has-some-issues&quot;&gt;1. Find a repository that has some issues&lt;/h2&gt;
 
 &lt;p&gt;A great way to get a foot in the door in an open source repository is by solving one of its open issues. A project is much more likely to accept code that addresses an open issue as opposed to code that is added “just because”. Open issues are either bugs or feature requests and are tracked on Github.&lt;/p&gt;
 
-&lt;p&gt;Some really great tools exist for exploring Github’s vast index of repositories for relevant projects. &lt;a href=&quot;http://www.codetriage.com/&quot;&gt;CodeTriage&lt;/a&gt; is one of these &lt;strong&gt;awesome&lt;/strong&gt; tools. CodeTriage enables a user to narrow down Github’s list of repositories by programming language. CodeTriage has a very nice UI, ordering a very large amount of Github projects in descending count of open issues.&lt;/p&gt;
+&lt;p&gt;Some really great tools exist for exploring Github’s vast index of repositories for relevant projects. &lt;a href=&quot;https://www.codetriage.com/&quot;&gt;CodeTriage&lt;/a&gt; is one of these &lt;strong&gt;awesome&lt;/strong&gt; tools. CodeTriage enables a user to narrow down Github’s list of repositories by programming language. CodeTriage has a very nice UI, ordering a very large amount of Github projects in descending count of open issues.&lt;/p&gt;
 
 &lt;p&gt;Alternatively, Github has their own tooling around discovering projects with their &lt;a href=&quot;https://github.com/explore&quot;&gt;explore feature&lt;/a&gt;. Trending repositories from this week or this month are available on a per programming language basis. The explore feature is great for popular projects but exposes far fewer projects than CodeTriage.&lt;/p&gt;
 
@@ -3755,9 +3755,9 @@ Routes &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;Passages::Engine:
 
 &lt;p&gt;The &lt;code class=&quot;highlighter-rouge&quot;&gt;fetching-gem&lt;/code&gt; library is a convenience Ruby library for accessing elements of nested hashes and arrays with dot notation and noisy feedback.&lt;/p&gt;
 
-&lt;p&gt;Recently, the &lt;code class=&quot;highlighter-rouge&quot;&gt;fetching-gem&#39;s&lt;/code&gt; issues page had a feature request: “Make the library compatible with the &lt;a href=&quot;http://ruby-doc.org/core-2.3.0/Enumerable.html#method-i-first&quot;&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;Enumerable#first(n)&lt;/code&gt; behaviour&lt;/a&gt;”:&lt;/p&gt;
+&lt;p&gt;Recently, the &lt;code class=&quot;highlighter-rouge&quot;&gt;fetching-gem&#39;s&lt;/code&gt; issues page had a feature request: “Make the library compatible with the &lt;a href=&quot;https://ruby-doc.org/core-2.3.0/Enumerable.html#method-i-first&quot;&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;Enumerable#first(n)&lt;/code&gt; behaviour&lt;/a&gt;”:&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;http://jakeyesbeck.com/assets/images/find_issue.png&quot; alt=&quot;Find Issue&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://jakeyesbeck.com/assets/images/find_issue.png&quot; alt=&quot;Find Issue&quot; /&gt;&lt;/p&gt;
 
 &lt;h2 id=&quot;read-the-contributing-guidelines&quot;&gt;2. Read the contributing guidelines&lt;/h2&gt;
 
@@ -3790,7 +3790,7 @@ upstream  git@github.com:covermymeds/fetching-gem.git &lt;span class=&quot;o&quo
 
 &lt;p&gt;The above command adds a new remote, &lt;code class=&quot;highlighter-rouge&quot;&gt;upstream&lt;/code&gt;, to the directory. With this remote in place, a &lt;code class=&quot;highlighter-rouge&quot;&gt;git fetch upstream&lt;/code&gt; command will grab the latest updates from the original repository.&lt;/p&gt;
 
-&lt;p&gt;Exploring unfamiliar code is not the most intuitive process, but thankfully a number of &lt;a href=&quot;http://jakeyesbeck.com/2015/10/25/how-to-traverse-foreign-ruby-code/&quot;&gt;blog posts&lt;/a&gt; have been written about the topic.&lt;/p&gt;
+&lt;p&gt;Exploring unfamiliar code is not the most intuitive process, but thankfully a number of &lt;a href=&quot;https://jakeyesbeck.com/2015/10/25/how-to-traverse-foreign-ruby-code/&quot;&gt;blog posts&lt;/a&gt; have been written about the topic.&lt;/p&gt;
 
 &lt;h2 id=&quot;reproduce-the-issue&quot;&gt;4. Reproduce the issue&lt;/h2&gt;
 
@@ -3827,11 +3827,11 @@ upstream  git@github.com:covermymeds/fetching-gem.git &lt;span class=&quot;o&quo
 
 &lt;p&gt;The pull request that I recently added to &lt;code class=&quot;highlighter-rouge&quot;&gt;fetching-gem&lt;/code&gt; looked like this:&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;http://jakeyesbeck.com/assets/images/submit_pr.png&quot; alt=&quot;Submit a PR&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://jakeyesbeck.com/assets/images/submit_pr.png&quot; alt=&quot;Submit a PR&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;Another possible check when submitting a PR involves continuous integrations. If a project automatically builds its test suite with a service like &lt;a href=&quot;https://travis-ci.org&quot;&gt;Travis&lt;/a&gt;, Github will supply some checks at the bottom of the PR:&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;http://jakeyesbeck.com/assets/images/make_sure_ci_passes.png&quot; alt=&quot;Check CI&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://jakeyesbeck.com/assets/images/make_sure_ci_passes.png&quot; alt=&quot;Check CI&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;If, for some reason, this status is not green and the tests did not pass, use the &lt;code class=&quot;highlighter-rouge&quot;&gt;Details&lt;/code&gt; link to find out more information why.&lt;/p&gt;
 
@@ -3839,7 +3839,7 @@ upstream  git@github.com:covermymeds/fetching-gem.git &lt;span class=&quot;o&quo
 
 &lt;p&gt;Pending continuous integration passing and the repository’s maintainer(s) signing off on the change, a patch will be accepted into the project. What a fantastic feeling that is! Awesome maintainers (like the &lt;code class=&quot;highlighter-rouge&quot;&gt;fetching-gem&lt;/code&gt; maintainer &lt;code class=&quot;highlighter-rouge&quot;&gt;mikegee&lt;/code&gt;) will show their appreciation directly on the PR, immortalizing your contribution for all days to come.&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;http://jakeyesbeck.com/assets/images/feel_great.png&quot; alt=&quot;Feel Great&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://jakeyesbeck.com/assets/images/feel_great.png&quot; alt=&quot;Feel Great&quot; /&gt;&lt;/p&gt;
 
 &lt;h2 id=&quot;b-repeat-4---6&quot;&gt;7b. Repeat 4 - 6&lt;/h2&gt;
 
@@ -3848,12 +3848,12 @@ upstream  git@github.com:covermymeds/fetching-gem.git &lt;span class=&quot;o&quo
 &lt;p&gt;Open source projects have tremendous value and a strong presence in the technology ecosystem. Contributing to these projects is an easy way to show appreciation and feel like a valued member of the open source community.&lt;/p&gt;
 </content>
  </entry>
- 
+
  <entry>
    <title>How To Parallelize Ruby HTTP Requests</title>
-   <link href="http://jakeyesbeck.com/2016/01/10/how-to-parallelize-ruby-http-requests/"/>
-   <updated>2016-01-10T04:00:00-08:00</updated>
-   <id>http://jakeyesbeck.com/2016/01/10/how-to-parallelize-ruby-http-requests</id>
+   <link href="https://jakeyesbeck.com/2016/01/10/how-to-parallelize-ruby-http-requests/"/>
+   <updated>2016-01-10T07:00:00-05:00</updated>
+   <id>https://jakeyesbeck.com/2016/01/10/how-to-parallelize-ruby-http-requests</id>
    <content type="html">&lt;p&gt;It turns out that managing web requests is quite important when doing web development. A web application backed by an external or internal API can issue &lt;strong&gt;a lot&lt;/strong&gt; of requests when rendering a seemingly simple web page. How those requests are made and in what order is very important. With improper parallelization, an end user’s entire experience can go from delightful to horrific in a matter of seconds.&lt;/p&gt;
 
 &lt;h2 id=&quot;the-build-up&quot;&gt;The Build Up&lt;/h2&gt;
@@ -4043,13 +4043,13 @@ upstream  git@github.com:covermymeds/fetching-gem.git &lt;span class=&quot;o&quo
 &lt;/ol&gt;
 </content>
  </entry>
- 
+
  <entry>
    <title>Passages Rails Engine</title>
-   <link href="http://jakeyesbeck.com/2016/01/03/passages/"/>
-   <updated>2016-01-03T04:00:00-08:00</updated>
-   <id>http://jakeyesbeck.com/2016/01/03/passages</id>
-   <content type="html">&lt;p&gt;Routing in the Ruby on Rails world can, at times, be a tad confusing. The &lt;a href=&quot;http://guides.rubyonrails.org/routing.html&quot;&gt;official Rails guide&lt;/a&gt; is very helpful for the basics; but, as an application grows, it can become hard to remember specific details about every single route.&lt;/p&gt;
+   <link href="https://jakeyesbeck.com/2016/01/03/passages/"/>
+   <updated>2016-01-03T07:00:00-05:00</updated>
+   <id>https://jakeyesbeck.com/2016/01/03/passages</id>
+   <content type="html">&lt;p&gt;Routing in the Ruby on Rails world can, at times, be a tad confusing. The &lt;a href=&quot;https://guides.rubyonrails.org/routing.html&quot;&gt;official Rails guide&lt;/a&gt; is very helpful for the basics; but, as an application grows, it can become hard to remember specific details about every single route.&lt;/p&gt;
 
 &lt;h2 id=&quot;existing-routing-tools&quot;&gt;Existing Routing Tools&lt;/h2&gt;
 
@@ -4059,7 +4059,7 @@ upstream  git@github.com:covermymeds/fetching-gem.git &lt;span class=&quot;o&quo
 
 &lt;p&gt;Another helpful tool in development mode is this screen:&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;http://jakeyesbeck.com/assets/images/no_route_page.png&quot; alt=&quot;Default Rails Dev No Route&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://jakeyesbeck.com/assets/images/no_route_page.png&quot; alt=&quot;Default Rails Dev No Route&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;This page provides the ability to enter search terms that match words in the &lt;code class=&quot;highlighter-rouge&quot;&gt;paths&lt;/code&gt; of specfic routes. However, similarly to &lt;code class=&quot;highlighter-rouge&quot;&gt;rake routes&lt;/code&gt;, this screen is only accessible in development mode. While this tool is still extremely useful, there could be cases when route inspection would be helpful without running the server locally.&lt;/p&gt;
 
@@ -4085,7 +4085,7 @@ upstream  git@github.com:covermymeds/fetching-gem.git &lt;span class=&quot;o&quo
 
 &lt;p&gt;After following the &lt;a href=&quot;https://github.com/yez/passages#install&quot;&gt;installation guide from the project’s README&lt;/a&gt;, A very basic use of &lt;code class=&quot;highlighter-rouge&quot;&gt;Passages&lt;/code&gt; would look like:&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;http://jakeyesbeck.com/assets/images/passages_demo.gif&quot; alt=&quot;Passages Demo&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://jakeyesbeck.com/assets/images/passages_demo.gif&quot; alt=&quot;Passages Demo&quot; /&gt;&lt;/p&gt;
 
 &lt;h2 id=&quot;contributing&quot;&gt;Contributing&lt;/h2&gt;
 
@@ -4096,17 +4096,17 @@ upstream  git@github.com:covermymeds/fetching-gem.git &lt;span class=&quot;o&quo
 &lt;p&gt;Currently, &lt;code class=&quot;highlighter-rouge&quot;&gt;Passages&lt;/code&gt; only supports Ruby on Rails 4. It will most likely be upgraded when Ruby on Rails 5 is released but there are no plans to support Ruby on Rails 3 or older.&lt;/p&gt;
 </content>
  </entry>
- 
+
  <entry>
    <title>Things I Wish I Knew When I Started Programming</title>
-   <link href="http://jakeyesbeck.com/2015/12/27/what-i-would-tell-myself-when-i-started-programming/"/>
-   <updated>2015-12-27T04:00:00-08:00</updated>
-   <id>http://jakeyesbeck.com/2015/12/27/what-i-would-tell-myself-when-i-started-programming</id>
+   <link href="https://jakeyesbeck.com/2015/12/27/what-i-would-tell-myself-when-i-started-programming/"/>
+   <updated>2015-12-27T07:00:00-05:00</updated>
+   <id>https://jakeyesbeck.com/2015/12/27/what-i-would-tell-myself-when-i-started-programming</id>
    <content type="html">&lt;p&gt;If by some magical event I could go back in time to the day before I started my first job as a software engineer, this is what I would say.&lt;/p&gt;
 
 &lt;h2 id=&quot;drive-slow&quot;&gt;Drive Slow&lt;/h2&gt;
 
-&lt;p&gt;I mentioned a similar message in &lt;a href=&quot;http://jakeyesbeck.com/2015/09/06/stop-and-take-a-moment/&quot;&gt;a previous post&lt;/a&gt; and I believe it is worth repeating. When starting a new job or a new career, it is easy to place external pressures on ourselves regarding time. This is a common issue that can arise when comparing one’s own work with those around them. As the new employee, noticing and measuring your own speed and efficiency against existing personnel can feel like the correct thing to do; however, chasing the “competition” or “proving that you are just as fast as them” will only result in high stress levels and bug riddled software.&lt;/p&gt;
+&lt;p&gt;I mentioned a similar message in &lt;a href=&quot;https://jakeyesbeck.com/2015/09/06/stop-and-take-a-moment/&quot;&gt;a previous post&lt;/a&gt; and I believe it is worth repeating. When starting a new job or a new career, it is easy to place external pressures on ourselves regarding time. This is a common issue that can arise when comparing one’s own work with those around them. As the new employee, noticing and measuring your own speed and efficiency against existing personnel can feel like the correct thing to do; however, chasing the “competition” or “proving that you are just as fast as them” will only result in high stress levels and bug riddled software.&lt;/p&gt;
 
 &lt;p&gt;The people who seem “fast” or come off as a “10x engineer” were not born that way. They took their time and learned their craft. And with that, they have slowly accelerated their process and patterns to make them appear extremely quick and efficient.&lt;/p&gt;
 
@@ -4128,7 +4128,7 @@ upstream  git@github.com:covermymeds/fetching-gem.git &lt;span class=&quot;o&quo
 
 &lt;h2 id=&quot;rtfs&quot;&gt;R.T.F.S.&lt;/h2&gt;
 
-&lt;p&gt;At the onset of one’s career, it is easy to treat third party software or services as magical boxes of mystery. However, this is not necessary. It is actually &lt;a href=&quot;http://jakeyesbeck.com/2015/10/25/how-to-traverse-foreign-ruby-code/&quot;&gt;very easy to open and read the source&lt;/a&gt; of many third party applications (especially in web development). Therefore, it becomes imperative to &lt;strong&gt;R&lt;/strong&gt;ead &lt;strong&gt;T&lt;/strong&gt;he &lt;strong&gt;F&lt;/strong&gt;reaking &lt;strong&gt;S&lt;/strong&gt;ource.&lt;/p&gt;
+&lt;p&gt;At the onset of one’s career, it is easy to treat third party software or services as magical boxes of mystery. However, this is not necessary. It is actually &lt;a href=&quot;https://jakeyesbeck.com/2015/10/25/how-to-traverse-foreign-ruby-code/&quot;&gt;very easy to open and read the source&lt;/a&gt; of many third party applications (especially in web development). Therefore, it becomes imperative to &lt;strong&gt;R&lt;/strong&gt;ead &lt;strong&gt;T&lt;/strong&gt;he &lt;strong&gt;F&lt;/strong&gt;reaking &lt;strong&gt;S&lt;/strong&gt;ource.&lt;/p&gt;
 
 &lt;p&gt;Reading and having at least a basic understanding of how a piece of third party software works is paramount for a new developer. If foreign code is treated as magic, that is all it will ever be. This magic can become a crutch that an innocent new developer may find themselves leaning against more and more until it eventually breaks, leaving the developer confused and helpless.&lt;/p&gt;
 
@@ -4137,17 +4137,17 @@ upstream  git@github.com:covermymeds/fetching-gem.git &lt;span class=&quot;o&quo
 &lt;p&gt;Who wants to be confused and helpless? No one wants that and no one needs to experience that. Reading the source code of a library or crucial bit of third party open source software can help bring light to an otherwise shrouded system, bringing a new level of depth to a developer’s understanding.&lt;/p&gt;
 </content>
  </entry>
- 
+
  <entry>
    <title>Introduction to Rails 5 Attributes</title>
-   <link href="http://jakeyesbeck.com/2015/12/20/rails-5-attributes/"/>
-   <updated>2015-12-20T04:00:00-08:00</updated>
-   <id>http://jakeyesbeck.com/2015/12/20/rails-5-attributes</id>
+   <link href="https://jakeyesbeck.com/2015/12/20/rails-5-attributes/"/>
+   <updated>2015-12-20T07:00:00-05:00</updated>
+   <id>https://jakeyesbeck.com/2015/12/20/rails-5-attributes</id>
    <content type="html">&lt;p&gt;Shortly after the tenth anniversary of Ruby on Rails 1.0, Rails 5.0 Beta has been announced. While the main character of this release was without a doubt &lt;code class=&quot;highlighter-rouge&quot;&gt;ActionCable&lt;/code&gt;, other really great features have made their debut.&lt;/p&gt;
 
 &lt;h2 id=&quot;types-of-changes&quot;&gt;Types of Changes&lt;/h2&gt;
 
-&lt;p&gt;One feature that particularly stood out is the introduction of &lt;code class=&quot;highlighter-rouge&quot;&gt;ActiveRecord Attributes&lt;/code&gt;. This feature allows a developer to assert a specific type for a given attribute and an optional default value. It is not strict type validation (&lt;a href=&quot;http://jakeyesbeck.com/2015/11/29/updated-validates-type/&quot;&gt;which I have a very strong affinity for&lt;/a&gt;), but it does define explicit type coercion that can be very useful.&lt;/p&gt;
+&lt;p&gt;One feature that particularly stood out is the introduction of &lt;code class=&quot;highlighter-rouge&quot;&gt;ActiveRecord Attributes&lt;/code&gt;. This feature allows a developer to assert a specific type for a given attribute and an optional default value. It is not strict type validation (&lt;a href=&quot;https://jakeyesbeck.com/2015/11/29/updated-validates-type/&quot;&gt;which I have a very strong affinity for&lt;/a&gt;), but it does define explicit type coercion that can be very useful.&lt;/p&gt;
 
 &lt;p&gt;Given an example application that deals with &lt;code class=&quot;highlighter-rouge&quot;&gt;Transactions&lt;/code&gt;, a single table and model might exist:&lt;/p&gt;
 
@@ -4300,12 +4300,12 @@ upstream  git@github.com:covermymeds/fetching-gem.git &lt;span class=&quot;o&quo
 &lt;p&gt;The addition of &lt;code class=&quot;highlighter-rouge&quot;&gt;Attributes&lt;/code&gt; will hopefully promote some new patterns and considerations around dealing with types in Ruby on Rails applications. Data consistency and reliability are important, it is exciting to see people making steps toward it in the Rails community.&lt;/p&gt;
 </content>
  </entry>
- 
+
  <entry>
    <title>Ruby Refinements</title>
-   <link href="http://jakeyesbeck.com/2015/12/13/ruby-refinements/"/>
-   <updated>2015-12-13T04:00:00-08:00</updated>
-   <id>http://jakeyesbeck.com/2015/12/13/ruby-refinements</id>
+   <link href="https://jakeyesbeck.com/2015/12/13/ruby-refinements/"/>
+   <updated>2015-12-13T07:00:00-05:00</updated>
+   <id>https://jakeyesbeck.com/2015/12/13/ruby-refinements</id>
    <content type="html">&lt;p&gt;The Ruby language provides many powerful tools for software engineers to utilize. For instance, classes that have been previously defined and evaluated can be reopened and changed. This is commonly referred to as &lt;em&gt;“monkey patching”&lt;/em&gt;, a term which elicits almost universal disdain among Ruby developers.&lt;/p&gt;
 
 &lt;h2 id=&quot;the-problem&quot;&gt;The Problem&lt;/h2&gt;
@@ -4488,12 +4488,12 @@ upstream  git@github.com:covermymeds/fetching-gem.git &lt;span class=&quot;o&quo
 &lt;p&gt;Using Refinements is a nice alternative to the sledgehammer that is monkey patching. Bending a class to fit a very specific need in an encapsulated manner can mean the difference between a stable system and one riddled with hard to track down bugs. While Refinements still have their own drawbacks, they are much less intrusive than the alternative.&lt;/p&gt;
 </content>
  </entry>
- 
+
  <entry>
    <title>How to use Rails Strong Parameters</title>
-   <link href="http://jakeyesbeck.com/2015/12/06/how-to-use-rails-strong-parameters/"/>
-   <updated>2015-12-06T04:00:00-08:00</updated>
-   <id>http://jakeyesbeck.com/2015/12/06/how-to-use-rails-strong-parameters</id>
+   <link href="https://jakeyesbeck.com/2015/12/06/how-to-use-rails-strong-parameters/"/>
+   <updated>2015-12-06T07:00:00-05:00</updated>
+   <id>https://jakeyesbeck.com/2015/12/06/how-to-use-rails-strong-parameters</id>
    <content type="html">&lt;p&gt;In the latest major version of Ruby on Rails, &lt;strong&gt;Strong Parameters&lt;/strong&gt; were introduced. The intent of this addition was to enable consistent and reliable parameter checking. Using Strong Parameters is simple and intuitive. It provides a very clean method API to help keep controllers DRY.&lt;/p&gt;
 
 &lt;p&gt;However, knowing when to use Strong Parameters and how to use them correctly is very important. After all, what good is parameter validation if it is in the wrong place or conveys the wrong message?&lt;/p&gt;
@@ -4642,7 +4642,7 @@ upstream  git@github.com:covermymeds/fetching-gem.git &lt;span class=&quot;o&quo
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 
-&lt;p&gt;If this is a tad confusing, check out more examples at the &lt;a href=&quot;http://edgeguides.rubyonrails.org/action_controller_overview.html#strong-parameters&quot;&gt;official guide for Strong Parameters&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;If this is a tad confusing, check out more examples at the &lt;a href=&quot;https://edgeguides.rubyonrails.org/action_controller_overview.html#strong-parameters&quot;&gt;official guide for Strong Parameters&lt;/a&gt;.&lt;/p&gt;
 
 &lt;h2 id=&quot;everything-in-moderation&quot;&gt;Everything in Moderation&lt;/h2&gt;
 
@@ -4651,12 +4651,12 @@ upstream  git@github.com:covermymeds/fetching-gem.git &lt;span class=&quot;o&quo
 &lt;p&gt;Additionally, if the Ruby on Rails application in question was an API, Strong Parameters would only be effective in very specific circumstances. Since the feedback given by Strong Parameters is not as granular as an API would like to be, it could be hard to find many uses of it.&lt;/p&gt;
 </content>
  </entry>
- 
+
  <entry>
    <title>Validates Type 2.0</title>
-   <link href="http://jakeyesbeck.com/2015/11/29/updated-validates-type/"/>
-   <updated>2015-11-29T04:00:00-08:00</updated>
-   <id>http://jakeyesbeck.com/2015/11/29/updated-validates-type</id>
+   <link href="https://jakeyesbeck.com/2015/11/29/updated-validates-type/"/>
+   <updated>2015-11-29T07:00:00-05:00</updated>
+   <id>https://jakeyesbeck.com/2015/11/29/updated-validates-type</id>
    <content type="html">&lt;p&gt;One of the first projects that I worked on during this Year of Commits was &lt;a href=&quot;https://github.com/yez/validates_type&quot;&gt;validates_type&lt;/a&gt;. In case that name is too obscure, &lt;code class=&quot;highlighter-rouge&quot;&gt;validates_type&lt;/code&gt; is a gem for validating that a specific value is exactly the type it is expected to be. The &lt;code class=&quot;highlighter-rouge&quot;&gt;validates_type&lt;/code&gt; library is compatible to &lt;code class=&quot;highlighter-rouge&quot;&gt;ActiveModel&lt;/code&gt; style validations.&lt;/p&gt;
 
 &lt;p&gt;Originally, the &lt;code class=&quot;highlighter-rouge&quot;&gt;validates_type&lt;/code&gt; gem was very strict with what it validated against. It started with basic included Ruby types like &lt;code class=&quot;highlighter-rouge&quot;&gt;Integer&lt;/code&gt;, &lt;code class=&quot;highlighter-rouge&quot;&gt;Float&lt;/code&gt;, and &lt;code class=&quot;highlighter-rouge&quot;&gt;String&lt;/code&gt;. This was a fine first step but proved too restrictive for basically any use case.&lt;/p&gt;
@@ -4688,7 +4688,7 @@ upstream  git@github.com:covermymeds/fetching-gem.git &lt;span class=&quot;o&quo
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 
-&lt;p&gt;This way, there is not a bunch of random data in the &lt;code class=&quot;highlighter-rouge&quot;&gt;authors&lt;/code&gt; table because of a bad decision made a while ago. More examples on how this gem can be used are found at the &lt;a href=&quot;http://jakeyesbeck.com/2015/05/10/validates-type/&quot;&gt;prequel to this post&lt;/a&gt; and the &lt;a href=&quot;https://github.com/yez/validates_type/blob/master/README.md&quot;&gt;project’s README&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;This way, there is not a bunch of random data in the &lt;code class=&quot;highlighter-rouge&quot;&gt;authors&lt;/code&gt; table because of a bad decision made a while ago. More examples on how this gem can be used are found at the &lt;a href=&quot;https://jakeyesbeck.com/2015/05/10/validates-type/&quot;&gt;prequel to this post&lt;/a&gt; and the &lt;a href=&quot;https://github.com/yez/validates_type/blob/master/README.md&quot;&gt;project’s README&lt;/a&gt;.&lt;/p&gt;
 
 &lt;h2 id=&quot;the-new-hotness&quot;&gt;The New Hotness&lt;/h2&gt;
 
@@ -4749,12 +4749,12 @@ upstream  git@github.com:covermymeds/fetching-gem.git &lt;span class=&quot;o&quo
 
 </content>
  </entry>
- 
+
  <entry>
    <title>How to Write Future-proof Mocks in RSpec 3</title>
-   <link href="http://jakeyesbeck.com/2015/11/22/how-to-write-futureproof-mocks/"/>
-   <updated>2015-11-22T04:00:00-08:00</updated>
-   <id>http://jakeyesbeck.com/2015/11/22/how-to-write-futureproof-mocks</id>
+   <link href="https://jakeyesbeck.com/2015/11/22/how-to-write-futureproof-mocks/"/>
+   <updated>2015-11-22T07:00:00-05:00</updated>
+   <id>https://jakeyesbeck.com/2015/11/22/how-to-write-futureproof-mocks</id>
    <content type="html">&lt;p&gt;Tests are an important component in most software applications. Whether tests drive the development, or are strapped on after the fact, tests need to be reliable for future development to progress. An application’s complexity rises with time. During and after this increase, a rock solid test suite is crucial.&lt;/p&gt;
 
 &lt;h2 id=&quot;let-the-dogs-out&quot;&gt;Let the Dogs Out&lt;/h2&gt;
@@ -4910,12 +4910,12 @@ Finished &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;0.0054 seconds &lt;span
 
 </content>
  </entry>
- 
+
  <entry>
    <title>Five Active Record Features You Should Be Using</title>
-   <link href="http://jakeyesbeck.com/2015/11/15/five-active-record-features-you-should-be-using/"/>
-   <updated>2015-11-15T04:00:00-08:00</updated>
-   <id>http://jakeyesbeck.com/2015/11/15/five-active-record-features-you-should-be-using</id>
+   <link href="https://jakeyesbeck.com/2015/11/15/five-active-record-features-you-should-be-using/"/>
+   <updated>2015-11-15T07:00:00-05:00</updated>
+   <id>https://jakeyesbeck.com/2015/11/15/five-active-record-features-you-should-be-using</id>
    <content type="html">&lt;p&gt;Active Record is responsible for communicating with the persistence layer by default in Ruby on Rails applications. Using Active Record effectively and efficiently can greatly improve an application’s code.&lt;/p&gt;
 
 &lt;p&gt;In Ruby on Rails 4.0, some material changes have been made to Active Record. Understanding these changes, and how they are best utilized is important for any Rails developer.&lt;/p&gt;
@@ -5090,17 +5090,17 @@ Finished &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;0.0054 seconds &lt;span
 
 &lt;h2 id=&quot;queries-on-queries&quot;&gt;Queries on Queries&lt;/h2&gt;
 
-&lt;p&gt;With these five techniques (and probably a lot more), naiive Active Record queries can stay DRY and intuitive. The exhaustive list of what Active Record can provide can be found &lt;a href=&quot;http://guides.rubyonrails.org/active_record_querying.html&quot;&gt;at Rails Guides&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;With these five techniques (and probably a lot more), naiive Active Record queries can stay DRY and intuitive. The exhaustive list of what Active Record can provide can be found &lt;a href=&quot;https://guides.rubyonrails.org/active_record_querying.html&quot;&gt;at Rails Guides&lt;/a&gt;.&lt;/p&gt;
 
 </content>
  </entry>
- 
+
  <entry>
    <title>Ruby DelegateClass</title>
-   <link href="http://jakeyesbeck.com/2015/11/08/ruby-delegate-class/"/>
-   <updated>2015-11-08T04:00:00-08:00</updated>
-   <id>http://jakeyesbeck.com/2015/11/08/ruby-delegate-class</id>
-   <content type="html">&lt;p&gt;Objects are a big deal in Ruby. A &lt;a href=&quot;http://jakeyesbeck.com/2015/08/23/ruby-objects/&quot;&gt;previous post about Ruby Objects&lt;/a&gt; can corroborate: Ruby Objects are pretty cool.&lt;/p&gt;
+   <link href="https://jakeyesbeck.com/2015/11/08/ruby-delegate-class/"/>
+   <updated>2015-11-08T07:00:00-05:00</updated>
+   <id>https://jakeyesbeck.com/2015/11/08/ruby-delegate-class</id>
+   <content type="html">&lt;p&gt;Objects are a big deal in Ruby. A &lt;a href=&quot;https://jakeyesbeck.com/2015/08/23/ruby-objects/&quot;&gt;previous post about Ruby Objects&lt;/a&gt; can corroborate: Ruby Objects are pretty cool.&lt;/p&gt;
 
 &lt;p&gt;There are many ways to work with Ruby Objects. Standard inheritance, module inheritance, decorators, and composition are all commonly found in a codebase. One class in particular seems almost universal across applications: the &lt;code class=&quot;highlighter-rouge&quot;&gt;User&lt;/code&gt; class.&lt;/p&gt;
 
@@ -5123,7 +5123,7 @@ Finished &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;0.0054 seconds &lt;span
 
 &lt;p&gt;An alternative way to architect a system like the one described is by using delegation. Object delegation is a way of composing objects to achieve flexibility and maintain encapsulation.&lt;/p&gt;
 
-&lt;p&gt;Ruby provides a few ways to delegate objects. An interesting option that will nicely serve this application’s needs is &lt;a href=&quot;http://ruby-doc.org/stdlib-2.2.1/libdoc/delegate/rdoc/Object.html#method-i-DelegateClass&quot;&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;DelegateClass&lt;/code&gt;&lt;/a&gt;. The &lt;code class=&quot;highlighter-rouge&quot;&gt;DelegateClass&lt;/code&gt; method accepts a class and returns a new class. The returned class takes the passed in class’s instance methods and defines delegating methods.&lt;/p&gt;
+&lt;p&gt;Ruby provides a few ways to delegate objects. An interesting option that will nicely serve this application’s needs is &lt;a href=&quot;https://ruby-doc.org/stdlib-2.2.1/libdoc/delegate/rdoc/Object.html#method-i-DelegateClass&quot;&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;DelegateClass&lt;/code&gt;&lt;/a&gt;. The &lt;code class=&quot;highlighter-rouge&quot;&gt;DelegateClass&lt;/code&gt; method accepts a class and returns a new class. The returned class takes the passed in class’s instance methods and defines delegating methods.&lt;/p&gt;
 
 &lt;p&gt;Defining &lt;code class=&quot;highlighter-rouge&quot;&gt;Author&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;Critic&lt;/code&gt; classes:&lt;/p&gt;
 
@@ -5241,15 +5241,15 @@ Finished &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;0.0054 seconds &lt;span
 &lt;p&gt;As previously stated, there are many ways to solve this particular problem. Arguments for module inheritance or single table inheritance could be made and might result in just as valid solutions.&lt;/p&gt;
 </content>
  </entry>
- 
+
  <entry>
    <title>Six Months of Commits</title>
-   <link href="http://jakeyesbeck.com/2015/11/01/six-months-of-commits/"/>
-   <updated>2015-11-01T04:00:00-08:00</updated>
-   <id>http://jakeyesbeck.com/2015/11/01/six-months-of-commits</id>
-   <content type="html">&lt;p&gt;&lt;img src=&quot;http://jakeyesbeck.com/assets/images/180_day_streak.png&quot; alt=&quot;180 Days of Commits&quot; /&gt;&lt;/p&gt;
+   <link href="https://jakeyesbeck.com/2015/11/01/six-months-of-commits/"/>
+   <updated>2015-11-01T07:00:00-05:00</updated>
+   <id>https://jakeyesbeck.com/2015/11/01/six-months-of-commits</id>
+   <content type="html">&lt;p&gt;&lt;img src=&quot;https://jakeyesbeck.com/assets/images/180_day_streak.png&quot; alt=&quot;180 Days of Commits&quot; /&gt;&lt;/p&gt;
 
-&lt;p&gt;Six months ago I started &lt;a href=&quot;http://jakeyesbeck.com/2015/04/23/a-year-of-commits/&quot;&gt;a challenge for myself&lt;/a&gt;. I wanted to contribute to open source software, a task that I had previously thought out of reach and intimidating. A plan that I had devised to overcome this mindset was to achieve consistency. For a full year, I made a commitment to make at least one commit to an open source repository (someone else’s or my own) every single day. Additionally, I decided to write an article every Sunday about either my projects, my journey, or something interesting I encountered along the way.&lt;/p&gt;
+&lt;p&gt;Six months ago I started &lt;a href=&quot;https://jakeyesbeck.com/2015/04/23/a-year-of-commits/&quot;&gt;a challenge for myself&lt;/a&gt;. I wanted to contribute to open source software, a task that I had previously thought out of reach and intimidating. A plan that I had devised to overcome this mindset was to achieve consistency. For a full year, I made a commitment to make at least one commit to an open source repository (someone else’s or my own) every single day. Additionally, I decided to write an article every Sunday about either my projects, my journey, or something interesting I encountered along the way.&lt;/p&gt;
 
 &lt;p&gt;To be honest, I did not give my original goal all that much thought. I primarily was making a hypothesis: &lt;em&gt;“If I just keep doing something, chances are that I will improve”&lt;/em&gt;.&lt;/p&gt;
 
@@ -5259,7 +5259,7 @@ Finished &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;0.0054 seconds &lt;span
 
 &lt;p&gt;Routines and patterns enable unintentional autopilot. The drive to work, the morning coffee run, even the same weekly meeting are examples of every day life patterns. Can one really distinguish between their commute last Wednesday versus the previous? When our brain does the same thing over and over, it automatically optimizes itself. We forget the details about our days and what distinguishes them from one another. This year of commits project has been no different. Since I have been writing software every single day, I find myself with another daily pattern.&lt;/p&gt;
 
-&lt;p&gt;I am lucky that this project exists in a world where history is king. From Github to Google, I have the ability to rewind time and watch my journey step by step. While some days have been lighter than others, the overall picture is clear: This has been one of the best things I have done for my professional development and my state of mind. I might have not noticed this development unless I took my own advice: &lt;a href=&quot;http://jakeyesbeck.com/2015/09/06/stop-and-take-a-moment/&quot;&gt;to stop to take a moment&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;I am lucky that this project exists in a world where history is king. From Github to Google, I have the ability to rewind time and watch my journey step by step. While some days have been lighter than others, the overall picture is clear: This has been one of the best things I have done for my professional development and my state of mind. I might have not noticed this development unless I took my own advice: &lt;a href=&quot;https://jakeyesbeck.com/2015/09/06/stop-and-take-a-moment/&quot;&gt;to stop to take a moment&lt;/a&gt;.&lt;/p&gt;
 
 &lt;h2 id=&quot;persevere&quot;&gt;Persevere&lt;/h2&gt;
 
@@ -5274,12 +5274,12 @@ Finished &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;0.0054 seconds &lt;span
 &lt;p&gt;To all the people who have been supportive and hopefully will continue to do so, you are the reason that I am gaining so much out of this experience. You are the reason I will continue this path forward. You are the reason I will complete a Year of Commits.&lt;/p&gt;
 </content>
  </entry>
- 
+
  <entry>
    <title>How to Traverse Foreign Ruby Code</title>
-   <link href="http://jakeyesbeck.com/2015/10/25/how-to-traverse-foreign-ruby-code/"/>
-   <updated>2015-10-25T05:00:00-07:00</updated>
-   <id>http://jakeyesbeck.com/2015/10/25/how-to-traverse-foreign-ruby-code</id>
+   <link href="https://jakeyesbeck.com/2015/10/25/how-to-traverse-foreign-ruby-code/"/>
+   <updated>2015-10-25T08:00:00-04:00</updated>
+   <id>https://jakeyesbeck.com/2015/10/25/how-to-traverse-foreign-ruby-code</id>
    <content type="html">&lt;p&gt;A Ruby on Rails project will most likely contain large amounts of third party software. Software written by other people can fluctuate greatly in terms of documentation. Even very well documented software might have pieces that are more shrouded than others.&lt;/p&gt;
 
 &lt;p&gt;When these opaque pieces of code start to cause issue or incite curiosity, spelunking through these libraries is easier with simple patterns and the right tools.&lt;/p&gt;
@@ -5329,7 +5329,7 @@ Finished &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;0.0054 seconds &lt;span
 
 &lt;h2 id=&quot;place-a-reasonable-bindingpry&quot;&gt;2. Place a Reasonable &lt;code class=&quot;highlighter-rouge&quot;&gt;binding.pry&lt;/code&gt;&lt;/h2&gt;
 
-&lt;p&gt;With the location of the method found, &lt;code class=&quot;highlighter-rouge&quot;&gt;binding.pry&lt;/code&gt; has a logical place to go. Since &lt;a href=&quot;http://jakeyesbeck.com/2015/08/16/gems-are-not-magic/&quot;&gt;gems are not magic&lt;/a&gt;, the &lt;code class=&quot;highlighter-rouge&quot;&gt;ActiveRecord&lt;/code&gt; gem can be opened and its source easily read. Opening gems is fairly simple, set a desired &lt;code class=&quot;highlighter-rouge&quot;&gt;EDITOR&lt;/code&gt; and open via the &lt;code class=&quot;highlighter-rouge&quot;&gt;bundle&lt;/code&gt; command. For this example, &lt;code class=&quot;highlighter-rouge&quot;&gt;subl&lt;/code&gt; is mapped to Sublime Text.&lt;/p&gt;
+&lt;p&gt;With the location of the method found, &lt;code class=&quot;highlighter-rouge&quot;&gt;binding.pry&lt;/code&gt; has a logical place to go. Since &lt;a href=&quot;https://jakeyesbeck.com/2015/08/16/gems-are-not-magic/&quot;&gt;gems are not magic&lt;/a&gt;, the &lt;code class=&quot;highlighter-rouge&quot;&gt;ActiveRecord&lt;/code&gt; gem can be opened and its source easily read. Opening gems is fairly simple, set a desired &lt;code class=&quot;highlighter-rouge&quot;&gt;EDITOR&lt;/code&gt; and open via the &lt;code class=&quot;highlighter-rouge&quot;&gt;bundle&lt;/code&gt; command. For this example, &lt;code class=&quot;highlighter-rouge&quot;&gt;subl&lt;/code&gt; is mapped to Sublime Text.&lt;/p&gt;
 
 &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;EDITOR&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;subl bundle open activerecord
 &lt;/code&gt;&lt;/pre&gt;
@@ -5446,17 +5446,17 @@ Finished &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;0.0054 seconds &lt;span
 
 &lt;p&gt;Following the same pattern, any depth of code can be reached by placing a &lt;code class=&quot;highlighter-rouge&quot;&gt;binding.pry&lt;/code&gt;, observing results and repeating. Traveling through code that is foreign will also help build confidence. When developers stop assuming that things are black boxes of magic, everyone benefits.&lt;/p&gt;
 
-&lt;p&gt;Using these simple techniques, code previously hidden or otherwise out of reach becomes accessible and easy to traverse. Finally, I would advise to keep trips down the code rabbit hole short, or you might shave &lt;a href=&quot;http://www.hanselman.com/blog/YakShavingDefinedIllGetThatDoneAsSoonAsIShaveThisYak.aspx&quot;&gt;one too many yaks&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Using these simple techniques, code previously hidden or otherwise out of reach becomes accessible and easy to traverse. Finally, I would advise to keep trips down the code rabbit hole short, or you might shave &lt;a href=&quot;https://www.hanselman.com/blog/YakShavingDefinedIllGetThatDoneAsSoonAsIShaveThisYak.aspx&quot;&gt;one too many yaks&lt;/a&gt;.&lt;/p&gt;
 
 </content>
  </entry>
- 
+
  <entry>
    <title>Building a Simple Web Server with Ruby 2.0+ (Part 2)</title>
-   <link href="http://jakeyesbeck.com/2015/10/18/building-a-simple-web-server-with-ruby-2-part-2/"/>
-   <updated>2015-10-18T05:00:00-07:00</updated>
-   <id>http://jakeyesbeck.com/2015/10/18/building-a-simple-web-server-with-ruby-2-part-2</id>
-   <content type="html">&lt;p&gt;In &lt;a href=&quot;http://jakeyesbeck.com/2015/10/11/building-a-simple-web-server-with-ruby-2/&quot;&gt;a previous post&lt;/a&gt;, a very simple Ruby server was created to listen to HTTP requests. While great for a first step, this example server does nothing more than respond with “Hello World”. Greetings are nice and polite, but I think we can do better.&lt;/p&gt;
+   <link href="https://jakeyesbeck.com/2015/10/18/building-a-simple-web-server-with-ruby-2-part-2/"/>
+   <updated>2015-10-18T08:00:00-04:00</updated>
+   <id>https://jakeyesbeck.com/2015/10/18/building-a-simple-web-server-with-ruby-2-part-2</id>
+   <content type="html">&lt;p&gt;In &lt;a href=&quot;https://jakeyesbeck.com/2015/10/11/building-a-simple-web-server-with-ruby-2/&quot;&gt;a previous post&lt;/a&gt;, a very simple Ruby server was created to listen to HTTP requests. While great for a first step, this example server does nothing more than respond with “Hello World”. Greetings are nice and polite, but I think we can do better.&lt;/p&gt;
 
 &lt;h2 id=&quot;pro-filing&quot;&gt;Pro-filing&lt;/h2&gt;
 
@@ -5688,15 +5688,15 @@ Connection: close
 &lt;p&gt;It sure has been fun building it though, right?&lt;/p&gt;
 </content>
  </entry>
- 
+
  <entry>
    <title>Building a Simple Web Server with Ruby 2.0+</title>
-   <link href="http://jakeyesbeck.com/2015/10/11/building-a-simple-web-server-with-ruby-2/"/>
-   <updated>2015-10-11T05:00:00-07:00</updated>
-   <id>http://jakeyesbeck.com/2015/10/11/building-a-simple-web-server-with-ruby-2</id>
+   <link href="https://jakeyesbeck.com/2015/10/11/building-a-simple-web-server-with-ruby-2/"/>
+   <updated>2015-10-11T08:00:00-04:00</updated>
+   <id>https://jakeyesbeck.com/2015/10/11/building-a-simple-web-server-with-ruby-2</id>
    <content type="html">&lt;p&gt;The Ruby language can be utilized for a variety of different purposes. The most popular of these is as a web scripting language. The entry point to these applications, the web server, is not something that is usually built from the ground up. Most applications have the lines &lt;code class=&quot;highlighter-rouge&quot;&gt;gem &#39;puma&#39;&lt;/code&gt; or &lt;code class=&quot;highlighter-rouge&quot;&gt;gem &#39;unicorn&#39;&lt;/code&gt; in their &lt;code class=&quot;highlighter-rouge&quot;&gt;Gemfile&lt;/code&gt;. Those are high quality web servers that were built and are maintained by very talented people, but how do they work?&lt;/p&gt;
 
-&lt;p&gt;The aforementioned web servers are just Ruby gems written by Rubyists. While they are awesome gems, &lt;a href=&quot;http://jakeyesbeck.com/2015/08/16/gems-are-not-magic/&quot;&gt;they are not magic&lt;/a&gt;. A basic web server can be written to satisfy some very simple requests.&lt;/p&gt;
+&lt;p&gt;The aforementioned web servers are just Ruby gems written by Rubyists. While they are awesome gems, &lt;a href=&quot;https://jakeyesbeck.com/2015/08/16/gems-are-not-magic/&quot;&gt;they are not magic&lt;/a&gt;. A basic web server can be written to satisfy some very simple requests.&lt;/p&gt;
 
 &lt;h2 id=&quot;get-basic&quot;&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;GET&lt;/code&gt; Basic&lt;/h2&gt;
 
@@ -5875,22 +5875,22 @@ Connection: close
 
 &lt;p&gt;Spending a thousand hours iterating on this code will certainly improve its quality, but it still might not allow this simple server stack up to the leaders in the space. I would recommend using a more battle tested web server for an actual production application. At least some of those awesome servers’ mysteries have been explained.&lt;/p&gt;
 
-&lt;p&gt;To see even more improvements, check out &lt;a href=&quot;http://jakeyesbeck.com/2015/10/18/building-a-simple-web-server-with-ruby-2-part-2/&quot;&gt;part 2!&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;To see even more improvements, check out &lt;a href=&quot;https://jakeyesbeck.com/2015/10/18/building-a-simple-web-server-with-ruby-2-part-2/&quot;&gt;part 2!&lt;/a&gt;&lt;/p&gt;
 </content>
  </entry>
- 
+
  <entry>
    <title>Someone Wrote that Code on Purpose</title>
-   <link href="http://jakeyesbeck.com/2015/10/04/someone-wrote-that-code-on-purpose/"/>
-   <updated>2015-10-04T05:00:00-07:00</updated>
-   <id>http://jakeyesbeck.com/2015/10/04/someone-wrote-that-code-on-purpose</id>
+   <link href="https://jakeyesbeck.com/2015/10/04/someone-wrote-that-code-on-purpose/"/>
+   <updated>2015-10-04T08:00:00-04:00</updated>
+   <id>https://jakeyesbeck.com/2015/10/04/someone-wrote-that-code-on-purpose</id>
    <content type="html">&lt;p&gt;One of the great misconceptions of software engineering is the belief that &lt;em&gt;“any code written in the past is probably wrong”&lt;/em&gt;. For some reason, an accepted mindset (usually among junior developers) is that older code was written with haste or by someone who did not fully understand the problem at hand, invalidating its existence.&lt;/p&gt;
 
 &lt;p&gt;A multitude of rationalizations may arise when the thought of refactoring software from the ground up is an option. After all, the person who wrote that code may not even be around anymore. They could have just been learning the language, surely that is a valid enough reason to completely decimate their work. What possible justification could there be for the opposite? The code just &lt;strong&gt;feels&lt;/strong&gt; wrong, and I, the new domain expert, will rectify this situation!&lt;/p&gt;
 
 &lt;h2 id=&quot;the-devilish-details&quot;&gt;The Devilish Details&lt;/h2&gt;
 
-&lt;p&gt;A person who stumbles on older code can not possibly have the same level of understanding as its original author. Do not misunderstand, it is completely possible that the original author had an insufficient amount of knowledge when writing the code; however, if details have been lost between code inception and re-discovery, removing that code could have dire consequences. How dire could they be? &lt;a href=&quot;http://www.bloombergview.com/articles/2015-09-30/high-speed-trading-firm-deleted-some-code-by-accident&quot;&gt;Well according to a recent Bloomberg article&lt;/a&gt;, it could be millions of dollars.&lt;/p&gt;
+&lt;p&gt;A person who stumbles on older code can not possibly have the same level of understanding as its original author. Do not misunderstand, it is completely possible that the original author had an insufficient amount of knowledge when writing the code; however, if details have been lost between code inception and re-discovery, removing that code could have dire consequences. How dire could they be? &lt;a href=&quot;https://www.bloombergview.com/articles/2015-09-30/high-speed-trading-firm-deleted-some-code-by-accident&quot;&gt;Well according to a recent Bloomberg article&lt;/a&gt;, it could be millions of dollars.&lt;/p&gt;
 
 &lt;p&gt;According to the article:&lt;/p&gt;
 
@@ -5917,15 +5917,15 @@ Connection: close
 &lt;p&gt;Taking time to understand old or opaque code can mean the difference between a healthy face lift to an application and accidentally removing its liver. How are you supposed to have a celebratory drink after a grand refactoring without a liver?&lt;/p&gt;
 </content>
  </entry>
- 
+
  <entry>
    <title>How to Create a Custom Enumerable</title>
-   <link href="http://jakeyesbeck.com/2015/09/27/how-to-create-a-custom-enumerable/"/>
-   <updated>2015-09-27T05:00:00-07:00</updated>
-   <id>http://jakeyesbeck.com/2015/09/27/how-to-create-a-custom-enumerable</id>
-   <content type="html">&lt;p&gt;Ruby is a wonderfully flexible language. An example of this flexibility is in the ability to define a custom collection class that acts as an &lt;a href=&quot;http://ruby-doc.org/core-2.1.1/Enumerable.html&quot;&gt;Enumerable&lt;/a&gt; object. In Ruby, a collection that acts as an &lt;code class=&quot;highlighter-rouge&quot;&gt;Enumerable&lt;/code&gt; is basically a class which holds a list of objects and exposes helpful methods for iteration and collection. An example of this pattern built into Ruby is the &lt;a href=&quot;http://ruby-doc.org/core-2.2.3/Array.html&quot;&gt;Array&lt;/a&gt; class.&lt;/p&gt;
+   <link href="https://jakeyesbeck.com/2015/09/27/how-to-create-a-custom-enumerable/"/>
+   <updated>2015-09-27T08:00:00-04:00</updated>
+   <id>https://jakeyesbeck.com/2015/09/27/how-to-create-a-custom-enumerable</id>
+   <content type="html">&lt;p&gt;Ruby is a wonderfully flexible language. An example of this flexibility is in the ability to define a custom collection class that acts as an &lt;a href=&quot;https://ruby-doc.org/core-2.1.1/Enumerable.html&quot;&gt;Enumerable&lt;/a&gt; object. In Ruby, a collection that acts as an &lt;code class=&quot;highlighter-rouge&quot;&gt;Enumerable&lt;/code&gt; is basically a class which holds a list of objects and exposes helpful methods for iteration and collection. An example of this pattern built into Ruby is the &lt;a href=&quot;https://ruby-doc.org/core-2.2.3/Array.html&quot;&gt;Array&lt;/a&gt; class.&lt;/p&gt;
 
-&lt;p&gt;In keeping with a &lt;a href=&quot;http://jakeyesbeck.com/2015/09/13/rescue-groups/&quot;&gt;theme&lt;/a&gt;, let us assume that an application about dogs exists. In this example, a &lt;code class=&quot;highlighter-rouge&quot;&gt;DogKennel&lt;/code&gt; class exists that will hold information about each dog in the kennel and detailed information about said kennel. We can also assume that this class is meant to be used as a collection of dogs, exposing helper methods for information about the kennel. Why would we use this collection class over a typical &lt;code class=&quot;highlighter-rouge&quot;&gt;Array&lt;/code&gt;? One reason might be that the consumer of this class expects a list of dogs and some additional metadata. That metadata can be easily exposed in this class without having to wrap the class or extract the metadata from an included &lt;code class=&quot;highlighter-rouge&quot;&gt;Hash&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;In keeping with a &lt;a href=&quot;https://jakeyesbeck.com/2015/09/13/rescue-groups/&quot;&gt;theme&lt;/a&gt;, let us assume that an application about dogs exists. In this example, a &lt;code class=&quot;highlighter-rouge&quot;&gt;DogKennel&lt;/code&gt; class exists that will hold information about each dog in the kennel and detailed information about said kennel. We can also assume that this class is meant to be used as a collection of dogs, exposing helper methods for information about the kennel. Why would we use this collection class over a typical &lt;code class=&quot;highlighter-rouge&quot;&gt;Array&lt;/code&gt;? One reason might be that the consumer of this class expects a list of dogs and some additional metadata. That metadata can be easily exposed in this class without having to wrap the class or extract the metadata from an included &lt;code class=&quot;highlighter-rouge&quot;&gt;Hash&lt;/code&gt;.&lt;/p&gt;
 
 &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;DogKennel&lt;/span&gt;
 
@@ -6054,15 +6054,15 @@ Connection: close
 &lt;p&gt;The strength behind this approach is expressed through its maintainability. Since no long list of methods was defined, and no duplicative code was written, this code can exist alongside active development of the &lt;code class=&quot;highlighter-rouge&quot;&gt;Enumerable&lt;/code&gt; module. For the example in question, this could be an overkill solution. But, in a more complex and sophistiacted system, using the &lt;code class=&quot;highlighter-rouge&quot;&gt;Enumerable&lt;/code&gt; could be the best option.&lt;/p&gt;
 </content>
  </entry>
- 
+
  <entry>
    <title>Just learn Rails (Part 3) HTTP status codes</title>
-   <link href="http://jakeyesbeck.com/2015/09/20/rails-http-status-codes/"/>
-   <updated>2015-09-20T05:00:00-07:00</updated>
-   <id>http://jakeyesbeck.com/2015/09/20/rails-http-status-codes</id>
+   <link href="https://jakeyesbeck.com/2015/09/20/rails-http-status-codes/"/>
+   <updated>2015-09-20T08:00:00-04:00</updated>
+   <id>https://jakeyesbeck.com/2015/09/20/rails-http-status-codes</id>
    <content type="html">&lt;p&gt;So you want to be a Rails superstar? To live large, big servers, requesting tars. Writing code all over the world, gotta make commits constantly. Great, I feel the same way.&lt;/p&gt;
 
-&lt;p&gt;Assuming you have already had that &lt;em&gt;“I should &lt;a href=&quot;http://jakeyesbeck.com/2015/05/17/just-learn-rails/&quot;&gt;just learn Rails&lt;/a&gt;”&lt;/em&gt; moment, the idea of writing an API for a super awesome application might be on the horizon. And, of course, the framework that makes the most sense is Ruby on Rails. Given that is the direction things might naturally evolve, creating an API with Rails can gloss over a few crucial design concepts and considerations.&lt;/p&gt;
+&lt;p&gt;Assuming you have already had that &lt;em&gt;“I should &lt;a href=&quot;https://jakeyesbeck.com/2015/05/17/just-learn-rails/&quot;&gt;just learn Rails&lt;/a&gt;”&lt;/em&gt; moment, the idea of writing an API for a super awesome application might be on the horizon. And, of course, the framework that makes the most sense is Ruby on Rails. Given that is the direction things might naturally evolve, creating an API with Rails can gloss over a few crucial design concepts and considerations.&lt;/p&gt;
 
 &lt;h2 id=&quot;http-status-codes-are-important&quot;&gt;HTTP status codes are important&lt;/h2&gt;
 
@@ -6106,7 +6106,7 @@ Connection: close
 
 &lt;p&gt;This code will respond with a &lt;code class=&quot;highlighter-rouge&quot;&gt;200&lt;/code&gt; and a message denoting an error. This is not the correct way to return a result. This is the equivalent of someone allowing you to leave a store with an item and not pay, then arresting you for it. It just does not make sense and should be avoided.&lt;/p&gt;
 
-&lt;p&gt;Instead, Ruby on Rails gives us &lt;a href=&quot;http://billpatrianakos.me/blog/2013/10/13/list-of-rails-status-code-symbols/&quot;&gt;very helpful symbols&lt;/a&gt; that can be used to accurately convey the appropriate response to end users.&lt;/p&gt;
+&lt;p&gt;Instead, Ruby on Rails gives us &lt;a href=&quot;https://billpatrianakos.me/blog/2013/10/13/list-of-rails-status-code-symbols/&quot;&gt;very helpful symbols&lt;/a&gt; that can be used to accurately convey the appropriate response to end users.&lt;/p&gt;
 
 &lt;p&gt;To only return the correct HTTP status code, the books controller can be rewritten to:&lt;/p&gt;
 
@@ -6153,17 +6153,17 @@ Connection: close
 &lt;p&gt;Instead of capturing in text every single detail about why a request did not result in an expected response, use HTTP status codes to supplement and communicate effectively.&lt;/p&gt;
 </content>
  </entry>
- 
+
  <entry>
    <title>Rescue Groups Ruby Wrapper</title>
-   <link href="http://jakeyesbeck.com/2015/09/13/rescue-groups/"/>
-   <updated>2015-09-13T05:00:00-07:00</updated>
-   <id>http://jakeyesbeck.com/2015/09/13/rescue-groups</id>
+   <link href="https://jakeyesbeck.com/2015/09/13/rescue-groups/"/>
+   <updated>2015-09-13T08:00:00-04:00</updated>
+   <id>https://jakeyesbeck.com/2015/09/13/rescue-groups</id>
    <content type="html">&lt;p&gt;People need companions. We are a social species that enjoys surrounding itself with family and friends. But sometimes, and maybe more often than just sometimes, people crave companionship from something that cannot talk back. This is probably one of the reasons so many people like pets. A pet cannot disagree with you or say judgmental remarks as you fill up that wine glass for a fourth time. No, a good pet will simply exist near you, occasionally asking for pets and food. Pets can be obtained from breeders for huge stacks of cash, or they can be adopted for significantly cheaper.&lt;/p&gt;
 
 &lt;h2 id=&quot;the-adoption-option&quot;&gt;The Adoption Option&lt;/h2&gt;
 
-&lt;p&gt;About 2.7 million animals are euthanized each year in animal shelters across the United States. That is some sad stuff right there. These animals could be hanging out with you at your house, clawing up the couch or barking at nothing. Does that not sound like just the best time? If only there was a Ruby library that some super awesome Software Artisans could use to make discoverable pet data a reality. Well now, there is! Over the past few months, as part of the &lt;a href=&quot;http://jakeyesbeck.com/2015/04/23/a-year-of-commits/&quot;&gt;Year of Commits&lt;/a&gt; initiative, I have built a &lt;a href=&quot;https://github.com/yez/rescue_groups&quot;&gt;wrapper for the RescueGroups.org API&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;About 2.7 million animals are euthanized each year in animal shelters across the United States. That is some sad stuff right there. These animals could be hanging out with you at your house, clawing up the couch or barking at nothing. Does that not sound like just the best time? If only there was a Ruby library that some super awesome Software Artisans could use to make discoverable pet data a reality. Well now, there is! Over the past few months, as part of the &lt;a href=&quot;https://jakeyesbeck.com/2015/04/23/a-year-of-commits/&quot;&gt;Year of Commits&lt;/a&gt; initiative, I have built a &lt;a href=&quot;https://github.com/yez/rescue_groups&quot;&gt;wrapper for the RescueGroups.org API&lt;/a&gt;.&lt;/p&gt;
 
 &lt;h2 id=&quot;sign-up-for-an-api-key&quot;&gt;0. Sign up for an API key&lt;/h2&gt;
 
@@ -6245,19 +6245,19 @@ Connection: close
 &lt;p&gt;Now with all this pet data available, put it to work. I have really enjoyed making this library but am always looking for feedback. If anyone would like to know more or help contribute to this project please feel free! Github PRs and issues are always welcome.&lt;/p&gt;
 </content>
  </entry>
- 
+
  <entry>
    <title>Stop and Take a Moment</title>
-   <link href="http://jakeyesbeck.com/2015/09/06/stop-and-take-a-moment/"/>
-   <updated>2015-09-06T05:00:00-07:00</updated>
-   <id>http://jakeyesbeck.com/2015/09/06/stop-and-take-a-moment</id>
+   <link href="https://jakeyesbeck.com/2015/09/06/stop-and-take-a-moment/"/>
+   <updated>2015-09-06T08:00:00-04:00</updated>
+   <id>https://jakeyesbeck.com/2015/09/06/stop-and-take-a-moment</id>
    <content type="html">&lt;p&gt;Someone in all our lives has offered up the advice: “Slow down”. It might have happened once or, if we are lucky, many people have said it. Regardless, the words did not sink in. At least not at first. And even to this day, maybe the words are yet to truly be absorbed and understood. But those words do not mean anything, it is just something people say, right? Wrong. These little words carry more weight with them than most conversations in a day.&lt;/p&gt;
 
 &lt;p&gt;&lt;em&gt;“I am just too busy”&lt;/em&gt;, &lt;em&gt;“There is no time to waste, how could I slow down?”&lt;/em&gt;, we say in response. Because in the moment, these phrases make sense. Things that are right in front of our face are the most important. We may plan slightly in the future or be cognizant of a few days in the past, but we stay busy. After all, being busy has become our natural and most comfortable state.&lt;/p&gt;
 
 &lt;h2 id=&quot;busyness-is-mindlessness&quot;&gt;Busyness is mindlessness&lt;/h2&gt;
 
-&lt;p&gt;In an earlier post, I said &lt;a href=&quot;http://jakeyesbeck.com/2015/06/28/staying-motivated/&quot;&gt;to keep moving, to keep working&lt;/a&gt;. The message of this article is not in contradiction to that one, but should be thought of as complementary. Staying still will cause fatigue, muscle atrophy, and many other problems; but, not enjoying the moments we are in can be just as detrimental. Within this world full of stimuli, it is extremely easy to preoccupy ourselves with just about anything. Think about yesterday or the day before, how many tasks or activities flowed into each other? How long did the entire day feel? For me, days do not feel nearly as long as they used to. Moments flow from one to another without even being noticed. It almost feels like a trance, a mindless sea of moments washing over each other.&lt;/p&gt;
+&lt;p&gt;In an earlier post, I said &lt;a href=&quot;https://jakeyesbeck.com/2015/06/28/staying-motivated/&quot;&gt;to keep moving, to keep working&lt;/a&gt;. The message of this article is not in contradiction to that one, but should be thought of as complementary. Staying still will cause fatigue, muscle atrophy, and many other problems; but, not enjoying the moments we are in can be just as detrimental. Within this world full of stimuli, it is extremely easy to preoccupy ourselves with just about anything. Think about yesterday or the day before, how many tasks or activities flowed into each other? How long did the entire day feel? For me, days do not feel nearly as long as they used to. Moments flow from one to another without even being noticed. It almost feels like a trance, a mindless sea of moments washing over each other.&lt;/p&gt;
 
 &lt;p&gt;People like to stay busy, to feel valuable and like they have a place in the world. However, this mentality can lead a person to miss out on those special moments that deserve a bit more attention.&lt;/p&gt;
 
@@ -6276,13 +6276,13 @@ Connection: close
 &lt;p&gt;&lt;em&gt;Dedicated to Christopher Adam Bell&lt;/em&gt;&lt;/p&gt;
 </content>
  </entry>
- 
+
  <entry>
    <title>Active Support and Time</title>
-   <link href="http://jakeyesbeck.com/2015/08/30/active-support-and-time/"/>
-   <updated>2015-08-30T05:00:00-07:00</updated>
-   <id>http://jakeyesbeck.com/2015/08/30/active-support-and-time</id>
-   <content type="html">&lt;p&gt;If a list was compiled of useful Ruby libraries, Active Support would be close to the top. Based on the &lt;a href=&quot;http://api.rubyonrails.org/classes/ActiveSupport.html&quot;&gt;documentation alone&lt;/a&gt;, it is apparent that a very large amount of time went into thinking about the roles Active Support should play and the functionality it should support. From string manipulation to internationalization, Active Support seems to simply do it all. However, even a profoundly useful library like Active Support still has a few inconsistencies with everyone’s favorite subject: &lt;strong&gt;Time Calculation&lt;/strong&gt;.&lt;/p&gt;
+   <link href="https://jakeyesbeck.com/2015/08/30/active-support-and-time/"/>
+   <updated>2015-08-30T08:00:00-04:00</updated>
+   <id>https://jakeyesbeck.com/2015/08/30/active-support-and-time</id>
+   <content type="html">&lt;p&gt;If a list was compiled of useful Ruby libraries, Active Support would be close to the top. Based on the &lt;a href=&quot;https://api.rubyonrails.org/classes/ActiveSupport.html&quot;&gt;documentation alone&lt;/a&gt;, it is apparent that a very large amount of time went into thinking about the roles Active Support should play and the functionality it should support. From string manipulation to internationalization, Active Support seems to simply do it all. However, even a profoundly useful library like Active Support still has a few inconsistencies with everyone’s favorite subject: &lt;strong&gt;Time Calculation&lt;/strong&gt;.&lt;/p&gt;
 
 &lt;h2 id=&quot;time-wounds-all-heals&quot;&gt;Time wounds all heals&lt;/h2&gt;
 
@@ -6365,15 +6365,15 @@ Connection: close
 
 </content>
  </entry>
- 
+
  <entry>
    <title>I, Object!</title>
-   <link href="http://jakeyesbeck.com/2015/08/23/ruby-objects/"/>
-   <updated>2015-08-23T05:00:00-07:00</updated>
-   <id>http://jakeyesbeck.com/2015/08/23/ruby-objects</id>
+   <link href="https://jakeyesbeck.com/2015/08/23/ruby-objects/"/>
+   <updated>2015-08-23T08:00:00-04:00</updated>
+   <id>https://jakeyesbeck.com/2015/08/23/ruby-objects</id>
    <content type="html">&lt;p&gt;&lt;strong&gt;I am lucky enough to work with wonderfully talented people every single day. This is a guest post by one of my magnificent coworkers, &lt;a href=&quot;https://github.com/kristjan&quot;&gt;Kristján Pétursson&lt;/a&gt;. Thank you for allowing me to share this knowledge with everyone!&lt;/strong&gt;&lt;/p&gt;
 
-&lt;p&gt;This post is adapted from my answer to &lt;a href=&quot;http://stackoverflow.com/q/31775576/802618&quot;&gt;this Stack Overflow question&lt;/a&gt;. If you want to start from the beginning of the universe and build out, go read that one. If you prefer to start with something you can touch and work backwards, here we go.&lt;/p&gt;
+&lt;p&gt;This post is adapted from my answer to &lt;a href=&quot;https://stackoverflow.com/q/31775576/802618&quot;&gt;this Stack Overflow question&lt;/a&gt;. If you want to start from the beginning of the universe and build out, go read that one. If you prefer to start with something you can touch and work backwards, here we go.&lt;/p&gt;
 
 &lt;p&gt;Ruby likes ducks. Which is to say that when we’re coding, and we have an object, we don’t particularly care what kind of object it is, so long as it responds to the messages we send it. It might be a &lt;code class=&quot;highlighter-rouge&quot;&gt;Duck&lt;/code&gt; or a &lt;code class=&quot;highlighter-rouge&quot;&gt;Child&lt;/code&gt; or a &lt;code class=&quot;highlighter-rouge&quot;&gt;Doctor&lt;/code&gt;, and as long as when we call &lt;code class=&quot;highlighter-rouge&quot;&gt;#quack&lt;/code&gt; we hear a noise, all is well. That’s called &lt;a href=&quot;https://en.wikipedia.org/wiki/Duck_typing&quot;&gt;Duck Typing&lt;/a&gt;, and Ruby digs it.&lt;/p&gt;
 
@@ -6631,19 +6631,19 @@ duck ~~~~&amp;gt; | #&amp;lt;Class:Duck&amp;gt; |
 &lt;p&gt;&lt;strong&gt;Author: Kristján Pétursson&lt;/strong&gt;&lt;/p&gt;
 </content>
  </entry>
- 
+
  <entry>
    <title>Gems != Magic</title>
-   <link href="http://jakeyesbeck.com/2015/08/16/gems-are-not-magic/"/>
-   <updated>2015-08-16T05:00:00-07:00</updated>
-   <id>http://jakeyesbeck.com/2015/08/16/gems-are-not-magic</id>
+   <link href="https://jakeyesbeck.com/2015/08/16/gems-are-not-magic/"/>
+   <updated>2015-08-16T08:00:00-04:00</updated>
+   <id>https://jakeyesbeck.com/2015/08/16/gems-are-not-magic</id>
    <content type="html">&lt;p&gt;Ruby gems can seem magical. Usually, one (or more accurately: thirty) solution to a problem exists in the form of a gem. Using gems is easy and intuitive. Simply add a line in the project root’s &lt;code class=&quot;highlighter-rouge&quot;&gt;Gemfile&lt;/code&gt; and run &lt;code class=&quot;highlighter-rouge&quot;&gt;bundle install&lt;/code&gt;. Then, either &lt;code class=&quot;highlighter-rouge&quot;&gt;require&lt;/code&gt; the name of the gem or, if using Ruby on Rails, start using the gem’s code immediately anywhere in the project. What could possibly go wrong?&lt;/p&gt;
 
 &lt;h2 id=&quot;gems-on-gems-on-gems&quot;&gt;Gems on gems on gems&lt;/h2&gt;
 
 &lt;p&gt;Unchecked and unmanaged, a project’s &lt;code class=&quot;highlighter-rouge&quot;&gt;Gemfile&lt;/code&gt; might turn into something that looks like:&lt;/p&gt;
 
-&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;source&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;http://rubygems.org&#39;&lt;/span&gt;
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;source&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;https://rubygems.org&#39;&lt;/span&gt;
 
 &lt;span class=&quot;n&quot;&gt;gem&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;linkbuilder&#39;&lt;/span&gt;
 &lt;span class=&quot;n&quot;&gt;gem&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&#39;http_helper&#39;&lt;/span&gt;
@@ -6663,7 +6663,7 @@ duck ~~~~&amp;gt; | #&amp;lt;Class:Duck&amp;gt; |
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 
-&lt;p&gt;It is very possible that all these gems do not have any adverse side effects. They might not even have any horrible monkey patches to &lt;code class=&quot;highlighter-rouge&quot;&gt;String&lt;/code&gt; or &lt;code class=&quot;highlighter-rouge&quot;&gt;Object&lt;/code&gt;. &lt;a href=&quot;http://www.nateberkopec.com/2015/07/22/secrets-to-speedy-ruby-apps-on-heroku.html&quot;&gt;This post&lt;/a&gt; has more information on &lt;em&gt;“Why do most Rails apps use so much memory per process?”&lt;/em&gt;.&lt;/p&gt;
+&lt;p&gt;It is very possible that all these gems do not have any adverse side effects. They might not even have any horrible monkey patches to &lt;code class=&quot;highlighter-rouge&quot;&gt;String&lt;/code&gt; or &lt;code class=&quot;highlighter-rouge&quot;&gt;Object&lt;/code&gt;. &lt;a href=&quot;https://www.nateberkopec.com/2015/07/22/secrets-to-speedy-ruby-apps-on-heroku.html&quot;&gt;This post&lt;/a&gt; has more information on &lt;em&gt;“Why do most Rails apps use so much memory per process?”&lt;/em&gt;.&lt;/p&gt;
 
 &lt;p&gt;Without being able to see inside of them, intrusive gems might be mixed into this mass and we would have no idea. At a glance, it is not immediately obvious how to differentiate between benign and malignant gems. It becomes infinitely easier to understand how gems interact if we remember that gems are not magic.&lt;/p&gt;
 
@@ -6679,7 +6679,7 @@ duck ~~~~&amp;gt; | #&amp;lt;Class:Duck&amp;gt; |
 
 &lt;p&gt;A common starting place for a gem’s logic is in a file with the same name as the gem. Since most gems need to encapsulate their logic, a namespace or wrapper class is usually created with the same name as the gem. In this file it is equally common to find a list of required files or the entry point for the underlying logic. This file is usually in the root of the gem’s source or in a &lt;code class=&quot;highlighter-rouge&quot;&gt;lib&lt;/code&gt; directory.&lt;/p&gt;
 
-&lt;p&gt;In the &lt;a href=&quot;http://jakeyesbeck.com/2015/05/10/validates-type/&quot;&gt;validates_type&lt;/a&gt; root file:&lt;/p&gt;
+&lt;p&gt;In the &lt;a href=&quot;https://jakeyesbeck.com/2015/05/10/validates-type/&quot;&gt;validates_type&lt;/a&gt; root file:&lt;/p&gt;
 
 &lt;p&gt;&lt;img src=&quot;/assets/images/validates_type_dir_list.png&quot; alt=&quot;validates_type dir list&quot; /&gt;&lt;/p&gt;
 
@@ -6688,12 +6688,12 @@ duck ~~~~&amp;gt; | #&amp;lt;Class:Duck&amp;gt; |
 &lt;p&gt;Now, go out there and open up all the gems in the entire world! Read them, understand them, be one with the gems. Get a flavor for the different types of Ruby code that can exist. Then, after complete code nirvana has been achieved, submit a pull request to the gem’s source with some great additions. Or, place a few bindings in a few obscure methods to see how the code flows in and out of the gem. A master craftsman understands all of the tools in his toolbox, the same should be true for software.&lt;/p&gt;
 </content>
  </entry>
- 
+
  <entry>
    <title>How to Process Large Data Sets with Ruby</title>
-   <link href="http://jakeyesbeck.com/2015/08/09/how-to-process-large-data-sets-with-ruby/"/>
-   <updated>2015-08-09T05:00:00-07:00</updated>
-   <id>http://jakeyesbeck.com/2015/08/09/how-to-process-large-data-sets-with-ruby</id>
+   <link href="https://jakeyesbeck.com/2015/08/09/how-to-process-large-data-sets-with-ruby/"/>
+   <updated>2015-08-09T08:00:00-04:00</updated>
+   <id>https://jakeyesbeck.com/2015/08/09/how-to-process-large-data-sets-with-ruby</id>
    <content type="html">&lt;p&gt;The need for data migrations in mature systems is real. At times, requests for these migrations can appear at random. One minute, a system is behaving as specified, happily fulfilling requests, and then bam! All the user objects suddenly need an extremely crucial attribute. Well that seems relatively simple, right? All that is needed is a simple ruby script to iterate over all users and update every user with this essential piece of data.&lt;/p&gt;
 
 &lt;p&gt;To demonstrate such a problem, we can assume the following:&lt;/p&gt;
@@ -6732,7 +6732,7 @@ duck ~~~~&amp;gt; | #&amp;lt;Class:Duck&amp;gt; |
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 
-&lt;p&gt;This approach will work. The &lt;a href=&quot;http://guides.rubyonrails.org/active_record_querying.html#find-each&quot;&gt;find_each&lt;/a&gt; method will make sure the memory footprint of the script stays low (it will not load every user into memory at once) and the phone numbers will be updated.&lt;/p&gt;
+&lt;p&gt;This approach will work. The &lt;a href=&quot;https://guides.rubyonrails.org/active_record_querying.html#find-each&quot;&gt;find_each&lt;/a&gt; method will make sure the memory footprint of the script stays low (it will not load every user into memory at once) and the phone numbers will be updated.&lt;/p&gt;
 
 &lt;p&gt;However, this will be painfully slow. Even if the system is able to update 20 users per second, it will take approximately &lt;strong&gt;27 hours&lt;/strong&gt; to complete.&lt;/p&gt;
 
@@ -6757,7 +6757,7 @@ duck ~~~~&amp;gt; | #&amp;lt;Class:Duck&amp;gt; |
 
 &lt;p&gt;With a small amount of code reorganization, Resque enables processing multiple users &lt;strong&gt;at the same time&lt;/strong&gt;. The basic idea behind this approach is divide and conquer.&lt;/p&gt;
 
-&lt;h3 id=&quot;install-resque-and-redishttpredisiotopicsquickstart&quot;&gt;0. Install Resque and &lt;a href=&quot;http://redis.io/topics/quickstart&quot;&gt;Redis&lt;/a&gt;&lt;/h3&gt;
+&lt;h3 id=&quot;install-resque-and-redishttpsredisiotopicsquickstart&quot;&gt;0. Install Resque and &lt;a href=&quot;https://redis.io/topics/quickstart&quot;&gt;Redis&lt;/a&gt;&lt;/h3&gt;
 
 &lt;h3 id=&quot;extract-phone-number-updates-into-a-new-class&quot;&gt;1. Extract phone number updates into a new class&lt;/h3&gt;
 
@@ -6831,19 +6831,19 @@ duck ~~~~&amp;gt; | #&amp;lt;Class:Duck&amp;gt; |
 &lt;p&gt;Although the parallel solution is not as simple as its serial counterpart, the benefits are extremely apparent. The parallel solution is not without its weaknesses, but they do not make it invalid. It iterates over the entire user set twice, but parallelizing the slow &lt;code class=&quot;highlighter-rouge&quot;&gt;phone_number&lt;/code&gt; update queries makes up for that inefficiency ten-fold.&lt;/p&gt;
 </content>
  </entry>
- 
+
  <entry>
    <title>Faster Ruby Testing: Only Test What Matters</title>
-   <link href="http://jakeyesbeck.com/2015/08/02/test-only-what-matters/"/>
-   <updated>2015-08-02T05:00:00-07:00</updated>
-   <id>http://jakeyesbeck.com/2015/08/02/test-only-what-matters</id>
+   <link href="https://jakeyesbeck.com/2015/08/02/test-only-what-matters/"/>
+   <updated>2015-08-02T08:00:00-04:00</updated>
+   <id>https://jakeyesbeck.com/2015/08/02/test-only-what-matters</id>
    <content type="html">&lt;p&gt;Automated testing is important. Fast, exhaustive automated testing is even more important. Tests are responsible for ensuring the code you spend hours creating actually works. A great test suite can be a safeguard against bugs, a directional guide towards extending the code, and an accurate measurement of the codebase’s health. The key to writing good tests is understanding where pieces of responsibility begin and end. Maintaining small concise automated tests can make all the difference.&lt;/p&gt;
 
 &lt;h2 id=&quot;speed-is-king&quot;&gt;Speed is King&lt;/h2&gt;
 
-&lt;p&gt;Aside from the general importance of &lt;a href=&quot;http://jakeyesbeck.com/2015/06/07/short-feedback-cycles/&quot;&gt;short feedback cycles&lt;/a&gt;, a fast test suite will greatly improve your work-flow and mood. Conversely, a slow test suite can make your development cycle a living nightmare. How many unfortunate software artisans have dealt with something like:&lt;/p&gt;
+&lt;p&gt;Aside from the general importance of &lt;a href=&quot;https://jakeyesbeck.com/2015/06/07/short-feedback-cycles/&quot;&gt;short feedback cycles&lt;/a&gt;, a fast test suite will greatly improve your work-flow and mood. Conversely, a slow test suite can make your development cycle a living nightmare. How many unfortunate software artisans have dealt with something like:&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;http://jakeyesbeck.com/assets/images/slow_tests.png&quot; alt=&quot;slow test suite screenshot&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://jakeyesbeck.com/assets/images/slow_tests.png&quot; alt=&quot;slow test suite screenshot&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;Bleh! What a horrible thing to deal with. What, am I supposed to just wait 5 whole minutes every time I want to test my system? A test suite this slow is simply unacceptable.&lt;/p&gt;
 
@@ -6937,21 +6937,21 @@ duck ~~~~&amp;gt; | #&amp;lt;Class:Duck&amp;gt; |
 &lt;p&gt;In this example, removing the testing of &lt;code class=&quot;highlighter-rouge&quot;&gt;save!&lt;/code&gt; resulted in a speed increase. However, the idea of only testing the crucial parts of a method is not only about speed, &lt;strong&gt;it is about encapsulation&lt;/strong&gt;. If a method’s only responsibility is to call helper methods, that is the only thing that should be tested. The test should simply assert that the helper methods are called, not the logic within them. Following this pattern will help keep test code small, concise, readable, and input/output operations to a minimum.&lt;/p&gt;
 </content>
  </entry>
- 
+
  <entry>
    <title>Ninety Days of Commits</title>
-   <link href="http://jakeyesbeck.com/2015/07/26/ninety-days-of-commits/"/>
-   <updated>2015-07-26T05:00:00-07:00</updated>
-   <id>http://jakeyesbeck.com/2015/07/26/ninety-days-of-commits</id>
-   <content type="html">&lt;p&gt;&lt;img src=&quot;http://jakeyesbeck.com/assets/images/90_day_streak.png&quot; alt=&quot;90 Days of Commits&quot; /&gt;&lt;/p&gt;
+   <link href="https://jakeyesbeck.com/2015/07/26/ninety-days-of-commits/"/>
+   <updated>2015-07-26T08:00:00-04:00</updated>
+   <id>https://jakeyesbeck.com/2015/07/26/ninety-days-of-commits</id>
+   <content type="html">&lt;p&gt;&lt;img src=&quot;https://jakeyesbeck.com/assets/images/90_day_streak.png&quot; alt=&quot;90 Days of Commits&quot; /&gt;&lt;/p&gt;
 
-&lt;p&gt;It has been ninety days since I started the &lt;a href=&quot;http://jakeyesbeck.com/2015/04/23/a-year-of-commits/&quot;&gt;Year of Commits&lt;/a&gt; initiative. The criteria behind this challenge was to make a commit to a public Github repository every day. Technically, a commit like the following satisfies that criteria:&lt;/p&gt;
+&lt;p&gt;It has been ninety days since I started the &lt;a href=&quot;https://jakeyesbeck.com/2015/04/23/a-year-of-commits/&quot;&gt;Year of Commits&lt;/a&gt; initiative. The criteria behind this challenge was to make a commit to a public Github repository every day. Technically, a commit like the following satisfies that criteria:&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;http://jakeyesbeck.com/assets/images/example_small_commit.png&quot; alt=&quot;Small daily commit&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://jakeyesbeck.com/assets/images/example_small_commit.png&quot; alt=&quot;Small daily commit&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;However, if I allowed this commit to be my sole contribution for a day, I would be cheating no one except myself. In reality, I have been averaging 3 to 4 decent size commits a day. Spending around an hour or two total per night. Github is an awesome piece of software that tells a visual tale of when I am most productive:&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;http://jakeyesbeck.com/assets/images/time_of_commits.png&quot; alt=&quot;Times of Commits&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://jakeyesbeck.com/assets/images/time_of_commits.png&quot; alt=&quot;Times of Commits&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;Over this quarter of a year, I have accrued some interesting learnings about developing open source software.&lt;/p&gt;
 
@@ -6970,13 +6970,13 @@ duck ~~~~&amp;gt; | #&amp;lt;Class:Duck&amp;gt; |
 &lt;p&gt;I am optimistic about completing my goal of a Year of Commits. With 3/4 the distance ahead of me, let’s hope I can keep that graph solid green.&lt;/p&gt;
 </content>
  </entry>
- 
+
  <entry>
    <title>Just learn Rails (Part 2)</title>
-   <link href="http://jakeyesbeck.com/2015/07/19/just-learn-rails-part-2/"/>
-   <updated>2015-07-19T05:00:00-07:00</updated>
-   <id>http://jakeyesbeck.com/2015/07/19/just-learn-rails-part-2</id>
-   <content type="html">&lt;p&gt;In a &lt;a href=&quot;http://jakeyesbeck.com/2015/05/17/just-learn-rails/&quot;&gt;previous post&lt;/a&gt; I explained how &lt;em&gt;“just learning Rails”&lt;/em&gt; is not as straight forward as the phrase portrays. Even the novice programmer who learns Ruby on Rails in a methodical progression may still run into hardship. However, this is not entirely the fault of young programmer, he or she was simply enabled into bad habits. &lt;strong&gt;Ruby on Rails enables the complete disregard of encapsulation.&lt;/strong&gt; Notice how I did not say that Ruby on Rails prescribes less encapsulation, it simply enables it.&lt;/p&gt;
+   <link href="https://jakeyesbeck.com/2015/07/19/just-learn-rails-part-2/"/>
+   <updated>2015-07-19T08:00:00-04:00</updated>
+   <id>https://jakeyesbeck.com/2015/07/19/just-learn-rails-part-2</id>
+   <content type="html">&lt;p&gt;In a &lt;a href=&quot;https://jakeyesbeck.com/2015/05/17/just-learn-rails/&quot;&gt;previous post&lt;/a&gt; I explained how &lt;em&gt;“just learning Rails”&lt;/em&gt; is not as straight forward as the phrase portrays. Even the novice programmer who learns Ruby on Rails in a methodical progression may still run into hardship. However, this is not entirely the fault of young programmer, he or she was simply enabled into bad habits. &lt;strong&gt;Ruby on Rails enables the complete disregard of encapsulation.&lt;/strong&gt; Notice how I did not say that Ruby on Rails prescribes less encapsulation, it simply enables it.&lt;/p&gt;
 
 &lt;p&gt;This idea, much like any idea posted to the Internet, is not new. Many intelligent people have come to this same realization. One such example is the &lt;a href=&quot;https://github.com/apotonick/trailblazer&quot;&gt;Trailblazer framework&lt;/a&gt;, which aims to help inject some encapsulation and abstraction mechanisms Rails is lacking. (For those interested, &lt;a href=&quot;https://leanpub.com/trailblazer&quot;&gt;a book has been written&lt;/a&gt; to more fully explain this framework).&lt;/p&gt;
 
@@ -6984,7 +6984,7 @@ duck ~~~~&amp;gt; | #&amp;lt;Class:Duck&amp;gt; |
 
 &lt;h3 id=&quot;the-autoloader&quot;&gt;The Autoloader&lt;/h3&gt;
 
-&lt;p&gt;A keyword that most Ruby on Rails developers rarely see on a daily basis is &lt;code class=&quot;highlighter-rouge&quot;&gt;require&lt;/code&gt;. A piece of Ruby on Rails magic called &lt;a href=&quot;http://guides.rubyonrails.org/autoloading_and_reloading_constants.html&quot;&gt;autoloading&lt;/a&gt; greatly decreased the frequency of the &lt;code class=&quot;highlighter-rouge&quot;&gt;require&lt;/code&gt; keyword in Ruby on Rails applications. This has many positive aspects for new and seasoned developers alike. But, it is not without drawbacks. One such drawback is that it makes &lt;code class=&quot;highlighter-rouge&quot;&gt;ActiveRecord&lt;/code&gt; objects ubiquitous. Whenever a developer has the urge to reach into the database, regardless of the context, they are able to do so.&lt;/p&gt;
+&lt;p&gt;A keyword that most Ruby on Rails developers rarely see on a daily basis is &lt;code class=&quot;highlighter-rouge&quot;&gt;require&lt;/code&gt;. A piece of Ruby on Rails magic called &lt;a href=&quot;https://guides.rubyonrails.org/autoloading_and_reloading_constants.html&quot;&gt;autoloading&lt;/a&gt; greatly decreased the frequency of the &lt;code class=&quot;highlighter-rouge&quot;&gt;require&lt;/code&gt; keyword in Ruby on Rails applications. This has many positive aspects for new and seasoned developers alike. But, it is not without drawbacks. One such drawback is that it makes &lt;code class=&quot;highlighter-rouge&quot;&gt;ActiveRecord&lt;/code&gt; objects ubiquitous. Whenever a developer has the urge to reach into the database, regardless of the context, they are able to do so.&lt;/p&gt;
 
 &lt;p&gt;&lt;strong&gt;This enables horrific code.&lt;/strong&gt;&lt;/p&gt;
 
@@ -7099,17 +7099,17 @@ duck ~~~~&amp;gt; | #&amp;lt;Class:Duck&amp;gt; |
 
 </content>
  </entry>
- 
+
  <entry>
    <title>Create a Free Tech Blog</title>
-   <link href="http://jakeyesbeck.com/2015/07/12/create-a-free-tech-blog/"/>
-   <updated>2015-07-12T05:00:00-07:00</updated>
-   <id>http://jakeyesbeck.com/2015/07/12/create-a-free-tech-blog</id>
+   <link href="https://jakeyesbeck.com/2015/07/12/create-a-free-tech-blog/"/>
+   <updated>2015-07-12T08:00:00-04:00</updated>
+   <id>https://jakeyesbeck.com/2015/07/12/create-a-free-tech-blog</id>
    <content type="html">&lt;p&gt;The Internet is wondrous technology. If anyone remembers Geocities and Personal Home Pages, you can appreciate just how much the Internet has evolved. This evolution has recently enabled creating a tech blog completely for free. When I say free, do I mean completely free? Yes, completely free! Even this very blog, my Year of Commits, is hosted for free using the same technologies outlined in this post. You too can have a free tech blog after following these &lt;strong&gt;2 simple steps&lt;/strong&gt;.&lt;/p&gt;
 
 &lt;h2 id=&quot;step-1-use-jekyll&quot;&gt;Step 1. Use Jekyll&lt;/h2&gt;
 
-&lt;p&gt;&lt;a href=&quot;http://jekyllrb.com/&quot;&gt;Jekyll&lt;/a&gt; is a free open source static site generator. The Jekyll documentation page has some great &lt;a href=&quot;http://jekyllrb.com/docs/quickstart/&quot;&gt;tutorials&lt;/a&gt; that make getting started extremely painless. Jekyll is also a ruby tool. To contribute to Jekyll, check out their &lt;a href=&quot;https://github.com/jekyll/jekyll&quot;&gt;github page&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://jekyllrb.com/&quot;&gt;Jekyll&lt;/a&gt; is a free open source static site generator. The Jekyll documentation page has some great &lt;a href=&quot;https://jekyllrb.com/docs/quickstart/&quot;&gt;tutorials&lt;/a&gt; that make getting started extremely painless. Jekyll is also a ruby tool. To contribute to Jekyll, check out their &lt;a href=&quot;https://github.com/jekyll/jekyll&quot;&gt;github page&lt;/a&gt;.&lt;/p&gt;
 
 &lt;p&gt;Jekyll makes it easy to start creating content without worrying about CSS, page templates, or link architecture. It even generates an RSS feed of your content. All pages can be written in Markdown and automatically converted to HTML upon building or serving the site. The &lt;code class=&quot;highlighter-rouge&quot;&gt;jekyll build&lt;/code&gt; command is what this post will focus on, but &lt;code class=&quot;highlighter-rouge&quot;&gt;jekyll serve&lt;/code&gt; is worth checking out too.&lt;/p&gt;
 
@@ -7124,7 +7124,7 @@ $: touch _posts/2015-07-12-my-first-post.markdown
 
 &lt;p&gt;This will create a new directory with some default configuration files and subdirectories. Inside this new directory, the example created a &lt;code class=&quot;highlighter-rouge&quot;&gt;2015-07-12-my-first-post.markdown&lt;/code&gt; file within the &lt;code class=&quot;highlighter-rouge&quot;&gt;_posts/&lt;/code&gt; subdirectory. This file will contain the content for the first blog post.&lt;/p&gt;
 
-&lt;p&gt;Jekyll Markdown pages require a specific format at the top of the file. This format is called &lt;a href=&quot;http://jekyllrb.com/docs/frontmatter/&quot;&gt;front matter&lt;/a&gt;. It is imperative that all Jekyll posts have proper front matter in order to be converted to HTML.&lt;/p&gt;
+&lt;p&gt;Jekyll Markdown pages require a specific format at the top of the file. This format is called &lt;a href=&quot;https://jekyllrb.com/docs/frontmatter/&quot;&gt;front matter&lt;/a&gt;. It is imperative that all Jekyll posts have proper front matter in order to be converted to HTML.&lt;/p&gt;
 
 &lt;h2 id=&quot;step-2-use-github-pages&quot;&gt;Step 2. Use Github Pages&lt;/h2&gt;
 
@@ -7152,7 +7152,7 @@ $: git push origin HEAD
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 
-&lt;p&gt;And there you have it! A successful blog created entirely for free. Now, the example blog is accessible at http://username.github.io.&lt;/p&gt;
+&lt;p&gt;And there you have it! A successful blog created entirely for free. Now, the example blog is accessible at https://username.github.io.&lt;/p&gt;
 
 &lt;h2 id=&quot;optional-step-3-use-a-custom-url&quot;&gt;(Optional) Step 3. Use a custom URL&lt;/h2&gt;
 
@@ -7171,13 +7171,13 @@ $: git push origin HEAD
 &lt;p&gt;Now that a completely free blog is newly created, you have the ability to update it as frequently as you choose. Share your knowledge at expeditious paces by simply making commits to a public repository. Never worry about hosting costs, server configuration or deployment again. Simply write Markdown, build static HTML, and commit!&lt;/p&gt;
 </content>
  </entry>
- 
+
  <entry>
    <title>Modules in Ruby</title>
-   <link href="http://jakeyesbeck.com/2015/07/05/composition-in-ruby/"/>
-   <updated>2015-07-05T05:00:00-07:00</updated>
-   <id>http://jakeyesbeck.com/2015/07/05/composition-in-ruby</id>
-   <content type="html">&lt;p&gt;Currently, one hundred percent of &lt;a href=&quot;http://jakeyesbeck.com/2015/04/23/a-year-of-commits/&quot;&gt;Year of Commits&lt;/a&gt;’ commits have been to Ruby repositories. Ruby has many strengths and is a very malleable language. Ruby can be written functionally or object oriented. I tend to lean toward the latter and find myself using a few different patterns regularly. One powerful tool Ruby provides is the use of Modules.&lt;/p&gt;
+   <link href="https://jakeyesbeck.com/2015/07/05/composition-in-ruby/"/>
+   <updated>2015-07-05T08:00:00-04:00</updated>
+   <id>https://jakeyesbeck.com/2015/07/05/composition-in-ruby</id>
+   <content type="html">&lt;p&gt;Currently, one hundred percent of &lt;a href=&quot;https://jakeyesbeck.com/2015/04/23/a-year-of-commits/&quot;&gt;Year of Commits&lt;/a&gt;’ commits have been to Ruby repositories. Ruby has many strengths and is a very malleable language. Ruby can be written functionally or object oriented. I tend to lean toward the latter and find myself using a few different patterns regularly. One powerful tool Ruby provides is the use of Modules.&lt;/p&gt;
 
 &lt;h2 id=&quot;modules&quot;&gt;Modules&lt;/h2&gt;
 
@@ -7289,13 +7289,13 @@ $: git push origin HEAD
 
 </content>
  </entry>
- 
+
  <entry>
    <title>Staying Motivated</title>
-   <link href="http://jakeyesbeck.com/2015/06/28/staying-motivated/"/>
-   <updated>2015-06-28T05:00:00-07:00</updated>
-   <id>http://jakeyesbeck.com/2015/06/28/staying-motivated</id>
-   <content type="html">&lt;p&gt;Motivation is the most important thing you can control. Only with proper motivation can one reach their full potential. &lt;a href=&quot;http://jakeyesbeck.com/2015/04/23/a-year-of-commits/&quot;&gt;A Year of Commits&lt;/a&gt; is a project that requires a decent amount of motivation. I, like nearly every human ever, am not always the defintion of a “driven individual”. It takes a large amount of effort to persevere through low points and come out the other side with something to show for it. It has been &lt;strong&gt;63&lt;/strong&gt; days of my Year of Commits initiative and I have found a few helpful ways to keep my motivation up and morale high.&lt;/p&gt;
+   <link href="https://jakeyesbeck.com/2015/06/28/staying-motivated/"/>
+   <updated>2015-06-28T08:00:00-04:00</updated>
+   <id>https://jakeyesbeck.com/2015/06/28/staying-motivated</id>
+   <content type="html">&lt;p&gt;Motivation is the most important thing you can control. Only with proper motivation can one reach their full potential. &lt;a href=&quot;https://jakeyesbeck.com/2015/04/23/a-year-of-commits/&quot;&gt;A Year of Commits&lt;/a&gt; is a project that requires a decent amount of motivation. I, like nearly every human ever, am not always the defintion of a “driven individual”. It takes a large amount of effort to persevere through low points and come out the other side with something to show for it. It has been &lt;strong&gt;63&lt;/strong&gt; days of my Year of Commits initiative and I have found a few helpful ways to keep my motivation up and morale high.&lt;/p&gt;
 
 &lt;h2 id=&quot;make-small-deliverables-for-yourself&quot;&gt;1. Make small deliverables for yourself&lt;/h2&gt;
 
@@ -7307,17 +7307,17 @@ $: git push origin HEAD
 
 &lt;h2 id=&quot;believe-that-you-are-good-at-what-you-do&quot;&gt;3. Believe that you are good at what you do&lt;/h2&gt;
 
-&lt;p&gt;As it so happens, your kindergarten teacher was right about a thing or two. Attitude is important in order to help you stay motivated. A self debilitating mindset can vacuum the motivation out of nearly anything. Having the right attitude will help you soar, help keep that fire of motivation stoked and ready. Impostor syndrome, doubts, or anything in that general mindset will be nothing but a hindrance. Understanding your skill sets, knowing where you want to improve and where you have strengths, will help keep you motivated to achieve your goals. This might be the most obvious piece of advice but that does not mean it is the easiest to achieve. In software development, our confidence in our abilities is constantly tested. I try and combat this by remaining calm, remembering &lt;a href=&quot;http://jakeyesbeck.com/2015/06/14/you-are-not-your-code/&quot;&gt;“I am not my code”&lt;/a&gt;, and taking a few deep breaths now and again. Confidence takes time to build. If you are among the lucky few that simply have it in abundance, great news, you just need to keep it strong!&lt;/p&gt;
+&lt;p&gt;As it so happens, your kindergarten teacher was right about a thing or two. Attitude is important in order to help you stay motivated. A self debilitating mindset can vacuum the motivation out of nearly anything. Having the right attitude will help you soar, help keep that fire of motivation stoked and ready. Impostor syndrome, doubts, or anything in that general mindset will be nothing but a hindrance. Understanding your skill sets, knowing where you want to improve and where you have strengths, will help keep you motivated to achieve your goals. This might be the most obvious piece of advice but that does not mean it is the easiest to achieve. In software development, our confidence in our abilities is constantly tested. I try and combat this by remaining calm, remembering &lt;a href=&quot;https://jakeyesbeck.com/2015/06/14/you-are-not-your-code/&quot;&gt;“I am not my code”&lt;/a&gt;, and taking a few deep breaths now and again. Confidence takes time to build. If you are among the lucky few that simply have it in abundance, great news, you just need to keep it strong!&lt;/p&gt;
 
 &lt;p&gt;So now with all this new information, ask yourself: Are &lt;em&gt;you&lt;/em&gt; good? Yeah you are good. You are better than good, you’re motivated! Keep moving, keep building, keep creating and you will get to where you want to go. You are the one at the helm, the one in control of your journey. Motivation is the fuel.&lt;/p&gt;
 </content>
  </entry>
- 
+
  <entry>
    <title>Rails style subset validation</title>
-   <link href="http://jakeyesbeck.com/2015/06/21/validates-subset/"/>
-   <updated>2015-06-21T05:00:00-07:00</updated>
-   <id>http://jakeyesbeck.com/2015/06/21/validates-subset</id>
+   <link href="https://jakeyesbeck.com/2015/06/21/validates-subset/"/>
+   <updated>2015-06-21T08:00:00-04:00</updated>
+   <id>https://jakeyesbeck.com/2015/06/21/validates-subset</id>
    <content type="html">&lt;p&gt;Do you suddenly wake up in a cold sweat, wondering if there is &lt;strong&gt;finally&lt;/strong&gt; a way to validate that your data is a proper subset that you desire? I too have experienced this horror, and that is why I made a rails style &lt;a href=&quot;https://github.com/yez/validates_subset&quot;&gt;subset validator&lt;/a&gt;.&lt;/p&gt;
 
 &lt;h2 id=&quot;validations-ber-alles&quot;&gt;Validations über alles&lt;/h2&gt;
@@ -7404,24 +7404,24 @@ $: git push origin HEAD
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 
-&lt;p&gt;Any combination of modifiers is supported by &lt;code class=&quot;highlighter-rouge&quot;&gt;validates_subset&lt;/code&gt;. For a complete list of modifiers, have a look at the &lt;a href=&quot;http://api.rubyonrails.org/classes/ActiveModel/Validations/ClassMethods.html#method-i-validate&quot;&gt;rails documentationn&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Any combination of modifiers is supported by &lt;code class=&quot;highlighter-rouge&quot;&gt;validates_subset&lt;/code&gt;. For a complete list of modifiers, have a look at the &lt;a href=&quot;https://api.rubyonrails.org/classes/ActiveModel/Validations/ClassMethods.html#method-i-validate&quot;&gt;rails documentationn&lt;/a&gt;.&lt;/p&gt;
 
 &lt;p&gt;As always, please contribute to and use this software for the low low price of free.&lt;/p&gt;
 </content>
  </entry>
- 
+
  <entry>
    <title>You are not your code</title>
-   <link href="http://jakeyesbeck.com/2015/06/14/you-are-not-your-code/"/>
-   <updated>2015-06-14T05:00:00-07:00</updated>
-   <id>http://jakeyesbeck.com/2015/06/14/you-are-not-your-code</id>
-   <content type="html">&lt;p&gt;It may have been a mentor, a colleague, or even a random vagrant on your way to work. One of these people has been wise enough in to let you in on the well known fact that: &lt;em&gt;“You are not your code”&lt;/em&gt;. The words themselves seem so simple, so obvious and straightforward. But simple as it may be, this concept is paramount if you are to survive as a &lt;a href=&quot;http://jakeyesbeck.com/2015/05/17/just-learn-rails/&quot;&gt;Software Artisan&lt;/a&gt; and as a functioning member of society.&lt;/p&gt;
+   <link href="https://jakeyesbeck.com/2015/06/14/you-are-not-your-code/"/>
+   <updated>2015-06-14T08:00:00-04:00</updated>
+   <id>https://jakeyesbeck.com/2015/06/14/you-are-not-your-code</id>
+   <content type="html">&lt;p&gt;It may have been a mentor, a colleague, or even a random vagrant on your way to work. One of these people has been wise enough in to let you in on the well known fact that: &lt;em&gt;“You are not your code”&lt;/em&gt;. The words themselves seem so simple, so obvious and straightforward. But simple as it may be, this concept is paramount if you are to survive as a &lt;a href=&quot;https://jakeyesbeck.com/2015/05/17/just-learn-rails/&quot;&gt;Software Artisan&lt;/a&gt; and as a functioning member of society.&lt;/p&gt;
 
 &lt;p&gt;When writing software, having a sizable ego is not always appropriate. In fact, it could become a hindrance that will prevent you from being productive and happy. Software contribution is about coordinating with others to make the best possible software. It is very hard to coordinate if a person is unable to relinquish control of their projects because they feel defined by them.&lt;/p&gt;
 
 &lt;p&gt;The first time someone said that I was not my code, I took offense. I didn’t understand what they really meant. All I could think was: &lt;em&gt;“What do you mean? &lt;strong&gt;I&lt;/strong&gt; wrote the code. &lt;strong&gt;I&lt;/strong&gt; put my heart, soul, blood, sweat, and tears into the code. It is the epitome of &lt;strong&gt;me&lt;/strong&gt;. The code &lt;strong&gt;I&lt;/strong&gt; write defines &lt;strong&gt;me!&lt;/strong&gt; “&lt;/em&gt;. It was that last statement that demonstrated how naive I really was. Your code was crafted by you, maintained by you, and evolved with you. But, like a carpenter is not a chair, &lt;strong&gt;you are not your code&lt;/strong&gt;.&lt;/p&gt;
 
-&lt;p&gt;During my &lt;a href=&quot;http://jakeyesbeck.com/2015/04/23/a-year-of-commits/&quot;&gt;Year of Commits&lt;/a&gt;, it has been very important to internalize the difference between my code and myself. If I have too much ownership and pride dealing with the code I write, it makes it impossible for me to contribute as part of a community. The difference between writing software and other creative forms of work lies in the longevity of what is created. For a more traditional artisan, a painting or a house will last much longer than the average piece of code.&lt;/p&gt;
+&lt;p&gt;During my &lt;a href=&quot;https://jakeyesbeck.com/2015/04/23/a-year-of-commits/&quot;&gt;Year of Commits&lt;/a&gt;, it has been very important to internalize the difference between my code and myself. If I have too much ownership and pride dealing with the code I write, it makes it impossible for me to contribute as part of a community. The difference between writing software and other creative forms of work lies in the longevity of what is created. For a more traditional artisan, a painting or a house will last much longer than the average piece of code.&lt;/p&gt;
 
 &lt;p&gt;You, me, even that guy at work who seems to be the fabled “10x engineer”, write transient code. Our code will not outlive us. Heck, the average lifespan of code written is between 6 months and 2 years. That is &lt;em&gt;nothing&lt;/em&gt; compared to other professions. What if civil engineers only had to make a bridge that lasted for 6 months? That would be one poorly built bridge that no one would want to drive over. But when writing software, that is often the expected life of the code. With that, it becomes quite clear that code written to not last a century should never be used to define a person’s life. If you had the desire to really define yourself by your code, you would probably spend 10 years writing and perfecting every single component. This is not feasible nor realistic. We are not building bridges to last decades upon decades, neither are we creating pieces of art to hang in museums for generations. We are building software to last “long enough”. We build it because we love to and because someone is most likely paying us to do it &lt;em&gt;(I still smile sometimes when I realize I get &lt;strong&gt;paid&lt;/strong&gt; to write code)&lt;/em&gt;.&lt;/p&gt;
 
@@ -7430,13 +7430,13 @@ $: git push origin HEAD
 &lt;p&gt;You are not your code. You love to write code but are not defined by it. The code we write enriches our lives. We learn a great deal from the problems that we solve, but we are not defined by the solutions. I am a Software Artisan who’s code will be forgotten along with everyone else’s. I am happy I got to write it at all.&lt;/p&gt;
 </content>
  </entry>
- 
+
  <entry>
    <title>Short Feedback Cycles</title>
-   <link href="http://jakeyesbeck.com/2015/06/07/short-feedback-cycles/"/>
-   <updated>2015-06-07T05:00:00-07:00</updated>
-   <id>http://jakeyesbeck.com/2015/06/07/short-feedback-cycles</id>
-   <content type="html">&lt;p&gt;Forty-two days into my &lt;a href=&quot;http://jakeyesbeck.com/2015/04/23/a-year-of-commits/&quot;&gt;year of commits&lt;/a&gt; initiative has come and gone. With it, I have found some great processes for making my contributions efficient and effective. Feedback is extremely important when writing software. After all, the code you write is probably designed to work, right? Right. A good way to verify correctness in your software is through automated tests. These can either be unit tests for specific methods and functions or integration tests; those that make sure a complete code path behaves as expected. Regardless, we write these tests to ensure our code works now and in the future. “In the future” is where I have started to contribute to projects.&lt;/p&gt;
+   <link href="https://jakeyesbeck.com/2015/06/07/short-feedback-cycles/"/>
+   <updated>2015-06-07T08:00:00-04:00</updated>
+   <id>https://jakeyesbeck.com/2015/06/07/short-feedback-cycles</id>
+   <content type="html">&lt;p&gt;Forty-two days into my &lt;a href=&quot;https://jakeyesbeck.com/2015/04/23/a-year-of-commits/&quot;&gt;year of commits&lt;/a&gt; initiative has come and gone. With it, I have found some great processes for making my contributions efficient and effective. Feedback is extremely important when writing software. After all, the code you write is probably designed to work, right? Right. A good way to verify correctness in your software is through automated tests. These can either be unit tests for specific methods and functions or integration tests; those that make sure a complete code path behaves as expected. Regardless, we write these tests to ensure our code works now and in the future. “In the future” is where I have started to contribute to projects.&lt;/p&gt;
 
 &lt;p&gt;Good projects have test files that the original author(s) provide. Great projects have &lt;em&gt;fast&lt;/em&gt; test files that the original author(s) provide. Fast tests provide short feedback cycles. Short feedback cycles prevent bugs and help make new feature development and refactoring much more painless. Feedback governs our behaviors in and outside the development world. Without it, we would not be as efficient or effective at the tasks that are important to us. From writing software to training for a half marathon, feedback matters a great deal.&lt;/p&gt;
 
@@ -7480,13 +7480,13 @@ $: git push origin HEAD
 &lt;p&gt;Guard has been a very valuable asset to me during my Year of Commits and it, or technologies in the same space, would be worth looking into for anyone searching for short feedback development. Go out there, keep your Guard up and make some great contributions to other people’s code!&lt;/p&gt;
 </content>
  </entry>
- 
+
  <entry>
    <title>Writing good API wrappers</title>
-   <link href="http://jakeyesbeck.com/2015/05/31/wrapping-apis/"/>
-   <updated>2015-05-31T05:00:00-07:00</updated>
-   <id>http://jakeyesbeck.com/2015/05/31/wrapping-apis</id>
-   <content type="html">&lt;p&gt;Both in my day job and in my &lt;a href=&quot;http://jakeyesbeck.com/2015/04/23/a-year-of-commits/&quot;&gt;year of commits&lt;/a&gt;, I spend a lot of time thinking about APIs.&lt;/p&gt;
+   <link href="https://jakeyesbeck.com/2015/05/31/wrapping-apis/"/>
+   <updated>2015-05-31T08:00:00-04:00</updated>
+   <id>https://jakeyesbeck.com/2015/05/31/wrapping-apis</id>
+   <content type="html">&lt;p&gt;Both in my day job and in my &lt;a href=&quot;https://jakeyesbeck.com/2015/04/23/a-year-of-commits/&quot;&gt;year of commits&lt;/a&gt;, I spend a lot of time thinking about APIs.&lt;/p&gt;
 
 &lt;p&gt;For the uninitiated, an &lt;strong&gt;A&lt;/strong&gt;pplication &lt;strong&gt;P&lt;/strong&gt;rogram &lt;strong&gt;I&lt;/strong&gt;nterface (&lt;strong&gt;API&lt;/strong&gt;) is an avenue for one piece of software to speak to another. This could be a remote, web-based, HTTP API. Or, the API might be an internal interface for one portion of a software system to talk to another. Designing an API that is simple and maintainable is crucial if it is intended to be used and quickly adopted by colleagues or 3rd party developers.&lt;/p&gt;
 
@@ -7496,7 +7496,7 @@ $: git push origin HEAD
 
 &lt;p&gt;The mantra of this design is: “I will take away that annoying HTTP element and you do literally all the rest.”&lt;/p&gt;
 
-&lt;p&gt;We can assume that a library called &lt;code class=&quot;highlighter-rouge&quot;&gt;api_requester&lt;/code&gt; exists to wrap our very important 3rd party remote API (Which we will also assume is a &lt;a href=&quot;http://en.wikipedia.org/wiki/Representational_state_transfer&quot;&gt;RESTful API&lt;/a&gt;).&lt;/p&gt;
+&lt;p&gt;We can assume that a library called &lt;code class=&quot;highlighter-rouge&quot;&gt;api_requester&lt;/code&gt; exists to wrap our very important 3rd party remote API (Which we will also assume is a &lt;a href=&quot;https://en.wikipedia.org/wiki/Representational_state_transfer&quot;&gt;RESTful API&lt;/a&gt;).&lt;/p&gt;
 
 &lt;p&gt;If we wanted to retrieve an object our code might look something like:&lt;/p&gt;
 
@@ -7676,12 +7676,12 @@ $: git push origin HEAD
 &lt;p&gt;I am not saying this solution is perfect, but it is objectively better than the other two. A lot of factors go into making a great API wrapper. Adhering to the three ideal attributes: &lt;strong&gt;Flexibility&lt;/strong&gt;, &lt;strong&gt;Usefulness&lt;/strong&gt; and &lt;strong&gt;Readability&lt;/strong&gt; will at least point your projects in the right direction.&lt;/p&gt;
 </content>
  </entry>
- 
+
  <entry>
    <title>Contributing</title>
-   <link href="http://jakeyesbeck.com/2015/05/24/finding-projects/"/>
-   <updated>2015-05-24T05:00:00-07:00</updated>
-   <id>http://jakeyesbeck.com/2015/05/24/finding-projects</id>
+   <link href="https://jakeyesbeck.com/2015/05/24/finding-projects/"/>
+   <updated>2015-05-24T08:00:00-04:00</updated>
+   <id>https://jakeyesbeck.com/2015/05/24/finding-projects</id>
    <content type="html">&lt;p&gt;Since starting this 365 day adventure, I have done a mixture of contributing to my own projects and to others. At the on-set, I made an assumption that it would be an even distribution of commits between my own projects and existing ones. However, this proved much harder than I originally thought. After a sizable amount of effort, I did find a few projects to contribute to. 28 days into this endeavor and seems like I might actually be able to accomplish my goal.&lt;/p&gt;
 
 &lt;p&gt;One of the existing projects, &lt;a href=&quot;https://github.com/girishso/pluck_to_hash&quot;&gt;pluck to hash&lt;/a&gt;, was a very young project when I found it. The project was released without any test coverage so I attempted to &lt;a href=&quot;https://github.com/girishso/pluck_to_hash/pull/6&quot;&gt;rectify that&lt;/a&gt;. Thankfully my pull request was accepted! It felt great to finally contribute to a project that wasn’t my own. I also learned a few things by doing so.&lt;/p&gt;
@@ -7690,17 +7690,17 @@ $: git push origin HEAD
 
 &lt;p&gt;A second learning from finding projects to contribute to was how to find them. It seems like an important thing to know, right? There are a few tools one can use to find projects that are ripe for the commit-in. Using the &lt;a href=&quot;https://github.com/trending&quot;&gt;explore function on Github&lt;/a&gt;, you can find the top trending projects on a per language basis. This process is how I found the puck to hash gem and decided to contribute. A big difference between the pluck to hash repository and others is the fact that pluck to hash did not have any open issues. Contributing to a repository with no open issues could be considered risky. After all, if a project has open issues then at least some work is welcome and expected. A project with no open issues can not be assumed to want, need, or accept contributions. Luckily for me, the pluck to hash maintainer was open to my additions.&lt;/p&gt;
 
-&lt;p&gt;A great resource for finding projects ordered by issue count is &lt;a href=&quot;http://www.codetriage.com/&quot;&gt;CodeTriage&lt;/a&gt;. CodeTriage does a great job of indexing projects hosted on Github in descending order of their open issues. Finding the right projects to contribute to is hard, but with CodeTriage and the built in issue trackers in Github, contributing to repositories that matter to you and to others is achievable.&lt;/p&gt;
+&lt;p&gt;A great resource for finding projects ordered by issue count is &lt;a href=&quot;https://www.codetriage.com/&quot;&gt;CodeTriage&lt;/a&gt;. CodeTriage does a great job of indexing projects hosted on Github in descending order of their open issues. Finding the right projects to contribute to is hard, but with CodeTriage and the built in issue trackers in Github, contributing to repositories that matter to you and to others is achievable.&lt;/p&gt;
 
 &lt;p&gt;Use these resources and start making some contributions of your own.&lt;/p&gt;
 </content>
  </entry>
- 
+
  <entry>
    <title>Just learn Rails</title>
-   <link href="http://jakeyesbeck.com/2015/05/17/just-learn-rails/"/>
-   <updated>2015-05-17T05:00:00-07:00</updated>
-   <id>http://jakeyesbeck.com/2015/05/17/just-learn-rails</id>
+   <link href="https://jakeyesbeck.com/2015/05/17/just-learn-rails/"/>
+   <updated>2015-05-17T08:00:00-04:00</updated>
+   <id>https://jakeyesbeck.com/2015/05/17/just-learn-rails</id>
    <content type="html">&lt;p&gt;&lt;strong&gt;Obligatory YoC update: Still going strong, 21 days in a row!&lt;/strong&gt;&lt;/p&gt;
 
 &lt;p&gt;The only real city I have lived in is San Francisco. I assume that in other cities, like New York and Los Angeles, people bring up topics relevant to industries popular there. So I would imagine that in New York, a person could overhear something about: banking, stock trading, fashion, and expensive brunches. While in Los Angeles, you might wander by people having conversations pertaining to: making movies and working at the Cheesecake Factory. I have come to this conclusion because everyone in San Francisco talks about writing software.&lt;/p&gt;
@@ -7722,12 +7722,12 @@ $: git push origin HEAD
 &lt;p&gt;I look forward to seeing what all you software artisans build.&lt;/p&gt;
 </content>
  </entry>
- 
+
  <entry>
    <title>validates_type</title>
-   <link href="http://jakeyesbeck.com/2015/05/10/validates-type/"/>
-   <updated>2015-05-10T05:00:00-07:00</updated>
-   <id>http://jakeyesbeck.com/2015/05/10/validates-type</id>
+   <link href="https://jakeyesbeck.com/2015/05/10/validates-type/"/>
+   <updated>2015-05-10T08:00:00-04:00</updated>
+   <id>https://jakeyesbeck.com/2015/05/10/validates-type</id>
    <content type="html">&lt;p&gt;In keeping with my apparent obsession with types, I created another &lt;em&gt;helpful&lt;/em&gt; library: &lt;a href=&quot;https://github.com/yez/validates_type&quot;&gt;validates_type&lt;/a&gt;. I wanted a nice, lightweight way to assert that the types of my attributes are exactly what I need them to be once I save them to the database.&lt;/p&gt;
 
 &lt;p&gt;No one is particularly fond of littering their code with &lt;code class=&quot;highlighter-rouge&quot;&gt;try&lt;/code&gt;s and &lt;code class=&quot;highlighter-rouge&quot;&gt;is_a?&lt;/code&gt;s. To remedy this, I make my models assert confidence that the data in my database is what I expect. I’m not talking about type coercion, type casting or any other munging of types that might happen on a typical read/write from your handy dandy ORM of choice. No no, this is the real deal, the bees knees, the elbows of a gazelle: &lt;strong&gt;actual type validation&lt;/strong&gt;.&lt;/p&gt;
@@ -7834,17 +7834,17 @@ $: git push origin HEAD
 &lt;p&gt;&lt;strong&gt;A:&lt;/strong&gt; &lt;a href=&quot;https://github.com/yez/validates_type&quot;&gt;Right freakin’ here&lt;/a&gt;&lt;/p&gt;
 </content>
  </entry>
- 
+
  <entry>
    <title>Ruby Boolean</title>
-   <link href="http://jakeyesbeck.com/2015/05/03/ruby-boolean/"/>
-   <updated>2015-05-03T05:00:00-07:00</updated>
-   <id>http://jakeyesbeck.com/2015/05/03/ruby-boolean</id>
-   <content type="html">&lt;p&gt;Week one of my &lt;a href=&quot;http://jakeyesbeck.com/2015/04/23/a-year-of-commits/&quot;&gt;Year of Commits&lt;/a&gt; initiative is complete, 51 more to go. I did not plan on telling people about this until a few weeks into the task (in case history repeated itself and I gave up 20% in). But that didn’t happen; people found out about it almost immediately, demonstrating yet again just how easy it is to find anything on the Internet. Thanks, Obama.&lt;/p&gt;
+   <link href="https://jakeyesbeck.com/2015/05/03/ruby-boolean/"/>
+   <updated>2015-05-03T08:00:00-04:00</updated>
+   <id>https://jakeyesbeck.com/2015/05/03/ruby-boolean</id>
+   <content type="html">&lt;p&gt;Week one of my &lt;a href=&quot;https://jakeyesbeck.com/2015/04/23/a-year-of-commits/&quot;&gt;Year of Commits&lt;/a&gt; initiative is complete, 51 more to go. I did not plan on telling people about this until a few weeks into the task (in case history repeated itself and I gave up 20% in). But that didn’t happen; people found out about it almost immediately, demonstrating yet again just how easy it is to find anything on the Internet. Thanks, Obama.&lt;/p&gt;
 
 &lt;p&gt;So what happened in the first week? Did I change the world of open source forever? Did I contribute a monumental change to one of the most well renown ruby libraries out there? Nope, I made a gem that at its core is 3 lines long. I made a &lt;a href=&quot;https://github.com/yez/ruby-boolean&quot;&gt;boolean gem&lt;/a&gt;.&lt;/p&gt;
 
-&lt;p&gt;I can see that most people would wonder: “Why?”, “Why did he make this useless thing? Doesn’t he know that ruby does not have the boolean type &lt;a href=&quot;http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-talk/96356&quot;&gt;by design&lt;/a&gt;?”. The answer is simple. I found myself over and over again typing some kind of nonsense like this:&lt;/p&gt;
+&lt;p&gt;I can see that most people would wonder: “Why?”, “Why did he make this useless thing? Doesn’t he know that ruby does not have the boolean type &lt;a href=&quot;https://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-talk/96356&quot;&gt;by design&lt;/a&gt;?”. The answer is simple. I found myself over and over again typing some kind of nonsense like this:&lt;/p&gt;
 
 &lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# For some reason we need to know if this value&lt;/span&gt;
 &lt;span class=&quot;c1&quot;&gt;# is a boolean or not&lt;/span&gt;
@@ -7880,12 +7880,12 @@ $: git push origin HEAD
 &lt;p&gt;This project was a fun introduction to the 365 commit-a-thon I am embarking on. Maybe someone will even use it.&lt;/p&gt;
 </content>
  </entry>
- 
+
  <entry>
    <title>A Year of Commits</title>
-   <link href="http://jakeyesbeck.com/2015/04/23/a-year-of-commits/"/>
-   <updated>2015-04-23T06:15:09-07:00</updated>
-   <id>http://jakeyesbeck.com/2015/04/23/a-year-of-commits</id>
+   <link href="https://jakeyesbeck.com/2015/04/23/a-year-of-commits/"/>
+   <updated>2015-04-23T09:15:09-04:00</updated>
+   <id>https://jakeyesbeck.com/2015/04/23/a-year-of-commits</id>
    <content type="html">&lt;p&gt;Some people have no problem being motivated to be excellent every single day. I am not one of those people. While I love what I do, I think I can do better. It is very easy to make excuses for why I have countless side projects around 20% completion. Maybe people believe me when I say “I just don’t have time right now.” or “I’ve just been slammed at work.”. Those excuses are bullshit. There are plenty of people with way more on their plate than I. That is why I want to embark on a new adventure – “A Year of Commits”.&lt;/p&gt;
 
 &lt;p&gt;For the next year, I will make at least 1 commit per day to a &lt;strong&gt;public&lt;/strong&gt; repository on github. I am counting the commits by the day they are made, not they day they are merged in (in cases of public PRs).&lt;/p&gt;
@@ -7895,6 +7895,6 @@ $: git push origin HEAD
 &lt;p&gt;So who cares? Why would I go through the trouble of making this blog to exist alongside the gazillion other ones out there? Because I want to. I think it will be not only a great motivator for me but potentially provide some comic relief to any wandering interneters that happen to stumble upon this.&lt;/p&gt;
 </content>
  </entry>
- 
+
 
 </feed>
