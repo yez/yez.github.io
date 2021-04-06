@@ -110,7 +110,9 @@
 </ul>
 </span>
 
-    <p>Processing large data sets is a common problem faced by many production web applications. <a href="https://jakeyesbeck.com/2015/08/09/how-to-process-large-data-sets-with-ruby/">One solution</a> is to divide the work amongst multiple processes and have each responsible for a single or significantly smaller batch of data. However, this solution is not without its problems. Machine provisioning limitations or financial barriers may invalidate this solution for a very large N.</p>
+    <p><img src="/assets/images/ruby-threads-activerecord-connections.jpg" alt="Ruby Threads ActiveRecord Connections" /></p>
+
+<p>Processing large data sets is a common problem faced by many production web applications. <a href="https://jakeyesbeck.com/2015/08/09/how-to-process-large-data-sets-with-ruby/">One solution</a> is to divide the work amongst multiple processes and have each responsible for a single or significantly smaller batch of data. However, this solution is not without its problems. Machine provisioning limitations or financial barriers may invalidate this solution for a very large N.</p>
 
 <p>Within the same vein as “divide and conquer” exists another solution, one which requires far fewer parallel processes: <code class="highlighter-rouge">Threads</code>. In the Ruby programming language, a <code class="highlighter-rouge">Thread</code> is a built-in object for concurrent programming.</p>
 

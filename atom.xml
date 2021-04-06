@@ -4,20 +4,22 @@
  <title>A Year of Commits</title>
  <link href="https://jakeyesbeck.com/atom.xml" rel="self"/>
  <link href="https://jakeyesbeck.com/"/>
- <updated>2020-07-19T14:48:37-04:00</updated>
+ <updated>2021-04-05T21:34:03-04:00</updated>
  <id>https://jakeyesbeck.com/</id>
  <author>
    <name>Jake Yesbeck</name>
    <email>yesbeckjs@gmail.com</email>
  </author>
 
-
+ 
  <entry>
    <title>Making RSpec Tests More Robust</title>
    <link href="https://jakeyesbeck.com/2020/07/19/making-rspec-tests-more-robust/"/>
    <updated>2020-07-19T08:00:00-04:00</updated>
    <id>https://jakeyesbeck.com/2020/07/19/making-rspec-tests-more-robust</id>
-   <content type="html">&lt;p&gt;RSpec is a popular framework for testing Ruby code. With an &lt;code class=&quot;highlighter-rouge&quot;&gt;expect&lt;/code&gt;
+   <content type="html">&lt;p&gt;&lt;img src=&quot;/assets/images/robust-rspec-tests.jpg&quot; alt=&quot;Robust RSpec Tests&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;RSpec is a popular framework for testing Ruby code. With an &lt;code class=&quot;highlighter-rouge&quot;&gt;expect&lt;/code&gt;
 assertion, a developer can make sure their code calls the proper method or
 an acceptable result is returned. The &lt;code class=&quot;highlighter-rouge&quot;&gt;expect().to receive&lt;/code&gt; matcher in a test
 overrides the default implementation and can cause some unintended side

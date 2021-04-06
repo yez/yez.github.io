@@ -6,14 +6,19 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta http-equiv="content-type" content="text/html; charset=utf-8">
   
-    <meta name="description" content="Make sure your RSpec tests are robust and will not cause unnecessary outages with false positives. Robust tests take more setup but enable better Ruby code.">
+    <meta name="description" content="Eliminate false positives and prevent outages by making your RSpec tests more robust. Better Ruby code begins with better tests.">
   
 
   
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://jakeyesbeck.com/2020/07/19/making-rspec-tests-more-robust/" />
   <meta property="og:title" content="Making RSpec Tests More Robust" />
-  <meta property="og:description" content="Make sure your RSpec tests are robust and will not cause unnecessary outages with false positives. Robust tests take more setup but enabl..." />
+  <meta property="og:description" content="Eliminate false positives and prevent outages by making your RSpec tests more robust. Better Ruby code begins with better tests." />
+  
+  <meta property="twitter:card" content="summary_large_image" />
+  <meta property="og:image" content="https://jakeyesbeck.com/assets/images/robust-rspec-tests.jpg" />
+  <meta property="og:image:width" content="960" />
+  <meta property="og:image:height" content="490" />
   
   
 
@@ -100,7 +105,9 @@
   </li>
 </ul>
 </span>
-  <p>RSpec is a popular framework for testing Ruby code. With an <code class="highlighter-rouge">expect</code>
+  <p><img src="/assets/images/robust-rspec-tests.jpg" alt="Robust RSpec Tests" /></p>
+
+<p>RSpec is a popular framework for testing Ruby code. With an <code class="highlighter-rouge">expect</code>
 assertion, a developer can make sure their code calls the proper method or
 an acceptable result is returned. The <code class="highlighter-rouge">expect().to receive</code> matcher in a test
 overrides the default implementation and can cause some unintended side
