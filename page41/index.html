@@ -72,93 +72,302 @@
   
   <div class="post">
     <h1 class="post-title">
-      <a href="/2015/08/16/gems-are-not-magic/">
-        Gems != Magic
+      <a href="/2015/08/23/ruby-objects/">
+        I, Object!
       </a>
     </h1>
 
     
 
-    <span class="post-date">16 Aug 2015</span>
+    <span class="post-date">23 Aug 2015</span>
     <span class='share-container'><ul class="share-buttons">
   <li>
-    <a href="https://www.facebook.com/sharer/sharer.php?u=https://jakeyesbeck.com/2015/08/16/gems-are-not-magic/&t=Gems != Magic" title="Share on Facebook" target="_blank">
+    <a href="https://www.facebook.com/sharer/sharer.php?u=https://jakeyesbeck.com/2015/08/23/ruby-objects/&t=I, Object!" title="Share on Facebook" target="_blank">
       <img src="https://jakeyesbeck.com/assets/images/facebook.svg">
     </a>
   </li>
   <li>
-    <a href="https://twitter.com/intent/tweet?source=http%3A%2F%2Fjakeyesbeck.com&text=Gems != Magic%20https://jakeyesbeck.com/2015/08/16/gems-are-not-magic/&via=jakeyesbeck" target="_blank" title="Tweet">
+    <a href="https://twitter.com/intent/tweet?source=http%3A%2F%2Fjakeyesbeck.com&text=I, Object!%20https://jakeyesbeck.com/2015/08/23/ruby-objects/&via=jakeyesbeck" target="_blank" title="Tweet">
       <img src="https://jakeyesbeck.com/assets/images/twitter.svg">
     </a>
   </li>
   <li>
-    <a href="https://news.ycombinator.com/submitlink?u=https://jakeyesbeck.com/2015/08/16/gems-are-not-magic/&t=Gems != Magic" target="_blank" title="Share on Hacker News">
+    <a href="https://news.ycombinator.com/submitlink?u=https://jakeyesbeck.com/2015/08/23/ruby-objects/&t=I, Object!" target="_blank" title="Share on Hacker News">
       <img src="https://jakeyesbeck.com/assets/images/ycomb.svg">
     </a>
   </li>
 
   <li>
-    <a href="https://getpocket.com/save?url=https://jakeyesbeck.com/2015/08/16/gems-are-not-magic/&title=Gems != Magic" target="_blank" title="Add to Pocket">
+    <a href="https://getpocket.com/save?url=https://jakeyesbeck.com/2015/08/23/ruby-objects/&title=I, Object!" target="_blank" title="Add to Pocket">
       <img src="https://jakeyesbeck.com/assets/images/pocket.svg">
     </a>
   </li>
   <li>
-    <a href="https://www.reddit.com/submit?url=https://jakeyesbeck.com/2015/08/16/gems-are-not-magic/&title=Gems != Magic" target="_blank" title="Submit to Reddit">
+    <a href="https://www.reddit.com/submit?url=https://jakeyesbeck.com/2015/08/23/ruby-objects/&title=I, Object!" target="_blank" title="Submit to Reddit">
       <img src="https://jakeyesbeck.com/assets/images/reddit.svg">
     </a>
   </li>
 </ul>
 </span>
 
-    <p>Ruby gems can seem magical. Usually, one (or more accurately: thirty) solution to a problem exists in the form of a gem. Using gems is easy and intuitive. Simply add a line in the project root’s <code class="highlighter-rouge">Gemfile</code> and run <code class="highlighter-rouge">bundle install</code>. Then, either <code class="highlighter-rouge">require</code> the name of the gem or, if using Ruby on Rails, start using the gem’s code immediately anywhere in the project. What could possibly go wrong?</p>
+    <p><strong>I am lucky enough to work with wonderfully talented people every single day. This is a guest post by one of my magnificent coworkers, <a href="https://github.com/kristjan">Kristján Pétursson</a>. Thank you for allowing me to share this knowledge with everyone!</strong></p>
 
-<h2 id="gems-on-gems-on-gems">Gems on gems on gems</h2>
+<p>This post is adapted from my answer to <a href="https://stackoverflow.com/q/31775576/802618">this Stack Overflow question</a>. If you want to start from the beginning of the universe and build out, go read that one. If you prefer to start with something you can touch and work backwards, here we go.</p>
 
-<p>Unchecked and unmanaged, a project’s <code class="highlighter-rouge">Gemfile</code> might turn into something that looks like:</p>
+<p>Ruby likes ducks. Which is to say that when we’re coding, and we have an object, we don’t particularly care what kind of object it is, so long as it responds to the messages we send it. It might be a <code class="highlighter-rouge">Duck</code> or a <code class="highlighter-rouge">Child</code> or a <code class="highlighter-rouge">Doctor</code>, and as long as when we call <code class="highlighter-rouge">#quack</code> we hear a noise, all is well. That’s called <a href="https://en.wikipedia.org/wiki/Duck_typing">Duck Typing</a>, and Ruby digs it.</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="n">source</span> <span class="s1">'https://rubygems.org'</span>
+<p>So if we have some arbitrary object and we ask it to <code class="highlighter-rouge">#quack</code>, the Ruby interpreter needs to figure out where the object’s <code class="highlighter-rouge">#quack</code> method is. Nothing’s been compiled, and Ruby lets you define methods pretty much any place or time you like, so <code class="highlighter-rouge">#quack</code> needs to be looked up at runtime. That’s called <a href="https://en.wikipedia.org/wiki/Dynamic_dispatch">Dynamic dispatch</a>, and it’s how Ruby handles ducks.</p>
 
-<span class="n">gem</span> <span class="s1">'linkbuilder'</span>
-<span class="n">gem</span> <span class="s1">'http_helper'</span>
-<span class="n">gem</span> <span class="s1">'the-color-red'</span>
-<span class="n">gem</span> <span class="s1">'devise'</span>
-<span class="n">gem</span> <span class="s1">'cancancancancan'</span>
-<span class="n">gem</span> <span class="s1">'nokogiri'</span>
-<span class="n">gem</span> <span class="s1">'crack'</span>
-<span class="c1"># ...</span>
-<span class="c1"># ....</span>
-<span class="c1"># .....</span>
-<span class="n">gem</span> <span class="s1">'cucumber'</span>
-<span class="n">gem</span> <span class="s1">'avacado'</span>
-<span class="n">gem</span> <span class="s1">'you-get-the-idea'</span>
-<span class="n">gem</span> <span class="s1">'these-are-too-many-gems'</span>
-<span class="n">gem</span> <span class="s1">'really'</span>
+<h3 id="now-for-the-thing-we-can-touch-lets-make-a-duck">Now for the thing we can touch; let’s make a <code class="highlighter-rouge">Duck</code></h3>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Duck</span>
+  <span class="k">def</span> <span class="nf">quack</span>
+    <span class="nb">puts</span> <span class="s2">"Quack, I say!"</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="n">duck</span> <span class="o">=</span> <span class="no">Duck</span><span class="p">.</span><span class="nf">new</span>
+<span class="n">duck</span><span class="p">.</span><span class="nf">quack</span>
+<span class="c1">#=&gt; Quack, I say!</span>
 </code></pre>
 </div>
 
-<p>It is very possible that all these gems do not have any adverse side effects. They might not even have any horrible monkey patches to <code class="highlighter-rouge">String</code> or <code class="highlighter-rouge">Object</code>. <a href="https://www.nateberkopec.com/2015/07/22/secrets-to-speedy-ruby-apps-on-heroku.html">This post</a> has more information on <em>“Why do most Rails apps use so much memory per process?”</em>.</p>
+<p>Surely, this is no surprise. You’ve done this in the past, or quieter things like it, and you understand just fine that a method called on <code class="highlighter-rouge">duck</code> will be found in <code class="highlighter-rouge">Duck</code>. But we less frequently do things like:</p>
 
-<p>Without being able to see inside of them, intrusive gems might be mixed into this mass and we would have no idea. At a glance, it is not immediately obvious how to differentiate between benign and malignant gems. It becomes infinitely easier to understand how gems interact if we remember that gems are not magic.</p>
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">def</span> <span class="nc">duck</span><span class="o">.</span><span class="nf">quack</span>
+  <span class="nb">puts</span> <span class="s2">"I'm tired of quacking."</span>
+<span class="k">end</span>
+<span class="n">duck</span><span class="p">.</span><span class="nf">quack</span>
+<span class="c1">#=&gt; I'm tired of quacking.</span>
 
-<h2 id="gems-are-just-libraries">Gems are just Libraries</h2>
+<span class="n">other_duck</span> <span class="o">=</span> <span class="no">Duck</span><span class="p">.</span><span class="nf">new</span>
+<span class="n">other_duck</span><span class="p">.</span><span class="nf">quack</span>
+<span class="c1">#=&gt; Quack, I say!</span>
+</code></pre>
+</div>
 
-<p>There it is! The rabbit is out of the hat. Somewhere, some amount of cats have been released from their respective bags. Gems are not magic silver bullets injected into a codebase. Instead <strong>they are nothing more than libraries of code</strong>. Gems are <em>(hopefully)</em> well encapsulated groups of files that amount to a <em>(again hopefully)</em> few pieces of helpful functionality. With this new understanding of what gems really are, it means that parsing, modifying, and creating gems is within reach. All that is left is to figure out how to pry them open.</p>
+<p>Hm, so if we can just redefine <code class="highlighter-rouge">duck.quack</code> without messing up <code class="highlighter-rouge">other_duck</code>, where is the second <code class="highlighter-rouge">#quack</code> method? It turns out every object has a Singleton Class where it can stash all its personal possessions. Other words for singleton class include metaclass, eigenclass, and virtual class, but Ruby implements a method called <code class="highlighter-rouge">#singleton_class</code>, so we’ll use that one. You can see <code class="highlighter-rouge">#quack</code> on <code class="highlighter-rouge">duck.singleton_class</code>, but not on <code class="highlighter-rouge">other_duck.singleton_class</code>:</p>
 
-<h2 id="opening-gems">Opening gems</h2>
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="nb">puts</span> <span class="n">duck</span><span class="p">.</span><span class="nf">singleton_class</span><span class="p">.</span><span class="nf">instance_methods</span><span class="p">(</span><span class="kp">false</span><span class="p">).</span><span class="nf">inspect</span>
+<span class="c1">#=&gt; [:quack]</span>
+<span class="nb">puts</span> <span class="n">other_duck</span><span class="p">.</span><span class="nf">singleton_class</span><span class="p">.</span><span class="nf">instance_methods</span><span class="p">(</span><span class="kp">false</span><span class="p">).</span><span class="nf">inspect</span>
+<span class="c1">#=&gt; []</span>
+</code></pre>
+</div>
 
-<p>Understanding gems is a great way to learn different design patterns and idiomatic Ruby conventions. Good gems have <a href="https://github.com/jnunemaker/httparty/blob/master/lib/httparty.rb#L29">in-line documentation</a>, great gems have <a href="https://github.com/apotonick/trailblazer#trailblazer">comprehensive Github documentation</a>. Github is the most common place to find the source code for gems and a large number of them have really great method and API documentation. This level of detail might be all that is required; however, for the more opaque gems, the <code class="highlighter-rouge">bundle open</code> command is extremely helpful.</p>
+<p>And then you can see the original <code class="highlighter-rouge">#quack</code> on <code class="highlighter-rouge">Duck</code> where we left it:</p>
 
-<p><code class="highlighter-rouge">bundle open &lt;gemname&gt;</code> will use the system default text editor to open the contents of a gem. Since all gems are installed locally on the system, they should be available to open from a project’s root. If a default editor is not set, or the default is not desired, one can be added to the beginning of the command: <code class="highlighter-rouge">EDITOR=vim bundle open &lt;gemname&gt;</code>.</p>
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="nb">puts</span> <span class="no">Duck</span><span class="p">.</span><span class="nf">instance_methods</span><span class="p">(</span><span class="kp">false</span><span class="p">).</span><span class="nf">inspect</span>
+<span class="c1">#=&gt; [:quack]</span>
+</code></pre>
+</div>
 
-<p>A common starting place for a gem’s logic is in a file with the same name as the gem. Since most gems need to encapsulate their logic, a namespace or wrapper class is usually created with the same name as the gem. In this file it is equally common to find a list of required files or the entry point for the underlying logic. This file is usually in the root of the gem’s source or in a <code class="highlighter-rouge">lib</code> directory.</p>
+<h3 id="drawing-it-out">Drawing it out</h3>
 
-<p>In the <a href="https://jakeyesbeck.com/2015/05/10/validates-type/">validates_type</a> root file:</p>
+<p>Now we can start drawing diagrams, which is great, because people like diagrams almost as much as Ruby likes ducks. When we ask <code class="highlighter-rouge">duck</code> to <code class="highlighter-rouge">#quack</code>, it starts looking for the method on <code class="highlighter-rouge">duck.singleton_class</code> and then works its way up until it finds it.</p>
 
-<p><img src="/assets/images/validates_type_dir_list.png" alt="validates_type dir list" /></p>
+<div class="highlighter-rouge"><pre class="highlight"><code>             +----------+
+             | Duck     |
+             |   #quack |
+             +----------+
+                  ^
+                  |
+                  +-------------------------------------+
+                  |                                     |
+           +---------------+                    +---------------+
+duck ~~~~&gt; | #&lt;Class:Duck&gt; |   other_duck ~~~~&gt; | #&lt;Class:Duck&gt; |
+           |   #quack      |                    +---------------+
+           +---------------+
+</code></pre>
+</div>
 
-<h2 id="great-now-what">Great! Now what?</h2>
+<p>I’m using <code class="highlighter-rouge">~~~&gt;</code> to move from objects to their singleton class, and then <code class="highlighter-rouge">---&gt;</code>  to move from classes to their superclass.</p>
 
-<p>Now, go out there and open up all the gems in the entire world! Read them, understand them, be one with the gems. Get a flavor for the different types of Ruby code that can exist. Then, after complete code nirvana has been achieved, submit a pull request to the gem’s source with some great additions. Or, place a few bindings in a few obscure methods to see how the code flows in and out of the gem. A master craftsman understands all of the tools in his toolbox, the same should be true for software.</p>
+<p>And indeed, <code class="highlighter-rouge">duck.singleton_class.superclass == Duck</code>. The <code class="highlighter-rouge">#&lt;Class:Duck&gt;</code> singleton class is an anonymous class brought into existence just for <code class="highlighter-rouge">duck</code>. <code class="highlighter-rouge">other_duck</code> has its own singleton class that doesn’t have <code class="highlighter-rouge">#quack</code> defined on it, so it traverses upwards and finds <code class="highlighter-rouge">#quack</code> on <code class="highlighter-rouge">Duck</code> instead.</p>
+
+<p>We can see the whole lookup path with <code class="highlighter-rouge">#ancestors</code>, and can check exactly where a method is defined with <code class="highlighter-rouge">#method</code>. <code class="highlighter-rouge">#ancestors</code> includes the singleton class as its first entry because that’s the first place we look for a method.</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="nb">puts</span> <span class="n">duck</span><span class="p">.</span><span class="nf">singleton_class</span><span class="p">.</span><span class="nf">ancestors</span><span class="p">.</span><span class="nf">inspect</span>
+<span class="c1">#=&gt; [#&lt;Class:#&lt;Duck:0x007fe793031dd0&gt;&gt;, Duck, Object, Kernel, BasicObject]</span>
+<span class="nb">puts</span> <span class="n">duck</span><span class="p">.</span><span class="nf">method</span><span class="p">(</span><span class="ss">:quack</span><span class="p">)</span>
+<span class="c1">#=&gt; #&lt;Method: #&lt;Duck:0x007fe793031dd0&gt;.quack&gt;</span>
+<span class="nb">puts</span> <span class="n">other_duck</span><span class="p">.</span><span class="nf">method</span><span class="p">(</span><span class="ss">:quack</span><span class="p">)</span>
+<span class="c1">#=&gt; #&lt;Method: Duck#quack&gt;</span>
+</code></pre>
+</div>
+
+<p>There are more things in <code class="highlighter-rouge">#ancestors</code> than we’ve drawn yet, though I bet you saw them coming. Moving up from <code class="highlighter-rouge">Duck</code>, we get to <code class="highlighter-rouge">Object</code>. Everything in Ruby is an <code class="highlighter-rouge">Object</code>. No, everything. Yes, everything, even <code class="highlighter-rouge">BasicObject</code>, which is an ancestor of <code class="highlighter-rouge">Object</code> - just go with that for a second. Maybe pretend there was time travel involved.</p>
+
+<p>When you <code class="highlighter-rouge">class Duck</code>, there’s an implicit <code class="highlighter-rouge">class Duck &lt; Object</code> so your class can inherit everything <code class="highlighter-rouge">Object</code> has and be a good citizen. The <code class="highlighter-rouge">false</code>s we were using earlier to look at <code class="highlighter-rouge">instance_methods</code> lets us look only at the methods that class is defining, rather than everything it has inherited, but in reality:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="n">duck</span><span class="p">.</span><span class="nf">public_methods</span>
+<span class="c1">#=&gt; [:quack, :nil?, :===, :=~, :!~, :eql?, :hash, :&lt;=&gt;,</span>
+<span class="c1">#    :class, :singleton_class, :clone, :dup, :itself, :taint,</span>
+<span class="c1">#    :tainted?, :untaint, :untrust, :untrusted?, :trust, :freeze,</span>
+<span class="c1">#    :frozen?, :to_s, :inspect, :methods, :singleton_methods,</span>
+<span class="c1">#    :protected_methods, :private_methods, :public_methods,</span>
+<span class="c1">#    :instance_variables, :instance_variable_get,</span>
+<span class="c1">#    :instance_variable_set, :instance_variable_defined?,</span>
+<span class="c1">#    :remove_instance_variable, :instance_of?, :kind_of?, :is_a?,</span>
+<span class="c1">#    :tap, :send, :public_send, :respond_to?, :extend, :display,</span>
+<span class="c1">#    :method, :public_method, :singleton_method,</span>
+<span class="c1">#    :define_singleton_method, :object_id, :to_enum, :enum_for,</span>
+<span class="c1">#    :==, :equal?, :!, :!=, :instance_eval, :instance_exec,</span>
+<span class="c1">#    :__send__, :__id__]</span>
+</code></pre>
+</div>
+
+<p>And actually, <code class="highlighter-rouge">Object</code> didn’t really define any of those itself. It inherited some from <code class="highlighter-rouge">BasicObject</code> and then included <code class="highlighter-rouge">Kernel</code> to get the rest. When you include a module, it’s inserted into the list immediately after the singleton class, which explains the end of the <code class="highlighter-rouge">#ancestors</code> list. Our whole object setup looks like this:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>       +-------------+
+       | BasicObject |
+       |   #==       |
+       |   #!        |
+       |   ...       |
+       +-------------+
+            ^
+            |
+            |      +----------+
+            |      | Kernel   |
+            |      |   #nil?  |
+            |      |   #===   |
+            |      |   ...    |
+            |      +----------+
+            |           ^
+            |           |
+            +-----+-----+
+                  |
+             +----------+
+             | Object   |
+             +----------+
+                  ^
+                  |
+                  |
+                  |
+             +----------+
+             | Duck     |
+             |   #quack |
+             +----------+
+                  ^
+                  |
+                  |
+                  |
+           +---------------+
+duck ~~~~&gt; | #&lt;Class:Duck&gt; |
+           |   #quack      |
+           +---------------+
+</code></pre>
+</div>
+
+<p>This is now everything we can look at to decide how <code class="highlighter-rouge">duck</code> responds to a message. But what about class methods on <code class="highlighter-rouge">Duck</code>? Well, remember I said everything in Ruby is an <code class="highlighter-rouge">Object</code> - that means everything in our diagram is like <code class="highlighter-rouge">duck</code>, and has a singleton class and ancestry chain. In fact, everything here except for <code class="highlighter-rouge">duck</code> and <code class="highlighter-rouge">Kernel</code> are instances of <code class="highlighter-rouge">Class</code>, so we can build them out the same way we built <code class="highlighter-rouge">duck</code>. <code class="highlighter-rouge">Kernel</code> is an instance of <code class="highlighter-rouge">Module</code>, and has the appropriate singleton class with <code class="highlighter-rouge">Module</code> as its superclass, but drawing that makes the diagram pretty messy.</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>                                      +--------+
+                                      | Module |
+                                      +--------+
+                                          ^
+                                          |
+                                      +-------+
+                                      | Class |
+                                      +-------+
+                                          ^
+                                          |
+       +-------------+         +----------------------+
+       | BasicObject | ~~~~~~&gt; | #&lt;Class:BasicObject&gt; |
+       +-------------+         +----------------------+
+            ^                             ^
+            |                             |
+            |      +----------+           |
+            |      | Kernel   |           |
+            |      +----------+           |
+            |           ^                 |
+            |           |                 |
+            +-----+-----+                 |
+                  |                       |
+             +----------+        +-----------------+
+             | Object   | ~~~~~&gt; | #&lt;Class:Object&gt; |
+             +----------+        +-----------------+
+                  ^                       |
+                  |                       |
+                  |                       |
+                  |                       |
+               +------+           +---------------+
+               | Duck | ~~~~~~~~&gt; | #&lt;Class:Duck&gt; |
+               +------+           +---------------+
+                  ^
+                  |
+                  |
+                  |
+           +---------------+
+duck ~~~~&gt; | #&lt;Class:Duck&gt; |
+           +---------------+
+</code></pre>
+</div>
+
+<p>When you define a class method on <code class="highlighter-rouge">Duck</code>, you’ve probably noticed, but maybe sort of glossed over, that you declare it on <code class="highlighter-rouge">self</code>.</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Duck</span>
+  <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">in</span><span class="p">(</span><span class="n">lake</span><span class="p">)</span>
+    <span class="c1"># Return all the Ducks in lake</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre>
+</div>
+
+<p>This is no different than when we <code class="highlighter-rouge">def duck.quack</code>ed to put a new method on <code class="highlighter-rouge">duck</code> (but not <code class="highlighter-rouge">other_duck</code>). In this context, <code class="highlighter-rouge">self</code> is <code class="highlighter-rouge">Duck</code>, so we’re stashing <code class="highlighter-rouge">.in</code> on <code class="highlighter-rouge">Duck.singleton_class</code> in exactly the same way.</p>
+
+<h3 id="all-together-now">All together now</h3>
+
+<p>Ok, one more iteration. Once again, everything is an <code class="highlighter-rouge">Object</code> - even <code class="highlighter-rouge">Module</code>. You can discard that time traveling ancestry paradox from before, and we’ll just add lines for the actual paradox.</p>
+
+<div class="small-example highlighter-rouge"><pre class="highlight"><code>                                                                +----------+
+                                                                |          |
+                                      +--------+       +-----------------+ |
+   +----------------------------------| Module | ~~~~&gt; | #&lt;Class:Module&gt; | |
+   |                                  +--------+       +-----------------+ |
+   |                                      ^                     ^          |
+   |                                      |                     |          |
+   |                                  +-------+         +----------------+ |
+   |                                  | Class | ~~~~~~&gt; | #&lt;Class:Class&gt; | |
+   |                                  +-------+         +----------------+ |
+   |                                      ^                                |
+   |                                      |                                |
+   |   +-------------+         +----------------------+                    |
+   |   | BasicObject | ~~~~~~&gt; | #&lt;Class:BasicObject&gt; |                    |
+   |   +-------------+         +----------------------+                    |
+   |        ^                             ^                                |
+   |        |                             |                                |
+   |        |      +----------+           |                                |
+   |        |      | Kernel   |           |                                |
+   |        |      +----------+           |                                |
+   |        |           ^                 |                                |
+   |        |           |                 |                                |
+   |        +-----+-----+                 |                                |
+   |              |                       |                                |
+   |         +----------+        +-----------------+                       |
+   +-------&gt; | Object   | ~~~~~&gt; | #&lt;Class:Object&gt; |                       |
+             +----------+        +-----------------+                       |
+                  ^                       |   ^                            |
+                  |                       |   |                            |
+                  |                       |   +----------------------------+
+                  |                       |
+               +------+           +---------------+
+               | Duck | ~~~~~~~~&gt; | #&lt;Class:Duck&gt; |
+               +------+           +---------------+
+                  ^
+                  |
+                  |
+                  |
+           +---------------+
+duck ~~~~&gt; | #&lt;Class:Duck&gt; |
+           +---------------+
+</code></pre>
+</div>
+
+<p><code class="highlighter-rouge">Module</code> is an <code class="highlighter-rouge">Object</code>, which inherits from <code class="highlighter-rouge">BasicObject</code>, which is a <code class="highlighter-rouge">Class</code>, which inherits from <code class="highlighter-rouge">Module</code>, which is an <code class="highlighter-rouge">Object</code>, and so on until you hit the turtles. <code class="highlighter-rouge">#ancestors</code> and other methods that would have trouble with this loop have special cases in the Ruby source for when they find <code class="highlighter-rouge">BasicObject</code>, and just pretend that’s the end of the line.</p>
+
+<p>If you start from any of these objects and traverse up, right-to-left, depth-first, you can build the ancestry chain showing in what order methods will be found. Everything has a singleton class to handle the things we declare on it, and there’s only a little bit of cheating to make the whole thing work. But what did you expect from a system filled with ducks?</p>
+
+<p><strong>Author: Kristján Pétursson</strong></p>
 
   </div>
   

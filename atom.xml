@@ -4,13 +4,180 @@
  <title>A Year of Commits</title>
  <link href="https://jakeyesbeck.com/atom.xml" rel="self"/>
  <link href="https://jakeyesbeck.com/"/>
- <updated>2021-04-05T21:34:03-04:00</updated>
+ <updated>2021-04-12T08:00:51-04:00</updated>
  <id>https://jakeyesbeck.com/</id>
  <author>
    <name>Jake Yesbeck</name>
    <email>yesbeckjs@gmail.com</email>
  </author>
 
+ 
+ <entry>
+   <title>Why You Should Avoid Models in Rails Migrations</title>
+   <link href="https://jakeyesbeck.com/2021/04/10/avoid-models-in-migrations/"/>
+   <updated>2021-04-10T08:00:00-04:00</updated>
+   <id>https://jakeyesbeck.com/2021/04/10/avoid-models-in-migrations</id>
+   <content type="html">&lt;p&gt;&lt;img src=&quot;/assets/images/avoid-models-in-rails-migrations.jpg&quot; alt=&quot;Avoid Models in Rails Migrations&quot; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;humble-beginnings&quot;&gt;Humble Beginnings&lt;/h2&gt;
+
+&lt;p&gt;A simple Rails application exists with two models, &lt;code class=&quot;highlighter-rouge&quot;&gt;Books&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;Authors&lt;/code&gt;.&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Book&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;ApplicationRecord&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;belongs_to&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:author&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Author&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;ApplicationRecord&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;has_many&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:books&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;After some domestic success, this simple Rails app goes international. A new column
+is required on the &lt;code class=&quot;highlighter-rouge&quot;&gt;books&lt;/code&gt; table: &lt;code class=&quot;highlighter-rouge&quot;&gt;country&lt;/code&gt; to denote which country published the
+&lt;code class=&quot;highlighter-rouge&quot;&gt;Book&lt;/code&gt;.&lt;/p&gt;
+
+&lt;h2 id=&quot;a-reasonable-migration&quot;&gt;A Reasonable Migration&lt;/h2&gt;
+
+&lt;p&gt;To preserve data integrity, the &lt;code class=&quot;highlighter-rouge&quot;&gt;country&lt;/code&gt; column should not allow &lt;code class=&quot;highlighter-rouge&quot;&gt;null&lt;/code&gt; since
+&lt;code class=&quot;highlighter-rouge&quot;&gt;null&lt;/code&gt; isn’t a country. Existing &lt;code class=&quot;highlighter-rouge&quot;&gt;books&lt;/code&gt; also need to have a &lt;code class=&quot;highlighter-rouge&quot;&gt;country&lt;/code&gt; set.
+This is all accomplished within a single migration in 3 steps:&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;Add a column&lt;/li&gt;
+  &lt;li&gt;Update column for existing &lt;code class=&quot;highlighter-rouge&quot;&gt;books&lt;/code&gt; with a reasonable value&lt;/li&gt;
+  &lt;li&gt;Add a constraint that the column can not be &lt;code class=&quot;highlighter-rouge&quot;&gt;null&lt;/code&gt;&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;AddCountryToBooks&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;ActiveRecord&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Migration&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;6&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;up&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;add_column&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:books&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:country&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:string&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;length: &lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;
+
+    &lt;span class=&quot;no&quot;&gt;Book&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;update_all&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;country: &lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39;US&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+    &lt;span class=&quot;n&quot;&gt;change_column_null&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:books&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:country&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kp&quot;&gt;false&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;down&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;remove_column&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:books&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:country&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;This migration does the job but has hidden implications. A developer working in
+isolation may never run into the trap lurking in this code, but a team could.&lt;/p&gt;
+
+&lt;h2 id=&quot;working-with-others&quot;&gt;Working with Others&lt;/h2&gt;
+
+&lt;p&gt;Two developers work on this application, divvying up the wild world of
+&lt;code class=&quot;highlighter-rouge&quot;&gt;books&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;authors&lt;/code&gt; but maintaining healthy work life balances. One developer
+goes on vacation and has a surprise waiting for them when they return.&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt; &lt;/th&gt;
+      &lt;th&gt;Developer 1 👩‍💻&lt;/th&gt;
+      &lt;th&gt;Developer 2 👨‍💻&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;Day 1&lt;/td&gt;
+      &lt;td&gt;Write Code&lt;/td&gt;
+      &lt;td&gt;Write Code&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;Day 2&lt;/td&gt;
+      &lt;td&gt;😎️ Time Off&lt;/td&gt;
+      &lt;td&gt;🏗️ Create Migration&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;Day 3&lt;/td&gt;
+      &lt;td&gt;😎️ Time Off&lt;/td&gt;
+      &lt;td&gt;📛️ Rename Class&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;Day 4&lt;/td&gt;
+      &lt;td&gt;😎️ Time Off&lt;/td&gt;
+      &lt;td&gt;Write Code&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;Day 5&lt;/td&gt;
+      &lt;td&gt;Run Migrations -&amp;gt; 🔥️ Error&lt;/td&gt;
+      &lt;td&gt;Write Code&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;p&gt;While Developer 1 was away, the Developer 2 was busy. They wrote the above migration,
+updated existing data and then a new feature request was completed: A model
+rename.&lt;/p&gt;
+
+&lt;p&gt;Developer 1 returns, updates their local environment, and runs &lt;code class=&quot;highlighter-rouge&quot;&gt;rake db:migrate&lt;/code&gt;:&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; 20210407191819 AddCountryToBooks: migrating &lt;span class=&quot;o&quot;&gt;===================&lt;/span&gt;
+-- add_column&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;:books, :country, :string, &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;:length&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&amp;gt;2&lt;span class=&quot;o&quot;&gt;})&lt;/span&gt;
+   -&amp;gt; 0.0015s
+rake aborted!
+StandardError: An error has occurred, this and all later migrations
+canceled:
+
+uninitialized constant AddCountryToBooks::Book
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;&lt;code class=&quot;highlighter-rouge&quot;&gt;Book&lt;/code&gt; was renamed to &lt;code class=&quot;highlighter-rouge&quot;&gt;Novel&lt;/code&gt; breaking the previous migration.&lt;/p&gt;
+
+&lt;h2 id=&quot;avoiding-models&quot;&gt;Avoiding Models&lt;/h2&gt;
+
+&lt;p&gt;When used correctly, Rails migrations can count on the database being in an expected
+state. The application code moves from commit to commit but database structure
+(should) only change with migrations. Therefore, even if the &lt;code class=&quot;highlighter-rouge&quot;&gt;Book&lt;/code&gt; class is now
+&lt;code class=&quot;highlighter-rouge&quot;&gt;Novel&lt;/code&gt;, the database table &lt;code class=&quot;highlighter-rouge&quot;&gt;books&lt;/code&gt; still exists at the time of the
+&lt;code class=&quot;highlighter-rouge&quot;&gt;AddCountryToBooks&lt;/code&gt; migration.&lt;/p&gt;
+
+&lt;p&gt;Instead of &lt;code class=&quot;highlighter-rouge&quot;&gt;Book.update_all&lt;/code&gt;, writing an update query in SQL and using the base
+&lt;code class=&quot;highlighter-rouge&quot;&gt;ActiveRecord&lt;/code&gt; connection ensures this migration survives model changes like
+a rename. Because we can count on the state of the database structure,
+referring to the &lt;code class=&quot;highlighter-rouge&quot;&gt;books&lt;/code&gt; table is safe while referring to the &lt;code class=&quot;highlighter-rouge&quot;&gt;Book&lt;/code&gt; model may
+not be.&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;AddCountryToBooks&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;ActiveRecord&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Migration&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;6&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;up&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;add_column&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:books&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:country&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:string&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;length: &lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;
+
+    &lt;span class=&quot;no&quot;&gt;ActiveRecord&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Base&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;connection&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;execute&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
+      &lt;span class=&quot;s2&quot;&gt;&quot;UPDATE books SET country = &#39;US&#39;&quot;&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+    &lt;span class=&quot;n&quot;&gt;change_column_null&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:books&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:country&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kp&quot;&gt;false&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;down&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;remove_column&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:books&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:country&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;This migration will run correctly for Developer 1 no matter how many model
+renames happened while they were on vacation.&lt;/p&gt;
+
+&lt;h2 id=&quot;problem-at-scale&quot;&gt;Problem at Scale&lt;/h2&gt;
+
+&lt;p&gt;It might not seem like that big of a deal to have a single broken migration.
+But, within a larger team or with more complex migrations, this can easily
+become a painful hurdle a team needs to navigate.&lt;/p&gt;
+
+&lt;p&gt;Allowing migrations to rely on only the database as a source of truth enables
+all developers on the team to run migrations without issue. &lt;em&gt;That is until
+the database or team inevitably get too large and people do database restores
+instead of running migrations.&lt;/em&gt;&lt;/p&gt;
+
+</content>
+ </entry>
  
  <entry>
    <title>Making RSpec Tests More Robust</title>
@@ -335,7 +502,7 @@ or other built in RSpec matchers could be all that’s needed.&lt;/p&gt;
 
 </content>
  </entry>
-
+ 
  <entry>
    <title>Ruby Processes and Threads - Configuring a Web Server</title>
    <link href="https://jakeyesbeck.com/2019/06/18/ruby-processes-and-threads/"/>
@@ -748,7 +915,7 @@ siege -b --content-type &lt;span class=&quot;nv&quot;&gt;$CONTENT_TYPE&lt;/span&
 &lt;p&gt;Things like &lt;code class=&quot;highlighter-rouge&quot;&gt;thread&lt;/code&gt; starvation, semaphores, &lt;code class=&quot;highlighter-rouge&quot;&gt;thread&lt;/code&gt; pooling and other concerns regarding concurrent programming were intentionally not mentioned in this post.  Understanding how &lt;code class=&quot;highlighter-rouge&quot;&gt;Threads&lt;/code&gt; and &lt;code class=&quot;highlighter-rouge&quot;&gt;Processes&lt;/code&gt; work at a high level can enable the configuration and choice of web server, but if you want to write your own complex concurrent Ruby code, I’d suggest &lt;a href=&quot;https://github.com/ruby-concurrency/concurrent-ruby&quot;&gt;concurrent-ruby&lt;/a&gt;.&lt;/p&gt;
 </content>
  </entry>
-
+ 
  <entry>
    <title>Improving Remote Work as a Software Engineer</title>
    <link href="https://jakeyesbeck.com/2018/02/18/improving-remote-work-as-a-software-engineer/"/>
@@ -844,7 +1011,7 @@ to be flexible and work with a remote software engineer, shouldn’t that engine
 be flexible?&lt;/p&gt;
 </content>
  </entry>
-
+ 
  <entry>
    <title>A Few RSpec Helpful Hints</title>
    <link href="https://jakeyesbeck.com/2017/07/12/a-few-rspec-helpful-hints/"/>
@@ -1185,7 +1352,7 @@ debugging time.&lt;/p&gt;
 
 </content>
  </entry>
-
+ 
  <entry>
    <title>A Successful Year of Commits</title>
    <link href="https://jakeyesbeck.com/2016/04/26/a-successful-year-of-commits/"/>
@@ -1285,7 +1452,7 @@ debugging time.&lt;/p&gt;
 &lt;p&gt;Thank you all so much, now I think its time for me to take a little break. I plan to be back in a few weeks, refreshed and ready to write more.&lt;/p&gt;
 </content>
  </entry>
-
+ 
  <entry>
    <title>How to Diagnose Ruby on Rails N + 1 Query Problems</title>
    <link href="https://jakeyesbeck.com/2016/04/17/how-to-diagnose-ruby-on-rails-n-plus-1-query-problems/"/>
@@ -1448,7 +1615,7 @@ debugging time.&lt;/p&gt;
 &lt;p&gt;New Relic was a crucial element in this example but it is not the only tool available. Many other analysis tools for Ruby on Rails applications exist and Rails itself gives developers insight into an application’s behaviour via its logs.&lt;/p&gt;
 </content>
  </entry>
-
+ 
  <entry>
    <title>Things to Consider when Metaprogramming in Ruby</title>
    <link href="https://jakeyesbeck.com/2016/04/10/things-to-consider-when-metaprogramming-in-ruby/"/>
@@ -1766,7 +1933,7 @@ Comparison:
 &lt;p&gt;When used correctly and in appropriate circumstances, metaprogramming can be a great asset. The trick is knowing when to use it and when to refrain. Sometimes just using a &lt;code class=&quot;highlighter-rouge&quot;&gt;Hash&lt;/code&gt; might be the best solution.&lt;/p&gt;
 </content>
  </entry>
-
+ 
  <entry>
    <title>How to Deal with Timezones the Active Support Way</title>
    <link href="https://jakeyesbeck.com/2016/04/03/how-to-deal-with-timezones-the-active-support-way/"/>
@@ -1878,7 +2045,7 @@ Comparison:
 &lt;p&gt;As usual, the API of the &lt;code class=&quot;highlighter-rouge&quot;&gt;ActiveSupport::TimeZone&lt;/code&gt; class is much larger than just the two methods illustrated here. For more information, the &lt;a href=&quot;https://api.rubyonrails.org/classes/ActiveSupport/TimeZone.html&quot;&gt;offical ActiveSupport documentation&lt;/a&gt; is a great place to read further.&lt;/p&gt;
 </content>
  </entry>
-
+ 
  <entry>
    <title>Five More Active Record Features You Should Be Using</title>
    <link href="https://jakeyesbeck.com/2016/03/27/five-more-active-record-features-you-should-be-using/"/>
@@ -2169,7 +2336,7 @@ Comparison:
 &lt;p&gt;&lt;em&gt;Note: Additional considerations might need to be made since the &lt;code class=&quot;highlighter-rouge&quot;&gt;save&lt;/code&gt; is not guaranteed to persist like described above in the &lt;code class=&quot;highlighter-rouge&quot;&gt;after_commit&lt;/code&gt; example.&lt;/em&gt;&lt;/p&gt;
 </content>
  </entry>
-
+ 
  <entry>
    <title>How to Build a Ruby on Rails Engine</title>
    <link href="https://jakeyesbeck.com/2016/03/20/how-to-build-a-ruby-on-rails-engine/"/>
@@ -2442,7 +2609,7 @@ Routes &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;Passages::Engine:
 &lt;p&gt;Not all of the Passages Engine was discussed in this guide, but feel free to &lt;a href=&quot;https://github.com/yez/passages&quot;&gt;read the source&lt;/a&gt; to find out more information. Also, I am always looking for eager contributors to either submit issues or pull requests with features they need.&lt;/p&gt;
 </content>
  </entry>
-
+ 
  <entry>
    <title>The Power of Arel</title>
    <link href="https://jakeyesbeck.com/2016/03/13/the-power-of-arel/"/>
@@ -2700,7 +2867,7 @@ Routes &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;Passages::Engine:
 &lt;p&gt;For extremely specific or complex database interactions, using &lt;code class=&quot;highlighter-rouge&quot;&gt;Arel&lt;/code&gt; may not be the correct choice, but should at least be evaluated. Only interacting with the lowest level necessary for a resource has many benefits. An &lt;code class=&quot;highlighter-rouge&quot;&gt;Arel&lt;/code&gt; solution to a problem has the potential to be more resilient to future changes.&lt;/p&gt;
 </content>
  </entry>
-
+ 
  <entry>
    <title>The Real Cost of Technical Debt</title>
    <link href="https://jakeyesbeck.com/2016/03/06/the-real-cost-of-technical-debt/"/>
@@ -2771,7 +2938,7 @@ Routes &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;Passages::Engine:
 &lt;/center&gt;
 </content>
  </entry>
-
+ 
  <entry>
    <title>Ruby Spaceship &lt;=&gt; Operator</title>
    <link href="https://jakeyesbeck.com/2016/02/28/ruby-spaceship-operator/"/>
@@ -2960,7 +3127,7 @@ Routes &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;Passages::Engine:
 &lt;p&gt;The &lt;code class=&quot;highlighter-rouge&quot;&gt;Comparable&lt;/code&gt; mixin provides very useful functionality that can easily turn a custom class into a sortable list element. As with most patterns in software, using the right tool at the right time is very important. It may not always be appropriate to write a custom comparison mechanism for a class, but when it is, the collaboration of &lt;code class=&quot;highlighter-rouge&quot;&gt;&amp;lt;=&amp;gt;&lt;/code&gt; and the &lt;code class=&quot;highlighter-rouge&quot;&gt;Comparable&lt;/code&gt; mixin is worth evaluating.&lt;/p&gt;
 </content>
  </entry>
-
+ 
  <entry>
    <title>Four PostgreSQL Tips</title>
    <link href="https://jakeyesbeck.com/2016/02/21/four-postgresql-tips/"/>
@@ -3102,13 +3269,15 @@ Routes &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;Passages::Engine:
 &lt;p&gt;As with anything, the use of numerical referencing should be deliberate and thoughtful.&lt;/p&gt;
 </content>
  </entry>
-
+ 
  <entry>
    <title>Ruby Threads and ActiveRecord Connections</title>
    <link href="https://jakeyesbeck.com/2016/02/14/ruby-threads-and-active-record-connections/"/>
    <updated>2016-02-14T07:00:00-05:00</updated>
    <id>https://jakeyesbeck.com/2016/02/14/ruby-threads-and-active-record-connections</id>
-   <content type="html">&lt;p&gt;Processing large data sets is a common problem faced by many production web applications. &lt;a href=&quot;https://jakeyesbeck.com/2015/08/09/how-to-process-large-data-sets-with-ruby/&quot;&gt;One solution&lt;/a&gt; is to divide the work amongst multiple processes and have each responsible for a single or significantly smaller batch of data. However, this solution is not without its problems. Machine provisioning limitations or financial barriers may invalidate this solution for a very large N.&lt;/p&gt;
+   <content type="html">&lt;p&gt;&lt;img src=&quot;/assets/images/ruby-threads-activerecord-connections.jpg&quot; alt=&quot;Ruby Threads ActiveRecord Connections&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Processing large data sets is a common problem faced by many production web applications. &lt;a href=&quot;https://jakeyesbeck.com/2015/08/09/how-to-process-large-data-sets-with-ruby/&quot;&gt;One solution&lt;/a&gt; is to divide the work amongst multiple processes and have each responsible for a single or significantly smaller batch of data. However, this solution is not without its problems. Machine provisioning limitations or financial barriers may invalidate this solution for a very large N.&lt;/p&gt;
 
 &lt;p&gt;Within the same vein as “divide and conquer” exists another solution, one which requires far fewer parallel processes: &lt;code class=&quot;highlighter-rouge&quot;&gt;Threads&lt;/code&gt;. In the Ruby programming language, a &lt;code class=&quot;highlighter-rouge&quot;&gt;Thread&lt;/code&gt; is a built-in object for concurrent programming.&lt;/p&gt;
 
@@ -3277,7 +3446,7 @@ Routes &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;Passages::Engine:
 &lt;p&gt;Additionally, this code has been written for the sake of making a point. There are many ways to solve a problem and this is simply one of them.&lt;/p&gt;
 </content>
  </entry>
-
+ 
  <entry>
    <title>How to Remove a Column with Zero Downtime in Ruby on Rails</title>
    <link href="https://jakeyesbeck.com/2016/02/07/how-to-remove-a-column-with-zero-downtime-in-ruby-on-rails/"/>
@@ -3522,7 +3691,7 @@ Routes &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;Passages::Engine:
 &lt;p&gt;Databases that power web applications are powerful and oddly fragile beasts. Manipulating these beasts while maintaining superb end user experiences requires one to constantly be learning. Hopefully with this behaviour, one more thing can be crossed off the check list of “things to remember when manipulating the database” and we can all just get back to work.&lt;/p&gt;
 </content>
  </entry>
-
+ 
  <entry>
    <title>Nine Months of Commits</title>
    <link href="https://jakeyesbeck.com/2016/01/30/nine-months-of-commits/"/>
@@ -3561,13 +3730,15 @@ Routes &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;Passages::Engine:
 &lt;p&gt;The positive feedback I have received about this blog and the work that I have been doing helps make this easy. I would like to say thank you again to everyone on this journey with me.&lt;/p&gt;
 </content>
  </entry>
-
+ 
  <entry>
    <title>Ruby Private Class Methods</title>
    <link href="https://jakeyesbeck.com/2016/01/24/ruby-private-class-methods/"/>
    <updated>2016-01-24T07:00:00-05:00</updated>
    <id>https://jakeyesbeck.com/2016/01/24/ruby-private-class-methods</id>
-   <content type="html">&lt;p&gt;In the Ruby programming language, defined methods come in two variants: instance methods and class methods. Instance methods are available after an object has been initialized, creating an instance. Class methods, on the other hand, are available without creating an instance of the class they are defined upon.&lt;/p&gt;
+   <content type="html">&lt;p&gt;&lt;img src=&quot;/assets/images/ruby-private-class-methods.jpg&quot; alt=&quot;Ruby Private Class Methods&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;In the Ruby programming language, defined methods come in two variants: instance methods and class methods. Instance methods are available after an object has been initialized, creating an instance. Class methods, on the other hand, are available without creating an instance of the class they are defined upon.&lt;/p&gt;
 
 &lt;p&gt;Ruby methods can vary in visibility. Public methods are available in any context, while private methods’ availability is restricted within the instance of a class and its descendants. A third visibility scope, protected, behaves similarly to private methods, but protected methods can be called by other instances of the same class.&lt;/p&gt;
 
@@ -3735,7 +3906,7 @@ Routes &lt;span class=&quot;k&quot;&gt;for &lt;/span&gt;Passages::Engine:
 &lt;p&gt;The aforementioned solutions will get the job done but might not answer lingering questions about &lt;em&gt;why&lt;/em&gt; things work the way they do. A few great articles on &lt;a href=&quot;https://madebydna.com/all/code/2011/06/24/eigenclasses-demystified.html&quot;&gt;the ruby eigenclass&lt;/a&gt; and &lt;a href=&quot;https://junichiito.blogspot.com/2012/03/matz-answers-why-ruby-lets-sub-classes.html&quot;&gt;Matz’s thoughts on Ruby method design&lt;/a&gt; should help paint a more concise picture of why Ruby’s private class method definition is complex.&lt;/p&gt;
 </content>
  </entry>
-
+ 
  <entry>
    <title>Contributing to Open Source in 7 Steps</title>
    <link href="https://jakeyesbeck.com/2016/01/17/contributing-to-open-source-in-7-steps/"/>
@@ -3850,7 +4021,7 @@ upstream  git@github.com:covermymeds/fetching-gem.git &lt;span class=&quot;o&quo
 &lt;p&gt;Open source projects have tremendous value and a strong presence in the technology ecosystem. Contributing to these projects is an easy way to show appreciation and feel like a valued member of the open source community.&lt;/p&gt;
 </content>
  </entry>
-
+ 
  <entry>
    <title>How To Parallelize Ruby HTTP Requests</title>
    <link href="https://jakeyesbeck.com/2016/01/10/how-to-parallelize-ruby-http-requests/"/>
@@ -4045,7 +4216,7 @@ upstream  git@github.com:covermymeds/fetching-gem.git &lt;span class=&quot;o&quo
 &lt;/ol&gt;
 </content>
  </entry>
-
+ 
  <entry>
    <title>Passages Rails Engine</title>
    <link href="https://jakeyesbeck.com/2016/01/03/passages/"/>
@@ -4098,7 +4269,7 @@ upstream  git@github.com:covermymeds/fetching-gem.git &lt;span class=&quot;o&quo
 &lt;p&gt;Currently, &lt;code class=&quot;highlighter-rouge&quot;&gt;Passages&lt;/code&gt; only supports Ruby on Rails 4. It will most likely be upgraded when Ruby on Rails 5 is released but there are no plans to support Ruby on Rails 3 or older.&lt;/p&gt;
 </content>
  </entry>
-
+ 
  <entry>
    <title>Things I Wish I Knew When I Started Programming</title>
    <link href="https://jakeyesbeck.com/2015/12/27/what-i-would-tell-myself-when-i-started-programming/"/>
@@ -4139,7 +4310,7 @@ upstream  git@github.com:covermymeds/fetching-gem.git &lt;span class=&quot;o&quo
 &lt;p&gt;Who wants to be confused and helpless? No one wants that and no one needs to experience that. Reading the source code of a library or crucial bit of third party open source software can help bring light to an otherwise shrouded system, bringing a new level of depth to a developer’s understanding.&lt;/p&gt;
 </content>
  </entry>
-
+ 
  <entry>
    <title>Introduction to Rails 5 Attributes</title>
    <link href="https://jakeyesbeck.com/2015/12/20/rails-5-attributes/"/>
@@ -4302,7 +4473,7 @@ upstream  git@github.com:covermymeds/fetching-gem.git &lt;span class=&quot;o&quo
 &lt;p&gt;The addition of &lt;code class=&quot;highlighter-rouge&quot;&gt;Attributes&lt;/code&gt; will hopefully promote some new patterns and considerations around dealing with types in Ruby on Rails applications. Data consistency and reliability are important, it is exciting to see people making steps toward it in the Rails community.&lt;/p&gt;
 </content>
  </entry>
-
+ 
  <entry>
    <title>Ruby Refinements</title>
    <link href="https://jakeyesbeck.com/2015/12/13/ruby-refinements/"/>
@@ -4490,7 +4661,7 @@ upstream  git@github.com:covermymeds/fetching-gem.git &lt;span class=&quot;o&quo
 &lt;p&gt;Using Refinements is a nice alternative to the sledgehammer that is monkey patching. Bending a class to fit a very specific need in an encapsulated manner can mean the difference between a stable system and one riddled with hard to track down bugs. While Refinements still have their own drawbacks, they are much less intrusive than the alternative.&lt;/p&gt;
 </content>
  </entry>
-
+ 
  <entry>
    <title>How to use Rails Strong Parameters</title>
    <link href="https://jakeyesbeck.com/2015/12/06/how-to-use-rails-strong-parameters/"/>
@@ -4653,7 +4824,7 @@ upstream  git@github.com:covermymeds/fetching-gem.git &lt;span class=&quot;o&quo
 &lt;p&gt;Additionally, if the Ruby on Rails application in question was an API, Strong Parameters would only be effective in very specific circumstances. Since the feedback given by Strong Parameters is not as granular as an API would like to be, it could be hard to find many uses of it.&lt;/p&gt;
 </content>
  </entry>
-
+ 
  <entry>
    <title>Validates Type 2.0</title>
    <link href="https://jakeyesbeck.com/2015/11/29/updated-validates-type/"/>
@@ -4751,7 +4922,7 @@ upstream  git@github.com:covermymeds/fetching-gem.git &lt;span class=&quot;o&quo
 
 </content>
  </entry>
-
+ 
  <entry>
    <title>How to Write Future-proof Mocks in RSpec 3</title>
    <link href="https://jakeyesbeck.com/2015/11/22/how-to-write-futureproof-mocks/"/>
@@ -4912,7 +5083,7 @@ Finished &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;0.0054 seconds &lt;span
 
 </content>
  </entry>
-
+ 
  <entry>
    <title>Five Active Record Features You Should Be Using</title>
    <link href="https://jakeyesbeck.com/2015/11/15/five-active-record-features-you-should-be-using/"/>
@@ -5096,7 +5267,7 @@ Finished &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;0.0054 seconds &lt;span
 
 </content>
  </entry>
-
+ 
  <entry>
    <title>Ruby DelegateClass</title>
    <link href="https://jakeyesbeck.com/2015/11/08/ruby-delegate-class/"/>
@@ -5243,7 +5414,7 @@ Finished &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;0.0054 seconds &lt;span
 &lt;p&gt;As previously stated, there are many ways to solve this particular problem. Arguments for module inheritance or single table inheritance could be made and might result in just as valid solutions.&lt;/p&gt;
 </content>
  </entry>
-
+ 
  <entry>
    <title>Six Months of Commits</title>
    <link href="https://jakeyesbeck.com/2015/11/01/six-months-of-commits/"/>
@@ -5276,7 +5447,7 @@ Finished &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;0.0054 seconds &lt;span
 &lt;p&gt;To all the people who have been supportive and hopefully will continue to do so, you are the reason that I am gaining so much out of this experience. You are the reason I will continue this path forward. You are the reason I will complete a Year of Commits.&lt;/p&gt;
 </content>
  </entry>
-
+ 
  <entry>
    <title>How to Traverse Foreign Ruby Code</title>
    <link href="https://jakeyesbeck.com/2015/10/25/how-to-traverse-foreign-ruby-code/"/>
@@ -5452,7 +5623,7 @@ Finished &lt;span class=&quot;k&quot;&gt;in &lt;/span&gt;0.0054 seconds &lt;span
 
 </content>
  </entry>
-
+ 
  <entry>
    <title>Building a Simple Web Server with Ruby 2.0+ (Part 2)</title>
    <link href="https://jakeyesbeck.com/2015/10/18/building-a-simple-web-server-with-ruby-2-part-2/"/>
@@ -5690,7 +5861,7 @@ Connection: close
 &lt;p&gt;It sure has been fun building it though, right?&lt;/p&gt;
 </content>
  </entry>
-
+ 
  <entry>
    <title>Building a Simple Web Server with Ruby 2.0+</title>
    <link href="https://jakeyesbeck.com/2015/10/11/building-a-simple-web-server-with-ruby-2/"/>
@@ -5880,7 +6051,7 @@ Connection: close
 &lt;p&gt;To see even more improvements, check out &lt;a href=&quot;https://jakeyesbeck.com/2015/10/18/building-a-simple-web-server-with-ruby-2-part-2/&quot;&gt;part 2!&lt;/a&gt;&lt;/p&gt;
 </content>
  </entry>
-
+ 
  <entry>
    <title>Someone Wrote that Code on Purpose</title>
    <link href="https://jakeyesbeck.com/2015/10/04/someone-wrote-that-code-on-purpose/"/>
@@ -5919,7 +6090,7 @@ Connection: close
 &lt;p&gt;Taking time to understand old or opaque code can mean the difference between a healthy face lift to an application and accidentally removing its liver. How are you supposed to have a celebratory drink after a grand refactoring without a liver?&lt;/p&gt;
 </content>
  </entry>
-
+ 
  <entry>
    <title>How to Create a Custom Enumerable</title>
    <link href="https://jakeyesbeck.com/2015/09/27/how-to-create-a-custom-enumerable/"/>
@@ -6056,7 +6227,7 @@ Connection: close
 &lt;p&gt;The strength behind this approach is expressed through its maintainability. Since no long list of methods was defined, and no duplicative code was written, this code can exist alongside active development of the &lt;code class=&quot;highlighter-rouge&quot;&gt;Enumerable&lt;/code&gt; module. For the example in question, this could be an overkill solution. But, in a more complex and sophistiacted system, using the &lt;code class=&quot;highlighter-rouge&quot;&gt;Enumerable&lt;/code&gt; could be the best option.&lt;/p&gt;
 </content>
  </entry>
-
+ 
  <entry>
    <title>Just learn Rails (Part 3) HTTP status codes</title>
    <link href="https://jakeyesbeck.com/2015/09/20/rails-http-status-codes/"/>
@@ -6155,7 +6326,7 @@ Connection: close
 &lt;p&gt;Instead of capturing in text every single detail about why a request did not result in an expected response, use HTTP status codes to supplement and communicate effectively.&lt;/p&gt;
 </content>
  </entry>
-
+ 
  <entry>
    <title>Rescue Groups Ruby Wrapper</title>
    <link href="https://jakeyesbeck.com/2015/09/13/rescue-groups/"/>
@@ -6247,7 +6418,7 @@ Connection: close
 &lt;p&gt;Now with all this pet data available, put it to work. I have really enjoyed making this library but am always looking for feedback. If anyone would like to know more or help contribute to this project please feel free! Github PRs and issues are always welcome.&lt;/p&gt;
 </content>
  </entry>
-
+ 
  <entry>
    <title>Stop and Take a Moment</title>
    <link href="https://jakeyesbeck.com/2015/09/06/stop-and-take-a-moment/"/>
@@ -6278,7 +6449,7 @@ Connection: close
 &lt;p&gt;&lt;em&gt;Dedicated to Christopher Adam Bell&lt;/em&gt;&lt;/p&gt;
 </content>
  </entry>
-
+ 
  <entry>
    <title>Active Support and Time</title>
    <link href="https://jakeyesbeck.com/2015/08/30/active-support-and-time/"/>
@@ -6367,7 +6538,7 @@ Connection: close
 
 </content>
  </entry>
-
+ 
  <entry>
    <title>I, Object!</title>
    <link href="https://jakeyesbeck.com/2015/08/23/ruby-objects/"/>
@@ -6633,7 +6804,7 @@ duck ~~~~&amp;gt; | #&amp;lt;Class:Duck&amp;gt; |
 &lt;p&gt;&lt;strong&gt;Author: Kristján Pétursson&lt;/strong&gt;&lt;/p&gt;
 </content>
  </entry>
-
+ 
  <entry>
    <title>Gems != Magic</title>
    <link href="https://jakeyesbeck.com/2015/08/16/gems-are-not-magic/"/>
@@ -6690,7 +6861,7 @@ duck ~~~~&amp;gt; | #&amp;lt;Class:Duck&amp;gt; |
 &lt;p&gt;Now, go out there and open up all the gems in the entire world! Read them, understand them, be one with the gems. Get a flavor for the different types of Ruby code that can exist. Then, after complete code nirvana has been achieved, submit a pull request to the gem’s source with some great additions. Or, place a few bindings in a few obscure methods to see how the code flows in and out of the gem. A master craftsman understands all of the tools in his toolbox, the same should be true for software.&lt;/p&gt;
 </content>
  </entry>
-
+ 
  <entry>
    <title>How to Process Large Data Sets with Ruby</title>
    <link href="https://jakeyesbeck.com/2015/08/09/how-to-process-large-data-sets-with-ruby/"/>
@@ -6833,7 +7004,7 @@ duck ~~~~&amp;gt; | #&amp;lt;Class:Duck&amp;gt; |
 &lt;p&gt;Although the parallel solution is not as simple as its serial counterpart, the benefits are extremely apparent. The parallel solution is not without its weaknesses, but they do not make it invalid. It iterates over the entire user set twice, but parallelizing the slow &lt;code class=&quot;highlighter-rouge&quot;&gt;phone_number&lt;/code&gt; update queries makes up for that inefficiency ten-fold.&lt;/p&gt;
 </content>
  </entry>
-
+ 
  <entry>
    <title>Faster Ruby Testing: Only Test What Matters</title>
    <link href="https://jakeyesbeck.com/2015/08/02/test-only-what-matters/"/>
@@ -6939,7 +7110,7 @@ duck ~~~~&amp;gt; | #&amp;lt;Class:Duck&amp;gt; |
 &lt;p&gt;In this example, removing the testing of &lt;code class=&quot;highlighter-rouge&quot;&gt;save!&lt;/code&gt; resulted in a speed increase. However, the idea of only testing the crucial parts of a method is not only about speed, &lt;strong&gt;it is about encapsulation&lt;/strong&gt;. If a method’s only responsibility is to call helper methods, that is the only thing that should be tested. The test should simply assert that the helper methods are called, not the logic within them. Following this pattern will help keep test code small, concise, readable, and input/output operations to a minimum.&lt;/p&gt;
 </content>
  </entry>
-
+ 
  <entry>
    <title>Ninety Days of Commits</title>
    <link href="https://jakeyesbeck.com/2015/07/26/ninety-days-of-commits/"/>
@@ -6972,7 +7143,7 @@ duck ~~~~&amp;gt; | #&amp;lt;Class:Duck&amp;gt; |
 &lt;p&gt;I am optimistic about completing my goal of a Year of Commits. With 3/4 the distance ahead of me, let’s hope I can keep that graph solid green.&lt;/p&gt;
 </content>
  </entry>
-
+ 
  <entry>
    <title>Just learn Rails (Part 2)</title>
    <link href="https://jakeyesbeck.com/2015/07/19/just-learn-rails-part-2/"/>
@@ -7101,7 +7272,7 @@ duck ~~~~&amp;gt; | #&amp;lt;Class:Duck&amp;gt; |
 
 </content>
  </entry>
-
+ 
  <entry>
    <title>Create a Free Tech Blog</title>
    <link href="https://jakeyesbeck.com/2015/07/12/create-a-free-tech-blog/"/>
@@ -7173,7 +7344,7 @@ $: git push origin HEAD
 &lt;p&gt;Now that a completely free blog is newly created, you have the ability to update it as frequently as you choose. Share your knowledge at expeditious paces by simply making commits to a public repository. Never worry about hosting costs, server configuration or deployment again. Simply write Markdown, build static HTML, and commit!&lt;/p&gt;
 </content>
  </entry>
-
+ 
  <entry>
    <title>Modules in Ruby</title>
    <link href="https://jakeyesbeck.com/2015/07/05/composition-in-ruby/"/>
@@ -7291,7 +7462,7 @@ $: git push origin HEAD
 
 </content>
  </entry>
-
+ 
  <entry>
    <title>Staying Motivated</title>
    <link href="https://jakeyesbeck.com/2015/06/28/staying-motivated/"/>
@@ -7314,7 +7485,7 @@ $: git push origin HEAD
 &lt;p&gt;So now with all this new information, ask yourself: Are &lt;em&gt;you&lt;/em&gt; good? Yeah you are good. You are better than good, you’re motivated! Keep moving, keep building, keep creating and you will get to where you want to go. You are the one at the helm, the one in control of your journey. Motivation is the fuel.&lt;/p&gt;
 </content>
  </entry>
-
+ 
  <entry>
    <title>Rails style subset validation</title>
    <link href="https://jakeyesbeck.com/2015/06/21/validates-subset/"/>
@@ -7411,7 +7582,7 @@ $: git push origin HEAD
 &lt;p&gt;As always, please contribute to and use this software for the low low price of free.&lt;/p&gt;
 </content>
  </entry>
-
+ 
  <entry>
    <title>You are not your code</title>
    <link href="https://jakeyesbeck.com/2015/06/14/you-are-not-your-code/"/>
@@ -7432,7 +7603,7 @@ $: git push origin HEAD
 &lt;p&gt;You are not your code. You love to write code but are not defined by it. The code we write enriches our lives. We learn a great deal from the problems that we solve, but we are not defined by the solutions. I am a Software Artisan who’s code will be forgotten along with everyone else’s. I am happy I got to write it at all.&lt;/p&gt;
 </content>
  </entry>
-
+ 
  <entry>
    <title>Short Feedback Cycles</title>
    <link href="https://jakeyesbeck.com/2015/06/07/short-feedback-cycles/"/>
@@ -7482,7 +7653,7 @@ $: git push origin HEAD
 &lt;p&gt;Guard has been a very valuable asset to me during my Year of Commits and it, or technologies in the same space, would be worth looking into for anyone searching for short feedback development. Go out there, keep your Guard up and make some great contributions to other people’s code!&lt;/p&gt;
 </content>
  </entry>
-
+ 
  <entry>
    <title>Writing good API wrappers</title>
    <link href="https://jakeyesbeck.com/2015/05/31/wrapping-apis/"/>
@@ -7678,7 +7849,7 @@ $: git push origin HEAD
 &lt;p&gt;I am not saying this solution is perfect, but it is objectively better than the other two. A lot of factors go into making a great API wrapper. Adhering to the three ideal attributes: &lt;strong&gt;Flexibility&lt;/strong&gt;, &lt;strong&gt;Usefulness&lt;/strong&gt; and &lt;strong&gt;Readability&lt;/strong&gt; will at least point your projects in the right direction.&lt;/p&gt;
 </content>
  </entry>
-
+ 
  <entry>
    <title>Contributing</title>
    <link href="https://jakeyesbeck.com/2015/05/24/finding-projects/"/>
@@ -7697,7 +7868,7 @@ $: git push origin HEAD
 &lt;p&gt;Use these resources and start making some contributions of your own.&lt;/p&gt;
 </content>
  </entry>
-
+ 
  <entry>
    <title>Just learn Rails</title>
    <link href="https://jakeyesbeck.com/2015/05/17/just-learn-rails/"/>
@@ -7724,7 +7895,7 @@ $: git push origin HEAD
 &lt;p&gt;I look forward to seeing what all you software artisans build.&lt;/p&gt;
 </content>
  </entry>
-
+ 
  <entry>
    <title>validates_type</title>
    <link href="https://jakeyesbeck.com/2015/05/10/validates-type/"/>
@@ -7836,7 +8007,7 @@ $: git push origin HEAD
 &lt;p&gt;&lt;strong&gt;A:&lt;/strong&gt; &lt;a href=&quot;https://github.com/yez/validates_type&quot;&gt;Right freakin’ here&lt;/a&gt;&lt;/p&gt;
 </content>
  </entry>
-
+ 
  <entry>
    <title>Ruby Boolean</title>
    <link href="https://jakeyesbeck.com/2015/05/03/ruby-boolean/"/>
@@ -7882,7 +8053,7 @@ $: git push origin HEAD
 &lt;p&gt;This project was a fun introduction to the 365 commit-a-thon I am embarking on. Maybe someone will even use it.&lt;/p&gt;
 </content>
  </entry>
-
+ 
  <entry>
    <title>A Year of Commits</title>
    <link href="https://jakeyesbeck.com/2015/04/23/a-year-of-commits/"/>
@@ -7897,6 +8068,6 @@ $: git push origin HEAD
 &lt;p&gt;So who cares? Why would I go through the trouble of making this blog to exist alongside the gazillion other ones out there? Because I want to. I think it will be not only a great motivator for me but potentially provide some comic relief to any wandering interneters that happen to stumble upon this.&lt;/p&gt;
 </content>
  </entry>
-
+ 
 
 </feed>

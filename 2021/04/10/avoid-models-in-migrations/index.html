@@ -6,15 +6,19 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta http-equiv="content-type" content="text/html; charset=utf-8">
   
-    <meta name="description" content="Jake Yesbeck's Technology Blog inspired by Open Source Projects.">
+    <meta name="description" content="Using AR Models in Rails migrations works but can have hidden problems. Learn why to avoid them and what to do instead">
   
 
   
   <meta property="og:type" content="website" />
-  <meta property="og:url" content="https://jakeyesbeck.com/" />
-  <meta property="og:title" content="Home" />
-  <meta property="og:description" content="Jake Yesbeck's blog consisting of technical solutions, opinions about life, and updates on "A Year of Commits".
-" />
+  <meta property="og:url" content="https://jakeyesbeck.com/2021/04/10/avoid-models-in-migrations/" />
+  <meta property="og:title" content="Why You Should Avoid Models in Rails Migrations" />
+  <meta property="og:description" content="Using AR Models in Rails migrations works but can have hidden problems. Learn why to avoid them and what to do instead" />
+  
+  <meta property="twitter:card" content="summary_large_image" />
+  <meta property="og:image" content="https://jakeyesbeck.com/assets/images/avoid-models-in-rails-migrations.jpg" />
+  <meta property="og:image:width" content="948" />
+  <meta property="og:image:height" content="417" />
   
   
 
@@ -23,7 +27,7 @@
 
   <title>
     
-      A Year of Commits
+      Why You Should Avoid Models in Rails Migrations
     
   </title>
 
@@ -68,19 +72,11 @@
 
 
     <div class="content container">
-      <div class="posts">
+      <div class="post">
+  <h1 class="post-title">Why You Should Avoid Models in Rails Migrations</h1>
+  <span class="post-date">10 Apr 2021</span>
   
-  <div class="post">
-    <h1 class="post-title">
-      <a href="/2021/04/10/avoid-models-in-migrations/">
-        Why You Should Avoid Models in Rails Migrations
-      </a>
-    </h1>
-
-    
-
-    <span class="post-date">10 Apr 2021</span>
-    <span class='share-container'><ul class="share-buttons">
+  <span class='share-container'><ul class="share-buttons">
   <li>
     <a href="https://www.facebook.com/sharer/sharer.php?u=https://jakeyesbeck.com/2021/04/10/avoid-models-in-migrations/&t=Why You Should Avoid Models in Rails Migrations" title="Share on Facebook" target="_blank">
       <img src="https://jakeyesbeck.com/assets/images/facebook.svg">
@@ -109,8 +105,7 @@
   </li>
 </ul>
 </span>
-
-    <p><img src="/assets/images/avoid-models-in-rails-migrations.jpg" alt="Avoid Models in Rails Migrations" /></p>
+  <p><img src="/assets/images/avoid-models-in-rails-migrations.jpg" alt="Avoid Models in Rails Migrations" /></p>
 
 <h2 id="humble-beginnings">Humble Beginnings</h2>
 
@@ -270,17 +265,40 @@ the database or team inevitably get too large and people do database restores
 instead of running migrations.</em></p>
 
 
-  </div>
-  
 </div>
 
-<div class="pagination">
-  
-    <a class="pagination-item older" href="https://jakeyesbeck.com/page2">Older</a>
-  
-  
-    <span class="pagination-item newer">Newer</span>
-  
+<div class="related">
+  <h2>Related Posts</h2>
+  <ul class="related-posts">
+    
+      <li>
+        <h3>
+          <a href="/2016/02/07/how-to-remove-a-column-with-zero-downtime-in-ruby-on-rails/">
+            How to Remove a Column with Zero Downtime in Ruby on Rails
+            <small>07 Feb 2016</small>
+          </a>
+        </h3>
+      </li>
+    
+      <li>
+        <h3>
+          <a href="/2016/03/27/five-more-active-record-features-you-should-be-using/">
+            Five More Active Record Features You Should Be Using
+            <small>27 Mar 2016</small>
+          </a>
+        </h3>
+      </li>
+    
+      <li>
+        <h3>
+          <a href="/2015/11/15/five-active-record-features-you-should-be-using/">
+            Five Active Record Features You Should Be Using
+            <small>15 Nov 2015</small>
+          </a>
+        </h3>
+      </li>
+    
+  </ul>
 </div>
 
     </div>

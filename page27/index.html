@@ -72,196 +72,133 @@
   
   <div class="post">
     <h1 class="post-title">
-      <a href="/2015/11/22/how-to-write-futureproof-mocks/">
-        How to Write Future-proof Mocks in RSpec 3
+      <a href="/2015/11/29/updated-validates-type/">
+        Validates Type 2.0
       </a>
     </h1>
 
     
 
-    <span class="post-date">22 Nov 2015</span>
+    <span class="post-date">29 Nov 2015</span>
     <span class='share-container'><ul class="share-buttons">
   <li>
-    <a href="https://www.facebook.com/sharer/sharer.php?u=https://jakeyesbeck.com/2015/11/22/how-to-write-futureproof-mocks/&t=How to Write Future-proof Mocks in RSpec 3" title="Share on Facebook" target="_blank">
+    <a href="https://www.facebook.com/sharer/sharer.php?u=https://jakeyesbeck.com/2015/11/29/updated-validates-type/&t=Validates Type 2.0" title="Share on Facebook" target="_blank">
       <img src="https://jakeyesbeck.com/assets/images/facebook.svg">
     </a>
   </li>
   <li>
-    <a href="https://twitter.com/intent/tweet?source=http%3A%2F%2Fjakeyesbeck.com&text=How to Write Future-proof Mocks in RSpec 3%20https://jakeyesbeck.com/2015/11/22/how-to-write-futureproof-mocks/&via=jakeyesbeck" target="_blank" title="Tweet">
+    <a href="https://twitter.com/intent/tweet?source=http%3A%2F%2Fjakeyesbeck.com&text=Validates Type 2.0%20https://jakeyesbeck.com/2015/11/29/updated-validates-type/&via=jakeyesbeck" target="_blank" title="Tweet">
       <img src="https://jakeyesbeck.com/assets/images/twitter.svg">
     </a>
   </li>
   <li>
-    <a href="https://news.ycombinator.com/submitlink?u=https://jakeyesbeck.com/2015/11/22/how-to-write-futureproof-mocks/&t=How to Write Future-proof Mocks in RSpec 3" target="_blank" title="Share on Hacker News">
+    <a href="https://news.ycombinator.com/submitlink?u=https://jakeyesbeck.com/2015/11/29/updated-validates-type/&t=Validates Type 2.0" target="_blank" title="Share on Hacker News">
       <img src="https://jakeyesbeck.com/assets/images/ycomb.svg">
     </a>
   </li>
 
   <li>
-    <a href="https://getpocket.com/save?url=https://jakeyesbeck.com/2015/11/22/how-to-write-futureproof-mocks/&title=How to Write Future-proof Mocks in RSpec 3" target="_blank" title="Add to Pocket">
+    <a href="https://getpocket.com/save?url=https://jakeyesbeck.com/2015/11/29/updated-validates-type/&title=Validates Type 2.0" target="_blank" title="Add to Pocket">
       <img src="https://jakeyesbeck.com/assets/images/pocket.svg">
     </a>
   </li>
   <li>
-    <a href="https://www.reddit.com/submit?url=https://jakeyesbeck.com/2015/11/22/how-to-write-futureproof-mocks/&title=How to Write Future-proof Mocks in RSpec 3" target="_blank" title="Submit to Reddit">
+    <a href="https://www.reddit.com/submit?url=https://jakeyesbeck.com/2015/11/29/updated-validates-type/&title=Validates Type 2.0" target="_blank" title="Submit to Reddit">
       <img src="https://jakeyesbeck.com/assets/images/reddit.svg">
     </a>
   </li>
 </ul>
 </span>
 
-    <p>Tests are an important component in most software applications. Whether tests drive the development, or are strapped on after the fact, tests need to be reliable for future development to progress. An application’s complexity rises with time. During and after this increase, a rock solid test suite is crucial.</p>
+    <p>One of the first projects that I worked on during this Year of Commits was <a href="https://github.com/yez/validates_type">validates_type</a>. In case that name is too obscure, <code class="highlighter-rouge">validates_type</code> is a gem for validating that a specific value is exactly the type it is expected to be. The <code class="highlighter-rouge">validates_type</code> library is compatible to <code class="highlighter-rouge">ActiveModel</code> style validations.</p>
 
-<h2 id="let-the-dogs-out">Let the Dogs Out</h2>
+<p>Originally, the <code class="highlighter-rouge">validates_type</code> gem was very strict with what it validated against. It started with basic included Ruby types like <code class="highlighter-rouge">Integer</code>, <code class="highlighter-rouge">Float</code>, and <code class="highlighter-rouge">String</code>. This was a fine first step but proved too restrictive for basically any use case.</p>
 
-<p>Given an application that deals with <code class="highlighter-rouge">Dogs</code>:</p>
+<p>In a recent update, the <code class="highlighter-rouge">validates_type</code> gem has been extended to validate against any defined type in a system. With this update, the uses of this gem greatly increased. They increased so much that it is possible more than 2 people will use it, and that would be pretty awesome.</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Dog</span>
+<h2 id="still-valid">Still Valid</h2>
+
+<p>The <code class="highlighter-rouge">validates_type</code> gem can be useful for a system that cares about exact types at save time. For instance, a model that has an incorrect database column type (because of legacy or other reasons) can still control validation over its data just the same.</p>
+
+<p>If a “junior developer who is now somehow the CTO” created the original system. And if that developer did something like create an  <code class="highlighter-rouge">is_published</code> column on the <code class="highlighter-rouge">authors</code> table set as a <code class="highlighter-rouge">varchar</code>, <code class="highlighter-rouge">validates_type</code> makes that less of an issue.</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Author</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
+  <span class="n">validates_type</span> <span class="ss">:is_published</span><span class="p">,</span> <span class="ss">:boolean</span>
 <span class="k">end</span>
 </code></pre>
 </div>
 
-<p>Keeping track of grooming statistics about this application’s dogs is the obvious cash cow. But that sounds very tedious and complicated, so we can assume that a <code class="highlighter-rouge">GroomingService</code> exists that exposes a single <code class="highlighter-rouge">Groomer</code> object:</p>
+<p>If someone tries to assign a nonsense value to the <code class="highlighter-rouge">is_published</code> attribute, <code class="highlighter-rouge">validates_type</code> will ensure it does not save.</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">module</span> <span class="nn">GroomingService</span>
-  <span class="k">class</span> <span class="nc">Groomer</span>
-    <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="n">dog</span><span class="p">)</span>
-      <span class="vi">@dog</span> <span class="o">=</span> <span class="n">dog</span>
-    <span class="k">end</span>
+<p><em>Note: callback skipping methods will still save bad values, just like any other <code class="highlighter-rouge">ActiveRecord</code> validators.</em></p>
 
-    <span class="k">def</span> <span class="nf">groom</span>
-      <span class="c1"># Some complex grooming logic</span>
-    <span class="k">end</span>
-  <span class="k">end</span>
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="o">&gt;</span> <span class="n">author</span> <span class="o">=</span> <span class="no">Author</span><span class="p">.</span><span class="nf">new</span>
+<span class="c1"># =&gt; #&lt;Author id: nil, name: nil, created_at: nil, updated_at: nil, is_published: nil&gt;</span>
+<span class="o">&gt;</span> <span class="n">author</span><span class="p">.</span><span class="nf">is_published</span> <span class="o">=</span> <span class="s1">'foo'</span>
+<span class="c1"># =&gt; "foo"</span>
+<span class="o">&gt;</span> <span class="n">author</span><span class="p">.</span><span class="nf">save!</span>
+<span class="c1"># =&gt; ActiveRecord::RecordInvalid: Validation failed: is_published is expected to be a Boolean and is not.</span>
+</code></pre>
+</div>
+
+<p>This way, there is not a bunch of random data in the <code class="highlighter-rouge">authors</code> table because of a bad decision made a while ago. More examples on how this gem can be used are found at the <a href="https://jakeyesbeck.com/2015/05/10/validates-type/">prequel to this post</a> and the <a href="https://github.com/yez/validates_type/blob/master/README.md">project’s README</a>.</p>
+
+<h2 id="the-new-hotness">The New Hotness</h2>
+
+<p>The 2.0 update brought flexibility to <code class="highlighter-rouge">validates_type</code>. This enables greater control over serialized attributes on <code class="highlighter-rouge">ActiveRecord</code> objects.</p>
+
+<p>In a system with an intermediary class inserted between the column assignment and the column serialization, this extension can show its true value.</p>
+
+<p>In an application that deals with <code class="highlighter-rouge">Books</code>, each book must store information regarding how it was published:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Book</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
+  <span class="n">serialize</span> <span class="ss">:publishing_info</span><span class="p">,</span> <span class="no">PublishingInformation</span>
 <span class="k">end</span>
 </code></pre>
 </div>
 
-<p>This service was included by the <code class="highlighter-rouge">groomer</code> gem and will become a core piece of the application. To keep everyone in the project sane and well rested, a robust spec suite is needed.</p>
+<p>Perhaps each book can have such a variety of publishing information, or the data present can vary widely between each book. Whatever the reason, we can assume that the <code class="highlighter-rouge">PublishingInformation</code> class handles the input and extraction of the <code class="highlighter-rouge">JSON</code> data pertinent to a specific <code class="highlighter-rouge">Book</code>.</p>
 
-<h2 id="spec-it-up">Spec It Up</h2>
+<p>With that assumption, an issue could arise if another type of object was assigned to a <code class="highlighter-rouge">Book</code>’s <code class="highlighter-rouge">publishing_information</code> column.</p>
 
-<p>Using <code class="highlighter-rouge">RSpec</code> and the <code class="highlighter-rouge">GroomingService</code>, a very basic test can be written to make sure the code works as expected.</p>
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="o">&gt;</span> <span class="n">book</span> <span class="o">=</span> <span class="no">Book</span><span class="p">.</span><span class="nf">new</span>
+<span class="o">&gt;</span> <span class="n">book</span><span class="p">.</span><span class="nf">publishing_information</span> <span class="o">=</span> <span class="p">{</span> <span class="ss">foo: :bar</span> <span class="p">}</span>
+<span class="o">&gt;</span> <span class="n">book</span><span class="p">.</span><span class="nf">save!</span>
+<span class="c1"># =&gt; UPDATE "books" SET "publishing_information" = $1, "updated_at" = $2 WHERE "books"."id" = $3  [["publishing_information", "{}"], ["updated_at", "2015-11-30 05:04:09.480707"], ["id", 3]]</span>
+</code></pre>
+</div>
 
-<p>Introducing the <code class="highlighter-rouge">GroomingService</code> into the <code class="highlighter-rouge">Dog</code> class could look like:</p>
+<p>If, like the above example, the <code class="highlighter-rouge">PublishingInformation</code> class is forgiving, this will silently fail. The <code class="highlighter-rouge">book.publishing_information</code> will not be set to the correct value.</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Dog</span>
-  <span class="k">def</span> <span class="nf">groom</span>
-    <span class="no">GroomingService</span><span class="o">::</span><span class="no">Groomer</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="nb">self</span><span class="p">).</span><span class="nf">groom</span>
-  <span class="k">end</span>
+<p>On the other hand, if the <code class="highlighter-rouge">PublishingInformation</code> does fail, it might not do so in an obvious way.</p>
+
+<p>However, with <code class="highlighter-rouge">validates_type</code>, this issue becomes explicit.</p>
+
+<p>Adding the type validation to the book model:</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Book</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
+  <span class="n">serialize</span> <span class="ss">:publishing_info</span><span class="p">,</span> <span class="no">PublishingInformation</span>
+  <span class="n">validates_type</span> <span class="ss">:publishing_info</span><span class="p">,</span> <span class="no">PublishingInformation</span>
 <span class="k">end</span>
 </code></pre>
 </div>
 
-<p>The first test should be to make sure that when the <code class="highlighter-rouge">groom</code> method on a <code class="highlighter-rouge">Dog</code> is called, it initializes and calls <code class="highlighter-rouge">groom</code> out to the <code class="highlighter-rouge">GroomService::Groomer</code> object.</p>
+<p>Then the same <code class="highlighter-rouge">save!</code> call gives a different error:</p>
 
-<p>When asserting that a certain set of methods is called on a particular object, the built in <a href="https://www.relishapp.com/rspec/rspec-mocks/v/3-4/docs/basics/test-doubles">RSpec double</a> method is very handy.</p>
-
-<p>The <code class="highlighter-rouge">double</code> method returns a stand-in object to assert <code class="highlighter-rouge">allow</code> and <code class="highlighter-rouge">expect</code> messages against. Any method that is called on the test double which is not explicitly <code class="highlighter-rouge">allow</code>ed or <code class="highlighter-rouge">expect</code>ed results in an error.</p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="n">describe</span> <span class="no">Dog</span> <span class="k">do</span>
-  <span class="n">subject</span> <span class="p">{</span> <span class="n">described_class</span><span class="p">.</span><span class="nf">new</span> <span class="p">}</span>
-
-  <span class="n">describe</span> <span class="s1">'#groom'</span> <span class="k">do</span>
-    <span class="n">let</span><span class="p">(</span><span class="ss">:groomer</span><span class="p">)</span> <span class="p">{</span> <span class="n">double</span><span class="p">(</span><span class="no">GroomingService</span><span class="o">::</span><span class="no">Groomer</span><span class="p">)</span> <span class="p">}</span>
-
-    <span class="n">it</span> <span class="s1">'initializes and calls groom'</span> <span class="k">do</span>
-      <span class="n">expect</span><span class="p">(</span><span class="no">GroomingService</span><span class="o">::</span><span class="no">Groomer</span><span class="p">).</span><span class="nf">to</span> <span class="n">receive</span><span class="p">(</span><span class="ss">:new</span><span class="p">)</span> <span class="p">{</span> <span class="n">groomer</span> <span class="p">}</span>
-      <span class="n">expect</span><span class="p">(</span><span class="n">groomer</span><span class="p">).</span><span class="nf">to</span> <span class="n">receive</span><span class="p">(</span><span class="ss">:groom</span><span class="p">)</span>
-
-      <span class="n">subject</span><span class="p">.</span><span class="nf">groom</span>
-    <span class="k">end</span>
-  <span class="k">end</span>
-<span class="k">end</span>
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="o">&gt;</span> <span class="n">b</span> <span class="o">=</span> <span class="no">Book</span><span class="p">.</span><span class="nf">new</span>
+<span class="o">&gt;</span> <span class="n">b</span><span class="p">.</span><span class="nf">publishing_information</span> <span class="o">=</span> <span class="p">{</span> <span class="ss">a: :b</span> <span class="p">}</span>
+<span class="o">&gt;</span> <span class="n">b</span><span class="p">.</span><span class="nf">save!</span>
+<span class="c1"># =&gt; ActiveRecord::RecordInvalid: Validation failed: publishing_information is expected to be a PublishingInformation and is not.</span>
 </code></pre>
 </div>
 
-<p>As expected, this test passes beautifully:</p>
+<p>Now, a readable error is produced and nothing is left to the imagination.</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="nv">$:</span> rspec dog_spec.rb
+<h2 id="a-reasonable-start">A Reasonable Start</h2>
 
-Dog
-  <span class="c">#groom</span>
-    calls new with self and <span class="k">then </span>groom
+<p>Was the used example extremely specific? Yes. But, I would wager that at least one application out there has had a problem similar to this and <code class="highlighter-rouge">validates_type</code> can ensure that it never happens again. Hopefully, this example and the problem it did end up solving with at least act as inspiration for this library’s other uses out in the wild.</p>
 
-Finished <span class="k">in </span>0.00773 seconds <span class="o">(</span>files took 0.09367 seconds to load<span class="o">)</span>
-1 example, 0 failures
-
-</code></pre>
-</div>
-
-<p>That can be it, right? Pack it up and put the dogs away, whoever let them out will have to do it all again later.</p>
-
-<h2 id="think-of-the-future">Think of the Future</h2>
-
-<p>After some time passes, the <code class="highlighter-rouge">GroomingService::Groomer</code> has changed its method signature. Instead of the <code class="highlighter-rouge">groom</code> method, it has changed to <code class="highlighter-rouge">groom!</code>. Chances are someone thought that either the method had too many side affects or that <code class="highlighter-rouge">!</code> are just really awesome looking.</p>
-
-<p>In any case, the included service changes and when the test runs:</p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="nv">$:</span> rspec dog_spec.rb
-
-Dog
-  <span class="c">#groom</span>
-    calls new with self and <span class="k">then </span>groom
-
-Finished <span class="k">in </span>0.00735 seconds <span class="o">(</span>files took 0.10532 seconds to load<span class="o">)</span>
-1 example, 0 failures
-
-</code></pre>
-</div>
-
-<p><em>It passes</em>? How can that be? The method changed from <code class="highlighter-rouge">groom</code> to <code class="highlighter-rouge">groom!</code>. The <code class="highlighter-rouge">groom</code> method does not even exist on <code class="highlighter-rouge">GroomingService::Groomer</code>. It seems that the specs do not care what does or does not exist on the <code class="highlighter-rouge">double</code>, they just happily pass.</p>
-
-<h2 id="use-instancedouble">Use <code class="highlighter-rouge">instance_double</code></h2>
-
-<p>The answer here is to use <code class="highlighter-rouge">instance_double</code>. Like <code class="highlighter-rouge">double</code>, <code class="highlighter-rouge">instance_double</code> also returns a stand-in object that raises errors if methods not <code class="highlighter-rouge">allow</code>ed or <code class="highlighter-rouge">expect</code>ed are called on the object.</p>
-
-<p>The key difference is that <code class="highlighter-rouge">instance_double</code> checks the underlying object to make sure that it responds to methods before making assertions that they are called.</p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="n">describe</span> <span class="no">Dog</span> <span class="k">do</span>
-  <span class="n">subject</span> <span class="p">{</span> <span class="n">described_class</span><span class="p">.</span><span class="nf">new</span> <span class="p">}</span>
-
-  <span class="n">describe</span> <span class="s1">'#groom'</span> <span class="k">do</span>
-    <span class="n">let</span><span class="p">(</span><span class="ss">:groomer</span><span class="p">)</span> <span class="p">{</span> <span class="n">instance_double</span><span class="p">(</span><span class="no">GroomingService</span><span class="o">::</span><span class="no">Groomer</span><span class="p">)</span> <span class="p">}</span>
-
-    <span class="n">it</span> <span class="s1">'initializes and calls groom'</span> <span class="k">do</span>
-      <span class="n">expect</span><span class="p">(</span><span class="no">GroomingService</span><span class="o">::</span><span class="no">Groomer</span><span class="p">).</span><span class="nf">to</span> <span class="n">receive</span><span class="p">(</span><span class="ss">:new</span><span class="p">)</span> <span class="p">{</span> <span class="n">groomer</span> <span class="p">}</span>
-      <span class="n">expect</span><span class="p">(</span><span class="n">groomer</span><span class="p">).</span><span class="nf">to</span> <span class="n">receive</span><span class="p">(</span><span class="ss">:groom</span><span class="p">)</span>
-
-      <span class="n">subject</span><span class="p">.</span><span class="nf">groom</span>
-    <span class="k">end</span>
-  <span class="k">end</span>
-<span class="k">end</span>
-</code></pre>
-</div>
-
-<p>Now running this test, we see the failure we should expect:</p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="nv">$:</span> rspec dog_spec.rb
-
-Dog
-  <span class="c">#groom</span>
-    calls new with self and <span class="k">then </span>groom <span class="o">(</span>FAILED - 1<span class="o">)</span>
-
-Failures:
-
-  1<span class="o">)</span> Dog#groom calls new with self and <span class="k">then </span>groom
-     Failure/Error: expect<span class="o">(</span>groomer<span class="o">)</span>.to receive<span class="o">(</span>:groom<span class="o">)</span>
-       the GroomingService::Groomer class does not
-          implement the instance method: groom
-
-Finished <span class="k">in </span>0.0054 seconds <span class="o">(</span>files took 0.08288 seconds to load<span class="o">)</span>
-1 example, 1 failure
-</code></pre>
-</div>
-
-<p>While no one likes failing specs, a failure here is always preferable to one in production.</p>
-
-<p>Since the API that we do not own (<code class="highlighter-rouge">Groomer</code>) changed, it was a mistake to blindly mock it without asking the underlying object if that method existed. However, with this problem corrected, the code is more robust and development can continue.</p>
-
-<h2 id="mocking-with-confidence">Mocking with Confidence</h2>
-
-<p>Asserting that a method is called on an object is a very common pattern in Ruby tests. Additionally, Ruby does not have the benefit of compiled languages in terms of method invocation validation. We as Rubyists rely on automated testing to make sure that our applications work as expected, can be iterated upon, and handle third party library updates. While it may be attractive to use permissive mocking assertions, they can be dangerous and cause more problems than they are worth.</p>
+<p>I have found a use for this type of validation and hope others can as well. If a use case arises that this gem does not support but could easily, <a href="https://github.com/yez/validates_type">I invite everyone to contribute to it</a>.</p>
 
 
   </div>

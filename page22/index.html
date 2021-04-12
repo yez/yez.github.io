@@ -72,77 +72,89 @@
   
   <div class="post">
     <h1 class="post-title">
-      <a href="/2015/12/27/what-i-would-tell-myself-when-i-started-programming/">
-        Things I Wish I Knew When I Started Programming
+      <a href="/2016/01/03/passages/">
+        Passages Rails Engine
       </a>
     </h1>
 
     
 
-    <span class="post-date">27 Dec 2015</span>
+    <span class="post-date">03 Jan 2016</span>
     <span class='share-container'><ul class="share-buttons">
   <li>
-    <a href="https://www.facebook.com/sharer/sharer.php?u=https://jakeyesbeck.com/2015/12/27/what-i-would-tell-myself-when-i-started-programming/&t=Things I Wish I Knew When I Started Programming" title="Share on Facebook" target="_blank">
+    <a href="https://www.facebook.com/sharer/sharer.php?u=https://jakeyesbeck.com/2016/01/03/passages/&t=Passages Rails Engine" title="Share on Facebook" target="_blank">
       <img src="https://jakeyesbeck.com/assets/images/facebook.svg">
     </a>
   </li>
   <li>
-    <a href="https://twitter.com/intent/tweet?source=http%3A%2F%2Fjakeyesbeck.com&text=Things I Wish I Knew When I Started Programming%20https://jakeyesbeck.com/2015/12/27/what-i-would-tell-myself-when-i-started-programming/&via=jakeyesbeck" target="_blank" title="Tweet">
+    <a href="https://twitter.com/intent/tweet?source=http%3A%2F%2Fjakeyesbeck.com&text=Passages Rails Engine%20https://jakeyesbeck.com/2016/01/03/passages/&via=jakeyesbeck" target="_blank" title="Tweet">
       <img src="https://jakeyesbeck.com/assets/images/twitter.svg">
     </a>
   </li>
   <li>
-    <a href="https://news.ycombinator.com/submitlink?u=https://jakeyesbeck.com/2015/12/27/what-i-would-tell-myself-when-i-started-programming/&t=Things I Wish I Knew When I Started Programming" target="_blank" title="Share on Hacker News">
+    <a href="https://news.ycombinator.com/submitlink?u=https://jakeyesbeck.com/2016/01/03/passages/&t=Passages Rails Engine" target="_blank" title="Share on Hacker News">
       <img src="https://jakeyesbeck.com/assets/images/ycomb.svg">
     </a>
   </li>
 
   <li>
-    <a href="https://getpocket.com/save?url=https://jakeyesbeck.com/2015/12/27/what-i-would-tell-myself-when-i-started-programming/&title=Things I Wish I Knew When I Started Programming" target="_blank" title="Add to Pocket">
+    <a href="https://getpocket.com/save?url=https://jakeyesbeck.com/2016/01/03/passages/&title=Passages Rails Engine" target="_blank" title="Add to Pocket">
       <img src="https://jakeyesbeck.com/assets/images/pocket.svg">
     </a>
   </li>
   <li>
-    <a href="https://www.reddit.com/submit?url=https://jakeyesbeck.com/2015/12/27/what-i-would-tell-myself-when-i-started-programming/&title=Things I Wish I Knew When I Started Programming" target="_blank" title="Submit to Reddit">
+    <a href="https://www.reddit.com/submit?url=https://jakeyesbeck.com/2016/01/03/passages/&title=Passages Rails Engine" target="_blank" title="Submit to Reddit">
       <img src="https://jakeyesbeck.com/assets/images/reddit.svg">
     </a>
   </li>
 </ul>
 </span>
 
-    <p>If by some magical event I could go back in time to the day before I started my first job as a software engineer, this is what I would say.</p>
+    <p>Routing in the Ruby on Rails world can, at times, be a tad confusing. The <a href="https://guides.rubyonrails.org/routing.html">official Rails guide</a> is very helpful for the basics; but, as an application grows, it can become hard to remember specific details about every single route.</p>
 
-<h2 id="drive-slow">Drive Slow</h2>
+<h2 id="existing-routing-tools">Existing Routing Tools</h2>
 
-<p>I mentioned a similar message in <a href="https://jakeyesbeck.com/2015/09/06/stop-and-take-a-moment/">a previous post</a> and I believe it is worth repeating. When starting a new job or a new career, it is easy to place external pressures on ourselves regarding time. This is a common issue that can arise when comparing one’s own work with those around them. As the new employee, noticing and measuring your own speed and efficiency against existing personnel can feel like the correct thing to do; however, chasing the “competition” or “proving that you are just as fast as them” will only result in high stress levels and bug riddled software.</p>
+<p>To remedy the issue of route complexity, a few helpful tools already exist. The most useful one is <code class="highlighter-rouge">rake routes</code>, which can be executed in the working directory of a Rails application. This tool requires that the application be on the developer’s local system, which is fine for applications that a developer owns, but what about services that the developer does not own?</p>
 
-<p>The people who seem “fast” or come off as a “10x engineer” were not born that way. They took their time and learned their craft. And with that, they have slowly accelerated their process and patterns to make them appear extremely quick and efficient.</p>
+<p>While this problem might not exist for everyone, chances are at least one poor software engineer has been slapped in the face with a <code class="highlighter-rouge">404</code> page and shouted: <em>“I know that route exists! Why doesn’t this work?”</em></p>
 
-<p>Deadlines should be thought of as real and valid; however, working at lightning speed to try and meet those deadlines will end up causing more work in the long run. What would be better, missing a deadline by a day or making a deadline and incurring so many bugs and tech debt that it takes two weeks to clean everything up?</p>
+<p>Another helpful tool in development mode is this screen:</p>
 
-<h2 id="abl">ABL</h2>
+<p><img src="https://jakeyesbeck.com/assets/images/no_route_page.png" alt="Default Rails Dev No Route" /></p>
 
-<p><em>Glengarry Glen Ross’s</em> iconic scene has very clear message: <strong>A</strong>lways <strong>B</strong>e <strong>C</strong>losing, meaning that one should constantly strive to be in the process completing a sale. When starting out writing software and even after years of doing it, a similar attitude can be extremely helpful: <strong>A</strong>lways <strong>B</strong>e <strong>L</strong>earning.</p>
+<p>This page provides the ability to enter search terms that match words in the <code class="highlighter-rouge">paths</code> of specfic routes. However, similarly to <code class="highlighter-rouge">rake routes</code>, this screen is only accessible in development mode. While this tool is still extremely useful, there could be cases when route inspection would be helpful without running the server locally.</p>
 
-<p>From day one to day one thousand, learning and absorbing new information is very important. A key to learning new things is in asking questions. When starting a new job or a new career, there seems to be a stigma attached to asking questions. We are all under the impression that <em>“they hired me to do this job, they must assume I know exactly what I’m doing.”</em> This mentality can inhibit our natural inquisitive nature which is a great catalyst to learning.</p>
+<h2 id="new-hotness">New Hotness</h2>
 
-<p>Ridicule and impostor syndrome are the most likely the reasons stopping people from asking questions. The idea that questions might expose a person as not “good enough” or “smart enough” for their job is ridiculous and often unfounded. Getting over these fears early in one’s career is extremely important. Questions should be encouraged and celebrated. Ask questions every single day, ask a lot of them but make sure not to ask the same one too many times. No one enjoys repeating themselves.</p>
+<p><a href="https://github.com/yez/passages">The Passages Rails Engine</a> was created to fulfill two main purposes:</p>
 
-<h2 id="it-is-ok-to-be-wrong">It is Ok to be Wrong</h2>
+<p><strong>1.</strong> To expose routes of a Ruby on Rails application either during or outside development mode.</p>
 
-<p>Similar to not asking questions, most new engineers are terrified of being wrong. A golden rule is to be correct frequently, but no one is capable of being correct all the time. The trick to being wrong is how a person reacts when it happens. There is a huge difference between promoting a technique or solution and being closed-minded to alternatives.</p>
+<p><strong>2.</strong> Enable searching on multiple pieces of a route’s information (HTTP verb, controller, path, etc).</p>
 
-<p>If someone was never wrong, how could they learn? And if they did not learn, how could they <strong>A</strong>lways <strong>B</strong>e <strong>L</strong>earning? Tackling instances of being wrong with an open mind helps refine a person’s skills, shaping them with feedback from others. While this mentality, like others already mentioned, is relevant throughout a person’s career, it is especially important in the beginning. In the beginning a person is likely wrong a lot of the time. This means that in the beginning a person has the most opportunity to grow; to be wrong and learn from those mistakes. Internalizing these mistakes can help bolster a person’s technical skills and confidence.</p>
+<p>Some might wonder by <strong>1</strong> would even be valuable. Imagine for a moment that a team of engineers decides that they need an internal API to power their various applications. Perhaps while developing this API, some basic documentation is written but never actually kept up to date. Maybe the API changes so fast that documentation just falls behind.</p>
 
-<h2 id="rtfs">R.T.F.S.</h2>
+<p>Whatever the reason, it becomes laborious for the consumers of that internal API to constantly ask which route does what and which parameters are expected in each URL.</p>
 
-<p>At the onset of one’s career, it is easy to treat third party software or services as magical boxes of mystery. However, this is not necessary. It is actually <a href="https://jakeyesbeck.com/2015/10/25/how-to-traverse-foreign-ruby-code/">very easy to open and read the source</a> of many third party applications (especially in web development). Therefore, it becomes imperative to <strong>R</strong>ead <strong>T</strong>he <strong>F</strong>reaking <strong>S</strong>ource.</p>
+<p>Internal APIs are not the only candidate for <code class="highlighter-rouge">Passages</code>. An external API can also benefit from discoverable routing in lieu of or in addition to documentation. Since <code class="highlighter-rouge">Passages</code> has the option to use HTTP Basic Authentication, securing <code class="highlighter-rouge">Passages</code> is as simple as setting two <code class="highlighter-rouge">ENV</code> variables.</p>
 
-<p>Reading and having at least a basic understanding of how a piece of third party software works is paramount for a new developer. If foreign code is treated as magic, that is all it will ever be. This magic can become a crutch that an innocent new developer may find themselves leaning against more and more until it eventually breaks, leaving the developer confused and helpless.</p>
+<p>Purpose <strong>2</strong> is an attempt to reduce a large application’s route pile by expanding each route’s search surface area. A user of <code class="highlighter-rouge">Passages</code> might want to know of all the <code class="highlighter-rouge">PUT</code> routes or routes that map to a <code class="highlighter-rouge">destroy</code> action. Like its predecessor, <code class="highlighter-rouge">Passages'</code> route path search is also extremely valuable.</p>
 
-<p><strong>Note: Not all third party software’s source can be read as not all of it is open source. If this is the case, do not try to read the source, it will not make much sense.</strong></p>
+<p>With (hopefully) the help of the open source community, the types of useful search features for <code class="highlighter-rouge">Passages</code> will expand from these very humble beginnings.</p>
 
-<p>Who wants to be confused and helpless? No one wants that and no one needs to experience that. Reading the source code of a library or crucial bit of third party open source software can help bring light to an otherwise shrouded system, bringing a new level of depth to a developer’s understanding.</p>
+<h2 id="demo">Demo</h2>
+
+<p>After following the <a href="https://github.com/yez/passages#install">installation guide from the project’s README</a>, A very basic use of <code class="highlighter-rouge">Passages</code> would look like:</p>
+
+<p><img src="https://jakeyesbeck.com/assets/images/passages_demo.gif" alt="Passages Demo" /></p>
+
+<h2 id="contributing">Contributing</h2>
+
+<p>Like most Open Source projects, <code class="highlighter-rouge">Passages</code> has many areas that welcome modification. Specifically, the design and search functionalities are suitable candidates for enhancement.</p>
+
+<p>Please feel free to <a href="https://github.com/yez/passages">fork the repository</a> or create an issue on Github if something seems wrong or out of place.</p>
+
+<p>Currently, <code class="highlighter-rouge">Passages</code> only supports Ruby on Rails 4. It will most likely be upgraded when Ruby on Rails 5 is released but there are no plans to support Ruby on Rails 3 or older.</p>
 
   </div>
   

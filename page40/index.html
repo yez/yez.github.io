@@ -72,302 +72,125 @@
   
   <div class="post">
     <h1 class="post-title">
-      <a href="/2015/08/23/ruby-objects/">
-        I, Object!
+      <a href="/2015/08/30/active-support-and-time/">
+        Active Support and Time
       </a>
     </h1>
 
     
 
-    <span class="post-date">23 Aug 2015</span>
+    <span class="post-date">30 Aug 2015</span>
     <span class='share-container'><ul class="share-buttons">
   <li>
-    <a href="https://www.facebook.com/sharer/sharer.php?u=https://jakeyesbeck.com/2015/08/23/ruby-objects/&t=I, Object!" title="Share on Facebook" target="_blank">
+    <a href="https://www.facebook.com/sharer/sharer.php?u=https://jakeyesbeck.com/2015/08/30/active-support-and-time/&t=Active Support and Time" title="Share on Facebook" target="_blank">
       <img src="https://jakeyesbeck.com/assets/images/facebook.svg">
     </a>
   </li>
   <li>
-    <a href="https://twitter.com/intent/tweet?source=http%3A%2F%2Fjakeyesbeck.com&text=I, Object!%20https://jakeyesbeck.com/2015/08/23/ruby-objects/&via=jakeyesbeck" target="_blank" title="Tweet">
+    <a href="https://twitter.com/intent/tweet?source=http%3A%2F%2Fjakeyesbeck.com&text=Active Support and Time%20https://jakeyesbeck.com/2015/08/30/active-support-and-time/&via=jakeyesbeck" target="_blank" title="Tweet">
       <img src="https://jakeyesbeck.com/assets/images/twitter.svg">
     </a>
   </li>
   <li>
-    <a href="https://news.ycombinator.com/submitlink?u=https://jakeyesbeck.com/2015/08/23/ruby-objects/&t=I, Object!" target="_blank" title="Share on Hacker News">
+    <a href="https://news.ycombinator.com/submitlink?u=https://jakeyesbeck.com/2015/08/30/active-support-and-time/&t=Active Support and Time" target="_blank" title="Share on Hacker News">
       <img src="https://jakeyesbeck.com/assets/images/ycomb.svg">
     </a>
   </li>
 
   <li>
-    <a href="https://getpocket.com/save?url=https://jakeyesbeck.com/2015/08/23/ruby-objects/&title=I, Object!" target="_blank" title="Add to Pocket">
+    <a href="https://getpocket.com/save?url=https://jakeyesbeck.com/2015/08/30/active-support-and-time/&title=Active Support and Time" target="_blank" title="Add to Pocket">
       <img src="https://jakeyesbeck.com/assets/images/pocket.svg">
     </a>
   </li>
   <li>
-    <a href="https://www.reddit.com/submit?url=https://jakeyesbeck.com/2015/08/23/ruby-objects/&title=I, Object!" target="_blank" title="Submit to Reddit">
+    <a href="https://www.reddit.com/submit?url=https://jakeyesbeck.com/2015/08/30/active-support-and-time/&title=Active Support and Time" target="_blank" title="Submit to Reddit">
       <img src="https://jakeyesbeck.com/assets/images/reddit.svg">
     </a>
   </li>
 </ul>
 </span>
 
-    <p><strong>I am lucky enough to work with wonderfully talented people every single day. This is a guest post by one of my magnificent coworkers, <a href="https://github.com/kristjan">Kristján Pétursson</a>. Thank you for allowing me to share this knowledge with everyone!</strong></p>
+    <p>If a list was compiled of useful Ruby libraries, Active Support would be close to the top. Based on the <a href="https://api.rubyonrails.org/classes/ActiveSupport.html">documentation alone</a>, it is apparent that a very large amount of time went into thinking about the roles Active Support should play and the functionality it should support. From string manipulation to internationalization, Active Support seems to simply do it all. However, even a profoundly useful library like Active Support still has a few inconsistencies with everyone’s favorite subject: <strong>Time Calculation</strong>.</p>
 
-<p>This post is adapted from my answer to <a href="https://stackoverflow.com/q/31775576/802618">this Stack Overflow question</a>. If you want to start from the beginning of the universe and build out, go read that one. If you prefer to start with something you can touch and work backwards, here we go.</p>
+<h2 id="time-wounds-all-heals">Time wounds all heals</h2>
 
-<p>Ruby likes ducks. Which is to say that when we’re coding, and we have an object, we don’t particularly care what kind of object it is, so long as it responds to the messages we send it. It might be a <code class="highlighter-rouge">Duck</code> or a <code class="highlighter-rouge">Child</code> or a <code class="highlighter-rouge">Doctor</code>, and as long as when we call <code class="highlighter-rouge">#quack</code> we hear a noise, all is well. That’s called <a href="https://en.wikipedia.org/wiki/Duck_typing">Duck Typing</a>, and Ruby digs it.</p>
+<p>Personally, the thing that keeps me up at night, the monster in my closet, the beast waiting to grab my foot when I accidentally let it hang over the bed while sleeping, is time calculation in programming. Regardless of the task, however simple it may seem, calculating time offsets or time zone correction continues to be a tremendous pain point. Now, to demonstrate just how crazy things can be, let’s pick on Active Support.</p>
 
-<p>So if we have some arbitrary object and we ask it to <code class="highlighter-rouge">#quack</code>, the Ruby interpreter needs to figure out where the object’s <code class="highlighter-rouge">#quack</code> method is. Nothing’s been compiled, and Ruby lets you define methods pretty much any place or time you like, so <code class="highlighter-rouge">#quack</code> needs to be looked up at runtime. That’s called <a href="https://en.wikipedia.org/wiki/Dynamic_dispatch">Dynamic dispatch</a>, and it’s how Ruby handles ducks.</p>
+<p>Active Support grants a myriad of methods for even the most impatient Software Artisan. For example, if one were to ask for this instant in time, a day ago, Active Support makes it possible.</p>
 
-<h3 id="now-for-the-thing-we-can-touch-lets-make-a-duck">Now for the thing we can touch; let’s make a <code class="highlighter-rouge">Duck</code></h3>
-
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Duck</span>
-  <span class="k">def</span> <span class="nf">quack</span>
-    <span class="nb">puts</span> <span class="s2">"Quack, I say!"</span>
-  <span class="k">end</span>
-<span class="k">end</span>
-
-<span class="n">duck</span> <span class="o">=</span> <span class="no">Duck</span><span class="p">.</span><span class="nf">new</span>
-<span class="n">duck</span><span class="p">.</span><span class="nf">quack</span>
-<span class="c1">#=&gt; Quack, I say!</span>
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="mi">1</span><span class="p">.</span><span class="nf">day</span><span class="p">.</span><span class="nf">ago</span>
+<span class="c1"># =&gt; 2015-08-29 18:44:55 -0700</span>
 </code></pre>
 </div>
 
-<p>Surely, this is no surprise. You’ve done this in the past, or quieter things like it, and you understand just fine that a method called on <code class="highlighter-rouge">duck</code> will be found in <code class="highlighter-rouge">Duck</code>. But we less frequently do things like:</p>
+<p>Likewise, basic date addition and subtraction is just as easy.</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">def</span> <span class="nc">duck</span><span class="o">.</span><span class="nf">quack</span>
-  <span class="nb">puts</span> <span class="s2">"I'm tired of quacking."</span>
-<span class="k">end</span>
-<span class="n">duck</span><span class="p">.</span><span class="nf">quack</span>
-<span class="c1">#=&gt; I'm tired of quacking.</span>
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="n">three_days_from_now</span> <span class="o">=</span> <span class="no">Time</span><span class="p">.</span><span class="nf">now</span> <span class="o">+</span> <span class="mi">3</span><span class="p">.</span><span class="nf">days</span>
+<span class="c1">#=&gt; 2015-09-01 18:46:34 -0700</span>
 
-<span class="n">other_duck</span> <span class="o">=</span> <span class="no">Duck</span><span class="p">.</span><span class="nf">new</span>
-<span class="n">other_duck</span><span class="p">.</span><span class="nf">quack</span>
-<span class="c1">#=&gt; Quack, I say!</span>
+<span class="n">three_days_from_now</span> <span class="o">+</span> <span class="mi">12</span><span class="p">.</span><span class="nf">hours</span>
+<span class="c1"># =&gt; 2015-09-03 06:48:28 -0700</span>
 </code></pre>
 </div>
 
-<p>Hm, so if we can just redefine <code class="highlighter-rouge">duck.quack</code> without messing up <code class="highlighter-rouge">other_duck</code>, where is the second <code class="highlighter-rouge">#quack</code> method? It turns out every object has a Singleton Class where it can stash all its personal possessions. Other words for singleton class include metaclass, eigenclass, and virtual class, but Ruby implements a method called <code class="highlighter-rouge">#singleton_class</code>, so we’ll use that one. You can see <code class="highlighter-rouge">#quack</code> on <code class="highlighter-rouge">duck.singleton_class</code>, but not on <code class="highlighter-rouge">other_duck.singleton_class</code>:</p>
+<p>Great! Very simple, seemingly arbitrary time calculation has never been easier. So what could be the catch? Obviously there isn’t one, if there were then this article would have to continue and I’m sure everyone has had quite enough.</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="nb">puts</span> <span class="n">duck</span><span class="p">.</span><span class="nf">singleton_class</span><span class="p">.</span><span class="nf">instance_methods</span><span class="p">(</span><span class="kp">false</span><span class="p">).</span><span class="nf">inspect</span>
-<span class="c1">#=&gt; [:quack]</span>
-<span class="nb">puts</span> <span class="n">other_duck</span><span class="p">.</span><span class="nf">singleton_class</span><span class="p">.</span><span class="nf">instance_methods</span><span class="p">(</span><span class="kp">false</span><span class="p">).</span><span class="nf">inspect</span>
-<span class="c1">#=&gt; []</span>
+<h2 id="toi-is-not-always-easy"><code class="highlighter-rouge">to_i</code> is not always easy</h2>
+
+<p>Had enough? Too bad. The topic of <code class="highlighter-rouge">to_i</code> still has to be discussed with relation to the <code class="highlighter-rouge">Time</code> class. Ruby’s <code class="highlighter-rouge">Time</code> class exposes a method <code class="highlighter-rouge">to_i</code> which can be used to convert a <code class="highlighter-rouge">Time</code> to an <code class="highlighter-rouge">Integer</code>. This <code class="highlighter-rouge">Integer</code>is the sum of seconds passed since <a href="https://en.wikipedia.org/wiki/Unix_time">Epoch</a>. Using Epoch time can be useful for some systems that want to avoid doing timezone conversion. In fact, it might be so attractive an option that a developer’s first instinct might be to save and calculate everything in Epoch time. However, this might not always be the best idea.</p>
+
+<p>Active Support follows suit with allowing <code class="highlighter-rouge">to_i</code> to be called on its convenience methods. For example, <code class="highlighter-rouge">1.day.to_i</code> calculates the number of seconds in the day.</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="mi">1</span><span class="p">.</span><span class="nf">day</span><span class="p">.</span><span class="nf">to_i</span>
+<span class="c1"># =&gt; 86400</span>
 </code></pre>
 </div>
 
-<p>And then you can see the original <code class="highlighter-rouge">#quack</code> on <code class="highlighter-rouge">Duck</code> where we left it:</p>
+<p>And <code class="highlighter-rouge">1.week.to_i</code> calculates the number of seconds in a week.</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="nb">puts</span> <span class="no">Duck</span><span class="p">.</span><span class="nf">instance_methods</span><span class="p">(</span><span class="kp">false</span><span class="p">).</span><span class="nf">inspect</span>
-<span class="c1">#=&gt; [:quack]</span>
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="mi">1</span><span class="p">.</span><span class="nf">week</span><span class="p">.</span><span class="nf">to_i</span>
+<span class="c1"># =&gt; 604800</span>
 </code></pre>
 </div>
 
-<h3 id="drawing-it-out">Drawing it out</h3>
+<p>Additionally, <code class="highlighter-rouge">1.month.to_i</code> calculates the number of seconds in a month.</p>
 
-<p>Now we can start drawing diagrams, which is great, because people like diagrams almost as much as Ruby likes ducks. When we ask <code class="highlighter-rouge">duck</code> to <code class="highlighter-rouge">#quack</code>, it starts looking for the method on <code class="highlighter-rouge">duck.singleton_class</code> and then works its way up until it finds it.</p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code>             +----------+
-             | Duck     |
-             |   #quack |
-             +----------+
-                  ^
-                  |
-                  +-------------------------------------+
-                  |                                     |
-           +---------------+                    +---------------+
-duck ~~~~&gt; | #&lt;Class:Duck&gt; |   other_duck ~~~~&gt; | #&lt;Class:Duck&gt; |
-           |   #quack      |                    +---------------+
-           +---------------+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="mi">1</span><span class="p">.</span><span class="nf">month</span><span class="p">.</span><span class="nf">to_i</span>
+<span class="c1"># =&gt; 2592000</span>
 </code></pre>
 </div>
 
-<p>I’m using <code class="highlighter-rouge">~~~&gt;</code> to move from objects to their singleton class, and then <code class="highlighter-rouge">---&gt;</code>  to move from classes to their superclass.</p>
+<p>Wait a second, that only accounts for 30 days. If I learned anything in kindergarten, it was that the teacher really hates it when you teach yourself to whistle during nap-time. Also, I am pretty sure that not all months consist of exactly 30 days.</p>
 
-<p>And indeed, <code class="highlighter-rouge">duck.singleton_class.superclass == Duck</code>. The <code class="highlighter-rouge">#&lt;Class:Duck&gt;</code> singleton class is an anonymous class brought into existence just for <code class="highlighter-rouge">duck</code>. <code class="highlighter-rouge">other_duck</code> has its own singleton class that doesn’t have <code class="highlighter-rouge">#quack</code> defined on it, so it traverses upwards and finds <code class="highlighter-rouge">#quack</code> on <code class="highlighter-rouge">Duck</code> instead.</p>
+<h2 id="bad-times">Bad times</h2>
 
-<p>We can see the whole lookup path with <code class="highlighter-rouge">#ancestors</code>, and can check exactly where a method is defined with <code class="highlighter-rouge">#method</code>. <code class="highlighter-rouge">#ancestors</code> includes the singleton class as its first entry because that’s the first place we look for a method.</p>
+<p>Introducing this inconsistency in time calculation can lead to unintended results. For example, note the difference between subtracting time objects and subtracting <code class="highlighter-rouge">to_i</code> calculated times:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="nb">puts</span> <span class="n">duck</span><span class="p">.</span><span class="nf">singleton_class</span><span class="p">.</span><span class="nf">ancestors</span><span class="p">.</span><span class="nf">inspect</span>
-<span class="c1">#=&gt; [#&lt;Class:#&lt;Duck:0x007fe793031dd0&gt;&gt;, Duck, Object, Kernel, BasicObject]</span>
-<span class="nb">puts</span> <span class="n">duck</span><span class="p">.</span><span class="nf">method</span><span class="p">(</span><span class="ss">:quack</span><span class="p">)</span>
-<span class="c1">#=&gt; #&lt;Method: #&lt;Duck:0x007fe793031dd0&gt;.quack&gt;</span>
-<span class="nb">puts</span> <span class="n">other_duck</span><span class="p">.</span><span class="nf">method</span><span class="p">(</span><span class="ss">:quack</span><span class="p">)</span>
-<span class="c1">#=&gt; #&lt;Method: Duck#quack&gt;</span>
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="no">Time</span><span class="p">.</span><span class="nf">now</span> <span class="o">-</span> <span class="mi">3</span><span class="p">.</span><span class="nf">months</span>
+<span class="c1"># =&gt; 2015-05-30 19:07:44 -0700</span>
+
+<span class="no">Time</span><span class="p">.</span><span class="nf">now</span> <span class="o">-</span> <span class="mi">3</span><span class="p">.</span><span class="nf">months</span><span class="p">.</span><span class="nf">to_i</span>
+<span class="c1"># =&gt; 2015-06-01 19:07:59 -0700</span>
 </code></pre>
 </div>
 
-<p>There are more things in <code class="highlighter-rouge">#ancestors</code> than we’ve drawn yet, though I bet you saw them coming. Moving up from <code class="highlighter-rouge">Duck</code>, we get to <code class="highlighter-rouge">Object</code>. Everything in Ruby is an <code class="highlighter-rouge">Object</code>. No, everything. Yes, everything, even <code class="highlighter-rouge">BasicObject</code>, which is an ancestor of <code class="highlighter-rouge">Object</code> - just go with that for a second. Maybe pretend there was time travel involved.</p>
+<p>So which is it Ruby? Was 3 months ago the 1st of June or the 30th of May? The problem persists even if everything is converted to integers first:</p>
 
-<p>When you <code class="highlighter-rouge">class Duck</code>, there’s an implicit <code class="highlighter-rouge">class Duck &lt; Object</code> so your class can inherit everything <code class="highlighter-rouge">Object</code> has and be a good citizen. The <code class="highlighter-rouge">false</code>s we were using earlier to look at <code class="highlighter-rouge">instance_methods</code> lets us look only at the methods that class is defining, rather than everything it has inherited, but in reality:</p>
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="n">epoch_now</span> <span class="o">=</span> <span class="no">Time</span><span class="p">.</span><span class="nf">now</span><span class="p">.</span><span class="nf">to_i</span>
+<span class="c1"># =&gt; 1440986921</span>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="n">duck</span><span class="p">.</span><span class="nf">public_methods</span>
-<span class="c1">#=&gt; [:quack, :nil?, :===, :=~, :!~, :eql?, :hash, :&lt;=&gt;,</span>
-<span class="c1">#    :class, :singleton_class, :clone, :dup, :itself, :taint,</span>
-<span class="c1">#    :tainted?, :untaint, :untrust, :untrusted?, :trust, :freeze,</span>
-<span class="c1">#    :frozen?, :to_s, :inspect, :methods, :singleton_methods,</span>
-<span class="c1">#    :protected_methods, :private_methods, :public_methods,</span>
-<span class="c1">#    :instance_variables, :instance_variable_get,</span>
-<span class="c1">#    :instance_variable_set, :instance_variable_defined?,</span>
-<span class="c1">#    :remove_instance_variable, :instance_of?, :kind_of?, :is_a?,</span>
-<span class="c1">#    :tap, :send, :public_send, :respond_to?, :extend, :display,</span>
-<span class="c1">#    :method, :public_method, :singleton_method,</span>
-<span class="c1">#    :define_singleton_method, :object_id, :to_enum, :enum_for,</span>
-<span class="c1">#    :==, :equal?, :!, :!=, :instance_eval, :instance_exec,</span>
-<span class="c1">#    :__send__, :__id__]</span>
+<span class="n">epoch_three_months_ago</span> <span class="o">=</span> <span class="n">epoc_now</span> <span class="o">-</span> <span class="mi">3</span><span class="p">.</span><span class="nf">months</span>
+<span class="c1"># =&gt; 1433210921</span>
+
+<span class="no">Time</span><span class="p">.</span><span class="nf">at</span><span class="p">(</span><span class="n">epoch_three_months_ago</span><span class="p">)</span>
+<span class="c1"># =&gt; 2015-06-01 19:08:41 -0700</span>
 </code></pre>
 </div>
 
-<p>And actually, <code class="highlighter-rouge">Object</code> didn’t really define any of those itself. It inherited some from <code class="highlighter-rouge">BasicObject</code> and then included <code class="highlighter-rouge">Kernel</code> to get the rest. When you include a module, it’s inserted into the list immediately after the singleton class, which explains the end of the <code class="highlighter-rouge">#ancestors</code> list. Our whole object setup looks like this:</p>
+<h2 id="ok-but-why">Ok, but why?</h2>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>       +-------------+
-       | BasicObject |
-       |   #==       |
-       |   #!        |
-       |   ...       |
-       +-------------+
-            ^
-            |
-            |      +----------+
-            |      | Kernel   |
-            |      |   #nil?  |
-            |      |   #===   |
-            |      |   ...    |
-            |      +----------+
-            |           ^
-            |           |
-            +-----+-----+
-                  |
-             +----------+
-             | Object   |
-             +----------+
-                  ^
-                  |
-                  |
-                  |
-             +----------+
-             | Duck     |
-             |   #quack |
-             +----------+
-                  ^
-                  |
-                  |
-                  |
-           +---------------+
-duck ~~~~&gt; | #&lt;Class:Duck&gt; |
-           |   #quack      |
-           +---------------+
-</code></pre>
-</div>
+<p>So why does this happen? Why does <code class="highlighter-rouge">1.month</code> return the same integer regardless of which month it is. Because, how could it know? A month is not meant to exist as an abstract concept, there is no canonical “month”, they are either 30 days, 31 days, 28 days, or 29 days long <em>(I didn’t forget about you, leap year!)</em>. This is just a small demonstration of why time calculation is never as simple as it may seem. There is no silver bullet to avoid it all. Even Epoch time conversions can lead to some real bad times.</p>
 
-<p>This is now everything we can look at to decide how <code class="highlighter-rouge">duck</code> responds to a message. But what about class methods on <code class="highlighter-rouge">Duck</code>? Well, remember I said everything in Ruby is an <code class="highlighter-rouge">Object</code> - that means everything in our diagram is like <code class="highlighter-rouge">duck</code>, and has a singleton class and ancestry chain. In fact, everything here except for <code class="highlighter-rouge">duck</code> and <code class="highlighter-rouge">Kernel</code> are instances of <code class="highlighter-rouge">Class</code>, so we can build them out the same way we built <code class="highlighter-rouge">duck</code>. <code class="highlighter-rouge">Kernel</code> is an instance of <code class="highlighter-rouge">Module</code>, and has the appropriate singleton class with <code class="highlighter-rouge">Module</code> as its superclass, but drawing that makes the diagram pretty messy.</p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code>                                      +--------+
-                                      | Module |
-                                      +--------+
-                                          ^
-                                          |
-                                      +-------+
-                                      | Class |
-                                      +-------+
-                                          ^
-                                          |
-       +-------------+         +----------------------+
-       | BasicObject | ~~~~~~&gt; | #&lt;Class:BasicObject&gt; |
-       +-------------+         +----------------------+
-            ^                             ^
-            |                             |
-            |      +----------+           |
-            |      | Kernel   |           |
-            |      +----------+           |
-            |           ^                 |
-            |           |                 |
-            +-----+-----+                 |
-                  |                       |
-             +----------+        +-----------------+
-             | Object   | ~~~~~&gt; | #&lt;Class:Object&gt; |
-             +----------+        +-----------------+
-                  ^                       |
-                  |                       |
-                  |                       |
-                  |                       |
-               +------+           +---------------+
-               | Duck | ~~~~~~~~&gt; | #&lt;Class:Duck&gt; |
-               +------+           +---------------+
-                  ^
-                  |
-                  |
-                  |
-           +---------------+
-duck ~~~~&gt; | #&lt;Class:Duck&gt; |
-           +---------------+
-</code></pre>
-</div>
-
-<p>When you define a class method on <code class="highlighter-rouge">Duck</code>, you’ve probably noticed, but maybe sort of glossed over, that you declare it on <code class="highlighter-rouge">self</code>.</p>
-
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Duck</span>
-  <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">in</span><span class="p">(</span><span class="n">lake</span><span class="p">)</span>
-    <span class="c1"># Return all the Ducks in lake</span>
-  <span class="k">end</span>
-<span class="k">end</span>
-</code></pre>
-</div>
-
-<p>This is no different than when we <code class="highlighter-rouge">def duck.quack</code>ed to put a new method on <code class="highlighter-rouge">duck</code> (but not <code class="highlighter-rouge">other_duck</code>). In this context, <code class="highlighter-rouge">self</code> is <code class="highlighter-rouge">Duck</code>, so we’re stashing <code class="highlighter-rouge">.in</code> on <code class="highlighter-rouge">Duck.singleton_class</code> in exactly the same way.</p>
-
-<h3 id="all-together-now">All together now</h3>
-
-<p>Ok, one more iteration. Once again, everything is an <code class="highlighter-rouge">Object</code> - even <code class="highlighter-rouge">Module</code>. You can discard that time traveling ancestry paradox from before, and we’ll just add lines for the actual paradox.</p>
-
-<div class="small-example highlighter-rouge"><pre class="highlight"><code>                                                                +----------+
-                                                                |          |
-                                      +--------+       +-----------------+ |
-   +----------------------------------| Module | ~~~~&gt; | #&lt;Class:Module&gt; | |
-   |                                  +--------+       +-----------------+ |
-   |                                      ^                     ^          |
-   |                                      |                     |          |
-   |                                  +-------+         +----------------+ |
-   |                                  | Class | ~~~~~~&gt; | #&lt;Class:Class&gt; | |
-   |                                  +-------+         +----------------+ |
-   |                                      ^                                |
-   |                                      |                                |
-   |   +-------------+         +----------------------+                    |
-   |   | BasicObject | ~~~~~~&gt; | #&lt;Class:BasicObject&gt; |                    |
-   |   +-------------+         +----------------------+                    |
-   |        ^                             ^                                |
-   |        |                             |                                |
-   |        |      +----------+           |                                |
-   |        |      | Kernel   |           |                                |
-   |        |      +----------+           |                                |
-   |        |           ^                 |                                |
-   |        |           |                 |                                |
-   |        +-----+-----+                 |                                |
-   |              |                       |                                |
-   |         +----------+        +-----------------+                       |
-   +-------&gt; | Object   | ~~~~~&gt; | #&lt;Class:Object&gt; |                       |
-             +----------+        +-----------------+                       |
-                  ^                       |   ^                            |
-                  |                       |   |                            |
-                  |                       |   +----------------------------+
-                  |                       |
-               +------+           +---------------+
-               | Duck | ~~~~~~~~&gt; | #&lt;Class:Duck&gt; |
-               +------+           +---------------+
-                  ^
-                  |
-                  |
-                  |
-           +---------------+
-duck ~~~~&gt; | #&lt;Class:Duck&gt; |
-           +---------------+
-</code></pre>
-</div>
-
-<p><code class="highlighter-rouge">Module</code> is an <code class="highlighter-rouge">Object</code>, which inherits from <code class="highlighter-rouge">BasicObject</code>, which is a <code class="highlighter-rouge">Class</code>, which inherits from <code class="highlighter-rouge">Module</code>, which is an <code class="highlighter-rouge">Object</code>, and so on until you hit the turtles. <code class="highlighter-rouge">#ancestors</code> and other methods that would have trouble with this loop have special cases in the Ruby source for when they find <code class="highlighter-rouge">BasicObject</code>, and just pretend that’s the end of the line.</p>
-
-<p>If you start from any of these objects and traverse up, right-to-left, depth-first, you can build the ancestry chain showing in what order methods will be found. Everything has a singleton class to handle the things we declare on it, and there’s only a little bit of cheating to make the whole thing work. But what did you expect from a system filled with ducks?</p>
-
-<p><strong>Author: Kristján Pétursson</strong></p>
 
   </div>
   
