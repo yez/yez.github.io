@@ -132,6 +132,8 @@ uninitialized constant AddCountryToBooks::Book
 
 &lt;h2 id=&quot;avoiding-models&quot;&gt;Avoiding Models&lt;/h2&gt;
 
+&lt;h3 id=&quot;using-sql&quot;&gt;Using SQL&lt;/h3&gt;
+
 &lt;p&gt;When used correctly, Rails migrations can count on the database being in an expected
 state. The application code moves from commit to commit but database structure
 (should) only change with migrations. Therefore, even if the &lt;code class=&quot;highlighter-rouge&quot;&gt;Book&lt;/code&gt; class is now
@@ -162,7 +164,33 @@ not be.&lt;/p&gt;
 &lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 
-&lt;p&gt;This migration will run correctly for Developer 1 no matter how many model
+&lt;h3 id=&quot;using-temporary-models&quot;&gt;Using Temporary Models&lt;/h3&gt;
+
+&lt;p&gt;If writing SQL isn’t ideal, a temporary model can be used within the migration.
+Here, a new &lt;code class=&quot;highlighter-rouge&quot;&gt;Book&lt;/code&gt; model is defined to manipulate the &lt;code class=&quot;highlighter-rouge&quot;&gt;books&lt;/code&gt; table. Even if
+&lt;code class=&quot;highlighter-rouge&quot;&gt;app/models/book.rb&lt;/code&gt; has been changed to &lt;code class=&quot;highlighter-rouge&quot;&gt;app/models/novel.rb&lt;/code&gt;, this definition
+of &lt;code class=&quot;highlighter-rouge&quot;&gt;Book&lt;/code&gt; will be valid within the scope of this migration.&lt;/p&gt;
+
+&lt;div class=&quot;highlighter-rouge&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;AddCountryToBooks&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;ActiveRecord&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;Migration&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;6&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+
+  &lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Book&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;ApplicationRecord&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;up&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;add_column&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:books&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:country&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:string&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;length: &lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;
+
+    &lt;span class=&quot;no&quot;&gt;Book&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;update_all&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;country: &lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&#39;US&#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+    &lt;span class=&quot;n&quot;&gt;change_column_null&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:books&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:country&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kp&quot;&gt;false&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+  &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;down&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;remove_column&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:books&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:country&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+
+&lt;p&gt;Either of these migration will run correctly for Developer 1 no matter how many model
 renames happened while they were on vacation.&lt;/p&gt;
 
 &lt;h2 id=&quot;problem-at-scale&quot;&gt;Problem at Scale&lt;/h2&gt;
@@ -172,9 +200,9 @@ But, within a larger team or with more complex migrations, this can easily
 become a painful hurdle a team needs to navigate.&lt;/p&gt;
 
 &lt;p&gt;Allowing migrations to rely on only the database as a source of truth enables
-all developers on the team to run migrations without issue. &lt;em&gt;That is until
+all developers on the team to run migrations without issue. That is until
 the database or team inevitably get too large and people do database restores
-instead of running migrations.&lt;/em&gt;&lt;/p&gt;
+instead of running migrations, then this issue is far less common.&lt;/p&gt;
 
 </content>
  </entry>

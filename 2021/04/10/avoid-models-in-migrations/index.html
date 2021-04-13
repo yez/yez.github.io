@@ -220,6 +220,8 @@ uninitialized constant AddCountryToBooks::Book
 
 <h2 id="avoiding-models">Avoiding Models</h2>
 
+<h3 id="using-sql">Using SQL</h3>
+
 <p>When used correctly, Rails migrations can count on the database being in an expected
 state. The application code moves from commit to commit but database structure
 (should) only change with migrations. Therefore, even if the <code class="highlighter-rouge">Book</code> class is now
@@ -250,7 +252,33 @@ not be.</p>
 </code></pre>
 </div>
 
-<p>This migration will run correctly for Developer 1 no matter how many model
+<h3 id="using-temporary-models">Using Temporary Models</h3>
+
+<p>If writing SQL isn’t ideal, a temporary model can be used within the migration.
+Here, a new <code class="highlighter-rouge">Book</code> model is defined to manipulate the <code class="highlighter-rouge">books</code> table. Even if
+<code class="highlighter-rouge">app/models/book.rb</code> has been changed to <code class="highlighter-rouge">app/models/novel.rb</code>, this definition
+of <code class="highlighter-rouge">Book</code> will be valid within the scope of this migration.</p>
+
+<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">class</span> <span class="nc">AddCountryToBooks</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Migration</span><span class="p">[</span><span class="mi">6</span><span class="o">.</span><span class="mi">1</span><span class="p">]</span>
+
+  <span class="k">class</span> <span class="nc">Book</span> <span class="o">&lt;</span> <span class="no">ApplicationRecord</span><span class="p">;</span> <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">up</span>
+    <span class="n">add_column</span> <span class="ss">:books</span><span class="p">,</span> <span class="ss">:country</span><span class="p">,</span> <span class="ss">:string</span><span class="p">,</span> <span class="ss">length: </span><span class="mi">2</span>
+
+    <span class="no">Book</span><span class="p">.</span><span class="nf">update_all</span><span class="p">(</span><span class="ss">country: </span><span class="s1">'US'</span><span class="p">)</span>
+
+    <span class="n">change_column_null</span> <span class="ss">:books</span><span class="p">,</span> <span class="ss">:country</span><span class="p">,</span> <span class="kp">false</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">down</span>
+    <span class="n">remove_column</span> <span class="ss">:books</span><span class="p">,</span> <span class="ss">:country</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre>
+</div>
+
+<p>Either of these migration will run correctly for Developer 1 no matter how many model
 renames happened while they were on vacation.</p>
 
 <h2 id="problem-at-scale">Problem at Scale</h2>
@@ -260,9 +288,9 @@ But, within a larger team or with more complex migrations, this can easily
 become a painful hurdle a team needs to navigate.</p>
 
 <p>Allowing migrations to rely on only the database as a source of truth enables
-all developers on the team to run migrations without issue. <em>That is until
+all developers on the team to run migrations without issue. That is until
 the database or team inevitably get too large and people do database restores
-instead of running migrations.</em></p>
+instead of running migrations, then this issue is far less common.</p>
 
 
 </div>
