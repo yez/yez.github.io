@@ -35,6 +35,9 @@
 
   <!-- RSS -->
   <link rel="alternate" type="application/rss+xml" title="RSS" href="/atom.xml">
+
+  <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+  <script async src="https://use.fontawesome.com/b3103405a3.js"></script>
 </head>
 
 
@@ -53,13 +56,17 @@
     </div>
 
     <nav class="sidebar-nav">
-      <a class="sidebar-nav-item" href="https://jakeyesbeck.com">Home</a>
-      <a class="sidebar-nav-item" href="/archives">Archives</a>
-      <a class="sidebar-nav-item" href="https://jakeyesbeck.com/assets/files/resume.pdf">Resume</a>
-      <a class="sidebar-nav-item" href="/about">About</a>
-      <a class="sidebar-nav-item" href="https://github.com/yez">GitHub</a>
-      <a class="sidebar-nav-item" href="https://twitter.com/jakeyesbeck">Twitter</a>
-      <a class="sidebar-nav-item" href="/atom.xml">Feed</a>
+      <span id='twitter-span-container' class='sidebar-nav-item'>
+        <a href="https://twitter.com/jakeyesbeck?ref_src=twsrc%5Etfw" class="twitter-follow-button" data-show-count="false">
+          Follow @jakeyesbeck
+        </a>
+      </span>
+      <a id='home' class="sidebar-nav-item" href="https://jakeyesbeck.com">Home</a>
+      <a id='archives'class="sidebar-nav-item" href="/archives">Archives</a>
+      <a id='resume'class="sidebar-nav-item" href="https://jakeyesbeck.com/assets/files/resume.pdf">Resume</a>
+      <a id='about'class="sidebar-nav-item" href="/about">About</a>
+      <a id='github'class="sidebar-nav-item" href="https://github.com/yez">GitHub</a>
+      <a id='rss'class="sidebar-nav-item" href="/atom.xml">Feed</a>
     </nav>
 
     <p class='copyright'>&copy; Jake Yesbeck 2021. All rights reserved.</p>
@@ -373,6 +380,4 @@ Connection: close
 </script>
 
   </body>
-  <script async>(function(s,u,m,o,j,v){j=u.createElement(m);v=u.getElementsByTagName(m)[0];j.async=1;j.src=o;j.dataset.sumoSiteId='024e6bed76a8b35b6ee4c4e12dc496bf2ca2b0f81fcd404176c2b487f6e95046';v.parentNode.insertBefore(j,v)})(window,document,'script','//load.sumo.com/');</script>
-  <script src="https://use.fontawesome.com/b3103405a3.js"></script>
 </html>

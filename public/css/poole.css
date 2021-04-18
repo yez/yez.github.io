@@ -52,10 +52,15 @@ html {
   font-size: 16px;
   line-height: 1.5;
 }
+
+nav #twitter-span-container { display: none; }
+
 @media (min-width: 38em) {
   html {
     font-size: 20px;
   }
+
+  nav #twitter-span-container { display: block; }
 }
 
 body {
@@ -448,3 +453,8 @@ a.pagination-item:hover {
     border-bottom-right-radius: 4px;
   }
 }
+
+#home {
+  clear: both;
+}
+
