@@ -18,6 +18,8 @@
   
   
 
+  
+
   <!-- Enable responsiveness on mobile devices-->
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
 
@@ -38,6 +40,8 @@
 
   <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
   <script async src="https://use.fontawesome.com/b3103405a3.js"></script>
+
+  
 </head>
 
 
@@ -63,13 +67,14 @@
       </span>
       <a id='home' class="sidebar-nav-item" href="https://jakeyesbeck.com">Home</a>
       <a id='archives'class="sidebar-nav-item" href="/archives">Archives</a>
+      <a id='services'class="sidebar-nav-item" href="/services">Services</a>
       <a id='resume'class="sidebar-nav-item" href="https://jakeyesbeck.com/assets/files/resume.pdf">Resume</a>
       <a id='about'class="sidebar-nav-item" href="/about">About</a>
       <a id='github'class="sidebar-nav-item" href="https://github.com/yez">GitHub</a>
       <a id='rss'class="sidebar-nav-item" href="/atom.xml">Feed</a>
     </nav>
 
-    <p class='copyright'>&copy; Jake Yesbeck 2022. All rights reserved.</p>
+    <p class='copyright'>&copy; Jake Yesbeck 2026. All rights reserved.</p>
   </div>
 </div>
 
@@ -121,22 +126,21 @@
 
 <p>Processing large data sets is a common problem faced by many production web applications. <a href="https://jakeyesbeck.com/2015/08/09/how-to-process-large-data-sets-with-ruby/">One solution</a> is to divide the work amongst multiple processes and have each responsible for a single or significantly smaller batch of data. However, this solution is not without its problems. Machine provisioning limitations or financial barriers may invalidate this solution for a very large N.</p>
 
-<p>Within the same vein as “divide and conquer” exists another solution, one which requires far fewer parallel processes: <code class="highlighter-rouge">Threads</code>. In the Ruby programming language, a <code class="highlighter-rouge">Thread</code> is a built-in object for concurrent programming.</p>
+<p>Within the same vein as “divide and conquer” exists another solution, one which requires far fewer parallel processes: <code class="language-plaintext highlighter-rouge">Threads</code>. In the Ruby programming language, a <code class="language-plaintext highlighter-rouge">Thread</code> is a built-in object for concurrent programming.</p>
 
-<p>Unlike independent processes, all Ruby <code class="highlighter-rouge">Threads</code> within the same process share memory, enabling each individual <code class="highlighter-rouge">Thread</code> to consume or process objects and elements from the same data store.</p>
+<p>Unlike independent processes, all Ruby <code class="language-plaintext highlighter-rouge">Threads</code> within the same process share memory, enabling each individual <code class="language-plaintext highlighter-rouge">Thread</code> to consume or process objects and elements from the same data store.</p>
 
-<p>For this example, a database will be queried, results manipulated and finally returned to same database via <code class="highlighter-rouge">ActiveRecord</code>.</p>
+<p>For this example, a database will be queried, results manipulated and finally returned to same database via <code class="language-plaintext highlighter-rouge">ActiveRecord</code>.</p>
 
 <h2 id="first-pass">First Pass</h2>
 
-<p>Given a <code class="highlighter-rouge">User</code> model backed by a simple <code class="highlighter-rouge">users</code> table:</p>
+<p>Given a <code class="language-plaintext highlighter-rouge">User</code> model backed by a simple <code class="language-plaintext highlighter-rouge">users</code> table:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
 <span class="k">end</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">class</span> <span class="nc">CreateUsersTable</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Migration</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">CreateUsersTable</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Migration</span>
   <span class="k">def</span> <span class="nf">change</span>
     <span class="n">create_table</span> <span class="ss">:users</span> <span class="k">do</span> <span class="o">|</span><span class="n">t</span><span class="o">|</span>
       <span class="n">t</span><span class="p">.</span><span class="nf">string</span> <span class="ss">:first_name</span>
@@ -147,18 +151,17 @@
     <span class="k">end</span>
   <span class="k">end</span>
 <span class="k">end</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>The problem to solve is fairly straight forward:</p>
 
 <blockquote>
-  <p>All <code class="highlighter-rouge">User</code> records that are not already validated should be fetched and an external API hit with their email address for validation, then saved. If a <code class="highlighter-rouge">User's</code> email address is not valid, it should be removed.</p>
+  <p>All <code class="language-plaintext highlighter-rouge">User</code> records that are not already validated should be fetched and an external API hit with their email address for validation, then saved. If a <code class="language-plaintext highlighter-rouge">User's</code> email address is not valid, it should be removed.</p>
 </blockquote>
 
 <p>Fast forwarding through time, it can be assumed that a completely serial solution has been written and deemed unsatisfactory. Then, during a second iteration, a bit of concurrent code was written:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">class</span> <span class="nc">UserEmailValidator</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">UserEmailValidator</span>
   <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">run</span>
     <span class="no">User</span><span class="p">.</span><span class="nf">where</span><span class="p">(</span><span class="ss">validated: </span><span class="kp">false</span><span class="p">)</span>
         <span class="p">.</span><span class="nf">find_in_batches</span><span class="p">(</span><span class="ss">batch_size: </span><span class="mi">30</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">user_batch</span><span class="o">|</span>
@@ -183,25 +186,24 @@
     <span class="n">threads</span><span class="p">.</span><span class="nf">each</span><span class="p">(</span><span class="o">&amp;</span><span class="ss">:join</span><span class="p">)</span>
   <span class="k">end</span>
 <span class="k">end</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>The important pieces of this code are:</p>
 
 <ol>
   <li>
-    <p><code class="highlighter-rouge">find_in_batches(batch_size: 30)</code></p>
+    <p><code class="language-plaintext highlighter-rouge">find_in_batches(batch_size: 30)</code></p>
 
-    <p>To cut down on memory allocation, only 30 <code class="highlighter-rouge">Users</code> are fetched at one time. Each of these <code class="highlighter-rouge">Users</code> have their email address validated in a separate <code class="highlighter-rouge">Thread</code>.</p>
+    <p>To cut down on memory allocation, only 30 <code class="language-plaintext highlighter-rouge">Users</code> are fetched at one time. Each of these <code class="language-plaintext highlighter-rouge">Users</code> have their email address validated in a separate <code class="language-plaintext highlighter-rouge">Thread</code>.</p>
   </li>
   <li>
-    <p><code class="highlighter-rouge">threads.map(&amp;:join)</code></p>
+    <p><code class="language-plaintext highlighter-rouge">threads.map(&amp;:join)</code></p>
 
-    <p>The <code class="highlighter-rouge">join</code> method is used to make the program wait for all <code class="highlighter-rouge">Threads</code> to complete. If one <code class="highlighter-rouge">Thread</code> were to error out, some rescue and retry logic could be added to help.</p>
+    <p>The <code class="language-plaintext highlighter-rouge">join</code> method is used to make the program wait for all <code class="language-plaintext highlighter-rouge">Threads</code> to complete. If one <code class="language-plaintext highlighter-rouge">Thread</code> were to error out, some rescue and retry logic could be added to help.</p>
   </li>
 </ol>
 
-<p>Functionally adequate, this code should iterate over the entire set of <code class="highlighter-rouge">User</code> records, 30 at a time, and update them in parallel.</p>
+<p>Functionally adequate, this code should iterate over the entire set of <code class="language-plaintext highlighter-rouge">User</code> records, 30 at a time, and update them in parallel.</p>
 
 <p>However, actually running this code will point out a very serious limitation.</p>
 
@@ -211,37 +213,35 @@
 
 <p>Moments after the above code runs for the first time, this error is seen:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="no">ActiveRecord</span><span class="o">::</span><span class="no">ConnectionTimeoutError</span><span class="p">:</span>
-  <span class="n">could</span> <span class="n">not</span> <span class="n">obtain</span> <span class="n">a</span> <span class="n">database</span> <span class="n">connection</span> <span class="n">within</span> <span class="mi">5</span><span class="o">.</span><span class="mo">000</span> <span class="n">seconds</span>
-</code></pre>
-</div>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">ActiveRecord</span><span class="o">::</span><span class="no">ConnectionTimeoutError</span><span class="p">:</span>
+  <span class="n">could</span> <span class="ow">not</span> <span class="n">obtain</span> <span class="n">a</span> <span class="n">database</span> <span class="n">connection</span> <span class="n">within</span> <span class="mf">5.000</span> <span class="n">seconds</span>
+</code></pre></div></div>
 
-<p>As it turns out, each <code class="highlighter-rouge">Thread</code> spawned had allocated its own connection to the database via <code class="highlighter-rouge">ActiveRecord</code>. Then, even after the <code class="highlighter-rouge">Thread</code> completed its work, the connection was not relinquished. Stale, idle connections began to accumulate within the Ruby process and before even 1000 <code class="highlighter-rouge">User</code> objects could be processed, the connection pool was empty.</p>
+<p>As it turns out, each <code class="language-plaintext highlighter-rouge">Thread</code> spawned had allocated its own connection to the database via <code class="language-plaintext highlighter-rouge">ActiveRecord</code>. Then, even after the <code class="language-plaintext highlighter-rouge">Thread</code> completed its work, the connection was not relinquished. Stale, idle connections began to accumulate within the Ruby process and before even 1000 <code class="language-plaintext highlighter-rouge">User</code> objects could be processed, the connection pool was empty.</p>
 
-<p>Presumably, right after the <code class="highlighter-rouge">self.validate_emails</code> method completed for a batch of <code class="highlighter-rouge">Users</code>, the process should have released those connections to be used for either the next batch of <code class="highlighter-rouge">Threads</code> or other processes.</p>
+<p>Presumably, right after the <code class="language-plaintext highlighter-rouge">self.validate_emails</code> method completed for a batch of <code class="language-plaintext highlighter-rouge">Users</code>, the process should have released those connections to be used for either the next batch of <code class="language-plaintext highlighter-rouge">Threads</code> or other processes.</p>
 
 <p>Since this liberation of database connections did not happen automatically, it seems that we must intervene.</p>
 
 <h2 id="pool-full-of-connections-then-we-dive-in-it">Pool Full of Connections, then We Dive in it</h2>
 
-<p>To help <code class="highlighter-rouge">ActiveRecord</code> handle connection allocation and deallocation, the <a href="https://api.rubyonrails.org/classes/ActiveRecord/ConnectionAdapters/ConnectionPool.html#method-i-with_connection">with_connection</a> block is used. <code class="highlighter-rouge">with_connection</code> is a method that <code class="highlighter-rouge">yields</code> a connection to a block, then returns that same connection to the pool when the block has completed.</p>
+<p>To help <code class="language-plaintext highlighter-rouge">ActiveRecord</code> handle connection allocation and deallocation, the <a href="https://api.rubyonrails.org/classes/ActiveRecord/ConnectionAdapters/ConnectionPool.html#method-i-with_connection">with_connection</a> block is used. <code class="language-plaintext highlighter-rouge">with_connection</code> is a method that <code class="language-plaintext highlighter-rouge">yields</code> a connection to a block, then returns that same connection to the pool when the block has completed.</p>
 
 <p>Basically, it ensures that the life cycle for a single database connection is only active within the block provided.</p>
 
-<p>To make sure this solution will work, it is imperative that the database connection pool in either <code class="highlighter-rouge">database.yml</code> or in a connection initializer is set high enough.</p>
+<p>To make sure this solution will work, it is imperative that the database connection pool in either <code class="language-plaintext highlighter-rouge">database.yml</code> or in a connection initializer is set high enough.</p>
 
 <p>An example database.yml:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="s">production</span><span class="pi">:</span>
-  <span class="s">adapter</span><span class="pi">:</span> <span class="s">postgresql</span>
-  <span class="s">database</span><span class="pi">:</span> <span class="s">production_database</span>
-  <span class="s">pool</span><span class="pi">:</span> <span class="s">50</span>
-</code></pre>
-</div>
+<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="na">production</span><span class="pi">:</span>
+  <span class="na">adapter</span><span class="pi">:</span> <span class="s">postgresql</span>
+  <span class="na">database</span><span class="pi">:</span> <span class="s">production_database</span>
+  <span class="na">pool</span><span class="pi">:</span> <span class="m">50</span>
+</code></pre></div></div>
 
-<p>With a pool large enough, a <code class="highlighter-rouge">with_connection</code> block can be inserted around the pertinent code:</p>
+<p>With a pool large enough, a <code class="language-plaintext highlighter-rouge">with_connection</code> block can be inserted around the pertinent code:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">class</span> <span class="nc">UserEmailValidator</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">UserEmailValidator</span>
   <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">run</span>
     <span class="no">User</span><span class="p">.</span><span class="nf">where</span><span class="p">(</span><span class="ss">validated: </span><span class="kp">false</span><span class="p">)</span>
         <span class="p">.</span><span class="nf">find_in_batches</span><span class="p">(</span><span class="ss">batch_size: </span><span class="mi">30</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">user_batch</span><span class="o">|</span>
@@ -268,22 +268,21 @@
     <span class="n">threads</span><span class="p">.</span><span class="nf">each</span><span class="p">(</span><span class="o">&amp;</span><span class="ss">:join</span><span class="p">)</span>
   <span class="k">end</span>
 <span class="k">end</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
-<p>Running this very deliberate connection handling process now ensures that no more than 30 connections are claimed. Each <code class="highlighter-rouge">Thread</code> will connect to the database with one single connection and the <code class="highlighter-rouge">with_connection</code> block will return that connection to the predefined pool upon completion.</p>
+<p>Running this very deliberate connection handling process now ensures that no more than 30 connections are claimed. Each <code class="language-plaintext highlighter-rouge">Thread</code> will connect to the database with one single connection and the <code class="language-plaintext highlighter-rouge">with_connection</code> block will return that connection to the predefined pool upon completion.</p>
 
-<p>With the addition of this necessary connection pruning, the great <code class="highlighter-rouge">User</code> email validation effort can complete. Depending on the size of the data set and machines available, the 30 per batch limit could be easily increased, resulting in greater validation speed.</p>
+<p>With the addition of this necessary connection pruning, the great <code class="language-plaintext highlighter-rouge">User</code> email validation effort can complete. Depending on the size of the data set and machines available, the 30 per batch limit could be easily increased, resulting in greater validation speed.</p>
 
-<p>The <code class="highlighter-rouge">database.yml</code> configuration should have a pool size of equal to or greater than the number of <code class="highlighter-rouge">Threads</code> spawned. If 100 <code class="highlighter-rouge">User</code> objects needed to be processed at once, the pool should be <code class="highlighter-rouge">&gt;= 100</code>.</p>
+<p>The <code class="language-plaintext highlighter-rouge">database.yml</code> configuration should have a pool size of equal to or greater than the number of <code class="language-plaintext highlighter-rouge">Threads</code> spawned. If 100 <code class="language-plaintext highlighter-rouge">User</code> objects needed to be processed at once, the pool should be <code class="language-plaintext highlighter-rouge">&gt;= 100</code>.</p>
 
 <h2 id="alternatives">Alternatives</h2>
 
-<p>Handling database connections and using raw <code class="highlighter-rouge">Threads</code> this explicitly can make some developers uncomfortable. Luckily, a few great libraries have been written to alleviate this problem.</p>
+<p>Handling database connections and using raw <code class="language-plaintext highlighter-rouge">Threads</code> this explicitly can make some developers uncomfortable. Luckily, a few great libraries have been written to alleviate this problem.</p>
 
-<p>In a previous post, <a href="https://jakeyesbeck.com/2016/01/10/how-to-parallelize-ruby-http-requests/#enter-em-synchrony">EM Synchrony</a> was utilized to make parallel HTTP requests. It also has the ability to parallelize <code class="highlighter-rouge">ActiveRecord</code> reading and writing without consuming excess database connections.</p>
+<p>In a previous post, <a href="https://jakeyesbeck.com/2016/01/10/how-to-parallelize-ruby-http-requests/#enter-em-synchrony">EM Synchrony</a> was utilized to make parallel HTTP requests. It also has the ability to parallelize <code class="language-plaintext highlighter-rouge">ActiveRecord</code> reading and writing without consuming excess database connections.</p>
 
-<p>Another helpful library quickly becoming the most popular concurrency library is <a href="https://github.com/ruby-concurrency/concurrent-ruby">concurrent-ruby</a>. The <code class="highlighter-rouge">concurrent-ruby</code> library provides convenient models for dealing with futures, promises and other parallelization data structures. However, the same <code class="highlighter-rouge">ActiveRecord</code> connections issues will occur with concurrent ruby objects as with plain old <code class="highlighter-rouge">Threads</code>.</p>
+<p>Another helpful library quickly becoming the most popular concurrency library is <a href="https://github.com/ruby-concurrency/concurrent-ruby">concurrent-ruby</a>. The <code class="language-plaintext highlighter-rouge">concurrent-ruby</code> library provides convenient models for dealing with futures, promises and other parallelization data structures. However, the same <code class="language-plaintext highlighter-rouge">ActiveRecord</code> connections issues will occur with concurrent ruby objects as with plain old <code class="language-plaintext highlighter-rouge">Threads</code>.</p>
 
 <p>Additionally, this code has been written for the sake of making a point. There are many ways to solve a problem and this is simply one of them.</p>
 

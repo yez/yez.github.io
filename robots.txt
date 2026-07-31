@@ -1,0 +1,21 @@
+User-agent: *
+Allow: /
+
+# AI search crawlers — explicitly welcome, so the services page can be cited
+# in AI Overviews, ChatGPT, Perplexity, and Copilot answers.
+User-agent: GPTBot
+Allow: /
+
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+Sitemap: https://jakeyesbeck.com/sitemap.xml

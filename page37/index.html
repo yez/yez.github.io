@@ -18,6 +18,8 @@
   
   
 
+  
+
   <!-- Enable responsiveness on mobile devices-->
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
 
@@ -38,6 +40,8 @@
 
   <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
   <script async src="https://use.fontawesome.com/b3103405a3.js"></script>
+
+  
 </head>
 
 
@@ -63,13 +67,14 @@
       </span>
       <a id='home' class="sidebar-nav-item" href="https://jakeyesbeck.com">Home</a>
       <a id='archives'class="sidebar-nav-item" href="/archives">Archives</a>
+      <a id='services'class="sidebar-nav-item" href="/services">Services</a>
       <a id='resume'class="sidebar-nav-item" href="https://jakeyesbeck.com/assets/files/resume.pdf">Resume</a>
       <a id='about'class="sidebar-nav-item" href="/about">About</a>
       <a id='github'class="sidebar-nav-item" href="https://github.com/yez">GitHub</a>
       <a id='rss'class="sidebar-nav-item" href="/atom.xml">Feed</a>
     </nav>
 
-    <p class='copyright'>&copy; Jake Yesbeck 2022. All rights reserved.</p>
+    <p class='copyright'>&copy; Jake Yesbeck 2026. All rights reserved.</p>
   </div>
 </div>
 
@@ -129,23 +134,22 @@
 
 <h2 id="rails-status-code-support">Rails status code support</h2>
 
-<p>Let us assume that an application exists to look up information about books. To get a specific book, a RESTful route is provided by the application at <code class="highlighter-rouge">https://mycoolbookapp.com/books/12</code>. This route might execute the following controller action:</p>
+<p>Let us assume that an application exists to look up information about books. To get a specific book, a RESTful route is provided by the application at <code class="language-plaintext highlighter-rouge">https://mycoolbookapp.com/books/12</code>. This route might execute the following controller action:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">class</span> <span class="nc">BooksController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">BooksController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
   <span class="k">def</span> <span class="nf">show</span>
     <span class="n">render</span> <span class="ss">json: </span><span class="no">Book</span><span class="p">.</span><span class="nf">find</span><span class="p">(</span><span class="n">params</span><span class="p">[</span><span class="ss">:id</span><span class="p">])</span>
   <span class="k">end</span>
 <span class="k">end</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
-<p>This simple controller action can respond with three HTTP status codes. A <code class="highlighter-rouge">200</code> will be in the response of any <code class="highlighter-rouge">Book</code> which matches the <code class="highlighter-rouge">:id</code> supplied. Likewise, a <code class="highlighter-rouge">404</code> will automatically be returned if the <code class="highlighter-rouge">Book</code> requested does not exist. Finally, if some “code in need of improvement” is accessed and fails, a <code class="highlighter-rouge">500</code> is returned to let the user know that the server has almost certainly caught fire <em>(surely no code pushed to production has bugs in it)</em>.</p>
+<p>This simple controller action can respond with three HTTP status codes. A <code class="language-plaintext highlighter-rouge">200</code> will be in the response of any <code class="language-plaintext highlighter-rouge">Book</code> which matches the <code class="language-plaintext highlighter-rouge">:id</code> supplied. Likewise, a <code class="language-plaintext highlighter-rouge">404</code> will automatically be returned if the <code class="language-plaintext highlighter-rouge">Book</code> requested does not exist. Finally, if some “code in need of improvement” is accessed and fails, a <code class="language-plaintext highlighter-rouge">500</code> is returned to let the user know that the server has almost certainly caught fire <em>(surely no code pushed to production has bugs in it)</em>.</p>
 
-<p>For a very simple API, this response structure is adequate. However, achieving more complicated responses might not be so straight forward. For instance, if a user must be logged in to access a <code class="highlighter-rouge">Book</code>, the correct response might be <code class="highlighter-rouge">401</code>, to explicitly let the user know that they are not authorized to see that resource.</p>
+<p>For a very simple API, this response structure is adequate. However, achieving more complicated responses might not be so straight forward. For instance, if a user must be logged in to access a <code class="language-plaintext highlighter-rouge">Book</code>, the correct response might be <code class="language-plaintext highlighter-rouge">401</code>, to explicitly let the user know that they are not authorized to see that resource.</p>
 
 <p>If HTTP status codes are unknown or underutilized, an inexperienced developer might write that response that attempts to only use the text body of a response.</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">class</span> <span class="nc">BooksController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">BooksController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
   <span class="n">before_filter</span> <span class="ss">:authenticate_user</span>
 
   <span class="k">def</span> <span class="nf">show</span>
@@ -158,16 +162,15 @@
     <span class="n">render</span> <span class="ss">json: </span><span class="n">response</span>
   <span class="k">end</span>
 <span class="k">end</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
-<p>This code will respond with a <code class="highlighter-rouge">200</code> and a message denoting an error. This is not the correct way to return a result. This is the equivalent of someone allowing you to leave a store with an item and not pay, then arresting you for it. It just does not make sense and should be avoided.</p>
+<p>This code will respond with a <code class="language-plaintext highlighter-rouge">200</code> and a message denoting an error. This is not the correct way to return a result. This is the equivalent of someone allowing you to leave a store with an item and not pay, then arresting you for it. It just does not make sense and should be avoided.</p>
 
 <p>Instead, Ruby on Rails gives us <a href="https://billpatrianakos.me/blog/2013/10/13/list-of-rails-status-code-symbols/">very helpful symbols</a> that can be used to accurately convey the appropriate response to end users.</p>
 
 <p>To only return the correct HTTP status code, the books controller can be rewritten to:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">class</span> <span class="nc">BooksController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">BooksController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
   <span class="n">before_filter</span> <span class="ss">:authenticate_user</span>
 
   <span class="k">def</span> <span class="nf">show</span>
@@ -178,12 +181,11 @@
     <span class="n">render</span> <span class="ss">json: </span><span class="no">Book</span><span class="p">.</span><span class="nf">find</span><span class="p">(</span><span class="n">params</span><span class="p">[</span><span class="ss">:id</span><span class="p">])</span>
   <span class="k">end</span>
 <span class="k">end</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>Additionally, you can provide even more information to the consumer of your API with a combination of HTTP status codes and a response body:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">class</span> <span class="nc">BooksController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">BooksController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
   <span class="n">before_filter</span> <span class="ss">:authenticate_user</span>
 
   <span class="k">def</span> <span class="nf">show</span>
@@ -198,14 +200,13 @@
     <span class="n">render</span> <span class="ss">json: </span><span class="n">response</span><span class="p">,</span> <span class="ss">status: </span><span class="n">status</span>
   <span class="k">end</span>
 <span class="k">end</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <h2 id="communicate-effectively">Communicate effectively</h2>
 
 <p>This example has exposed the difference between a decent API and one that understands how HTTP should work. While the specific problem <a href="https://github.com/CanCanCommunity/cancancan">could be solved with CanCanCan</a>, it is important to understand how and why those libraries work the way that they do.</p>
 
-<p>If one were to continue down the naive path, returning hashes or strings with incorrect HTTP status codes, things would become messy quickly. That response structure unjustly handcuffs the API clients to be unnecessarily tolerant of ad-hoc text responses. But, if the API conforms to HTTP standards, a client knows exactly what each response means. A <code class="highlighter-rouge">400</code> status code in the response will give context to what a supplied error means. The client can respond correctly and know that their request resulted in an error. However, if a response body is the only way to denote that something went wrong, what stops a new developer on the API from changing the <code class="highlighter-rouge">error</code> key to <code class="highlighter-rouge">Error</code> and ruin everyone’s day?</p>
+<p>If one were to continue down the naive path, returning hashes or strings with incorrect HTTP status codes, things would become messy quickly. That response structure unjustly handcuffs the API clients to be unnecessarily tolerant of ad-hoc text responses. But, if the API conforms to HTTP standards, a client knows exactly what each response means. A <code class="language-plaintext highlighter-rouge">400</code> status code in the response will give context to what a supplied error means. The client can respond correctly and know that their request resulted in an error. However, if a response body is the only way to denote that something went wrong, what stops a new developer on the API from changing the <code class="language-plaintext highlighter-rouge">error</code> key to <code class="language-plaintext highlighter-rouge">Error</code> and ruin everyone’s day?</p>
 
 <p>Instead of capturing in text every single detail about why a request did not result in an expected response, use HTTP status codes to supplement and communicate effectively.</p>
 

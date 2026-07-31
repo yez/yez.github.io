@@ -18,6 +18,8 @@
   
   
 
+  
+
   <!-- Enable responsiveness on mobile devices-->
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
 
@@ -38,6 +40,8 @@
 
   <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
   <script async src="https://use.fontawesome.com/b3103405a3.js"></script>
+
+  
 </head>
 
 
@@ -63,13 +67,14 @@
       </span>
       <a id='home' class="sidebar-nav-item" href="https://jakeyesbeck.com">Home</a>
       <a id='archives'class="sidebar-nav-item" href="/archives">Archives</a>
+      <a id='services'class="sidebar-nav-item" href="/services">Services</a>
       <a id='resume'class="sidebar-nav-item" href="https://jakeyesbeck.com/assets/files/resume.pdf">Resume</a>
       <a id='about'class="sidebar-nav-item" href="/about">About</a>
       <a id='github'class="sidebar-nav-item" href="https://github.com/yez">GitHub</a>
       <a id='rss'class="sidebar-nav-item" href="/atom.xml">Feed</a>
     </nav>
 
-    <p class='copyright'>&copy; Jake Yesbeck 2022. All rights reserved.</p>
+    <p class='copyright'>&copy; Jake Yesbeck 2026. All rights reserved.</p>
   </div>
 </div>
 
@@ -117,13 +122,13 @@
 </ul>
 </span>
 
-    <p>Ruby is a wonderfully flexible language. An example of this flexibility is in the ability to define a custom collection class that acts as an <a href="https://ruby-doc.org/core-2.1.1/Enumerable.html">Enumerable</a> object. In Ruby, a collection that acts as an <code class="highlighter-rouge">Enumerable</code> is basically a class which holds a list of objects and exposes helpful methods for iteration and collection. An example of this pattern built into Ruby is the <a href="https://ruby-doc.org/core-2.2.3/Array.html">Array</a> class.</p>
+    <p>Ruby is a wonderfully flexible language. An example of this flexibility is in the ability to define a custom collection class that acts as an <a href="https://ruby-doc.org/core-2.1.1/Enumerable.html">Enumerable</a> object. In Ruby, a collection that acts as an <code class="language-plaintext highlighter-rouge">Enumerable</code> is basically a class which holds a list of objects and exposes helpful methods for iteration and collection. An example of this pattern built into Ruby is the <a href="https://ruby-doc.org/core-2.2.3/Array.html">Array</a> class.</p>
 
-<p>In keeping with a <a href="https://jakeyesbeck.com/2015/09/13/rescue-groups/">theme</a>, let us assume that an application about dogs exists. In this example, a <code class="highlighter-rouge">DogKennel</code> class exists that will hold information about each dog in the kennel and detailed information about said kennel. We can also assume that this class is meant to be used as a collection of dogs, exposing helper methods for information about the kennel. Why would we use this collection class over a typical <code class="highlighter-rouge">Array</code>? One reason might be that the consumer of this class expects a list of dogs and some additional metadata. That metadata can be easily exposed in this class without having to wrap the class or extract the metadata from an included <code class="highlighter-rouge">Hash</code>.</p>
+<p>In keeping with a <a href="https://jakeyesbeck.com/2015/09/13/rescue-groups/">theme</a>, let us assume that an application about dogs exists. In this example, a <code class="language-plaintext highlighter-rouge">DogKennel</code> class exists that will hold information about each dog in the kennel and detailed information about said kennel. We can also assume that this class is meant to be used as a collection of dogs, exposing helper methods for information about the kennel. Why would we use this collection class over a typical <code class="language-plaintext highlighter-rouge">Array</code>? One reason might be that the consumer of this class expects a list of dogs and some additional metadata. That metadata can be easily exposed in this class without having to wrap the class or extract the metadata from an included <code class="language-plaintext highlighter-rouge">Hash</code>.</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">class</span> <span class="nc">DogKennel</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">DogKennel</span>
 
-  <span class="kp">attr_reader</span> <span class="ss">:dogs</span><span class="p">,</span> <span class="ss">:location</span><span class="p">,</span> <span class="ss">:operating_hours</span>
+  <span class="nb">attr_reader</span> <span class="ss">:dogs</span><span class="p">,</span> <span class="ss">:location</span><span class="p">,</span> <span class="ss">:operating_hours</span>
 
   <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="n">dogs</span><span class="p">,</span> <span class="n">location</span><span class="p">,</span> <span class="n">operating_hours</span><span class="p">)</span>
     <span class="vi">@dogs</span> <span class="o">=</span> <span class="n">dogs</span>
@@ -131,17 +136,16 @@
     <span class="vi">@operating_hours</span> <span class="o">=</span> <span class="n">operating_hours</span>
   <span class="k">end</span>
 <span class="k">end</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
-<h2 id="add-include-enumerable">1. Add <code class="highlighter-rouge">include Enumerable</code></h2>
+<h2 id="1-add-include-enumerable">1. Add <code class="language-plaintext highlighter-rouge">include Enumerable</code></h2>
 
-<p>To make our <code class="highlighter-rouge">DogKennel</code> into something that can iterate over its dogs easily, we can add the <code class="highlighter-rouge">Enumerable</code> module. The desired functionality will have iterative functions as instance methods, so <code class="highlighter-rouge">include</code> will be used:</p>
+<p>To make our <code class="language-plaintext highlighter-rouge">DogKennel</code> into something that can iterate over its dogs easily, we can add the <code class="language-plaintext highlighter-rouge">Enumerable</code> module. The desired functionality will have iterative functions as instance methods, so <code class="language-plaintext highlighter-rouge">include</code> will be used:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">class</span> <span class="nc">DogKennel</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">DogKennel</span>
   <span class="kp">include</span> <span class="no">Enumerable</span>
 
-  <span class="kp">attr_reader</span> <span class="ss">:dogs</span><span class="p">,</span> <span class="ss">:location</span><span class="p">,</span> <span class="ss">:operating_hours</span>
+  <span class="nb">attr_reader</span> <span class="ss">:dogs</span><span class="p">,</span> <span class="ss">:location</span><span class="p">,</span> <span class="ss">:operating_hours</span>
 
   <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="n">dogs</span><span class="p">,</span> <span class="n">location</span><span class="p">,</span> <span class="n">operating_hours</span><span class="p">)</span>
     <span class="vi">@dogs</span> <span class="o">=</span> <span class="n">dogs</span>
@@ -149,16 +153,15 @@
     <span class="vi">@operating_hours</span> <span class="o">=</span> <span class="n">operating_hours</span>
   <span class="k">end</span>
 <span class="k">end</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
-<p>This <code class="highlighter-rouge">include</code> will allow the <code class="highlighter-rouge">DogKennel</code> class to inherit a large number of useful methods; however, none of these methods are able to be used until a basic iterative <code class="highlighter-rouge">each</code> method is defined. If a method such as <code class="highlighter-rouge">map</code> is called in this state, the <code class="highlighter-rouge">DogKennel</code> class will throw a <code class="highlighter-rouge">NoMethodError</code> until the <code class="highlighter-rouge">each</code> method is defined.</p>
+<p>This <code class="language-plaintext highlighter-rouge">include</code> will allow the <code class="language-plaintext highlighter-rouge">DogKennel</code> class to inherit a large number of useful methods; however, none of these methods are able to be used until a basic iterative <code class="language-plaintext highlighter-rouge">each</code> method is defined. If a method such as <code class="language-plaintext highlighter-rouge">map</code> is called in this state, the <code class="language-plaintext highlighter-rouge">DogKennel</code> class will throw a <code class="language-plaintext highlighter-rouge">NoMethodError</code> until the <code class="language-plaintext highlighter-rouge">each</code> method is defined.</p>
 
-<h2 id="define-an-each-method">2. Define an <code class="highlighter-rouge">each</code> Method</h2>
+<h2 id="2-define-an-each-method">2. Define an <code class="language-plaintext highlighter-rouge">each</code> Method</h2>
 
-<p>The <code class="highlighter-rouge">each</code> method is the building block for all other iterative methods the <code class="highlighter-rouge">Enumerable</code> module includes. For this example, we can assume that the consumer of <code class="highlighter-rouge">DogKennel</code> will want to iterate over the dogs in the kennel. The <code class="highlighter-rouge">each</code> method must accept a block and either yield or pass the block along to another method:</p>
+<p>The <code class="language-plaintext highlighter-rouge">each</code> method is the building block for all other iterative methods the <code class="language-plaintext highlighter-rouge">Enumerable</code> module includes. For this example, we can assume that the consumer of <code class="language-plaintext highlighter-rouge">DogKennel</code> will want to iterate over the dogs in the kennel. The <code class="language-plaintext highlighter-rouge">each</code> method must accept a block and either yield or pass the block along to another method:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">class</span> <span class="nc">DogKennel</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">DogKennel</span>
   <span class="kp">include</span> <span class="no">Enumerable</span>
 
   <span class="c1"># ...</span>
@@ -167,14 +170,13 @@
     <span class="vi">@dogs</span><span class="p">.</span><span class="nf">each</span><span class="p">(</span><span class="o">&amp;</span><span class="n">block</span><span class="p">)</span>
   <span class="k">end</span>
 <span class="k">end</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
-<p>Hooray! Now, the <code class="highlighter-rouge">DogKennel</code> class can respond to <code class="highlighter-rouge">each</code>, <code class="highlighter-rouge">map</code>, <code class="highlighter-rouge">select</code> and all the other documented <code class="highlighter-rouge">Enumerable</code> iterative methods.</p>
+<p>Hooray! Now, the <code class="language-plaintext highlighter-rouge">DogKennel</code> class can respond to <code class="language-plaintext highlighter-rouge">each</code>, <code class="language-plaintext highlighter-rouge">map</code>, <code class="language-plaintext highlighter-rouge">select</code> and all the other documented <code class="language-plaintext highlighter-rouge">Enumerable</code> iterative methods.</p>
 
 <p>Some examples of how this class can now be used:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="n">dog_kennel</span> <span class="o">=</span> <span class="no">DogKennel</span><span class="p">.</span><span class="nf">new</span><span class="p">([</span><span class="s1">'Fido'</span><span class="p">,</span> <span class="s1">'Spot'</span><span class="p">,</span> <span class="s1">'Bandit'</span><span class="p">],</span> <span class="s1">'Tallahassee'</span><span class="p">,</span> <span class="s1">'09:00 - 18:00'</span><span class="p">)</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">dog_kennel</span> <span class="o">=</span> <span class="no">DogKennel</span><span class="p">.</span><span class="nf">new</span><span class="p">([</span><span class="s1">'Fido'</span><span class="p">,</span> <span class="s1">'Spot'</span><span class="p">,</span> <span class="s1">'Bandit'</span><span class="p">],</span> <span class="s1">'Tallahassee'</span><span class="p">,</span> <span class="s1">'09:00 - 18:00'</span><span class="p">)</span>
 
 <span class="n">dog_kennel</span><span class="p">.</span><span class="nf">each</span> <span class="p">{</span> <span class="o">|</span><span class="n">dog</span><span class="o">|</span> <span class="nb">puts</span> <span class="s2">"</span><span class="si">#{</span><span class="n">dog</span><span class="si">}</span><span class="s2"> is here!"</span><span class="p">}</span>
 <span class="c1"># =&gt; Fido is here!</span>
@@ -183,21 +185,20 @@
 
 <span class="n">dog_kennel</span><span class="p">.</span><span class="nf">select</span> <span class="p">{</span> <span class="o">|</span><span class="n">dog</span><span class="o">|</span> <span class="n">dog</span><span class="p">.</span><span class="nf">length</span> <span class="o">==</span> <span class="mi">4</span> <span class="p">}</span>
 <span class="c1">#=&gt; ['Fido', 'Spot']</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>As always, this is not the only way to achieve this solution in Ruby. Ruby-ists are blessed with a plethora of tools to do any task. I am of the opinion that for this specific task, making a custom collection class is clean and concise. Delegation might be an attractive option but could prove to be overly verbose for this use case.</p>
 
-<h2 id="consider-comparisons">3. Consider Comparisons</h2>
+<h2 id="3-consider-comparisons">3. Consider Comparisons</h2>
 
-<p>In this new collection class, the <code class="highlighter-rouge">sort</code> method will default using the <code class="highlighter-rouge">&lt;=&gt;</code> (sometimes called spaceship) operator. This combined comparison operator returns <code class="highlighter-rouge">0</code> if first operand equals the second, <code class="highlighter-rouge">1</code> if first operand is greater than the second and <code class="highlighter-rouge">-1</code> if first operand is less than the second.</p>
+<p>In this new collection class, the <code class="language-plaintext highlighter-rouge">sort</code> method will default using the <code class="language-plaintext highlighter-rouge">&lt;=&gt;</code> (sometimes called spaceship) operator. This combined comparison operator returns <code class="language-plaintext highlighter-rouge">0</code> if first operand equals the second, <code class="language-plaintext highlighter-rouge">1</code> if first operand is greater than the second and <code class="language-plaintext highlighter-rouge">-1</code> if first operand is less than the second.</p>
 
-<p>This will work fine for strings and other basic object types; however, if a more complex object held the information about each dog, the <code class="highlighter-rouge">&lt;=&gt;</code> method must be defined on that object.</p>
+<p>This will work fine for strings and other basic object types; however, if a more complex object held the information about each dog, the <code class="language-plaintext highlighter-rouge">&lt;=&gt;</code> method must be defined on that object.</p>
 
-<p>A <code class="highlighter-rouge">Dog</code> class is created to represent a dog’s attributes:</p>
+<p>A <code class="language-plaintext highlighter-rouge">Dog</code> class is created to represent a dog’s attributes:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Dog</span>
-  <span class="kp">attr_reader</span> <span class="ss">:breed</span><span class="p">,</span> <span class="ss">:name</span><span class="p">,</span> <span class="ss">:color</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Dog</span>
+  <span class="nb">attr_reader</span> <span class="ss">:breed</span><span class="p">,</span> <span class="ss">:name</span><span class="p">,</span> <span class="ss">:color</span>
 
   <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="n">breed</span><span class="p">,</span> <span class="nb">name</span><span class="p">,</span> <span class="n">color</span><span class="p">)</span>
     <span class="vi">@breed</span> <span class="o">=</span> <span class="n">breed</span>
@@ -205,12 +206,11 @@
     <span class="vi">@color</span> <span class="o">=</span> <span class="n">color</span>
   <span class="k">end</span>
 <span class="k">end</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
-<p>Then, instances of <code class="highlighter-rouge">Dog</code> are then given to <code class="highlighter-rouge">DogKennel</code> on initialization and sorted:</p>
+<p>Then, instances of <code class="language-plaintext highlighter-rouge">Dog</code> are then given to <code class="language-plaintext highlighter-rouge">DogKennel</code> on initialization and sorted:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="n">fido</span> <span class="o">=</span> <span class="no">Dog</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="s1">'Daschund'</span><span class="p">,</span> <span class="s1">'Fido'</span><span class="p">,</span> <span class="s1">'brown'</span><span class="p">)</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">fido</span> <span class="o">=</span> <span class="no">Dog</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="s1">'Daschund'</span><span class="p">,</span> <span class="s1">'Fido'</span><span class="p">,</span> <span class="s1">'brown'</span><span class="p">)</span>
 
 <span class="n">bandit</span> <span class="o">=</span> <span class="no">Dog</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="s1">'Labrador'</span><span class="p">,</span> <span class="s1">'Bandit'</span><span class="p">,</span> <span class="s1">'black'</span><span class="p">)</span>
 
@@ -218,34 +218,31 @@
 
 <span class="n">dog_kennel</span><span class="p">.</span><span class="nf">sort</span>
 <span class="c1">#=&gt; ArgumentError: comparison of Dog with Dog failed</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
-<p>This error is to be expected since the <code class="highlighter-rouge">Dog</code> class has no way to compare one instance of itself against another. To maintain feature parity with the first example, we can define the <code class="highlighter-rouge">&lt;=&gt;</code> method that introspects on each <code class="highlighter-rouge">Dog</code>’s name:</p>
+<p>This error is to be expected since the <code class="language-plaintext highlighter-rouge">Dog</code> class has no way to compare one instance of itself against another. To maintain feature parity with the first example, we can define the <code class="language-plaintext highlighter-rouge">&lt;=&gt;</code> method that introspects on each <code class="language-plaintext highlighter-rouge">Dog</code>’s name:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Dog</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Dog</span>
   <span class="c1"># ...</span>
 
   <span class="k">def</span> <span class="nf">&lt;</span><span class="o">=&gt;</span><span class="p">(</span><span class="n">other_dog</span><span class="p">)</span>
     <span class="nb">self</span><span class="p">.</span><span class="nf">name</span> <span class="o">&lt;=&gt;</span> <span class="n">other_dog</span><span class="p">.</span><span class="nf">name</span>
   <span class="k">end</span>
 <span class="k">end</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>Now, we can sort those puppies!</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="n">dog_kennel</span><span class="p">.</span><span class="nf">sort</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">dog_kennel</span><span class="p">.</span><span class="nf">sort</span>
 <span class="c1">#=&gt; [#&lt;Dog:0x007fcb4a01c800 @name="Bandit", @breed="Labrador", @color="black"&gt;,</span>
      <span class="c1">#&lt;Dog:0x007fcb4914b880 @name="Fido", @breed="Daschund", @color="brown"&gt;]</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <h2 id="its-raining-iterators-and-dogs">It’s Raining Iterators and Dogs</h2>
 
-<p>Having the <code class="highlighter-rouge">Enumerable</code> module included and the <code class="highlighter-rouge">&lt;=&gt;</code> comparison operator defined, the <code class="highlighter-rouge">DogKennel</code> class can now be used in the same convenient way as other collection classes.</p>
+<p>Having the <code class="language-plaintext highlighter-rouge">Enumerable</code> module included and the <code class="language-plaintext highlighter-rouge">&lt;=&gt;</code> comparison operator defined, the <code class="language-plaintext highlighter-rouge">DogKennel</code> class can now be used in the same convenient way as other collection classes.</p>
 
-<p>The strength behind this approach is expressed through its maintainability. Since no long list of methods was defined, and no duplicative code was written, this code can exist alongside active development of the <code class="highlighter-rouge">Enumerable</code> module. For the example in question, this could be an overkill solution. But, in a more complex and sophistiacted system, using the <code class="highlighter-rouge">Enumerable</code> could be the best option.</p>
+<p>The strength behind this approach is expressed through its maintainability. Since no long list of methods was defined, and no duplicative code was written, this code can exist alongside active development of the <code class="language-plaintext highlighter-rouge">Enumerable</code> module. For the example in question, this could be an overkill solution. But, in a more complex and sophistiacted system, using the <code class="language-plaintext highlighter-rouge">Enumerable</code> could be the best option.</p>
 
   </div>
   

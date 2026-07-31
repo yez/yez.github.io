@@ -17,6 +17,8 @@
   
   
 
+  
+
   <!-- Enable responsiveness on mobile devices-->
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
 
@@ -37,6 +39,8 @@
 
   <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
   <script async src="https://use.fontawesome.com/b3103405a3.js"></script>
+
+  
 </head>
 
 
@@ -62,13 +66,14 @@
       </span>
       <a id='home' class="sidebar-nav-item" href="https://jakeyesbeck.com">Home</a>
       <a id='archives'class="sidebar-nav-item" href="/archives">Archives</a>
+      <a id='services'class="sidebar-nav-item" href="/services">Services</a>
       <a id='resume'class="sidebar-nav-item" href="https://jakeyesbeck.com/assets/files/resume.pdf">Resume</a>
       <a id='about'class="sidebar-nav-item" href="/about">About</a>
       <a id='github'class="sidebar-nav-item" href="https://github.com/yez">GitHub</a>
       <a id='rss'class="sidebar-nav-item" href="/atom.xml">Feed</a>
     </nav>
 
-    <p class='copyright'>&copy; Jake Yesbeck 2022. All rights reserved.</p>
+    <p class='copyright'>&copy; Jake Yesbeck 2026. All rights reserved.</p>
   </div>
 </div>
 
@@ -109,57 +114,55 @@
 </span>
   <p>Multiple popular Ruby web servers exist. Each Ruby application is different and the ultimate <strong>tl;dr</strong> for configuring a web server is: <em>it depends.</em> This post will not prescribe one web server or configuration over another and will instead explain internal components most popular servers contain.</p>
 
-<p>In order to facilitate more than one request at a time, a Ruby web server implements <code class="highlighter-rouge">Threads</code>, <code class="highlighter-rouge">Processes</code>, or both. These tools are used to enable concurrency and are beneficial in different ways.</p>
+<p>In order to facilitate more than one request at a time, a Ruby web server implements <code class="language-plaintext highlighter-rouge">Threads</code>, <code class="language-plaintext highlighter-rouge">Processes</code>, or both. These tools are used to enable concurrency and are beneficial in different ways.</p>
 
-<h3 id="threads"><code class="highlighter-rouge">Threads</code></h3>
+<h3 id="threads"><code class="language-plaintext highlighter-rouge">Threads</code></h3>
 
-<p><code class="highlighter-rouge">Threads</code> in Ruby are a solution for concurrent programming and can alleviate slow downs due to blocking code. This blocking is usually referred to as “I/O” or Input/Output blocking and occurs when a program must reach out for additional information.  External API calls, reading from disk, and querying a database are all examples of blocking operations. When using multiple <code class="highlighter-rouge">Threads</code>, an application can continue to function while one <code class="highlighter-rouge">Thread</code> is waiting.</p>
+<p><code class="language-plaintext highlighter-rouge">Threads</code> in Ruby are a solution for concurrent programming and can alleviate slow downs due to blocking code. This blocking is usually referred to as “I/O” or Input/Output blocking and occurs when a program must reach out for additional information.  External API calls, reading from disk, and querying a database are all examples of blocking operations. When using multiple <code class="language-plaintext highlighter-rouge">Threads</code>, an application can continue to function while one <code class="language-plaintext highlighter-rouge">Thread</code> is waiting.</p>
 
-<p>Most Ruby code in the wild is running on MRI (if you’re not sure what you’re using, there is a good chance this is what you use). Because of this, Ruby <code class="highlighter-rouge">Threads</code> are subject to the Global Interpreter Lock or <code class="highlighter-rouge">GIL</code>. The <code class="highlighter-rouge">GIL</code> prevents any two <code class="highlighter-rouge">threads</code> in the same <code class="highlighter-rouge">process</code> from running at exactly the same time making true parallelism not possible.</p>
+<p>Most Ruby code in the wild is running on MRI (if you’re not sure what you’re using, there is a good chance this is what you use). Because of this, Ruby <code class="language-plaintext highlighter-rouge">Threads</code> are subject to the Global Interpreter Lock or <code class="language-plaintext highlighter-rouge">GIL</code>. The <code class="language-plaintext highlighter-rouge">GIL</code> prevents any two <code class="language-plaintext highlighter-rouge">threads</code> in the same <code class="language-plaintext highlighter-rouge">process</code> from running at exactly the same time making true parallelism not possible.</p>
 
-<h3 id="processes"><code class="highlighter-rouge">Processes</code></h3>
+<h3 id="processes"><code class="language-plaintext highlighter-rouge">Processes</code></h3>
 
-<p>One way to allow for true parallelism in Ruby is to use multiple <code class="highlighter-rouge">Processes</code>. A Ruby <code class="highlighter-rouge">Process</code> is the instance of an application or a forked copy. In a traditional Rails application, each <code class="highlighter-rouge">Process</code> contains all the build up, initialization, and resource allocation the app will need.</p>
+<p>One way to allow for true parallelism in Ruby is to use multiple <code class="language-plaintext highlighter-rouge">Processes</code>. A Ruby <code class="language-plaintext highlighter-rouge">Process</code> is the instance of an application or a forked copy. In a traditional Rails application, each <code class="language-plaintext highlighter-rouge">Process</code> contains all the build up, initialization, and resource allocation the app will need.</p>
 
-<p>Running multiple <code class="highlighter-rouge">Proccesses</code> can enable more efficient usage of some server resources like the CPU but is not without its downsides. Because each <code class="highlighter-rouge">process</code> must boot and provision an entire app, memory usage or database connection saturation can become a limiting factor.</p>
+<p>Running multiple <code class="language-plaintext highlighter-rouge">Proccesses</code> can enable more efficient usage of some server resources like the CPU but is not without its downsides. Because each <code class="language-plaintext highlighter-rouge">process</code> must boot and provision an entire app, memory usage or database connection saturation can become a limiting factor.</p>
 
 <h2 id="tempering-the-metal">Tempering the Metal</h2>
 
 <p>When configuring on a web server, an application’s request shape is the most important factor to consider. Web application requests can demand I/O operations, computationally taxing operations, both, or neither.</p>
 
-<p>This example app has one controller named <code class="highlighter-rouge">index_controller</code> and a single route defined: <code class="highlighter-rouge">index</code>.</p>
+<p>This example app has one controller named <code class="language-plaintext highlighter-rouge">index_controller</code> and a single route defined: <code class="language-plaintext highlighter-rouge">index</code>.</p>
 
-<h3 id="indexcontrollerrb"><code class="highlighter-rouge">index_controller.rb</code></h3>
+<h3 id="index_controllerrb"><code class="language-plaintext highlighter-rouge">index_controller.rb</code></h3>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">class</span> <span class="nc">IndexController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">IndexController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
   <span class="k">def</span> <span class="nf">index</span>
     <span class="n">interval_sleep</span>
     <span class="n">render</span> <span class="ss">json: </span><span class="p">{</span> <span class="ss">hello: :there</span> <span class="p">}</span>
   <span class="k">end</span>
 
   <span class="k">def</span> <span class="nf">interval_sleep</span>
-    <span class="nb">sleep</span><span class="p">(</span><span class="nb">rand</span><span class="p">(</span><span class="mi">2</span><span class="p">.</span><span class="nf">.</span><span class="mi">10</span><span class="p">).</span><span class="nf">to_f</span> <span class="o">/</span> <span class="mi">50</span><span class="p">)</span>
+    <span class="nb">sleep</span><span class="p">(</span><span class="nb">rand</span><span class="p">(</span><span class="mi">2</span><span class="o">..</span><span class="mi">10</span><span class="p">).</span><span class="nf">to_f</span> <span class="o">/</span> <span class="mi">50</span><span class="p">)</span>
   <span class="k">end</span>
 <span class="k">end</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
-<p>To emulate I/O blocking, this code uses a <code class="highlighter-rouge">sleep</code> call to randomly stall between <code class="highlighter-rouge">40ms</code> and <code class="highlighter-rouge">200ms</code>.</p>
+<p>To emulate I/O blocking, this code uses a <code class="language-plaintext highlighter-rouge">sleep</code> call to randomly stall between <code class="language-plaintext highlighter-rouge">40ms</code> and <code class="language-plaintext highlighter-rouge">200ms</code>.</p>
 
-<p>This application’s web server is <code class="highlighter-rouge">Puma</code> since it gives allows scaling of both <code class="highlighter-rouge">Threads</code> and <code class="highlighter-rouge">Processes</code> independently.</p>
+<p>This application’s web server is <code class="language-plaintext highlighter-rouge">Puma</code> since it gives allows scaling of both <code class="language-plaintext highlighter-rouge">Threads</code> and <code class="language-plaintext highlighter-rouge">Processes</code> independently.</p>
 
 <p>Most of the configuration is unchanged and the following two lines are all that will change during this testing:</p>
 
-<h3 id="configpumarb"><code class="highlighter-rouge">config/puma.rb</code></h3>
+<h3 id="configpumarb"><code class="language-plaintext highlighter-rouge">config/puma.rb</code></h3>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="n">threads_count</span> <span class="o">=</span> <span class="no">ENV</span><span class="p">.</span><span class="nf">fetch</span><span class="p">(</span><span class="s2">"RAILS_MAX_THREADS"</span><span class="p">)</span> <span class="p">{</span> <span class="mi">1</span> <span class="p">}</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">threads_count</span> <span class="o">=</span> <span class="no">ENV</span><span class="p">.</span><span class="nf">fetch</span><span class="p">(</span><span class="s2">"RAILS_MAX_THREADS"</span><span class="p">)</span> <span class="p">{</span> <span class="mi">1</span> <span class="p">}</span>
 <span class="n">workers</span><span class="p">(</span><span class="no">ENV</span><span class="p">.</span><span class="nf">fetch</span><span class="p">(</span><span class="s2">"WEB_CONCURRENCY"</span><span class="p">)</span> <span class="p">{</span> <span class="mi">1</span> <span class="p">})</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
-<p>Here the configuration sets the number of <code class="highlighter-rouge">Threads</code> and <code class="highlighter-rouge">Processes</code> the application can use to fulfill requests.</p>
+<p>Here the configuration sets the number of <code class="language-plaintext highlighter-rouge">Threads</code> and <code class="language-plaintext highlighter-rouge">Processes</code> the application can use to fulfill requests.</p>
 
-<p>With the configuration set and ready to go, the server is started with <code class="highlighter-rouge">bundle exec rails server</code>.</p>
+<p>With the configuration set and ready to go, the server is started with <code class="language-plaintext highlighter-rouge">bundle exec rails server</code>.</p>
 
 <h2 id="under-siege">Under Siege</h2>
 
@@ -167,26 +170,25 @@
 
 <p><a href="https://linux.die.net/man/1/siege">Siege</a> is a benchmarking tool that has a very simple interface. Siege can be run via a small bash script with a few configurable options for each test.</p>
 
-<h3 id="binsiegesh"><code class="highlighter-rouge">bin/siege.sh</code></h3>
+<h3 id="binsiegesh"><code class="language-plaintext highlighter-rouge">bin/siege.sh</code></h3>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="c">#! /bin/bash</span>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">#! /bin/bash</span>
 
 <span class="nv">CONCURRENCY</span><span class="o">=</span>30
 <span class="nv">URL</span><span class="o">=</span><span class="s1">'http://localhost:3000/index'</span>
 <span class="nv">CONTENT_TYPE</span><span class="o">=</span><span class="s1">'application/json'</span>
 <span class="nv">REPS</span><span class="o">=</span>20
 
-siege -b --content-type <span class="nv">$CONTENT_TYPE</span> -c <span class="nv">$CONCURRENCY</span> -r <span class="nv">$REPS</span> <span class="nv">$URL</span>
+siege <span class="nt">-b</span> <span class="nt">--content-type</span> <span class="nv">$CONTENT_TYPE</span> <span class="nt">-c</span> <span class="nv">$CONCURRENCY</span> <span class="nt">-r</span> <span class="nv">$REPS</span> <span class="nv">$URL</span>
 
 <span class="c"># flags:</span>
 <span class="c">#   -b - benchmark means no gap between requests</span>
 <span class="c">#   -c - concurrency is number of requests to make at one time</span>
 <span class="c">#   -r - repititions is the number of times to run</span>
 <span class="c">#         the same amount of concurrent requests</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
-<p>This executable will request <code class="highlighter-rouge">localhost:3000/index</code> which routes to <code class="highlighter-rouge">index_controller#index</code> at a concurrency of 30 workers for 20 repetitions resulting in 600 total requests.</p>
+<p>This executable will request <code class="language-plaintext highlighter-rouge">localhost:3000/index</code> which routes to <code class="language-plaintext highlighter-rouge">index_controller#index</code> at a concurrency of 30 workers for 20 repetitions resulting in 600 total requests.</p>
 
 <p>Keeping this script static allows for the web server’s configuration to change and each test to be congruent with others.</p>
 
@@ -194,17 +196,17 @@ siege -b --content-type <span class="nv">$CONTENT_TYPE</span> -c <span class="nv
 
 <p><strong>CPU Load Average</strong></p>
 
-<p>CPU load average is a measurement of how busy each processor is on a server.  Basically, CPU load average can be used to determine how long a CPU is idling and waiting for something to do. These numbers are very dependent on the number of processors an application has. On a Linux or MacOS machine, you can <code class="highlighter-rouge">cat</code> the <code class="highlighter-rouge">/proc/cpuinfo</code> file to get a break down of how many processors are available to you.</p>
+<p>CPU load average is a measurement of how busy each processor is on a server.  Basically, CPU load average can be used to determine how long a CPU is idling and waiting for something to do. These numbers are very dependent on the number of processors an application has. On a Linux or MacOS machine, you can <code class="language-plaintext highlighter-rouge">cat</code> the <code class="language-plaintext highlighter-rouge">/proc/cpuinfo</code> file to get a break down of how many processors are available to you.</p>
 
-<p>On the machine used to test this application, 4 processors are available.  Translating that to percentage of usage, we would see a value of <code class="highlighter-rouge">4.0</code> for our CPU load average if all processors were being completely used. Any value higher than that and we’d have work waiting to be done by a processor. Conversely, a value much lower than <code class="highlighter-rouge">4.0</code> indicates that some processors are not doing anything.</p>
+<p>On the machine used to test this application, 4 processors are available.  Translating that to percentage of usage, we would see a value of <code class="language-plaintext highlighter-rouge">4.0</code> for our CPU load average if all processors were being completely used. Any value higher than that and we’d have work waiting to be done by a processor. Conversely, a value much lower than <code class="language-plaintext highlighter-rouge">4.0</code> indicates that some processors are not doing anything.</p>
 
-<p>CPU load average is displayed with 3 numbers ex: <code class="highlighter-rouge">0.1 0.4 0.8</code> which translates to <code class="highlighter-rouge">1 min 5 min 10 min</code> averages. If the <code class="highlighter-rouge">1 min</code> average is higher than the <code class="highlighter-rouge">5 min</code> and <code class="highlighter-rouge">10 min</code> averages, server load is increasing. If the <code class="highlighter-rouge">1 min</code> average is lower than the <code class="highlighter-rouge">5 min</code> and <code class="highlighter-rouge">10 min</code> averages, server load is decreasing. The only metric reported in this summary will be the <code class="highlighter-rouge">1 min</code> load average since it is measured while the server is under siege.</p>
+<p>CPU load average is displayed with 3 numbers ex: <code class="language-plaintext highlighter-rouge">0.1 0.4 0.8</code> which translates to <code class="language-plaintext highlighter-rouge">1 min 5 min 10 min</code> averages. If the <code class="language-plaintext highlighter-rouge">1 min</code> average is higher than the <code class="language-plaintext highlighter-rouge">5 min</code> and <code class="language-plaintext highlighter-rouge">10 min</code> averages, server load is increasing. If the <code class="language-plaintext highlighter-rouge">1 min</code> average is lower than the <code class="language-plaintext highlighter-rouge">5 min</code> and <code class="language-plaintext highlighter-rouge">10 min</code> averages, server load is decreasing. The only metric reported in this summary will be the <code class="language-plaintext highlighter-rouge">1 min</code> load average since it is measured while the server is under siege.</p>
 
 <p><strong>Memory Usage</strong></p>
 
 <p>Memory Usage is the amount of memory (RAM) used by the application. When a server runs out of RAM, it creates virtual memory out of partitioned space on the disk to overflow into. This is called swapping and it can greatly reduce the efficiency of a server. Along with CPU load average, making sure a server’s memory usage is below capacity is an important way to keep a healthy and happy application.</p>
 
-<p>The amount of memory an application uses in total should be balanced by any other <code class="highlighter-rouge">processes</code> running on that server while leaving some amount of room for utility applications. Using more than the memory available on a server will lead to performance issues.</p>
+<p>The amount of memory an application uses in total should be balanced by any other <code class="language-plaintext highlighter-rouge">processes</code> running on that server while leaving some amount of room for utility applications. Using more than the memory available on a server will lead to performance issues.</p>
 
 <h3 id="io-intensive-threads-v-processes-and-throughput">I/O Intensive Threads v Processes and Throughput</h3>
 
@@ -281,21 +283,21 @@ siege -b --content-type <span class="nv">$CONTENT_TYPE</span> -c <span class="nv
   </tbody>
 </table>
 
-<p>For the example I/O bound application, CPU load average never rises above <code class="highlighter-rouge">1.0</code> regardless of <code class="highlighter-rouge">Process</code> count. This means that the server is not using its processing power to its full potential because the requests do not demand it.</p>
+<p>For the example I/O bound application, CPU load average never rises above <code class="language-plaintext highlighter-rouge">1.0</code> regardless of <code class="language-plaintext highlighter-rouge">Process</code> count. This means that the server is not using its processing power to its full potential because the requests do not demand it.</p>
 
-<p>On the other hand, the number of <code class="highlighter-rouge">Threads</code> makes a big difference for I/O blocking operations.  With a single <code class="highlighter-rouge">Thread</code>, it takes 77 seconds to complete all 600 requests. Just increasing that number of <code class="highlighter-rouge">Threads</code> to 10 makes the same work take 16 seconds!  But look at what happens when <code class="highlighter-rouge">Threads</code> are increased to 100: the same jump in throughput doesn’t happen. This shows that the number of <code class="highlighter-rouge">Threads</code> an application can utilize has an upper limit .</p>
+<p>On the other hand, the number of <code class="language-plaintext highlighter-rouge">Threads</code> makes a big difference for I/O blocking operations.  With a single <code class="language-plaintext highlighter-rouge">Thread</code>, it takes 77 seconds to complete all 600 requests. Just increasing that number of <code class="language-plaintext highlighter-rouge">Threads</code> to 10 makes the same work take 16 seconds!  But look at what happens when <code class="language-plaintext highlighter-rouge">Threads</code> are increased to 100: the same jump in throughput doesn’t happen. This shows that the number of <code class="language-plaintext highlighter-rouge">Threads</code> an application can utilize has an upper limit .</p>
 
-<p>Additionally, the memory usage quickly increases with the number of <code class="highlighter-rouge">processes</code> on the machine. For a very simple application like this with no database, the maximum memory usage of 715mb isn’t huge but on a traditional Rails application, <em>each</em> <code class="highlighter-rouge">process</code> could easily have a few hundred mb of memory usage. Along with hard caps for database connections, maintaining too many <code class="highlighter-rouge">processes</code> can quickly use more memory than a server has available.</p>
+<p>Additionally, the memory usage quickly increases with the number of <code class="language-plaintext highlighter-rouge">processes</code> on the machine. For a very simple application like this with no database, the maximum memory usage of 715mb isn’t huge but on a traditional Rails application, <em>each</em> <code class="language-plaintext highlighter-rouge">process</code> could easily have a few hundred mb of memory usage. Along with hard caps for database connections, maintaining too many <code class="language-plaintext highlighter-rouge">processes</code> can quickly use more memory than a server has available.</p>
 
-<p>Similar to <code class="highlighter-rouge">Threads</code>, infinitely scaling <code class="highlighter-rouge">Processes</code> is not a sure way to get the best results. In this example, a balance of 10 <code class="highlighter-rouge">Processes</code> and 10 <code class="highlighter-rouge">Threads</code> gives the best throughput at nearly a 700% memory increase.</p>
+<p>Similar to <code class="language-plaintext highlighter-rouge">Threads</code>, infinitely scaling <code class="language-plaintext highlighter-rouge">Processes</code> is not a sure way to get the best results. In this example, a balance of 10 <code class="language-plaintext highlighter-rouge">Processes</code> and 10 <code class="language-plaintext highlighter-rouge">Threads</code> gives the best throughput at nearly a 700% memory increase.</p>
 
 <h2 id="cpu-intensive-application">CPU Intensive Application</h2>
 
-<p>To see how the number of <code class="highlighter-rouge">Threads</code> and <code class="highlighter-rouge">Processes</code> impact a more CPU intensive application the <code class="highlighter-rouge">index_controller</code> has been changed:</p>
+<p>To see how the number of <code class="language-plaintext highlighter-rouge">Threads</code> and <code class="language-plaintext highlighter-rouge">Processes</code> impact a more CPU intensive application the <code class="language-plaintext highlighter-rouge">index_controller</code> has been changed:</p>
 
-<h3 id="indexcontrollerrb-1"><code class="highlighter-rouge">index_controller.rb</code></h3>
+<h3 id="index_controllerrb-1"><code class="language-plaintext highlighter-rouge">index_controller.rb</code></h3>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">class</span> <span class="nc">IndexController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">IndexController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
   <span class="k">def</span> <span class="nf">index</span>
     <span class="n">tax_cpu</span>
     <span class="n">render</span> <span class="ss">json: </span><span class="p">{</span> <span class="ss">hello: :there</span> <span class="p">}</span>
@@ -305,12 +307,11 @@ siege -b --content-type <span class="nv">$CONTENT_TYPE</span> -c <span class="nv
     <span class="no">Array</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="mi">100_000</span><span class="p">)</span> <span class="p">{</span> <span class="nb">rand</span><span class="p">(</span><span class="mi">100_000</span><span class="p">)</span> <span class="p">}.</span><span class="nf">sort!</span>
   <span class="k">end</span>
 <span class="k">end</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
-<p>Now each request will create an array of <code class="highlighter-rouge">100,000</code> integers and sort them.</p>
+<p>Now each request will create an array of <code class="language-plaintext highlighter-rouge">100,000</code> integers and sort them.</p>
 
-<p>The same siege command is run against the same <code class="highlighter-rouge">Thread</code> and <code class="highlighter-rouge">Process</code> configuration counts.</p>
+<p>The same siege command is run against the same <code class="language-plaintext highlighter-rouge">Thread</code> and <code class="language-plaintext highlighter-rouge">Process</code> configuration counts.</p>
 
 <table>
   <thead>
@@ -385,19 +386,19 @@ siege -b --content-type <span class="nv">$CONTENT_TYPE</span> -c <span class="nv
 
 <h3 id="cpu-intensive-threads-v-processes-and-throughput">CPU Intensive Threads v Processes and Throughput</h3>
 
-<p>For the CPU intensive code, only increasing <code class="highlighter-rouge">Threads</code> does nothing for overall execution time. The 600 requests require around 18 seconds no with 1 <code class="highlighter-rouge">Thread</code> and with 100 <code class="highlighter-rouge">Threads</code>.</p>
+<p>For the CPU intensive code, only increasing <code class="language-plaintext highlighter-rouge">Threads</code> does nothing for overall execution time. The 600 requests require around 18 seconds no with 1 <code class="language-plaintext highlighter-rouge">Thread</code> and with 100 <code class="language-plaintext highlighter-rouge">Threads</code>.</p>
 
-<p>On the other hand, doubling the number of <code class="highlighter-rouge">Processes</code> cuts execution time by almost half! However, increasing the number of <code class="highlighter-rouge">Processes</code> from 2 to 10 (a 500% increase) does not decrease the execution time by another 500%.  Just like in the I/O bound application, scaling <code class="highlighter-rouge">Processes</code> will eventually experience diminishing returns, making each additional <code class="highlighter-rouge">process</code> less valuable.</p>
+<p>On the other hand, doubling the number of <code class="language-plaintext highlighter-rouge">Processes</code> cuts execution time by almost half! However, increasing the number of <code class="language-plaintext highlighter-rouge">Processes</code> from 2 to 10 (a 500% increase) does not decrease the execution time by another 500%.  Just like in the I/O bound application, scaling <code class="language-plaintext highlighter-rouge">Processes</code> will eventually experience diminishing returns, making each additional <code class="language-plaintext highlighter-rouge">process</code> less valuable.</p>
 
-<p>During the CPU intensive code testing, the server never experienced a fully saturated load average of <code class="highlighter-rouge">4.0</code>. This is because the example code was not all that taxing. In a real application serving end users, it is surprisingly easy to make full use of all CPU resources with enough <code class="highlighter-rouge">Processes</code>.</p>
+<p>During the CPU intensive code testing, the server never experienced a fully saturated load average of <code class="language-plaintext highlighter-rouge">4.0</code>. This is because the example code was not all that taxing. In a real application serving end users, it is surprisingly easy to make full use of all CPU resources with enough <code class="language-plaintext highlighter-rouge">Processes</code>.</p>
 
 <h2 id="a-little-realism">A Little Realism</h2>
 
 <p>In the real world, an application is not likely to be only CPU or I/O intensive but rather some mixture of both. To help add a little bit of variety to this test, the two operations are combined and run at a percentage:</p>
 
-<h3 id="indexcontrollerrb-2"><code class="highlighter-rouge">index_controller.rb</code></h3>
+<h3 id="index_controllerrb-2"><code class="language-plaintext highlighter-rouge">index_controller.rb</code></h3>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">class</span> <span class="nc">IndexController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">IndexController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
   <span class="k">def</span> <span class="nf">index</span>
     <span class="k">if</span> <span class="nb">rand</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span>
       <span class="n">tax_cpu</span>
@@ -412,11 +413,10 @@ siege -b --content-type <span class="nv">$CONTENT_TYPE</span> -c <span class="nv
   <span class="k">end</span>
 
   <span class="k">def</span> <span class="nf">interval_sleep</span>
-    <span class="nb">sleep</span><span class="p">(</span><span class="nb">rand</span><span class="p">(</span><span class="mi">2</span><span class="p">.</span><span class="nf">.</span><span class="mi">10</span><span class="p">).</span><span class="nf">to_f</span> <span class="o">/</span> <span class="mi">50</span><span class="p">)</span>
+    <span class="nb">sleep</span><span class="p">(</span><span class="nb">rand</span><span class="p">(</span><span class="mi">2</span><span class="o">..</span><span class="mi">10</span><span class="p">).</span><span class="nf">to_f</span> <span class="o">/</span> <span class="mi">50</span><span class="p">)</span>
   <span class="k">end</span>
 <span class="k">end</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>Now this controller will be I/O bound approximately 66% of the time and CPU bound the other 33%.</p>
 
@@ -495,23 +495,23 @@ siege -b --content-type <span class="nv">$CONTENT_TYPE</span> -c <span class="nv
   </tbody>
 </table>
 
-<p>The number of <code class="highlighter-rouge">Threads</code> and <code class="highlighter-rouge">Processes</code> each have an impact in these results.  Unlike the other versions of <code class="highlighter-rouge">index_controller.rb</code>, if too few <code class="highlighter-rouge">Threads</code> are allocated, the application will wait on I/O operations. Likewise, too few <code class="highlighter-rouge">Processes</code> tie up the CPU, blocking other requests from being served.</p>
+<p>The number of <code class="language-plaintext highlighter-rouge">Threads</code> and <code class="language-plaintext highlighter-rouge">Processes</code> each have an impact in these results.  Unlike the other versions of <code class="language-plaintext highlighter-rouge">index_controller.rb</code>, if too few <code class="language-plaintext highlighter-rouge">Threads</code> are allocated, the application will wait on I/O operations. Likewise, too few <code class="language-plaintext highlighter-rouge">Processes</code> tie up the CPU, blocking other requests from being served.</p>
 
-<p>While the fastest possible results is 10 <code class="highlighter-rouge">Processes</code> and 10 <code class="highlighter-rouge">Threads</code>, it is important to look at the load average and memory usage. For nearly 1/5th the memory, 2 <code class="highlighter-rouge">Processes</code> and 10 <code class="highlighter-rouge">Threads</code> accomplishes the task in only 2 more seconds. A server that has memory issues or an application that is memory starved might adopt this more modest configuration to save memory. The 10 <code class="highlighter-rouge">Processes</code>, 10 <code class="highlighter-rouge">Threads</code> configuration also has the highest CPU load average. Just like memory concerns, a server with lower processing power might be better <em>served</em> with fewer <code class="highlighter-rouge">Processes</code> competing for CPU time.</p>
+<p>While the fastest possible results is 10 <code class="language-plaintext highlighter-rouge">Processes</code> and 10 <code class="language-plaintext highlighter-rouge">Threads</code>, it is important to look at the load average and memory usage. For nearly 1/5th the memory, 2 <code class="language-plaintext highlighter-rouge">Processes</code> and 10 <code class="language-plaintext highlighter-rouge">Threads</code> accomplishes the task in only 2 more seconds. A server that has memory issues or an application that is memory starved might adopt this more modest configuration to save memory. The 10 <code class="language-plaintext highlighter-rouge">Processes</code>, 10 <code class="language-plaintext highlighter-rouge">Threads</code> configuration also has the highest CPU load average. Just like memory concerns, a server with lower processing power might be better <em>served</em> with fewer <code class="language-plaintext highlighter-rouge">Processes</code> competing for CPU time.</p>
 
 <h2 id="summary">Summary</h2>
 
-<p>The number of <code class="highlighter-rouge">Threads</code> and <code class="highlighter-rouge">Processes</code> can be the deciding factor on a web application’s performance. Additionally, understanding how the number of <code class="highlighter-rouge">Procesess</code> and <code class="highlighter-rouge">Threads</code> impact a server is useful for choosing and configuring a web server. Any code which uses concurrency can benefit from this knowledge. Balancing memory usage, external resource connection limits, and CPU load average is a great way to make sure a server is provisioned correctly and might even save some money.</p>
+<p>The number of <code class="language-plaintext highlighter-rouge">Threads</code> and <code class="language-plaintext highlighter-rouge">Processes</code> can be the deciding factor on a web application’s performance. Additionally, understanding how the number of <code class="language-plaintext highlighter-rouge">Procesess</code> and <code class="language-plaintext highlighter-rouge">Threads</code> impact a server is useful for choosing and configuring a web server. Any code which uses concurrency can benefit from this knowledge. Balancing memory usage, external resource connection limits, and CPU load average is a great way to make sure a server is provisioned correctly and might even save some money.</p>
 
 <p>When evaluating the best configuration for your web server, this simple list is a great starting point:</p>
 
 <ol>
   <li>Use only the available memory for the server.</li>
-  <li>Use <code class="highlighter-rouge">Threads</code> for blocking code and <code class="highlighter-rouge">Processes</code> for CPU intensive code.</li>
-  <li>Use tools like <code class="highlighter-rouge">siege</code> for benchmarking and testing different configurations.</li>
+  <li>Use <code class="language-plaintext highlighter-rouge">Threads</code> for blocking code and <code class="language-plaintext highlighter-rouge">Processes</code> for CPU intensive code.</li>
+  <li>Use tools like <code class="language-plaintext highlighter-rouge">siege</code> for benchmarking and testing different configurations.</li>
 </ol>
 
-<p>Things like <code class="highlighter-rouge">thread</code> starvation, semaphores, <code class="highlighter-rouge">thread</code> pooling and other concerns regarding concurrent programming were intentionally not mentioned in this post.  Understanding how <code class="highlighter-rouge">Threads</code> and <code class="highlighter-rouge">Processes</code> work at a high level can enable the configuration and choice of web server, but if you want to write your own complex concurrent Ruby code, I’d suggest <a href="https://github.com/ruby-concurrency/concurrent-ruby">concurrent-ruby</a>.</p>
+<p>Things like <code class="language-plaintext highlighter-rouge">thread</code> starvation, semaphores, <code class="language-plaintext highlighter-rouge">thread</code> pooling and other concerns regarding concurrent programming were intentionally not mentioned in this post.  Understanding how <code class="language-plaintext highlighter-rouge">Threads</code> and <code class="language-plaintext highlighter-rouge">Processes</code> work at a high level can enable the configuration and choice of web server, but if you want to write your own complex concurrent Ruby code, I’d suggest <a href="https://github.com/ruby-concurrency/concurrent-ruby">concurrent-ruby</a>.</p>
 
 </div>
 

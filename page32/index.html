@@ -18,6 +18,8 @@
   
   
 
+  
+
   <!-- Enable responsiveness on mobile devices-->
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
 
@@ -38,6 +40,8 @@
 
   <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
   <script async src="https://use.fontawesome.com/b3103405a3.js"></script>
+
+  
 </head>
 
 
@@ -63,13 +67,14 @@
       </span>
       <a id='home' class="sidebar-nav-item" href="https://jakeyesbeck.com">Home</a>
       <a id='archives'class="sidebar-nav-item" href="/archives">Archives</a>
+      <a id='services'class="sidebar-nav-item" href="/services">Services</a>
       <a id='resume'class="sidebar-nav-item" href="https://jakeyesbeck.com/assets/files/resume.pdf">Resume</a>
       <a id='about'class="sidebar-nav-item" href="/about">About</a>
       <a id='github'class="sidebar-nav-item" href="https://github.com/yez">GitHub</a>
       <a id='rss'class="sidebar-nav-item" href="/atom.xml">Feed</a>
     </nav>
 
-    <p class='copyright'>&copy; Jake Yesbeck 2022. All rights reserved.</p>
+    <p class='copyright'>&copy; Jake Yesbeck 2026. All rights reserved.</p>
   </div>
 </div>
 
@@ -121,60 +126,56 @@
 
 <p>When these opaque pieces of code start to cause issue or incite curiosity, spelunking through these libraries is easier with simple patterns and the right tools.</p>
 
-<h2 id="get-the-right-tools">0. Get the Right Tools</h2>
+<h2 id="0-get-the-right-tools">0. Get the Right Tools</h2>
 
 <p>An important piece of technology when reading code is a text editor. The right editor will make searching for methods fast and opening files painless.</p>
 
-<p>Another vital component when traversing Ruby code is a runtime debugger. For this, the <a href="https://github.com/pry/pry"><code class="highlighter-rouge">pry</code> gem</a> is a personal favorite. Using <code class="highlighter-rouge">pry</code> is as simple as requiring it, then adding <code class="highlighter-rouge">binding.pry</code> at the desired stopping point. Alternatively, some people like to debug with output statements in code execution; but, this is 2015 and I like things that I can interact with.</p>
+<p>Another vital component when traversing Ruby code is a runtime debugger. For this, the <a href="https://github.com/pry/pry"><code class="language-plaintext highlighter-rouge">pry</code> gem</a> is a personal favorite. Using <code class="language-plaintext highlighter-rouge">pry</code> is as simple as requiring it, then adding <code class="language-plaintext highlighter-rouge">binding.pry</code> at the desired stopping point. Alternatively, some people like to debug with output statements in code execution; but, this is 2015 and I like things that I can interact with.</p>
 
-<h2 id="use-source-and-sourcelocation">1. Use <code class="highlighter-rouge">source</code> and <code class="highlighter-rouge">source_location</code></h2>
+<h2 id="1-use-source-and-source_location">1. Use <code class="language-plaintext highlighter-rouge">source</code> and <code class="language-plaintext highlighter-rouge">source_location</code></h2>
 
-<p>This example will use <code class="highlighter-rouge">ActiveRecord</code>’s <code class="highlighter-rouge">store_accessor</code> method as the subject of investigation.</p>
+<p>This example will use <code class="language-plaintext highlighter-rouge">ActiveRecord</code>’s <code class="language-plaintext highlighter-rouge">store_accessor</code> method as the subject of investigation.</p>
 
-<p>The <code class="highlighter-rouge">store_accessor</code> method is useful for storing data with a volatile structure. If an application wants to prototype a feature or is unsure about how useful a certain data structure might be, using <code class="highlighter-rouge">store_accessor</code> is reasonable. In this case we can assume that the <code class="highlighter-rouge">store_accessor</code> column is the <code class="highlighter-rouge">json</code> type.</p>
+<p>The <code class="language-plaintext highlighter-rouge">store_accessor</code> method is useful for storing data with a volatile structure. If an application wants to prototype a feature or is unsure about how useful a certain data structure might be, using <code class="language-plaintext highlighter-rouge">store_accessor</code> is reasonable. In this case we can assume that the <code class="language-plaintext highlighter-rouge">store_accessor</code> column is the <code class="language-plaintext highlighter-rouge">json</code> type.</p>
 
-<p>Given a <code class="highlighter-rouge">User</code> class, with a column named <code class="highlighter-rouge">settings</code>, we can define two  <code class="highlighter-rouge">store_accessors</code>: <code class="highlighter-rouge">is_registered</code> and <code class="highlighter-rouge">contact_method</code>.</p>
+<p>Given a <code class="language-plaintext highlighter-rouge">User</code> class, with a column named <code class="language-plaintext highlighter-rouge">settings</code>, we can define two  <code class="language-plaintext highlighter-rouge">store_accessors</code>: <code class="language-plaintext highlighter-rouge">is_registered</code> and <code class="language-plaintext highlighter-rouge">contact_method</code>.</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
   <span class="n">store_accessor</span> <span class="ss">:settings</span><span class="p">,</span> <span class="ss">:is_registered</span><span class="p">,</span> <span class="ss">:contact_method</span>
 <span class="k">end</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
-<p>This model responds to <code class="highlighter-rouge">contact_method=</code> and serializes the result into the <code class="highlighter-rouge">json</code> column.</p>
+<p>This model responds to <code class="language-plaintext highlighter-rouge">contact_method=</code> and serializes the result into the <code class="language-plaintext highlighter-rouge">json</code> column.</p>
 
-<p>If we wanted to see how this was defined, we need to start a console and look at where the <code class="highlighter-rouge">contact_method=</code> method exists.</p>
+<p>If we wanted to see how this was defined, we need to start a console and look at where the <code class="language-plaintext highlighter-rouge">contact_method=</code> method exists.</p>
 
-<p>To see the definition of a method, <code class="highlighter-rouge">method</code> and <code class="highlighter-rouge">source</code> are helpful.</p>
+<p>To see the definition of a method, <code class="language-plaintext highlighter-rouge">method</code> and <code class="language-plaintext highlighter-rouge">source</code> are helpful.</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="n">user</span> <span class="o">=</span> <span class="no">User</span><span class="p">.</span><span class="nf">new</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">user</span> <span class="o">=</span> <span class="no">User</span><span class="p">.</span><span class="nf">new</span>
 <span class="nb">puts</span> <span class="n">user</span><span class="p">.</span><span class="nf">method</span><span class="p">(</span><span class="ss">:contact_method</span><span class="o">=</span><span class="p">).</span><span class="nf">source</span>
 <span class="c1">#=&gt; define_method("#{key}=") do |value|</span>
 <span class="c1">#     write_store_attribute(store_attribute, key, value)</span>
 <span class="c1">#   end</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
-<p>It seems that the <code class="highlighter-rouge">contact_method=</code> method is meta-programmed. This does not say much but gives a good starting point. Now, to find which file this method is defined in, <code class="highlighter-rouge">source_location</code> is used.</p>
+<p>It seems that the <code class="language-plaintext highlighter-rouge">contact_method=</code> method is meta-programmed. This does not say much but gives a good starting point. Now, to find which file this method is defined in, <code class="language-plaintext highlighter-rouge">source_location</code> is used.</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="n">user</span><span class="p">.</span><span class="nf">method</span><span class="p">(</span><span class="ss">:contact_method</span><span class="o">=</span><span class="p">).</span><span class="nf">source_location</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">user</span><span class="p">.</span><span class="nf">method</span><span class="p">(</span><span class="ss">:contact_method</span><span class="o">=</span><span class="p">).</span><span class="nf">source_location</span>
 <span class="c1">#=&gt; ["$RVM_PATH/.rvm/gems/ruby-2.2.1@global/gems/activerecord-4.2.4/lib/active_record/store.rb", 85]</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
-<p>As assumed, the method which defines the <code class="highlighter-rouge">store_accessor</code> methods is inside of <code class="highlighter-rouge">ActiveRecord</code>, specifically on line <code class="highlighter-rouge">85</code> of <code class="highlighter-rouge">store.rb</code>.</p>
+<p>As assumed, the method which defines the <code class="language-plaintext highlighter-rouge">store_accessor</code> methods is inside of <code class="language-plaintext highlighter-rouge">ActiveRecord</code>, specifically on line <code class="language-plaintext highlighter-rouge">85</code> of <code class="language-plaintext highlighter-rouge">store.rb</code>.</p>
 
-<h2 id="place-a-reasonable-bindingpry">2. Place a Reasonable <code class="highlighter-rouge">binding.pry</code></h2>
+<h2 id="2-place-a-reasonable-bindingpry">2. Place a Reasonable <code class="language-plaintext highlighter-rouge">binding.pry</code></h2>
 
-<p>With the location of the method found, <code class="highlighter-rouge">binding.pry</code> has a logical place to go. Since <a href="https://jakeyesbeck.com/2015/08/16/gems-are-not-magic/">gems are not magic</a>, the <code class="highlighter-rouge">ActiveRecord</code> gem can be opened and its source easily read. Opening gems is fairly simple, set a desired <code class="highlighter-rouge">EDITOR</code> and open via the <code class="highlighter-rouge">bundle</code> command. For this example, <code class="highlighter-rouge">subl</code> is mapped to Sublime Text.</p>
+<p>With the location of the method found, <code class="language-plaintext highlighter-rouge">binding.pry</code> has a logical place to go. Since <a href="https://jakeyesbeck.com/2015/08/16/gems-are-not-magic/">gems are not magic</a>, the <code class="language-plaintext highlighter-rouge">ActiveRecord</code> gem can be opened and its source easily read. Opening gems is fairly simple, set a desired <code class="language-plaintext highlighter-rouge">EDITOR</code> and open via the <code class="language-plaintext highlighter-rouge">bundle</code> command. For this example, <code class="language-plaintext highlighter-rouge">subl</code> is mapped to Sublime Text.</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="nv">EDITOR</span><span class="o">=</span>subl bundle open activerecord
-</code></pre>
-</div>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">EDITOR</span><span class="o">=</span>subl bundle open activerecord
+</code></pre></div></div>
 
-<p>Then, navigating to line <code class="highlighter-rouge">85</code> of <code class="highlighter-rouge">store.rb</code>, a <code class="highlighter-rouge">binding.pry</code> can be added to stop code execution when the <code class="highlighter-rouge">contact_method=</code> method is used.</p>
+<p>Then, navigating to line <code class="language-plaintext highlighter-rouge">85</code> of <code class="language-plaintext highlighter-rouge">store.rb</code>, a <code class="language-plaintext highlighter-rouge">binding.pry</code> can be added to stop code execution when the <code class="language-plaintext highlighter-rouge">contact_method=</code> method is used.</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="c1"># In activerecord-4.2.4/lib/active_record/store.rb</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># In activerecord-4.2.4/lib/active_record/store.rb</span>
 
 <span class="n">define_method</span><span class="p">(</span><span class="s2">"</span><span class="si">#{</span><span class="n">key</span><span class="si">}</span><span class="s2">="</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">value</span><span class="o">|</span>
   <span class="nb">require</span> <span class="s1">'pry'</span>
@@ -183,14 +184,13 @@
   <span class="k">end</span>
   <span class="n">write_store_attribute</span><span class="p">(</span><span class="n">store_attribute</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
 <span class="k">end</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
-<p><strong>Note: adding <code class="highlighter-rouge">require 'pry'</code> might not be necessary, depending on the bundle this code is running in.</strong></p>
+<p><strong>Note: adding <code class="language-plaintext highlighter-rouge">require 'pry'</code> might not be necessary, depending on the bundle this code is running in.</strong></p>
 
-<p>With the <code class="highlighter-rouge">binding.pry</code> in place, launching a new <code class="highlighter-rouge">rails console</code> will use the modified code. When a <code class="highlighter-rouge">user</code>’s <code class="highlighter-rouge">contact_method=</code> method is called, pry will take over.</p>
+<p>With the <code class="language-plaintext highlighter-rouge">binding.pry</code> in place, launching a new <code class="language-plaintext highlighter-rouge">rails console</code> will use the modified code. When a <code class="language-plaintext highlighter-rouge">user</code>’s <code class="language-plaintext highlighter-rouge">contact_method=</code> method is called, pry will take over.</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="n">user</span> <span class="o">=</span> <span class="no">User</span><span class="p">.</span><span class="nf">new</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">user</span> <span class="o">=</span> <span class="no">User</span><span class="p">.</span><span class="nf">new</span>
 <span class="n">user</span><span class="p">.</span><span class="nf">contact_method</span> <span class="o">=</span> <span class="p">{</span> <span class="ss">phone: </span><span class="kp">true</span> <span class="p">}</span>
 
     <span class="mi">85</span><span class="p">:</span> <span class="n">define_method</span><span class="p">(</span><span class="s2">"</span><span class="si">#{</span><span class="n">key</span><span class="si">}</span><span class="s2">="</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">value</span><span class="o">|</span>
@@ -200,23 +200,21 @@
     <span class="mi">89</span><span class="p">:</span>   <span class="k">end</span>
     <span class="mi">90</span><span class="p">:</span>   <span class="n">write_store_attribute</span><span class="p">(</span><span class="n">store_attribute</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
     <span class="mi">91</span><span class="p">:</span> <span class="k">end</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>We have liftoff! The code is halted in the meta programmed definition of this setter. The local variables here can be accessed to see what is actually going on:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="n">pry</span><span class="o">&gt;</span> <span class="n">store_attribute</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="n">pry</span><span class="o">&gt;</span> <span class="n">store_attribute</span>
 <span class="c1"># =&gt; :settings</span>
 <span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="n">pry</span><span class="o">&gt;</span> <span class="n">value</span>
 <span class="c1"># =&gt; {:phone=&gt;true}</span>
 <span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="n">pry</span><span class="o">&gt;</span> <span class="n">key</span>
 <span class="c1"># =&gt; :contact_method</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
-<p>This tells us some, but it seems that the real logic is in the <code class="highlighter-rouge">write_store_attribute</code> method. While the code execution is stopped, we are able to use the same <code class="highlighter-rouge">method().source</code> and <code class="highlighter-rouge">method().source_location</code> calls from before to gain even more insight.</p>
+<p>This tells us some, but it seems that the real logic is in the <code class="language-plaintext highlighter-rouge">write_store_attribute</code> method. While the code execution is stopped, we are able to use the same <code class="language-plaintext highlighter-rouge">method().source</code> and <code class="language-plaintext highlighter-rouge">method().source_location</code> calls from before to gain even more insight.</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="p">[</span><span class="mi">4</span><span class="p">]</span> <span class="n">pry</span><span class="o">&gt;</span> <span class="nb">puts</span> <span class="nb">method</span><span class="p">(</span><span class="ss">:write_store_attribute</span><span class="p">).</span><span class="nf">source</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">[</span><span class="mi">4</span><span class="p">]</span> <span class="n">pry</span><span class="o">&gt;</span> <span class="nb">puts</span> <span class="nb">method</span><span class="p">(</span><span class="ss">:write_store_attribute</span><span class="p">).</span><span class="nf">source</span>
 <span class="c1"># =&gt; def write_store_attribute(store_attribute, key, value)</span>
 <span class="c1"># =&gt;   accessor = store_accessor_for(store_attribute)</span>
 <span class="c1"># =&gt;   accessor.write(self, store_attribute, key, value)</span>
@@ -226,28 +224,26 @@
 <span class="c1">#=&gt; ["$RVM_PATH/.rvm/gems/ruby-2.2.1@global/gems/activerecord-4.2.4/lib/active_record/store.rb",</span>
  <span class="mi">129</span><span class="p">]</span>
 
-</code></pre>
-</div>
+</code></pre></div></div>
 
-<h2 id="make-an-exit">3. Make an Exit</h2>
+<h2 id="3-make-an-exit">3. Make an Exit</h2>
 
-<p>Pry comes with a number of <a href="https://github.com/pry/pry/wiki/State-navigation">helpful commands</a> for code navigation. An important command is <code class="highlighter-rouge">exit</code>, which will stop the at a specified break point and let the code continue to either the next break point or until completion.</p>
+<p>Pry comes with a number of <a href="https://github.com/pry/pry/wiki/State-navigation">helpful commands</a> for code navigation. An important command is <code class="language-plaintext highlighter-rouge">exit</code>, which will stop the at a specified break point and let the code continue to either the next break point or until completion.</p>
 
-<p>Multiple <code class="highlighter-rouge">binding.pry</code> lines may be added to different files in order to jump from break point to break point. If we wanted to dig deeper, to see what the <code class="highlighter-rouge">accessor</code> variable is in <code class="highlighter-rouge">write_store_attribute</code>, we could place a second <code class="highlighter-rouge">binding.pry</code>.</p>
+<p>Multiple <code class="language-plaintext highlighter-rouge">binding.pry</code> lines may be added to different files in order to jump from break point to break point. If we wanted to dig deeper, to see what the <code class="language-plaintext highlighter-rouge">accessor</code> variable is in <code class="language-plaintext highlighter-rouge">write_store_attribute</code>, we could place a second <code class="language-plaintext highlighter-rouge">binding.pry</code>.</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="c1"># In activerecord-4.2.4/lib/active_record/store.rb</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># In activerecord-4.2.4/lib/active_record/store.rb</span>
 
 <span class="k">def</span> <span class="nf">write_store_attribute</span><span class="p">(</span><span class="n">store_attribute</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
   <span class="n">accessor</span> <span class="o">=</span> <span class="n">store_accessor_for</span><span class="p">(</span><span class="n">store_attribute</span><span class="p">)</span>
   <span class="nb">binding</span><span class="p">.</span><span class="nf">pry</span>
   <span class="n">accessor</span><span class="p">.</span><span class="nf">write</span><span class="p">(</span><span class="nb">self</span><span class="p">,</span> <span class="n">store_attribute</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
 <span class="k">end</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
-<p>Now, <code class="highlighter-rouge">exit</code> and re-running <code class="highlighter-rouge">rails console</code> shows both break points in action.</p>
+<p>Now, <code class="language-plaintext highlighter-rouge">exit</code> and re-running <code class="language-plaintext highlighter-rouge">rails console</code> shows both break points in action.</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="o">&gt;</span> <span class="n">user</span> <span class="o">=</span> <span class="no">User</span><span class="p">.</span><span class="nf">new</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> <span class="n">user</span> <span class="o">=</span> <span class="no">User</span><span class="p">.</span><span class="nf">new</span>
 <span class="o">&gt;</span> <span class="n">user</span><span class="p">.</span><span class="nf">contact_method</span> <span class="o">=</span> <span class="p">{</span> <span class="ss">phone: </span><span class="kp">true</span> <span class="p">}</span>
 
     <span class="mi">85</span><span class="p">:</span> <span class="n">define_method</span><span class="p">(</span><span class="s2">"</span><span class="si">#{</span><span class="n">key</span><span class="si">}</span><span class="s2">="</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">value</span><span class="o">|</span>
@@ -272,16 +268,15 @@
 <span class="c1"># =&gt; def self.write(object, attribute, key, value)</span>
 <span class="c1"># =&gt;   super object, attribute, key.to_s, value</span>
 <span class="c1"># =&gt; end</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
-<p>More break points, more knowledge. Each new <code class="highlighter-rouge">binding.pry</code> gives a new context which subsequently opens more avenues of exploration. This is obviously not the end of the <code class="highlighter-rouge">store_accessor</code> logic, but a great first step has been made.</p>
+<p>More break points, more knowledge. Each new <code class="language-plaintext highlighter-rouge">binding.pry</code> gives a new context which subsequently opens more avenues of exploration. This is obviously not the end of the <code class="language-plaintext highlighter-rouge">store_accessor</code> logic, but a great first step has been made.</p>
 
-<p><strong>Note: The <code class="highlighter-rouge">@</code> command can be used to show the current bound context. This is especially helpful if many different debug or output statements have been used in one bind point.</strong></p>
+<p><strong>Note: The <code class="language-plaintext highlighter-rouge">@</code> command can be used to show the current bound context. This is especially helpful if many different debug or output statements have been used in one bind point.</strong></p>
 
-<h2 id="rinse-and-repeat">4. Rinse and Repeat</h2>
+<h2 id="4-rinse-and-repeat">4. Rinse and Repeat</h2>
 
-<p>Following the same pattern, any depth of code can be reached by placing a <code class="highlighter-rouge">binding.pry</code>, observing results and repeating. Traveling through code that is foreign will also help build confidence. When developers stop assuming that things are black boxes of magic, everyone benefits.</p>
+<p>Following the same pattern, any depth of code can be reached by placing a <code class="language-plaintext highlighter-rouge">binding.pry</code>, observing results and repeating. Traveling through code that is foreign will also help build confidence. When developers stop assuming that things are black boxes of magic, everyone benefits.</p>
 
 <p>Using these simple techniques, code previously hidden or otherwise out of reach becomes accessible and easy to traverse. Finally, I would advise to keep trips down the code rabbit hole short, or you might shave <a href="https://www.hanselman.com/blog/YakShavingDefinedIllGetThatDoneAsSoonAsIShaveThisYak.aspx">one too many yaks</a>.</p>
 

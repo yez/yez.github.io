@@ -17,6 +17,8 @@
   
   
 
+  
+
   <!-- Enable responsiveness on mobile devices-->
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
 
@@ -37,6 +39,8 @@
 
   <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
   <script async src="https://use.fontawesome.com/b3103405a3.js"></script>
+
+  
 </head>
 
 
@@ -62,13 +66,14 @@
       </span>
       <a id='home' class="sidebar-nav-item" href="https://jakeyesbeck.com">Home</a>
       <a id='archives'class="sidebar-nav-item" href="/archives">Archives</a>
+      <a id='services'class="sidebar-nav-item" href="/services">Services</a>
       <a id='resume'class="sidebar-nav-item" href="https://jakeyesbeck.com/assets/files/resume.pdf">Resume</a>
       <a id='about'class="sidebar-nav-item" href="/about">About</a>
       <a id='github'class="sidebar-nav-item" href="https://github.com/yez">GitHub</a>
       <a id='rss'class="sidebar-nav-item" href="/atom.xml">Feed</a>
     </nav>
 
-    <p class='copyright'>&copy; Jake Yesbeck 2022. All rights reserved.</p>
+    <p class='copyright'>&copy; Jake Yesbeck 2026. All rights reserved.</p>
   </div>
 </div>
 
@@ -115,17 +120,16 @@
 
 <p>There are two ways to start building an Engine. One option is to use the built in generators to create directories and dummy classes. These generators behave in the same way as standard Rails generators.</p>
 
-<p>To generate an Engine in this way, use the <code class="highlighter-rouge">plugins</code> built in generator:</p>
+<p>To generate an Engine in this way, use the <code class="language-plaintext highlighter-rouge">plugins</code> built in generator:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="gp">$ </span>rails plugin new passages --mountable
-</code></pre>
-</div>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>rails plugin new passages <span class="nt">--mountable</span>
+</code></pre></div></div>
 
-<p><em>Note: Engines and Plugins are not exactly the same in the Ruby on Rails world but the <code class="highlighter-rouge">--mountable</code> flag tells the plugin generator to generate a full Engine.</em></p>
+<p><em>Note: Engines and Plugins are not exactly the same in the Ruby on Rails world but the <code class="language-plaintext highlighter-rouge">--mountable</code> flag tells the plugin generator to generate a full Engine.</em></p>
 
 <p>The other approach is to simply create the needed directories and files by hand. This is was the way the Passages Engine was built, resulting in the following directory structure:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code> |-app
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> |-app
  |--controllers
  |---passages
  |----&lt;controller directories&gt;
@@ -139,36 +143,33 @@
  |-lib
  |--passages
  |---engine.rb
-</code></pre>
-</div>
+</code></pre></div></div>
 
-<p>Some directories that the <code class="highlighter-rouge">rails</code> generator would have added are missing (i.e. <code class="highlighter-rouge">models</code>, <code class="highlighter-rouge">helpers</code>, <code class="highlighter-rouge">mailers</code>). These directories might be necessary for some projects, but the Passages Engine did not have use for them.</p>
+<p>Some directories that the <code class="language-plaintext highlighter-rouge">rails</code> generator would have added are missing (i.e. <code class="language-plaintext highlighter-rouge">models</code>, <code class="language-plaintext highlighter-rouge">helpers</code>, <code class="language-plaintext highlighter-rouge">mailers</code>). These directories might be necessary for some projects, but the Passages Engine did not have use for them.</p>
 
-<p>The file at the heart of it all is <code class="highlighter-rouge">engine.rb</code>. This file is responsible for defining the engine and will also be utilized later to add optional enhancements an Engine can take advantage of:</p>
+<p>The file at the heart of it all is <code class="language-plaintext highlighter-rouge">engine.rb</code>. This file is responsible for defining the engine and will also be utilized later to add optional enhancements an Engine can take advantage of:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">module</span> <span class="nn">Passages</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">module</span> <span class="nn">Passages</span>
   <span class="k">class</span> <span class="nc">Engine</span> <span class="o">&lt;</span> <span class="o">::</span><span class="no">Rails</span><span class="o">::</span><span class="no">Engine</span>
     <span class="n">isolate_namespace</span><span class="p">(</span><span class="no">Passages</span><span class="p">)</span>
   <span class="k">end</span>
 <span class="k">end</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
-<p>An interesting line in this file is the <code class="highlighter-rouge">isolate_namespace</code> method call. This method helps ensure encapsulation for the Engine by isolating its controllers, helpers, views, routes, and any other shared resources between the main application and the Engine.</p>
+<p>An interesting line in this file is the <code class="language-plaintext highlighter-rouge">isolate_namespace</code> method call. This method helps ensure encapsulation for the Engine by isolating its controllers, helpers, views, routes, and any other shared resources between the main application and the Engine.</p>
 
-<p>With isolation, an Engine does not need to worry about conflicting class or module names in the main application. Additionally, an isolated Engine will set its own name according to its namespace, accessible later via <code class="highlighter-rouge">Passages::Engine.engine_name</code>.</p>
+<p>With isolation, an Engine does not need to worry about conflicting class or module names in the main application. Additionally, an isolated Engine will set its own name according to its namespace, accessible later via <code class="language-plaintext highlighter-rouge">Passages::Engine.engine_name</code>.</p>
 
-<p>Since the Passages Engine is also a gem, it has a file named <code class="highlighter-rouge">passages.rb</code> in its <code class="highlighter-rouge">lib</code> directory:</p>
+<p>Since the Passages Engine is also a gem, it has a file named <code class="language-plaintext highlighter-rouge">passages.rb</code> in its <code class="language-plaintext highlighter-rouge">lib</code> directory:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">module</span> <span class="nn">Passages</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">module</span> <span class="nn">Passages</span>
 <span class="k">end</span>
 
 <span class="nb">require</span> <span class="s1">'passages/engine'</span>
 <span class="nb">require</span> <span class="s1">'controllers/passages/routes_controller'</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
-<p>This file is responsible for defining the <code class="highlighter-rouge">Passages</code> module and requiring the engine. It is the entry point for this gem’s logic.</p>
+<p>This file is responsible for defining the <code class="language-plaintext highlighter-rouge">Passages</code> module and requiring the engine. It is the entry point for this gem’s logic.</p>
 
 <h2 id="encapsulate-everywhere">Encapsulate Everywhere</h2>
 
@@ -178,22 +179,20 @@
 
 <h3 id="controllers">Controllers</h3>
 
-<p>In the Passages Engine, the <code class="highlighter-rouge">RoutesController</code> demonstrates this nesting.</p>
+<p>In the Passages Engine, the <code class="language-plaintext highlighter-rouge">RoutesController</code> demonstrates this nesting.</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code> |-app
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> |-app
  |--controllers
  |---passages
  |----routes_controller.rb
-</code></pre>
-</div>
+</code></pre></div></div>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">module</span> <span class="nn">Passages</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">module</span> <span class="nn">Passages</span>
   <span class="k">class</span> <span class="nc">RoutesController</span> <span class="o">&lt;</span> <span class="no">ActionController</span><span class="o">::</span><span class="no">Base</span>
     <span class="c1"># ...</span>
   <span class="k">end</span>
 <span class="k">end</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>The same folder structure is used for views and assets.</p>
 
@@ -201,27 +200,25 @@
 
 <p>Of course what good is a controller without a route to use it? A Ruby on Rails Engine also can define its own routes similarly to a stand-alone application.</p>
 
-<p>Unlike the controllers, the <code class="highlighter-rouge">routes.rb</code> file is not contained in a <code class="highlighter-rouge">passages</code> folder, nor is it within the <code class="highlighter-rouge">module Passages</code>.</p>
+<p>Unlike the controllers, the <code class="language-plaintext highlighter-rouge">routes.rb</code> file is not contained in a <code class="language-plaintext highlighter-rouge">passages</code> folder, nor is it within the <code class="language-plaintext highlighter-rouge">module Passages</code>.</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code> |-config
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> |-config
  |--routes.rb
-</code></pre>
-</div>
+</code></pre></div></div>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="no">Passages</span><span class="o">::</span><span class="no">Engine</span><span class="p">.</span><span class="nf">routes</span><span class="p">.</span><span class="nf">draw</span> <span class="k">do</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">Passages</span><span class="o">::</span><span class="no">Engine</span><span class="p">.</span><span class="nf">routes</span><span class="p">.</span><span class="nf">draw</span> <span class="k">do</span>
   <span class="n">root</span> <span class="ss">to: </span><span class="s1">'routes#index'</span>
 <span class="k">end</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
-<p>In a standard Ruby on Rails application, the first line in a routes file is: <code class="highlighter-rouge">Rails.application.routes.draw</code>; however, within an Engine, the name of the Engine replaces <code class="highlighter-rouge">Rails.application</code>.</p>
+<p>In a standard Ruby on Rails application, the first line in a routes file is: <code class="language-plaintext highlighter-rouge">Rails.application.routes.draw</code>; however, within an Engine, the name of the Engine replaces <code class="language-plaintext highlighter-rouge">Rails.application</code>.</p>
 
-<p>With a simple routes file in place, an application using the Passages Engine can run <code class="highlighter-rouge">rake routes</code> to see the new routes in action:</p>
+<p>With a simple routes file in place, an application using the Passages Engine can run <code class="language-plaintext highlighter-rouge">rake routes</code> to see the new routes in action:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="gp">$ </span>rake routes
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>rake routes
      Prefix Verb   URI Pattern
    passages        /passages
-      users GET    /users
+      <span class="nb">users </span>GET    /users
             POST   /users
    new_user GET    /users/new
   edit_user GET    /users/:id/edit
@@ -231,30 +228,28 @@
             DELETE /users/:id
 Routes <span class="k">for </span>Passages::Engine:
   root GET  /      passages/routes#index
-</code></pre>
-</div>
-<p><em>Note: This assumes the engine is mounted at <code class="highlighter-rouge">/passages</code>, <a href="#mount-up">more about mounting routes below</a>.</em></p>
+</code></pre></div></div>
+<p><em>Note: This assumes the engine is mounted at <code class="language-plaintext highlighter-rouge">/passages</code>, <a href="#mount-up">more about mounting routes below</a>.</em></p>
 
 <p>Neat, the Passages routes are in a separate section to help differentiate them from normal application routes.</p>
 
-<p>Remember the <code class="highlighter-rouge">isolate_namespace</code> method? One of the side-effects of <strong>not</strong> using an isolated namespace can be seen when asking for an applications routes.</p>
+<p>Remember the <code class="language-plaintext highlighter-rouge">isolate_namespace</code> method? One of the side-effects of <strong>not</strong> using an isolated namespace can be seen when asking for an applications routes.</p>
 
 <p>If the namespace isolation is commented out:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">module</span> <span class="nn">Passages</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">module</span> <span class="nn">Passages</span>
   <span class="k">class</span> <span class="nc">Engine</span> <span class="o">&lt;</span> <span class="o">::</span><span class="no">Rails</span><span class="o">::</span><span class="no">Engine</span>
     <span class="c1"># isolate_namespace(Passages)</span>
   <span class="k">end</span>
 <span class="k">end</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
-<p>Then <code class="highlighter-rouge">rake routes</code> gives a different output:</p>
+<p>Then <code class="language-plaintext highlighter-rouge">rake routes</code> gives a different output:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="gp">$ </span>rake routes
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>rake routes
          Prefix Verb   URI Pattern
 passages_engine        /passages
-          users GET    /users
+          <span class="nb">users </span>GET    /users
                 POST   /users
        new_user GET    /users/new
       edit_user GET    /users/:id/edit
@@ -265,23 +260,21 @@ passages_engine        /passages
 
 Routes <span class="k">for </span>Passages::Engine:
   root GET  /          routes#routes
-</code></pre>
-</div>
+</code></pre></div></div>
 
-<p>Notice that now the <code class="highlighter-rouge">root</code> for the Passages Engine has had its prefix removed. This will cause Rails to look in the wrong place for the <code class="highlighter-rouge">routes_controller</code>:</p>
+<p>Notice that now the <code class="language-plaintext highlighter-rouge">root</code> for the Passages Engine has had its prefix removed. This will cause Rails to look in the wrong place for the <code class="language-plaintext highlighter-rouge">routes_controller</code>:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="no">ActionController</span><span class="o">::</span><span class="no">RoutingError</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">ActionController</span><span class="o">::</span><span class="no">RoutingError</span>
 <span class="p">(</span><span class="n">uninitialized</span> <span class="n">constant</span> <span class="no">RoutesController</span><span class="p">):</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
-<p>While this might not be a huge deal for some applications, the fact that an Engine triggers a top level controller to be fetched is worrysome. What if the main application had its own <code class="highlighter-rouge">RoutesController</code>, the Passages Engine could incorrectly fetch that instead. Or if things are reversed, an Engine without an isolated namespace might incorrectly override an important controller in the main application.</p>
+<p>While this might not be a huge deal for some applications, the fact that an Engine triggers a top level controller to be fetched is worrysome. What if the main application had its own <code class="language-plaintext highlighter-rouge">RoutesController</code>, the Passages Engine could incorrectly fetch that instead. Or if things are reversed, an Engine without an isolated namespace might incorrectly override an important controller in the main application.</p>
 
 <h3 id="assets">Assets</h3>
 
 <p>Like controllers and views, an Engine’s assets are also nested under a folder bearing the Engine’s name.</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code> |-app
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> |-app
  |--assets
  |---javascripts
  |----passages
@@ -289,19 +282,17 @@ Routes <span class="k">for </span>Passages::Engine:
  |---stylesheets
  |----passages
  |-----application.css
-</code></pre>
-</div>
+</code></pre></div></div>
 
-<p>This organization enables the layouts and other views in the Engine to only load the files it needs and not accidentally reference the main application’s <code class="highlighter-rouge">application.js</code> and <code class="highlighter-rouge">application.css</code>:</p>
+<p>This organization enables the layouts and other views in the Engine to only load the files it needs and not accidentally reference the main application’s <code class="language-plaintext highlighter-rouge">application.js</code> and <code class="language-plaintext highlighter-rouge">application.css</code>:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="cp">&lt;%=</span> <span class="n">stylesheet_link_tag</span> <span class="s1">'passages/application'</span><span class="p">,</span> <span class="ss">media: </span><span class="s1">'all'</span> <span class="cp">%&gt;</span>
+<div class="language-erb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;%=</span> <span class="n">stylesheet_link_tag</span> <span class="s1">'passages/application'</span><span class="p">,</span> <span class="ss">media: </span><span class="s1">'all'</span> <span class="cp">%&gt;</span>
 <span class="cp">&lt;%=</span> <span class="n">javascript_include_tag</span> <span class="s1">'passages/application'</span> <span class="cp">%&gt;</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
-<p>To enable precompiled assets, a few more lines need to be added in the same <code class="highlighter-rouge">engine.rb</code> file:</p>
+<p>To enable precompiled assets, a few more lines need to be added in the same <code class="language-plaintext highlighter-rouge">engine.rb</code> file:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">module</span> <span class="nn">Passages</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">module</span> <span class="nn">Passages</span>
   <span class="k">class</span> <span class="nc">Engine</span> <span class="o">&lt;</span> <span class="o">::</span><span class="no">Rails</span><span class="o">::</span><span class="no">Engine</span>
     <span class="n">isolate_namespace</span><span class="p">(</span><span class="no">Passages</span><span class="p">)</span>
 
@@ -313,28 +304,26 @@ Routes <span class="k">for </span>Passages::Engine:
     <span class="k">end</span>
   <span class="k">end</span>
 <span class="k">end</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
-<p>This <code class="highlighter-rouge">initializer</code> line creates an initializer in the underlying railties to be evaluated when assets are precompiled via <code class="highlighter-rouge">rake assets:precompile</code>. With this, an application can successfully compile its own assets and those of the Passages Engine.</p>
+<p>This <code class="language-plaintext highlighter-rouge">initializer</code> line creates an initializer in the underlying railties to be evaluated when assets are precompiled via <code class="language-plaintext highlighter-rouge">rake assets:precompile</code>. With this, an application can successfully compile its own assets and those of the Passages Engine.</p>
 
 <h2 id="mount-up">Mount Up</h2>
 
 <p>A Ruby on Rails Engine must be mounted by an application for it to be accessible.</p>
 
-<p>The normal place for this to occur is in a main application’s <code class="highlighter-rouge">routes.rb</code>:</p>
+<p>The normal place for this to occur is in a main application’s <code class="language-plaintext highlighter-rouge">routes.rb</code>:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="no">Rails</span><span class="p">.</span><span class="nf">application</span><span class="p">.</span><span class="nf">routes</span><span class="p">.</span><span class="nf">draw</span> <span class="k">do</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">Rails</span><span class="p">.</span><span class="nf">application</span><span class="p">.</span><span class="nf">routes</span><span class="p">.</span><span class="nf">draw</span> <span class="k">do</span>
   <span class="n">mount</span> <span class="no">Passages</span><span class="o">::</span><span class="no">Engine</span><span class="p">,</span> <span class="ss">at: </span><span class="s1">'/passages'</span>
 <span class="k">end</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
-<p>The <code class="highlighter-rouge">'/passages'</code> string can be replaced with any desired endpoint, the Engine does not care about the name.</p>
+<p>The <code class="language-plaintext highlighter-rouge">'/passages'</code> string can be replaced with any desired endpoint, the Engine does not care about the name.</p>
 
-<p>Alternatively, an Engine can <strong>mount itself</strong> using the same <code class="highlighter-rouge">initializer</code> method in <code class="highlighter-rouge">engine.rb</code>:</p>
+<p>Alternatively, an Engine can <strong>mount itself</strong> using the same <code class="language-plaintext highlighter-rouge">initializer</code> method in <code class="language-plaintext highlighter-rouge">engine.rb</code>:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">module</span> <span class="nn">Passages</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">module</span> <span class="nn">Passages</span>
   <span class="k">class</span> <span class="nc">Engine</span> <span class="o">&lt;</span> <span class="o">::</span><span class="no">Rails</span><span class="o">::</span><span class="no">Engine</span>
     <span class="n">isolate_namespace</span><span class="p">(</span><span class="no">Passages</span><span class="p">)</span>
 
@@ -346,14 +335,13 @@ Routes <span class="k">for </span>Passages::Engine:
     <span class="k">end</span>
   <span class="k">end</span>
 <span class="k">end</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
-<p>In this case, the initializer has a specific placement: after the configuration initializers are loaded. This initializer then writes to the main application with <code class="highlighter-rouge">Rails.application.routes.prepend</code> and, as the name suggests, prepends the mount to the application’s routes.</p>
+<p>In this case, the initializer has a specific placement: after the configuration initializers are loaded. This initializer then writes to the main application with <code class="language-plaintext highlighter-rouge">Rails.application.routes.prepend</code> and, as the name suggests, prepends the mount to the application’s routes.</p>
 
-<p>Since the mount is added to the beginning of an application’s routes, it is possible that this mounted path (in this case <code class="highlighter-rouge">'/passages'</code>) will be overridden by a route with the same name later on in the main application’s <code class="highlighter-rouge">routes.rb</code> file.</p>
+<p>Since the mount is added to the beginning of an application’s routes, it is possible that this mounted path (in this case <code class="language-plaintext highlighter-rouge">'/passages'</code>) will be overridden by a route with the same name later on in the main application’s <code class="language-plaintext highlighter-rouge">routes.rb</code> file.</p>
 
-<p>After an application mounts the Passages Engine, it can navigate to <code class="highlighter-rouge">/passages</code>. This request would be served by the Passages Engine like a normal Ruby on Rails application request.</p>
+<p>After an application mounts the Passages Engine, it can navigate to <code class="language-plaintext highlighter-rouge">/passages</code>. This request would be served by the Passages Engine like a normal Ruby on Rails application request.</p>
 
 <h4 id="use-with-caution">Use With Caution</h4>
 
@@ -363,7 +351,7 @@ Routes <span class="k">for </span>Passages::Engine:
 
 <p>With the basic structure in place, a new Engine can be built like any other Ruby on Rails application. Controllers and their respective views can be created and placed under the appropriate namespaces and folders. Routes that utilize these controllers can be added as well. Assuming that both the main application and the Engine use the same ORM (or are at least compatible), even models can be created.</p>
 
-<p>The Passages Engine was built as a standalone gem. Making it available was the same process as creating any other gem. A <code class="highlighter-rouge">.gemspec</code> file was created, the gem was cut to a version, and then finally hosted on Rubygems.org. An application that wishes to use the Passages Engine can install it by adding a new line to the Gemfile: <code class="highlighter-rouge">gem 'passages'</code>.</p>
+<p>The Passages Engine was built as a standalone gem. Making it available was the same process as creating any other gem. A <code class="language-plaintext highlighter-rouge">.gemspec</code> file was created, the gem was cut to a version, and then finally hosted on Rubygems.org. An application that wishes to use the Passages Engine can install it by adding a new line to the Gemfile: <code class="language-plaintext highlighter-rouge">gem 'passages'</code>.</p>
 
 <p>This same pattern can be used to make any stand alone Ruby on Rails Engine. However, it would be a wise decision to choose specific versions of Ruby on Rails to support. For example, the Passages Engine was built to support Ruby on Rails 4.X, it is not compatible with Ruby on Rails 3.X at all.</p>
 

@@ -17,6 +17,8 @@
   
   
 
+  
+
   <!-- Enable responsiveness on mobile devices-->
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
 
@@ -37,6 +39,8 @@
 
   <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
   <script async src="https://use.fontawesome.com/b3103405a3.js"></script>
+
+  
 </head>
 
 
@@ -62,13 +66,14 @@
       </span>
       <a id='home' class="sidebar-nav-item" href="https://jakeyesbeck.com">Home</a>
       <a id='archives'class="sidebar-nav-item" href="/archives">Archives</a>
+      <a id='services'class="sidebar-nav-item" href="/services">Services</a>
       <a id='resume'class="sidebar-nav-item" href="https://jakeyesbeck.com/assets/files/resume.pdf">Resume</a>
       <a id='about'class="sidebar-nav-item" href="/about">About</a>
       <a id='github'class="sidebar-nav-item" href="https://github.com/yez">GitHub</a>
       <a id='rss'class="sidebar-nav-item" href="/atom.xml">Feed</a>
     </nav>
 
-    <p class='copyright'>&copy; Jake Yesbeck 2022. All rights reserved.</p>
+    <p class='copyright'>&copy; Jake Yesbeck 2026. All rights reserved.</p>
   </div>
 </div>
 
@@ -114,26 +119,26 @@
 <p>A basic Ruby on Rails application might have the following features:</p>
 
 <ol>
-  <li>A <code class="highlighter-rouge">User</code> can create a favorite of an item, creating a <code class="highlighter-rouge">FavoriteItem</code>.</li>
-  <li>A <code class="highlighter-rouge">User</code> can add an item to their wishlist, creating a <code class="highlighter-rouge">WishlistItem</code>.</li>
-  <li>A <code class="highlighter-rouge">User</code> can buy an item, creating a <code class="highlighter-rouge">TransactionItem</code>.</li>
+  <li>A <code class="language-plaintext highlighter-rouge">User</code> can create a favorite of an item, creating a <code class="language-plaintext highlighter-rouge">FavoriteItem</code>.</li>
+  <li>A <code class="language-plaintext highlighter-rouge">User</code> can add an item to their wishlist, creating a <code class="language-plaintext highlighter-rouge">WishlistItem</code>.</li>
+  <li>A <code class="language-plaintext highlighter-rouge">User</code> can buy an item, creating a <code class="language-plaintext highlighter-rouge">TransactionItem</code>.</li>
 </ol>
 
-<p>Each model this system uses is backed by an API. <code class="highlighter-rouge">User</code>, <code class="highlighter-rouge">TransactionItem</code>, <code class="highlighter-rouge">WishlistItem</code>, and <code class="highlighter-rouge">FavoriteItem</code> models all require a remote HTTP request for their information.</p>
+<p>Each model this system uses is backed by an API. <code class="language-plaintext highlighter-rouge">User</code>, <code class="language-plaintext highlighter-rouge">TransactionItem</code>, <code class="language-plaintext highlighter-rouge">WishlistItem</code>, and <code class="language-plaintext highlighter-rouge">FavoriteItem</code> models all require a remote HTTP request for their information.</p>
 
 <p>As a web application experiences growth, this structure is not uncommon. The same API might back a mobile app, website, and any other internal tooling to help this company with its day to day affairs.</p>
 
 <p>The API that this application uses works in a two phase manner:</p>
 
 <ol>
-  <li>A user can be requested by their <code class="highlighter-rouge">id</code>.
+  <li>A user can be requested by their <code class="language-plaintext highlighter-rouge">id</code>.
     <ul>
-      <li><code class="highlighter-rouge">/users/:id</code> returns a <code class="highlighter-rouge">User</code> corresponding to the given <code class="highlighter-rouge">id</code>.</li>
+      <li><code class="language-plaintext highlighter-rouge">/users/:id</code> returns a <code class="language-plaintext highlighter-rouge">User</code> corresponding to the given <code class="language-plaintext highlighter-rouge">id</code>.</li>
     </ul>
   </li>
-  <li>Each supporting model is requested with the same <code class="highlighter-rouge">user_id</code>.
+  <li>Each supporting model is requested with the same <code class="language-plaintext highlighter-rouge">user_id</code>.
     <ul>
-      <li><code class="highlighter-rouge">/users/:id/favorite_items</code> will return an array of <code class="highlighter-rouge">FavoriteItems</code> for the specified <code class="highlighter-rouge">User</code>.</li>
+      <li><code class="language-plaintext highlighter-rouge">/users/:id/favorite_items</code> will return an array of <code class="language-plaintext highlighter-rouge">FavoriteItems</code> for the specified <code class="language-plaintext highlighter-rouge">User</code>.</li>
     </ul>
   </li>
 </ol>
@@ -142,13 +147,13 @@
 
 <h2 id="sequential-approach">Sequential Approach</h2>
 
-<p>Within this example application, the most request intensive page is the <code class="highlighter-rouge">User's</code> history page. The history page consists of everything the user has done. <code class="highlighter-rouge">Items</code> a user has added to their favorites resulting in <code class="highlighter-rouge">FavoriteItems</code>, <code class="highlighter-rouge">Items</code> bought by the user resulting in <code class="highlighter-rouge">TransactionItems</code>, and <code class="highlighter-rouge">Items</code> added to a user’s wish list resulting in <code class="highlighter-rouge">WishListItems</code>.</p>
+<p>Within this example application, the most request intensive page is the <code class="language-plaintext highlighter-rouge">User's</code> history page. The history page consists of everything the user has done. <code class="language-plaintext highlighter-rouge">Items</code> a user has added to their favorites resulting in <code class="language-plaintext highlighter-rouge">FavoriteItems</code>, <code class="language-plaintext highlighter-rouge">Items</code> bought by the user resulting in <code class="language-plaintext highlighter-rouge">TransactionItems</code>, and <code class="language-plaintext highlighter-rouge">Items</code> added to a user’s wish list resulting in <code class="language-plaintext highlighter-rouge">WishListItems</code>.</p>
 
-<p>To complement the (ex/in)ternal API, two helper methods exist on each model: <code class="highlighter-rouge">remote_find</code> which accepts an <code class="highlighter-rouge">id</code> or array of <code class="highlighter-rouge">ids</code>, returning the matching models, and <code class="highlighter-rouge">remote_find_by_user_id</code> which accepts a <code class="highlighter-rouge">user_id</code> and returns an array of <code class="highlighter-rouge">ids</code> for the corresponding model.</p>
+<p>To complement the (ex/in)ternal API, two helper methods exist on each model: <code class="language-plaintext highlighter-rouge">remote_find</code> which accepts an <code class="language-plaintext highlighter-rouge">id</code> or array of <code class="language-plaintext highlighter-rouge">ids</code>, returning the matching models, and <code class="language-plaintext highlighter-rouge">remote_find_by_user_id</code> which accepts a <code class="language-plaintext highlighter-rouge">user_id</code> and returns an array of <code class="language-plaintext highlighter-rouge">ids</code> for the corresponding model.</p>
 
-<p>Leveraging the API and these two helper methods, a serial version of a <code class="highlighter-rouge">User's</code> pertinent data could look something like:</p>
+<p>Leveraging the API and these two helper methods, a serial version of a <code class="language-plaintext highlighter-rouge">User's</code> pertinent data could look something like:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">class</span> <span class="nc">UserHistoryController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">UserHistoryController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
   <span class="k">def</span> <span class="nf">show</span>
     <span class="vi">@user</span> <span class="o">=</span> <span class="no">User</span><span class="p">.</span><span class="nf">remote_find</span><span class="p">(</span><span class="n">params</span><span class="p">.</span><span class="nf">require</span><span class="p">(</span><span class="ss">:user_id</span><span class="p">]))</span>
 
@@ -162,32 +167,31 @@
       <span class="no">TransactionItem</span><span class="p">.</span><span class="nf">remote_find_by_user_id</span><span class="p">(</span><span class="vi">@user</span><span class="p">.</span><span class="nf">id</span><span class="p">)</span>
   <span class="k">end</span>
 <span class="k">end</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
-<p>However slow it may be, this code will indeed fulfill its duty. First the <code class="highlighter-rouge">User</code> is found, then all the supporting information about a <code class="highlighter-rouge">User's</code> history is retrieved one by one from the API.</p>
+<p>However slow it may be, this code will indeed fulfill its duty. First the <code class="language-plaintext highlighter-rouge">User</code> is found, then all the supporting information about a <code class="language-plaintext highlighter-rouge">User's</code> history is retrieved one by one from the API.</p>
 
-<p>In a worst case scenario, assume the API returns an individual request in about <code class="highlighter-rouge">150ms</code>. With <code class="highlighter-rouge">4</code> requests, this means that <strong>only required page elements will take <code class="highlighter-rouge">600ms</code></strong>.</p>
+<p>In a worst case scenario, assume the API returns an individual request in about <code class="language-plaintext highlighter-rouge">150ms</code>. With <code class="language-plaintext highlighter-rouge">4</code> requests, this means that <strong>only required page elements will take <code class="language-plaintext highlighter-rouge">600ms</code></strong>.</p>
 
 <p>Tacking on view rendering, whatever data processing or formatting that needs to be done at the presentation layer, and finally some amount of Javascript, this page becomes objectively <em>slow</em>.</p>
 
-<h2 id="enter-em-synchrony">Enter <code class="highlighter-rouge">EM-Synchrony</code></h2>
+<h2 id="enter-em-synchrony">Enter <code class="language-plaintext highlighter-rouge">EM-Synchrony</code></h2>
 
 <p>As with most problems, someone smart has had it before and probably done something about it. Luckily, this particular problem has been addressed by <a href="https://github.com/igrigorik/em-synchrony">Ilya Grigorik’s EM-Synchrony library</a>.</p>
 
-<p>Grigorik’s library leverages the use of Ruby <code class="highlighter-rouge">Fibers</code> to parallelize* code execution.</p>
+<p>Grigorik’s library leverages the use of Ruby <code class="language-plaintext highlighter-rouge">Fibers</code> to parallelize* code execution.</p>
 
 <p><em>*Note: Because of the Global Interpreter Lock (GIL) present in MRI, true parallelization is not possible.</em></p>
 
-<p>The real benefit of using <code class="highlighter-rouge">EM-Synchrony</code> is the way it handles scheduling the underlying <code class="highlighter-rouge">Fibers</code>. A Ruby <code class="highlighter-rouge">Fiber</code> is basically a <code class="highlighter-rouge">Thread</code> that is not automatically scheduled by the Ruby VM. This means that it is up to the programmer to let the <code class="highlighter-rouge">Fiber</code> know when it should relinquish control to another <code class="highlighter-rouge">Fiber</code>.</p>
+<p>The real benefit of using <code class="language-plaintext highlighter-rouge">EM-Synchrony</code> is the way it handles scheduling the underlying <code class="language-plaintext highlighter-rouge">Fibers</code>. A Ruby <code class="language-plaintext highlighter-rouge">Fiber</code> is basically a <code class="language-plaintext highlighter-rouge">Thread</code> that is not automatically scheduled by the Ruby VM. This means that it is up to the programmer to let the <code class="language-plaintext highlighter-rouge">Fiber</code> know when it should relinquish control to another <code class="language-plaintext highlighter-rouge">Fiber</code>.</p>
 
-<p>Since this example is almost completely bound by <code class="highlighter-rouge">Input/Output</code> (<code class="highlighter-rouge">I/O</code>) operations, it is a perfect candidate for <code class="highlighter-rouge">EM-Synchrony</code>.</p>
+<p>Since this example is almost completely bound by <code class="language-plaintext highlighter-rouge">Input/Output</code> (<code class="language-plaintext highlighter-rouge">I/O</code>) operations, it is a perfect candidate for <code class="language-plaintext highlighter-rouge">EM-Synchrony</code>.</p>
 
-<p>To use <code class="highlighter-rouge">EM-Synchrony</code> effectively, existing requests must be broken up into pieces that can accessed independently. A <code class="highlighter-rouge">requests</code> method can be created to extract details surrounding each request. The result of the <code class="highlighter-rouge">requests</code> method must be an enumerable.</p>
+<p>To use <code class="language-plaintext highlighter-rouge">EM-Synchrony</code> effectively, existing requests must be broken up into pieces that can accessed independently. A <code class="language-plaintext highlighter-rouge">requests</code> method can be created to extract details surrounding each request. The result of the <code class="language-plaintext highlighter-rouge">requests</code> method must be an enumerable.</p>
 
-<p><em>Note: As explained <a href="#caveats">below</a>, <code class="highlighter-rouge">EM-Synchrony</code> can only be used with supported HTTP clients.</em></p>
+<p><em>Note: As explained <a href="#caveats">below</a>, <code class="language-plaintext highlighter-rouge">EM-Synchrony</code> can only be used with supported HTTP clients.</em></p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">class</span> <span class="nc">UserHistoryController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">UserHistoryController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
   <span class="c1"># ...</span>
   <span class="c1"># ...</span>
 
@@ -218,12 +222,11 @@
     <span class="p">}</span>
   <span class="k">end</span>
 <span class="k">end</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
-<p>For the sake of being explicit, this very redundant helper method will be used to iterate over requests and allow <code class="highlighter-rouge">EM-Synchrony</code> to process them in parallel:</p>
+<p>For the sake of being explicit, this very redundant helper method will be used to iterate over requests and allow <code class="language-plaintext highlighter-rouge">EM-Synchrony</code> to process them in parallel:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">class</span> <span class="nc">UserHistoryController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">UserHistoryController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
   <span class="no">CONCURRENCY</span> <span class="o">=</span> <span class="mi">4</span>
 
   <span class="k">def</span> <span class="nf">show</span>
@@ -247,32 +250,28 @@
     <span class="k">end</span>
   <span class="k">end</span>
 <span class="k">end</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>A few important lines of this solution are worth a closer look:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="no">CONCURRENCY</span> <span class="o">=</span> <span class="mi">4</span>
-</code></pre>
-</div>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">CONCURRENCY</span> <span class="o">=</span> <span class="mi">4</span>
+</code></pre></div></div>
 
-<p>This line tells <code class="highlighter-rouge">EM-Synchrony</code> how many <code class="highlighter-rouge">Fibers</code> it is allowed to run at once. Since the example needed to request four remote  resources, the concurrency amount is set to four.</p>
+<p>This line tells <code class="language-plaintext highlighter-rouge">EM-Synchrony</code> how many <code class="language-plaintext highlighter-rouge">Fibers</code> it is allowed to run at once. Since the example needed to request four remote  resources, the concurrency amount is set to four.</p>
 
 <p>The next line of interest is:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="no">EM</span><span class="o">::</span><span class="no">Synchrony</span><span class="o">::</span><span class="no">FiberIterator</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">EM</span><span class="o">::</span><span class="no">Synchrony</span><span class="o">::</span><span class="no">FiberIterator</span>
         <span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="n">requests</span><span class="p">,</span> <span class="no">CONCURRENCY</span><span class="p">)</span>
         <span class="p">.</span><span class="nf">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">key</span><span class="p">,</span> <span class="n">request_hash</span><span class="o">|</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
-<p>Here is where the actual work is done. After meticulously crafting the structure of the <code class="highlighter-rouge">requests</code> hash, the <code class="highlighter-rouge">FiberIterator</code> will pick the next element from the list and give it to a <code class="highlighter-rouge">Fiber</code>.</p>
+<p>Here is where the actual work is done. After meticulously crafting the structure of the <code class="language-plaintext highlighter-rouge">requests</code> hash, the <code class="language-plaintext highlighter-rouge">FiberIterator</code> will pick the next element from the list and give it to a <code class="language-plaintext highlighter-rouge">Fiber</code>.</p>
 
 <p>Finally the line stopping of Event Machine can not go unnoticed.</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="no">EM</span><span class="p">.</span><span class="nf">stop</span>
-</code></pre>
-</div>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">EM</span><span class="p">.</span><span class="nf">stop</span>
+</code></pre></div></div>
 
 <p>This method has literally no documentation but is in every example of using Event Machine, so it is probably very crucial.</p>
 
@@ -280,17 +279,17 @@
 
 <h2 id="caveats">Caveats</h2>
 
-<p>A few considerations must be made in order to use <code class="highlighter-rouge">EM-Synchrony</code> effectively.</p>
+<p>A few considerations must be made in order to use <code class="language-plaintext highlighter-rouge">EM-Synchrony</code> effectively.</p>
 
 <ol>
   <li><strong>A compliant HTTP library must be used.</strong>
     <ul>
-      <li><a href="https://github.com/igrigorik/em-http-request#extensions">As em-http-client’s the README</a> a compliant HTTP library must be used when making the requests. <a href="https://github.com/lostisland/faraday">Faraday</a> is my favorite compliant library and it has worked great for me so far. Unfortunately, the very popular <code class="highlighter-rouge">HTTParty</code> library is not compliant and therefore no one may “Party Hard” when using <code class="highlighter-rouge">EM-Synchrony</code> and <code class="highlighter-rouge">HTTParty</code>.</li>
+      <li><a href="https://github.com/igrigorik/em-http-request#extensions">As em-http-client’s the README</a> a compliant HTTP library must be used when making the requests. <a href="https://github.com/lostisland/faraday">Faraday</a> is my favorite compliant library and it has worked great for me so far. Unfortunately, the very popular <code class="language-plaintext highlighter-rouge">HTTParty</code> library is not compliant and therefore no one may “Party Hard” when using <code class="language-plaintext highlighter-rouge">EM-Synchrony</code> and <code class="language-plaintext highlighter-rouge">HTTParty</code>.</li>
     </ul>
   </li>
   <li><strong>One size does not fit all.</strong>
     <ul>
-      <li>Unlike the described example, not all code can be saved by <code class="highlighter-rouge">EM-Synchrony</code>. If a request depends on the result of another request, sharing those results between <code class="highlighter-rouge">Fibers</code> is neither simple, nor a good idea.</li>
+      <li>Unlike the described example, not all code can be saved by <code class="language-plaintext highlighter-rouge">EM-Synchrony</code>. If a request depends on the result of another request, sharing those results between <code class="language-plaintext highlighter-rouge">Fibers</code> is neither simple, nor a good idea.</li>
     </ul>
   </li>
 </ol>

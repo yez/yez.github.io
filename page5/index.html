@@ -18,6 +18,8 @@
   
   
 
+  
+
   <!-- Enable responsiveness on mobile devices-->
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
 
@@ -38,6 +40,8 @@
 
   <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
   <script async src="https://use.fontawesome.com/b3103405a3.js"></script>
+
+  
 </head>
 
 
@@ -63,13 +67,14 @@
       </span>
       <a id='home' class="sidebar-nav-item" href="https://jakeyesbeck.com">Home</a>
       <a id='archives'class="sidebar-nav-item" href="/archives">Archives</a>
+      <a id='services'class="sidebar-nav-item" href="/services">Services</a>
       <a id='resume'class="sidebar-nav-item" href="https://jakeyesbeck.com/assets/files/resume.pdf">Resume</a>
       <a id='about'class="sidebar-nav-item" href="/about">About</a>
       <a id='github'class="sidebar-nav-item" href="https://github.com/yez">GitHub</a>
       <a id='rss'class="sidebar-nav-item" href="/atom.xml">Feed</a>
     </nav>
 
-    <p class='copyright'>&copy; Jake Yesbeck 2022. All rights reserved.</p>
+    <p class='copyright'>&copy; Jake Yesbeck 2026. All rights reserved.</p>
   </div>
 </div>
 
@@ -122,11 +127,11 @@ is a very expressive testing framework with many great features and helpers to
 make tests readable. When writing RSpec tests, here are just a few not so
 obvious hints that could make tests even easier to write, read, and maintain.</p>
 
-<p>Assuming a system exists with <code class="highlighter-rouge">Books</code> and <code class="highlighter-rouge">Authors</code>, let’s utilize these hints
+<p>Assuming a system exists with <code class="language-plaintext highlighter-rouge">Books</code> and <code class="language-plaintext highlighter-rouge">Authors</code>, let’s utilize these hints
 to make testing easy.</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Book</span>
-  <span class="kp">attr_reader</span> <span class="ss">:title</span><span class="p">,</span> <span class="ss">:genre</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Book</span>
+  <span class="nb">attr_reader</span> <span class="ss">:title</span><span class="p">,</span> <span class="ss">:genre</span>
 
   <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="n">title</span><span class="p">,</span> <span class="n">genre</span><span class="p">)</span>
     <span class="vi">@title</span> <span class="o">=</span> <span class="n">title</span>
@@ -135,7 +140,7 @@ to make testing easy.</p>
 <span class="k">end</span>
 
 <span class="k">class</span> <span class="nc">Author</span>
-  <span class="kp">attr_reader</span> <span class="ss">:books</span>
+  <span class="nb">attr_reader</span> <span class="ss">:books</span>
 
   <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="nb">name</span><span class="p">,</span> <span class="n">books</span><span class="p">)</span>
     <span class="vi">@name</span> <span class="o">=</span> <span class="nb">name</span>
@@ -146,18 +151,17 @@ to make testing easy.</p>
     <span class="o">!</span><span class="n">books</span><span class="p">.</span><span class="nf">empty?</span>
   <span class="k">end</span>
 <span class="k">end</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
-<h2 id="subject-and--let-variables"><code class="highlighter-rouge">subject</code> and  <code class="highlighter-rouge">let</code> Variables</h2>
+<h2 id="subject-and--let-variables"><code class="language-plaintext highlighter-rouge">subject</code> and  <code class="language-plaintext highlighter-rouge">let</code> Variables</h2>
 
-<p>A great way to keep specs DRY and readable are via <code class="highlighter-rouge">subject</code> and <code class="highlighter-rouge">let</code> variable
+<p>A great way to keep specs DRY and readable are via <code class="language-plaintext highlighter-rouge">subject</code> and <code class="language-plaintext highlighter-rouge">let</code> variable
 declarations.</p>
 
-<p>For example, if we want to assert an <code class="highlighter-rouge">Author</code> has a <code class="highlighter-rouge">name</code>, a test without <code class="highlighter-rouge">let</code>
-and <code class="highlighter-rouge">subject</code> variables might look something like:</p>
+<p>For example, if we want to assert an <code class="language-plaintext highlighter-rouge">Author</code> has a <code class="language-plaintext highlighter-rouge">name</code>, a test without <code class="language-plaintext highlighter-rouge">let</code>
+and <code class="language-plaintext highlighter-rouge">subject</code> variables might look something like:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="n">describe</span> <span class="no">Author</span> <span class="k">do</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">describe</span> <span class="no">Author</span> <span class="k">do</span>
   <span class="n">before</span> <span class="k">do</span>
     <span class="vi">@book_genre</span> <span class="o">=</span> <span class="s1">'Historical Fiction'</span>
     <span class="vi">@book_title</span> <span class="o">=</span> <span class="s1">'A Tale of Two Cities'</span>
@@ -172,16 +176,15 @@ and <code class="highlighter-rouge">subject</code> variables might look somethin
     <span class="k">end</span>
   <span class="k">end</span>
 <span class="k">end</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>While correct, additional tests asserting number of books, a different name, or
-other things about this <code class="highlighter-rouge">Author</code> could become very verbose.</p>
+other things about this <code class="language-plaintext highlighter-rouge">Author</code> could become very verbose.</p>
 
-<p>Instead, we can introduce <code class="highlighter-rouge">subject</code> and <code class="highlighter-rouge">let</code> variables to keep things DRY and
+<p>Instead, we can introduce <code class="language-plaintext highlighter-rouge">subject</code> and <code class="language-plaintext highlighter-rouge">let</code> variables to keep things DRY and
 reusable:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="n">describe</span> <span class="no">Author</span> <span class="k">do</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">describe</span> <span class="no">Author</span> <span class="k">do</span>
   <span class="n">let</span><span class="p">(</span><span class="ss">:book_genre</span><span class="p">)</span> <span class="p">{</span> <span class="s1">'Historical Fiction'</span> <span class="p">}</span>
   <span class="n">let</span><span class="p">(</span><span class="ss">:book_title</span><span class="p">)</span> <span class="p">{</span> <span class="s1">'A Tale of Two Cities'</span> <span class="p">}</span>
   <span class="n">let</span><span class="p">(</span><span class="ss">:book</span><span class="p">)</span> <span class="p">{</span> <span class="no">Book</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="n">book_genre</span><span class="p">,</span> <span class="n">book_title</span><span class="p">)</span> <span class="p">}</span>
@@ -221,33 +224,32 @@ reusable:</p>
     <span class="k">end</span>
   <span class="k">end</span>
 <span class="k">end</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
-<p>Instead of needing multiple <code class="highlighter-rouge">before</code> blocks to set and reset instance variables,
-this code utilizing <code class="highlighter-rouge">let</code> variables is concise and easy to read. More specifically,
-the way these tests work is: each time an <code class="highlighter-rouge">it</code> block is run, the <code class="highlighter-rouge">let</code> variables
-within the nearest <code class="highlighter-rouge">context</code> are used to initialize the <code class="highlighter-rouge">subject</code>.</p>
+<p>Instead of needing multiple <code class="language-plaintext highlighter-rouge">before</code> blocks to set and reset instance variables,
+this code utilizing <code class="language-plaintext highlighter-rouge">let</code> variables is concise and easy to read. More specifically,
+the way these tests work is: each time an <code class="language-plaintext highlighter-rouge">it</code> block is run, the <code class="language-plaintext highlighter-rouge">let</code> variables
+within the nearest <code class="language-plaintext highlighter-rouge">context</code> are used to initialize the <code class="language-plaintext highlighter-rouge">subject</code>.</p>
 
-<p>By setting important <code class="highlighter-rouge">let</code> variables, a context that tests if <code class="highlighter-rouge">subject.books</code> is
-an array based on an input of <code class="highlighter-rouge">nil</code> or <code class="highlighter-rouge">[]</code> is as simple as changing the <code class="highlighter-rouge">let</code>
-definition: <code class="highlighter-rouge">let(:book_array) { nil }</code>.</p>
+<p>By setting important <code class="language-plaintext highlighter-rouge">let</code> variables, a context that tests if <code class="language-plaintext highlighter-rouge">subject.books</code> is
+an array based on an input of <code class="language-plaintext highlighter-rouge">nil</code> or <code class="language-plaintext highlighter-rouge">[]</code> is as simple as changing the <code class="language-plaintext highlighter-rouge">let</code>
+definition: <code class="language-plaintext highlighter-rouge">let(:book_array) { nil }</code>.</p>
 
 <h2 id="loose-expectations">Loose Expectations</h2>
 
-<p>When a test does not care about specifics, <code class="highlighter-rouge">RSpec</code> allows the use of general
+<p>When a test does not care about specifics, <code class="language-plaintext highlighter-rouge">RSpec</code> allows the use of general
 expectations and placeholders. These placeholders can help mitigate a test’s
 complexity by only focusing on what is truly important.</p>
 
-<h3 id="anything">1. <code class="highlighter-rouge">anything</code></h3>
+<h3 id="1-anything">1. <code class="language-plaintext highlighter-rouge">anything</code></h3>
 
-<p>Just like it sounds, the <code class="highlighter-rouge">anything</code> argument matcher can be used when a method
+<p>Just like it sounds, the <code class="language-plaintext highlighter-rouge">anything</code> argument matcher can be used when a method
 requires an argument but the specifics do not matter for the test.</p>
 
-<p>If an <code class="highlighter-rouge">Author</code> test wants to assert that a <code class="highlighter-rouge">Book</code> has been written, but doesn’t
-care about the <code class="highlighter-rouge">title</code> or <code class="highlighter-rouge">genre</code> of the book, <code class="highlighter-rouge">anything</code> can be used:</p>
+<p>If an <code class="language-plaintext highlighter-rouge">Author</code> test wants to assert that a <code class="language-plaintext highlighter-rouge">Book</code> has been written, but doesn’t
+care about the <code class="language-plaintext highlighter-rouge">title</code> or <code class="language-plaintext highlighter-rouge">genre</code> of the book, <code class="language-plaintext highlighter-rouge">anything</code> can be used:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="n">describe</span> <span class="no">Author</span> <span class="k">do</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">describe</span> <span class="no">Author</span> <span class="k">do</span>
   <span class="n">describe</span> <span class="c1">#has_written_a_book?' do</span>
     <span class="n">context</span> <span class="s1">'when books are passed in'</span> <span class="k">do</span>
       <span class="n">subject</span> <span class="p">{</span> <span class="no">Author</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="nb">name</span><span class="p">,</span> <span class="n">books</span><span class="p">)</span> <span class="p">}</span>
@@ -258,32 +260,30 @@ care about the <code class="highlighter-rouge">title</code> or <code class="high
     <span class="k">end</span>
   <span class="k">end</span>
 <span class="k">end</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
-<h3 id="hashincluding">2. <code class="highlighter-rouge">hash_including</code></h3>
+<h3 id="2-hash_including">2. <code class="language-plaintext highlighter-rouge">hash_including</code></h3>
 
-<p>When testing a method that expects a <code class="highlighter-rouge">Hash</code>, some elements of the <code class="highlighter-rouge">Hash</code> may be more
-important than others. The <code class="highlighter-rouge">hash_including</code> matcher allows a developer to assert one
+<p>When testing a method that expects a <code class="language-plaintext highlighter-rouge">Hash</code>, some elements of the <code class="language-plaintext highlighter-rouge">Hash</code> may be more
+important than others. The <code class="language-plaintext highlighter-rouge">hash_including</code> matcher allows a developer to assert one
 or many key/value pairs within a hash without needing to specify the entire hash.</p>
 
-<p>Assuming the <code class="highlighter-rouge">Book</code> class has a method which instantiates a new HTTP client (for
+<p>Assuming the <code class="language-plaintext highlighter-rouge">Book</code> class has a method which instantiates a new HTTP client (for
 fetching additional information), it might look something like:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Book</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Book</span>
   <span class="c1"># ...</span>
   <span class="k">def</span> <span class="nf">fetch_information</span>
     <span class="no">HTTPClient</span><span class="p">.</span><span class="nf">new</span><span class="p">({</span> <span class="ss">title: </span><span class="n">title</span><span class="p">,</span> <span class="ss">genre: </span><span class="n">genre</span><span class="p">,</span> <span class="ss">time: </span><span class="no">Time</span><span class="p">.</span><span class="nf">now</span> <span class="p">})</span>
               <span class="p">.</span><span class="nf">get</span><span class="p">(</span><span class="s1">'/information'</span><span class="p">)</span>
   <span class="k">end</span>
 <span class="k">end</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>The test for this method should assert that the client is initialized with a few
-crucial pieces. The <code class="highlighter-rouge">hash_including</code> argument matcher works nicely here.</p>
+crucial pieces. The <code class="language-plaintext highlighter-rouge">hash_including</code> argument matcher works nicely here.</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="n">describe</span> <span class="no">Book</span> <span class="k">do</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">describe</span> <span class="no">Book</span> <span class="k">do</span>
   <span class="n">describe</span> <span class="s1">'#fetch_information'</span> <span class="k">do</span>
     <span class="n">let</span><span class="p">(</span><span class="ss">:book_genre</span><span class="p">)</span> <span class="p">{</span> <span class="s1">'Historical Fiction'</span> <span class="p">}</span>
     <span class="n">let</span><span class="p">(</span><span class="ss">:book_title</span><span class="p">)</span> <span class="p">{</span> <span class="s1">'A Tale of Two Cities'</span> <span class="p">}</span>
@@ -297,28 +297,27 @@ crucial pieces. The <code class="highlighter-rouge">hash_including</code> argume
     <span class="k">end</span>
   <span class="k">end</span>
 <span class="k">end</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
-<p>The versatile <code class="highlighter-rouge">hash_including</code> argument matcher can specify key/value pairs of an
-expected hash or just keys. Here, the test only care that the <code class="highlighter-rouge">Book</code>’s <code class="highlighter-rouge">title</code>
-and <code class="highlighter-rouge">genre</code> are passed along.</p>
+<p>The versatile <code class="language-plaintext highlighter-rouge">hash_including</code> argument matcher can specify key/value pairs of an
+expected hash or just keys. Here, the test only care that the <code class="language-plaintext highlighter-rouge">Book</code>’s <code class="language-plaintext highlighter-rouge">title</code>
+and <code class="language-plaintext highlighter-rouge">genre</code> are passed along.</p>
 
-<h3 id="matcharray">3. <code class="highlighter-rouge">match_array</code></h3>
+<h3 id="3-match_array">3. <code class="language-plaintext highlighter-rouge">match_array</code></h3>
 
-<p>In Ruby, two <code class="highlighter-rouge">Arrays</code> are equal if and only if they contain the same elements in
+<p>In Ruby, two <code class="language-plaintext highlighter-rouge">Arrays</code> are equal if and only if they contain the same elements in
 the same order. In some tests, this strict equality criteria might not always
-be necessary. For those cases, RSpec provides a <code class="highlighter-rouge">match_array</code> matcher to
+be necessary. For those cases, RSpec provides a <code class="language-plaintext highlighter-rouge">match_array</code> matcher to
 make tests less brittle.</p>
 
-<p>If the <code class="highlighter-rouge">Author</code> class retrieved its list of <code class="highlighter-rouge">books</code> from a database, the order
-of <code class="highlighter-rouge">books</code> might not be consistent due to default scopes or when records are
+<p>If the <code class="language-plaintext highlighter-rouge">Author</code> class retrieved its list of <code class="language-plaintext highlighter-rouge">books</code> from a database, the order
+of <code class="language-plaintext highlighter-rouge">books</code> might not be consistent due to default scopes or when records are
 updated.</p>
 
-<p>Given a <code class="highlighter-rouge">fetch_books</code> method that looks something like:</p>
+<p>Given a <code class="language-plaintext highlighter-rouge">fetch_books</code> method that looks something like:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Author</span>
-  <span class="kp">attr_reader</span> <span class="ss">:name</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Author</span>
+  <span class="nb">attr_reader</span> <span class="ss">:name</span>
 
   <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="nb">name</span><span class="p">)</span>
     <span class="vi">@name</span> <span class="o">=</span> <span class="nb">name</span>
@@ -328,13 +327,12 @@ updated.</p>
     <span class="no">BookDB</span><span class="p">.</span><span class="nf">find_by</span><span class="p">(</span><span class="ss">author_name: </span><span class="nb">name</span><span class="p">)</span>
   <span class="k">end</span>
 <span class="k">end</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
-<p>Utilizing <code class="highlighter-rouge">match_array</code>, a test can assert that the proper <code class="highlighter-rouge">books</code> are returned
+<p>Utilizing <code class="language-plaintext highlighter-rouge">match_array</code>, a test can assert that the proper <code class="language-plaintext highlighter-rouge">books</code> are returned
 regardless of order:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="n">describe</span> <span class="no">Author</span> <span class="k">do</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">describe</span> <span class="no">Author</span> <span class="k">do</span>
   <span class="n">describe</span> <span class="s1">'#fetch_books'</span> <span class="k">do</span>
     <span class="n">let</span><span class="p">(</span><span class="ss">:name</span><span class="p">)</span> <span class="p">{</span> <span class="s1">'Jane Austen'</span> <span class="p">}</span>
     <span class="n">let!</span><span class="p">(</span><span class="ss">:books</span><span class="p">)</span> <span class="k">do</span>
@@ -350,32 +348,30 @@ regardless of order:</p>
     <span class="k">end</span>
   <span class="k">end</span>
 <span class="k">end</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <h2 id="verifying-doubles">Verifying Doubles</h2>
 
 <p>Mocking in RSpec is a simple way to ensure code that is expected to run, has
 indeed done so.</p>
 
-<p>To fetch reviews for a <code class="highlighter-rouge">Book</code>, a third party API is used. The unit test
+<p>To fetch reviews for a <code class="language-plaintext highlighter-rouge">Book</code>, a third party API is used. The unit test
 surrounding that functionality should not actually call out to that API.
 Instead, a test should assert that the proper request is made.</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Book</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Book</span>
   <span class="c1"># ..</span>
   <span class="k">def</span> <span class="nf">reviews</span>
     <span class="no">Review</span><span class="o">::</span><span class="no">API</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="no">SUPER_SECRET_API_KEY</span><span class="p">)</span>
                <span class="p">.</span><span class="nf">get</span><span class="p">(</span><span class="s2">"reviews/?title=</span><span class="si">#{</span> <span class="n">title</span> <span class="si">}</span><span class="s2">&amp;genre=</span><span class="si">#{</span> <span class="n">genre</span> <span class="si">}</span><span class="s2">"</span><span class="p">)</span>
   <span class="k">end</span>
 <span class="k">end</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>One way to test this code would be to write a stubbing method and return some
 test data:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="n">describe</span> <span class="no">Book</span> <span class="k">do</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">describe</span> <span class="no">Book</span> <span class="k">do</span>
   <span class="n">let</span><span class="p">(</span><span class="ss">:book_genre</span><span class="p">)</span> <span class="p">{</span> <span class="s1">'Historical Fiction'</span> <span class="p">}</span>
   <span class="n">let</span><span class="p">(</span><span class="ss">:book_title</span><span class="p">)</span> <span class="p">{</span> <span class="s1">'A Tale of Two Cities'</span> <span class="p">}</span>
   <span class="n">subject</span> <span class="p">{</span> <span class="no">Book</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="n">book_title</span><span class="p">,</span> <span class="n">book_genre</span><span class="p">)</span>  <span class="p">}</span>
@@ -400,17 +396,16 @@ test data:</p>
     <span class="k">end</span>
   <span class="k">end</span>
 <span class="k">end</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
-<p>This will work as long as the <code class="highlighter-rouge">Review::API</code> contract does not change how it
+<p>This will work as long as the <code class="language-plaintext highlighter-rouge">Review::API</code> contract does not change how it
 fetches reviews. However, if the method does change for some reason, this code
 will pass and the application will fail in production.</p>
 
-<p>Instead, an <code class="highlighter-rouge">instance_double</code> can be used to assert that a specific method is
+<p>Instead, an <code class="language-plaintext highlighter-rouge">instance_double</code> can be used to assert that a specific method is
 called while still returning test data:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="n">describe</span> <span class="no">Book</span> <span class="k">do</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">describe</span> <span class="no">Book</span> <span class="k">do</span>
   <span class="n">let</span><span class="p">(</span><span class="ss">:book_genre</span><span class="p">)</span> <span class="p">{</span> <span class="s1">'Historical Fiction'</span> <span class="p">}</span>
   <span class="n">let</span><span class="p">(</span><span class="ss">:book_title</span><span class="p">)</span> <span class="p">{</span> <span class="s1">'A Tale of Two Cities'</span> <span class="p">}</span>
   <span class="n">subject</span> <span class="p">{</span> <span class="no">Book</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="n">book_title</span><span class="p">,</span> <span class="n">book_genre</span><span class="p">)</span>  <span class="p">}</span>
@@ -436,18 +431,17 @@ called while still returning test data:</p>
     <span class="k">end</span>
   <span class="k">end</span>
 <span class="k">end</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
-<p>In one line, <code class="highlighter-rouge">instance_double(Review::API, get: fake_reviews)</code>, the client
-class has been instantiated as an verifying double and the method <code class="highlighter-rouge">get</code> has
-been stubbed to return <code class="highlighter-rouge">fake_reviews</code>. The final important piece is:
-<code class="highlighter-rouge">allow(Review::API).to receive(:new).and_return(test_api_client)</code> which tells
-the class <code class="highlighter-rouge">Review::API</code> to use the double instead a new instance when calling
-<code class="highlighter-rouge">new</code>.</p>
+<p>In one line, <code class="language-plaintext highlighter-rouge">instance_double(Review::API, get: fake_reviews)</code>, the client
+class has been instantiated as an verifying double and the method <code class="language-plaintext highlighter-rouge">get</code> has
+been stubbed to return <code class="language-plaintext highlighter-rouge">fake_reviews</code>. The final important piece is:
+<code class="language-plaintext highlighter-rouge">allow(Review::API).to receive(:new).and_return(test_api_client)</code> which tells
+the class <code class="language-plaintext highlighter-rouge">Review::API</code> to use the double instead a new instance when calling
+<code class="language-plaintext highlighter-rouge">new</code>.</p>
 
-<p>Now, if the <code class="highlighter-rouge">Review::API</code> instance method for fetching reviews changes the
-test will break, throwing a <code class="highlighter-rouge">NoMethodError</code> and hopefully saving a lot of
+<p>Now, if the <code class="language-plaintext highlighter-rouge">Review::API</code> instance method for fetching reviews changes the
+test will break, throwing a <code class="language-plaintext highlighter-rouge">NoMethodError</code> and hopefully saving a lot of
 debugging time.</p>
 
 

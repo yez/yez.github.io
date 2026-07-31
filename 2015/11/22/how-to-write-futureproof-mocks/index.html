@@ -17,6 +17,8 @@
   
   
 
+  
+
   <!-- Enable responsiveness on mobile devices-->
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
 
@@ -37,6 +39,8 @@
 
   <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
   <script async src="https://use.fontawesome.com/b3103405a3.js"></script>
+
+  
 </head>
 
 
@@ -62,13 +66,14 @@
       </span>
       <a id='home' class="sidebar-nav-item" href="https://jakeyesbeck.com">Home</a>
       <a id='archives'class="sidebar-nav-item" href="/archives">Archives</a>
+      <a id='services'class="sidebar-nav-item" href="/services">Services</a>
       <a id='resume'class="sidebar-nav-item" href="https://jakeyesbeck.com/assets/files/resume.pdf">Resume</a>
       <a id='about'class="sidebar-nav-item" href="/about">About</a>
       <a id='github'class="sidebar-nav-item" href="https://github.com/yez">GitHub</a>
       <a id='rss'class="sidebar-nav-item" href="/atom.xml">Feed</a>
     </nav>
 
-    <p class='copyright'>&copy; Jake Yesbeck 2022. All rights reserved.</p>
+    <p class='copyright'>&copy; Jake Yesbeck 2026. All rights reserved.</p>
   </div>
 </div>
 
@@ -111,16 +116,15 @@
 
 <h2 id="let-the-dogs-out">Let the Dogs Out</h2>
 
-<p>Given an application that deals with <code class="highlighter-rouge">Dogs</code>:</p>
+<p>Given an application that deals with <code class="language-plaintext highlighter-rouge">Dogs</code>:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Dog</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Dog</span>
 <span class="k">end</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
-<p>Keeping track of grooming statistics about this application’s dogs is the obvious cash cow. But that sounds very tedious and complicated, so we can assume that a <code class="highlighter-rouge">GroomingService</code> exists that exposes a single <code class="highlighter-rouge">Groomer</code> object:</p>
+<p>Keeping track of grooming statistics about this application’s dogs is the obvious cash cow. But that sounds very tedious and complicated, so we can assume that a <code class="language-plaintext highlighter-rouge">GroomingService</code> exists that exposes a single <code class="language-plaintext highlighter-rouge">Groomer</code> object:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">module</span> <span class="nn">GroomingService</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">module</span> <span class="nn">GroomingService</span>
   <span class="k">class</span> <span class="nc">Groomer</span>
     <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="n">dog</span><span class="p">)</span>
       <span class="vi">@dog</span> <span class="o">=</span> <span class="n">dog</span>
@@ -131,32 +135,30 @@
     <span class="k">end</span>
   <span class="k">end</span>
 <span class="k">end</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
-<p>This service was included by the <code class="highlighter-rouge">groomer</code> gem and will become a core piece of the application. To keep everyone in the project sane and well rested, a robust spec suite is needed.</p>
+<p>This service was included by the <code class="language-plaintext highlighter-rouge">groomer</code> gem and will become a core piece of the application. To keep everyone in the project sane and well rested, a robust spec suite is needed.</p>
 
 <h2 id="spec-it-up">Spec It Up</h2>
 
-<p>Using <code class="highlighter-rouge">RSpec</code> and the <code class="highlighter-rouge">GroomingService</code>, a very basic test can be written to make sure the code works as expected.</p>
+<p>Using <code class="language-plaintext highlighter-rouge">RSpec</code> and the <code class="language-plaintext highlighter-rouge">GroomingService</code>, a very basic test can be written to make sure the code works as expected.</p>
 
-<p>Introducing the <code class="highlighter-rouge">GroomingService</code> into the <code class="highlighter-rouge">Dog</code> class could look like:</p>
+<p>Introducing the <code class="language-plaintext highlighter-rouge">GroomingService</code> into the <code class="language-plaintext highlighter-rouge">Dog</code> class could look like:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Dog</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Dog</span>
   <span class="k">def</span> <span class="nf">groom</span>
     <span class="no">GroomingService</span><span class="o">::</span><span class="no">Groomer</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="nb">self</span><span class="p">).</span><span class="nf">groom</span>
   <span class="k">end</span>
 <span class="k">end</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
-<p>The first test should be to make sure that when the <code class="highlighter-rouge">groom</code> method on a <code class="highlighter-rouge">Dog</code> is called, it initializes and calls <code class="highlighter-rouge">groom</code> out to the <code class="highlighter-rouge">GroomService::Groomer</code> object.</p>
+<p>The first test should be to make sure that when the <code class="language-plaintext highlighter-rouge">groom</code> method on a <code class="language-plaintext highlighter-rouge">Dog</code> is called, it initializes and calls <code class="language-plaintext highlighter-rouge">groom</code> out to the <code class="language-plaintext highlighter-rouge">GroomService::Groomer</code> object.</p>
 
 <p>When asserting that a certain set of methods is called on a particular object, the built in <a href="https://www.relishapp.com/rspec/rspec-mocks/v/3-4/docs/basics/test-doubles">RSpec double</a> method is very handy.</p>
 
-<p>The <code class="highlighter-rouge">double</code> method returns a stand-in object to assert <code class="highlighter-rouge">allow</code> and <code class="highlighter-rouge">expect</code> messages against. Any method that is called on the test double which is not explicitly <code class="highlighter-rouge">allow</code>ed or <code class="highlighter-rouge">expect</code>ed results in an error.</p>
+<p>The <code class="language-plaintext highlighter-rouge">double</code> method returns a stand-in object to assert <code class="language-plaintext highlighter-rouge">allow</code> and <code class="language-plaintext highlighter-rouge">expect</code> messages against. Any method that is called on the test double which is not explicitly <code class="language-plaintext highlighter-rouge">allow</code>ed or <code class="language-plaintext highlighter-rouge">expect</code>ed results in an error.</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="n">describe</span> <span class="no">Dog</span> <span class="k">do</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">describe</span> <span class="no">Dog</span> <span class="k">do</span>
   <span class="n">subject</span> <span class="p">{</span> <span class="n">described_class</span><span class="p">.</span><span class="nf">new</span> <span class="p">}</span>
 
   <span class="n">describe</span> <span class="s1">'#groom'</span> <span class="k">do</span>
@@ -170,12 +172,11 @@
     <span class="k">end</span>
   <span class="k">end</span>
 <span class="k">end</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>As expected, this test passes beautifully:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="nv">$:</span> rspec dog_spec.rb
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$:</span> rspec dog_spec.rb
 
 Dog
   <span class="c">#groom</span>
@@ -184,18 +185,17 @@ Dog
 Finished <span class="k">in </span>0.00773 seconds <span class="o">(</span>files took 0.09367 seconds to load<span class="o">)</span>
 1 example, 0 failures
 
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>That can be it, right? Pack it up and put the dogs away, whoever let them out will have to do it all again later.</p>
 
 <h2 id="think-of-the-future">Think of the Future</h2>
 
-<p>After some time passes, the <code class="highlighter-rouge">GroomingService::Groomer</code> has changed its method signature. Instead of the <code class="highlighter-rouge">groom</code> method, it has changed to <code class="highlighter-rouge">groom!</code>. Chances are someone thought that either the method had too many side affects or that <code class="highlighter-rouge">!</code> are just really awesome looking.</p>
+<p>After some time passes, the <code class="language-plaintext highlighter-rouge">GroomingService::Groomer</code> has changed its method signature. Instead of the <code class="language-plaintext highlighter-rouge">groom</code> method, it has changed to <code class="language-plaintext highlighter-rouge">groom!</code>. Chances are someone thought that either the method had too many side affects or that <code class="language-plaintext highlighter-rouge">!</code> are just really awesome looking.</p>
 
 <p>In any case, the included service changes and when the test runs:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="nv">$:</span> rspec dog_spec.rb
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$:</span> rspec dog_spec.rb
 
 Dog
   <span class="c">#groom</span>
@@ -204,18 +204,17 @@ Dog
 Finished <span class="k">in </span>0.00735 seconds <span class="o">(</span>files took 0.10532 seconds to load<span class="o">)</span>
 1 example, 0 failures
 
-</code></pre>
-</div>
+</code></pre></div></div>
 
-<p><em>It passes</em>? How can that be? The method changed from <code class="highlighter-rouge">groom</code> to <code class="highlighter-rouge">groom!</code>. The <code class="highlighter-rouge">groom</code> method does not even exist on <code class="highlighter-rouge">GroomingService::Groomer</code>. It seems that the specs do not care what does or does not exist on the <code class="highlighter-rouge">double</code>, they just happily pass.</p>
+<p><em>It passes</em>? How can that be? The method changed from <code class="language-plaintext highlighter-rouge">groom</code> to <code class="language-plaintext highlighter-rouge">groom!</code>. The <code class="language-plaintext highlighter-rouge">groom</code> method does not even exist on <code class="language-plaintext highlighter-rouge">GroomingService::Groomer</code>. It seems that the specs do not care what does or does not exist on the <code class="language-plaintext highlighter-rouge">double</code>, they just happily pass.</p>
 
-<h2 id="use-instancedouble">Use <code class="highlighter-rouge">instance_double</code></h2>
+<h2 id="use-instance_double">Use <code class="language-plaintext highlighter-rouge">instance_double</code></h2>
 
-<p>The answer here is to use <code class="highlighter-rouge">instance_double</code>. Like <code class="highlighter-rouge">double</code>, <code class="highlighter-rouge">instance_double</code> also returns a stand-in object that raises errors if methods not <code class="highlighter-rouge">allow</code>ed or <code class="highlighter-rouge">expect</code>ed are called on the object.</p>
+<p>The answer here is to use <code class="language-plaintext highlighter-rouge">instance_double</code>. Like <code class="language-plaintext highlighter-rouge">double</code>, <code class="language-plaintext highlighter-rouge">instance_double</code> also returns a stand-in object that raises errors if methods not <code class="language-plaintext highlighter-rouge">allow</code>ed or <code class="language-plaintext highlighter-rouge">expect</code>ed are called on the object.</p>
 
-<p>The key difference is that <code class="highlighter-rouge">instance_double</code> checks the underlying object to make sure that it responds to methods before making assertions that they are called.</p>
+<p>The key difference is that <code class="language-plaintext highlighter-rouge">instance_double</code> checks the underlying object to make sure that it responds to methods before making assertions that they are called.</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="n">describe</span> <span class="no">Dog</span> <span class="k">do</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">describe</span> <span class="no">Dog</span> <span class="k">do</span>
   <span class="n">subject</span> <span class="p">{</span> <span class="n">described_class</span><span class="p">.</span><span class="nf">new</span> <span class="p">}</span>
 
   <span class="n">describe</span> <span class="s1">'#groom'</span> <span class="k">do</span>
@@ -229,12 +228,11 @@ Finished <span class="k">in </span>0.00735 seconds <span class="o">(</span>files
     <span class="k">end</span>
   <span class="k">end</span>
 <span class="k">end</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>Now running this test, we see the failure we should expect:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="nv">$:</span> rspec dog_spec.rb
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$:</span> rspec dog_spec.rb
 
 Dog
   <span class="c">#groom</span>
@@ -249,12 +247,11 @@ Failures:
 
 Finished <span class="k">in </span>0.0054 seconds <span class="o">(</span>files took 0.08288 seconds to load<span class="o">)</span>
 1 example, 1 failure
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>While no one likes failing specs, a failure here is always preferable to one in production.</p>
 
-<p>Since the API that we do not own (<code class="highlighter-rouge">Groomer</code>) changed, it was a mistake to blindly mock it without asking the underlying object if that method existed. However, with this problem corrected, the code is more robust and development can continue.</p>
+<p>Since the API that we do not own (<code class="language-plaintext highlighter-rouge">Groomer</code>) changed, it was a mistake to blindly mock it without asking the underlying object if that method existed. However, with this problem corrected, the code is more robust and development can continue.</p>
 
 <h2 id="mocking-with-confidence">Mocking with Confidence</h2>
 

@@ -17,6 +17,8 @@
   
   
 
+  
+
   <!-- Enable responsiveness on mobile devices-->
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
 
@@ -37,6 +39,8 @@
 
   <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
   <script async src="https://use.fontawesome.com/b3103405a3.js"></script>
+
+  
 </head>
 
 
@@ -62,13 +66,14 @@
       </span>
       <a id='home' class="sidebar-nav-item" href="https://jakeyesbeck.com">Home</a>
       <a id='archives'class="sidebar-nav-item" href="/archives">Archives</a>
+      <a id='services'class="sidebar-nav-item" href="/services">Services</a>
       <a id='resume'class="sidebar-nav-item" href="https://jakeyesbeck.com/assets/files/resume.pdf">Resume</a>
       <a id='about'class="sidebar-nav-item" href="/about">About</a>
       <a id='github'class="sidebar-nav-item" href="https://github.com/yez">GitHub</a>
       <a id='rss'class="sidebar-nav-item" href="/atom.xml">Feed</a>
     </nav>
 
-    <p class='copyright'>&copy; Jake Yesbeck 2022. All rights reserved.</p>
+    <p class='copyright'>&copy; Jake Yesbeck 2026. All rights reserved.</p>
   </div>
 </div>
 
@@ -115,9 +120,9 @@
 
 <p>One problem with metaprogramming solutions are their obstruction of code discovery. When entering a new project or simply trying to re-familiarize oneself with an existing one, tracing code execution in a text editor can be quite difficult if method definitions do not exist.</p>
 
-<p>For example, we can assume that a <code class="highlighter-rouge">User</code> class exists with a set of metaprogrammed methods:</p>
+<p>For example, we can assume that a <code class="language-plaintext highlighter-rouge">User</code> class exists with a set of metaprogrammed methods:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">class</span> <span class="nc">User</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">User</span>
   <span class="p">[</span>
     <span class="ss">:password</span><span class="p">,</span>
     <span class="ss">:email</span><span class="p">,</span>
@@ -129,18 +134,17 @@
     <span class="k">end</span>
   <span class="k">end</span>
 <span class="k">end</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
-<p>Although a little contrived, this code is a list of simple convenience methods on a <code class="highlighter-rouge">User</code> class. This solution is easily extended to include additional attributes without a full method definition per attribute.</p>
+<p>Although a little contrived, this code is a list of simple convenience methods on a <code class="language-plaintext highlighter-rouge">User</code> class. This solution is easily extended to include additional attributes without a full method definition per attribute.</p>
 
-<p>However, these methods can not be found using <code class="highlighter-rouge">grep</code>, silver searcher, or other “find all” tools. Since the method <code class="highlighter-rouge">has_password?</code> is never explicitly defined in the code, it is not discoverable.</p>
+<p>However, these methods can not be found using <code class="language-plaintext highlighter-rouge">grep</code>, silver searcher, or other “find all” tools. Since the method <code class="language-plaintext highlighter-rouge">has_password?</code> is never explicitly defined in the code, it is not discoverable.</p>
 
 <h3 id="a-work-around">A Work Around:</h3>
 
 <p>To combat this issue, some developers choose to write a comment listing the defined method names above the metaprogramming block. This simple solution can greatly help the readability of the code:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">class</span> <span class="nc">User</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">User</span>
   <span class="c1"># has_password?, has_email?, has_first_name?,</span>
   <span class="c1">#  has_last_name? method definitions</span>
   <span class="p">[</span>
@@ -154,8 +158,7 @@
     <span class="k">end</span>
   <span class="k">end</span>
 <span class="k">end</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <h2 id="performance">Performance</h2>
 
@@ -167,27 +170,26 @@
 
 <p>The incoming data looks like the following:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="p">{</span><span class="w">
-  </span><span class="nt">"user"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-    </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Some User"</span><span class="p">,</span><span class="w">
-    </span><span class="nt">"phones"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nl">"user"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nl">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Some User"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"phones"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
       </span><span class="s2">"818-555-5555"</span><span class="p">,</span><span class="w">
       </span><span class="s2">"415-555-5555"</span><span class="w">
     </span><span class="p">],</span><span class="w">
-    </span><span class="nt">"email"</span><span class="p">:</span><span class="w"> </span><span class="s2">"email@whatever.com"</span><span class="p">,</span><span class="w">
-    </span><span class="nt">"birthday"</span><span class="p">:</span><span class="w"> </span><span class="s2">"12-12-1900"</span><span class="w">
+    </span><span class="nl">"email"</span><span class="p">:</span><span class="w"> </span><span class="s2">"email@whatever.com"</span><span class="p">,</span><span class="w">
+    </span><span class="nl">"birthday"</span><span class="p">:</span><span class="w"> </span><span class="s2">"12-12-1900"</span><span class="w">
   </span><span class="p">}</span><span class="w">
 </span><span class="p">}</span><span class="w">
-</span></code></pre>
-</div>
+</span></code></pre></div></div>
 
-<p><em>Note: This data will be referred to in the following examples as <code class="highlighter-rouge">incoming_data</code> and we can assume it was been decoded from <code class="highlighter-rouge">JSON</code> into a Ruby <code class="highlighter-rouge">Hash</code>.</em></p>
+<p><em>Note: This data will be referred to in the following examples as <code class="language-plaintext highlighter-rouge">incoming_data</code> and we can assume it was been decoded from <code class="language-plaintext highlighter-rouge">JSON</code> into a Ruby <code class="language-plaintext highlighter-rouge">Hash</code>.</em></p>
 
-<h3 id="all-methods">1. All Methods</h3>
+<h3 id="1-all-methods">1. All Methods</h3>
 
-<p>One way to accept and integrate this incoming data would be create a class which maps all attributes under the <code class="highlighter-rouge">'user'</code> key to methods:</p>
+<p>One way to accept and integrate this incoming data would be create a class which maps all attributes under the <code class="language-plaintext highlighter-rouge">'user'</code> key to methods:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">class</span> <span class="nc">UserMetaMethods</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">UserMetaMethods</span>
   <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="nb">hash</span><span class="p">)</span>
     <span class="nb">hash</span><span class="p">.</span><span class="nf">each_pair</span> <span class="k">do</span> <span class="o">|</span><span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="o">|</span>
       <span class="nb">self</span><span class="p">.</span><span class="nf">class</span><span class="p">.</span><span class="nf">send</span><span class="p">(</span><span class="ss">:attr_accessor</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span>
@@ -199,16 +201,15 @@
 <span class="n">user</span> <span class="o">=</span> <span class="no">UserMetaMethods</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="n">incoming_data</span><span class="p">[</span><span class="s1">'user'</span><span class="p">])</span>
 <span class="n">user</span><span class="p">.</span><span class="nf">email</span>
 <span class="c1"># =&gt; email@whatever.com</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
-<p>This solution makes accessing the incoming data very consumer friendly. All attributes appear as methods that return positively to <code class="highlighter-rouge">respond_to?</code> and have corresponding instance variables per attribute.</p>
+<p>This solution makes accessing the incoming data very consumer friendly. All attributes appear as methods that return positively to <code class="language-plaintext highlighter-rouge">respond_to?</code> and have corresponding instance variables per attribute.</p>
 
-<h3 id="methodmissing">2. <code class="highlighter-rouge">method_missing</code></h3>
+<h3 id="2-method_missing">2. <code class="language-plaintext highlighter-rouge">method_missing</code></h3>
 
-<p>A group of metaprogramming solutions would not be complete without one utilizing <code class="highlighter-rouge">method_missing</code>. With <code class="highlighter-rouge">method_missing</code>, a non-existent method call can be intercepted on an object and evaluated with additional data unbeknownst to the original caller.</p>
+<p>A group of metaprogramming solutions would not be complete without one utilizing <code class="language-plaintext highlighter-rouge">method_missing</code>. With <code class="language-plaintext highlighter-rouge">method_missing</code>, a non-existent method call can be intercepted on an object and evaluated with additional data unbeknownst to the original caller.</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">class</span> <span class="nc">UserMethodMissing</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">UserMethodMissing</span>
   <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="nb">hash</span><span class="p">)</span>
     <span class="vi">@hash</span> <span class="o">=</span> <span class="nb">hash</span>
   <span class="k">end</span>
@@ -230,19 +231,18 @@
 <span class="n">user</span> <span class="o">=</span> <span class="no">UserMethodMissing</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="n">incoming_data</span><span class="p">[</span><span class="s1">'user'</span><span class="p">])</span>
 <span class="n">user</span><span class="p">.</span><span class="nf">email</span>
 <span class="c1"># =&gt; email@whatever.com</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
-<p>The <code class="highlighter-rouge">respond_to_missing?</code> method is also defined to enable <code class="highlighter-rouge">respond_to?</code> and <code class="highlighter-rouge">method</code> calls to execute successfully. <a href="https://robots.thoughtbot.com/always-define-respond-to-missing-when-overriding">Read more information about <code class="highlighter-rouge">respond_to_missing?</code> here.</a></p>
+<p>The <code class="language-plaintext highlighter-rouge">respond_to_missing?</code> method is also defined to enable <code class="language-plaintext highlighter-rouge">respond_to?</code> and <code class="language-plaintext highlighter-rouge">method</code> calls to execute successfully. <a href="https://robots.thoughtbot.com/always-define-respond-to-missing-when-overriding">Read more information about <code class="language-plaintext highlighter-rouge">respond_to_missing?</code> here.</a></p>
 
-<p><em>Note: Patterns equivalent to this are used in some popular libraries like <code class="highlighter-rouge">OpenStruct</code> and <code class="highlighter-rouge">Hashie</code> to achieve similar results.</em></p>
+<p><em>Note: Patterns equivalent to this are used in some popular libraries like <code class="language-plaintext highlighter-rouge">OpenStruct</code> and <code class="language-plaintext highlighter-rouge">Hashie</code> to achieve similar results.</em></p>
 
-<h3 id="regular-object">3. “Regular” Object</h3>
+<h3 id="3-regular-object">3. “Regular” Object</h3>
 
 <p>As a control, a regular Ruby object can be created with specific attributes defined:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">class</span> <span class="nc">UserRegular</span>
-  <span class="kp">attr_reader</span> <span class="ss">:name</span><span class="p">,</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">UserRegular</span>
+  <span class="nb">attr_reader</span> <span class="ss">:name</span><span class="p">,</span>
               <span class="ss">:phones</span><span class="p">,</span>
               <span class="ss">:email</span><span class="p">,</span>
               <span class="ss">:birthday</span>
@@ -258,31 +258,29 @@
 <span class="n">user</span> <span class="o">=</span> <span class="no">UserRegular</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="n">incoming_data</span><span class="p">[</span><span class="s1">'user'</span><span class="p">])</span>
 <span class="n">user</span><span class="p">.</span><span class="nf">email</span>
 <span class="c1"># =&gt; email@whatever.com</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>An immediate downside to this approach is: if the contract of the external service changes this object may not be initialized with all pertinent data.</p>
 
-<h3 id="a-hash">4. A <code class="highlighter-rouge">Hash</code></h3>
+<h3 id="4-a-hash">4. A <code class="language-plaintext highlighter-rouge">Hash</code></h3>
 
-<p>No additional code is required for this approach, a consumer would simply use the resulting Ruby <code class="highlighter-rouge">Hash</code> after the received <code class="highlighter-rouge">JSON</code> is parsed:</p>
+<p>No additional code is required for this approach, a consumer would simply use the resulting Ruby <code class="language-plaintext highlighter-rouge">Hash</code> after the received <code class="language-plaintext highlighter-rouge">JSON</code> is parsed:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="n">incoming_data</span><span class="p">[</span><span class="s1">'user'</span><span class="p">][</span><span class="s1">'email'</span><span class="p">]</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">incoming_data</span><span class="p">[</span><span class="s1">'user'</span><span class="p">][</span><span class="s1">'email'</span><span class="p">]</span>
 <span class="c1"># =&gt; email@whatever.com</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
-<p>Not a metaprogramming solution, but still a valid way of handling the passed in data. Using a simple <code class="highlighter-rouge">Hash</code> does not grant the flexibility of the other solutions but can be a great base-case for performance testing.</p>
+<p>Not a metaprogramming solution, but still a valid way of handling the passed in data. Using a simple <code class="language-plaintext highlighter-rouge">Hash</code> does not grant the flexibility of the other solutions but can be a great base-case for performance testing.</p>
 
 <h3 id="how-they-compare">How They Compare</h3>
 
 <p>Finally, the exciting part: potentially relevant performance benchmarks.</p>
 
-<p>The library we will use to test how each of these solutions does is <a href="https://github.com/evanphx/benchmark-ips"><code class="highlighter-rouge">benchmark/ips</code></a>.</p>
+<p>The library we will use to test how each of these solutions does is <a href="https://github.com/evanphx/benchmark-ips"><code class="language-plaintext highlighter-rouge">benchmark/ips</code></a>.</p>
 
 <p>This library makes it simple to define different implementation sections and then compare them:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="nb">require</span> <span class="s1">'benchmark/ips'</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">require</span> <span class="s1">'benchmark/ips'</span>
 
 <span class="no">Benchmark</span><span class="p">.</span><span class="nf">ips</span> <span class="k">do</span> <span class="o">|</span><span class="n">x</span><span class="o">|</span>
   <span class="n">x</span><span class="p">.</span><span class="nf">report</span><span class="p">(</span><span class="s1">'UserMetaMethods'</span><span class="p">)</span> <span class="k">do</span>
@@ -315,14 +313,13 @@
 
   <span class="n">x</span><span class="p">.</span><span class="nf">compare!</span>
 <span class="k">end</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
-<p>Each <code class="highlighter-rouge">report</code> corresponds to a solution described above. The <code class="highlighter-rouge">Hash</code> report did not <em>need</em> to initialize a new object, but for consistency’s sake, a new <code class="highlighter-rouge">Hash</code> is initialized from everything under the <code class="highlighter-rouge">'user'</code> key of the original <code class="highlighter-rouge">Hash</code>.</p>
+<p>Each <code class="language-plaintext highlighter-rouge">report</code> corresponds to a solution described above. The <code class="language-plaintext highlighter-rouge">Hash</code> report did not <em>need</em> to initialize a new object, but for consistency’s sake, a new <code class="language-plaintext highlighter-rouge">Hash</code> is initialized from everything under the <code class="language-plaintext highlighter-rouge">'user'</code> key of the original <code class="language-plaintext highlighter-rouge">Hash</code>.</p>
 
 <p>Running this code results in:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>Calculating -------------------------------------
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Calculating <span class="nt">-------------------------------------</span>
    UserMetaMethods     79.294  <span class="o">(</span>± 2.5%<span class="o">)</span> i/s -    399.000
  UserMethodMissing      1.531k <span class="o">(</span>± 1.2%<span class="o">)</span> i/s -      7.791k
        UserRegular    913.295  <span class="o">(</span>± 1.4%<span class="o">)</span> i/s -      4.628k
@@ -333,18 +330,17 @@ Comparison:
  UserMethodMissing:     1530.5 i/s - 2.05x slower
        UserRegular:      913.3 i/s - 3.44x slower
    UserMetaMethods:       79.3 i/s - 39.61x slower
-</code></pre>
-</div>
+</code></pre></div></div>
 
-<p>Wow! Aside from simply using a <code class="highlighter-rouge">Hash</code>, the <code class="highlighter-rouge">method_missing</code> implementation is the fastest. Quick, everyone go change all the code to use <code class="highlighter-rouge">method_missing</code>! No. Stop. Do not do that.</p>
+<p>Wow! Aside from simply using a <code class="language-plaintext highlighter-rouge">Hash</code>, the <code class="language-plaintext highlighter-rouge">method_missing</code> implementation is the fastest. Quick, everyone go change all the code to use <code class="language-plaintext highlighter-rouge">method_missing</code>! No. Stop. Do not do that.</p>
 
-<p>While it might be faster than the <code class="highlighter-rouge">UserRegular</code> implementation, it is not without its drawbacks. A <code class="highlighter-rouge">method_missing</code> solution certainly has value in a variety of situations but a simple benchmark should not persuade anyone to simply switch their code around to gain the “speed up”.</p>
+<p>While it might be faster than the <code class="language-plaintext highlighter-rouge">UserRegular</code> implementation, it is not without its drawbacks. A <code class="language-plaintext highlighter-rouge">method_missing</code> solution certainly has value in a variety of situations but a simple benchmark should not persuade anyone to simply switch their code around to gain the “speed up”.</p>
 
-<p>What about existing libraries that have similar behaviour to <code class="highlighter-rouge">method_missing</code> (i.e. <code class="highlighter-rouge">Hashie</code> and <code class="highlighter-rouge">OpenStruct</code>)?</p>
+<p>What about existing libraries that have similar behaviour to <code class="language-plaintext highlighter-rouge">method_missing</code> (i.e. <code class="language-plaintext highlighter-rouge">Hashie</code> and <code class="language-plaintext highlighter-rouge">OpenStruct</code>)?</p>
 
 <p>To add them to the existing benchmark, the corresponding classes must be made:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="nb">require</span> <span class="s1">'ostruct'</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">require</span> <span class="s1">'ostruct'</span>
 
 <span class="k">class</span> <span class="nc">UserOpenStruct</span> <span class="o">&lt;</span> <span class="no">OpenStruct</span>
 <span class="k">end</span>
@@ -353,12 +349,11 @@ Comparison:
 
 <span class="k">class</span> <span class="nc">UserMash</span> <span class="o">&lt;</span> <span class="no">Hashie</span><span class="o">::</span><span class="no">Mash</span>
 <span class="k">end</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
-<p>Then two new <code class="highlighter-rouge">report</code> calls can add them to the existing benchmark:</p>
+<p>Then two new <code class="language-plaintext highlighter-rouge">report</code> calls can add them to the existing benchmark:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="no">Benchmark</span><span class="p">.</span><span class="nf">ips</span> <span class="k">do</span> <span class="o">|</span><span class="n">x</span><span class="o">|</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">Benchmark</span><span class="p">.</span><span class="nf">ips</span> <span class="k">do</span> <span class="o">|</span><span class="n">x</span><span class="o">|</span>
   <span class="c1"># ...</span>
 
   <span class="n">x</span><span class="p">.</span><span class="nf">report</span><span class="p">(</span><span class="s1">'OpenStruct'</span><span class="p">)</span> <span class="k">do</span>
@@ -377,12 +372,11 @@ Comparison:
 
   <span class="c1"># ...</span>
 <span class="k">end</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>The results of these two additions is a bit of a surprise:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>Calculating -------------------------------------
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Calculating <span class="nt">-------------------------------------</span>
    UserMetaMethods     79.050  <span class="o">(</span>± 2.5%<span class="o">)</span> i/s -    399.000
  UserMethodMissing      1.537k <span class="o">(</span>± 1.3%<span class="o">)</span> i/s -      7.752k
        UserRegular    914.824  <span class="o">(</span>± 1.4%<span class="o">)</span> i/s -      4.576k
@@ -397,18 +391,17 @@ Comparison:
           UserMash:      194.4 i/s - 16.15x slower
    UserMetaMethods:       79.0 i/s - 39.72x slower
         OpenStruct:       50.0 i/s - 62.86x slower
-</code></pre>
-</div>
+</code></pre></div></div>
 
-<p>Despite <code class="highlighter-rouge">OpenStruct</code> and <code class="highlighter-rouge">Hashie</code> seeming very similar to our homegrown <code class="highlighter-rouge">method_missing</code> solution, both yielded worse results. However, like other metaprogramming solutions, both <code class="highlighter-rouge">OpenStruct</code> and  <code class="highlighter-rouge">Hashie</code> make up for this speed deficiency with flexibility.</p>
+<p>Despite <code class="language-plaintext highlighter-rouge">OpenStruct</code> and <code class="language-plaintext highlighter-rouge">Hashie</code> seeming very similar to our homegrown <code class="language-plaintext highlighter-rouge">method_missing</code> solution, both yielded worse results. However, like other metaprogramming solutions, both <code class="language-plaintext highlighter-rouge">OpenStruct</code> and  <code class="language-plaintext highlighter-rouge">Hashie</code> make up for this speed deficiency with flexibility.</p>
 
-<p>If this were a real problem in a production application, <code class="highlighter-rouge">OpenStruct</code> and <code class="highlighter-rouge">Hashie</code> could certainly both be viable solutions. Unless the code path to utilize these libraries was scorching hot, their performance issues might not be a factor.</p>
+<p>If this were a real problem in a production application, <code class="language-plaintext highlighter-rouge">OpenStruct</code> and <code class="language-plaintext highlighter-rouge">Hashie</code> could certainly both be viable solutions. Unless the code path to utilize these libraries was scorching hot, their performance issues might not be a factor.</p>
 
 <h2 id="why-the-slowdown">Why the Slowdown?</h2>
 
 <p>The reason that some metaprogramming solutions are slow has partially to do with the Ruby inline method cache. In Ruby, the inline method cache is responsible for storing methods that it knows about so as to avoid a costly look up operation every time. Metaprogramming interferes with this built in cache by invalidating its cache key.</p>
 
-<p>Every time a class is reopened or a method is defined on a class, pieces of the inline method cache key change, resulting in a cache miss and method lookup. Metaprogrammed code (especially code that executes at every <code class="highlighter-rouge">Object.new</code> like <code class="highlighter-rouge">UserMetaMethods</code>) does not benefit from the inline method caching in the same ways as “normal” code does. For much more information, <a href="https://tenderlovemaking.com/2015/12/23/inline-caching-in-mri.html">a man much smarter than I wrote a great article explaining Ruby inline method caching in detail</a>.</p>
+<p>Every time a class is reopened or a method is defined on a class, pieces of the inline method cache key change, resulting in a cache miss and method lookup. Metaprogrammed code (especially code that executes at every <code class="language-plaintext highlighter-rouge">Object.new</code> like <code class="language-plaintext highlighter-rouge">UserMetaMethods</code>) does not benefit from the inline method caching in the same ways as “normal” code does. For much more information, <a href="https://tenderlovemaking.com/2015/12/23/inline-caching-in-mri.html">a man much smarter than I wrote a great article explaining Ruby inline method caching in detail</a>.</p>
 
 <h2 id="use-the-right-tool-for-the-job">Use the Right Tool for the Job</h2>
 
@@ -416,7 +409,7 @@ Comparison:
 
 <p>Metaprogramming is a very powerful tool in the Ruby language that should be wielded with care. Like anything, using metaprogramming too much can cause unmaintainable code. This sort of code might be great for job security, but could be less performant, unreadable, and unmaintainable by coworkers.</p>
 
-<p>When used correctly and in appropriate circumstances, metaprogramming can be a great asset. The trick is knowing when to use it and when to refrain. Sometimes just using a <code class="highlighter-rouge">Hash</code> might be the best solution.</p>
+<p>When used correctly and in appropriate circumstances, metaprogramming can be a great asset. The trick is knowing when to use it and when to refrain. Sometimes just using a <code class="language-plaintext highlighter-rouge">Hash</code> might be the best solution.</p>
 
 </div>
 

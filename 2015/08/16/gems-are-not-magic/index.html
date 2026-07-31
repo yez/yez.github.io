@@ -17,6 +17,8 @@
   
   
 
+  
+
   <!-- Enable responsiveness on mobile devices-->
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
 
@@ -37,6 +39,8 @@
 
   <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
   <script async src="https://use.fontawesome.com/b3103405a3.js"></script>
+
+  
 </head>
 
 
@@ -62,13 +66,14 @@
       </span>
       <a id='home' class="sidebar-nav-item" href="https://jakeyesbeck.com">Home</a>
       <a id='archives'class="sidebar-nav-item" href="/archives">Archives</a>
+      <a id='services'class="sidebar-nav-item" href="/services">Services</a>
       <a id='resume'class="sidebar-nav-item" href="https://jakeyesbeck.com/assets/files/resume.pdf">Resume</a>
       <a id='about'class="sidebar-nav-item" href="/about">About</a>
       <a id='github'class="sidebar-nav-item" href="https://github.com/yez">GitHub</a>
       <a id='rss'class="sidebar-nav-item" href="/atom.xml">Feed</a>
     </nav>
 
-    <p class='copyright'>&copy; Jake Yesbeck 2022. All rights reserved.</p>
+    <p class='copyright'>&copy; Jake Yesbeck 2026. All rights reserved.</p>
   </div>
 </div>
 
@@ -107,13 +112,13 @@
   </li>
 </ul>
 </span>
-  <p>Ruby gems can seem magical. Usually, one (or more accurately: thirty) solution to a problem exists in the form of a gem. Using gems is easy and intuitive. Simply add a line in the project root’s <code class="highlighter-rouge">Gemfile</code> and run <code class="highlighter-rouge">bundle install</code>. Then, either <code class="highlighter-rouge">require</code> the name of the gem or, if using Ruby on Rails, start using the gem’s code immediately anywhere in the project. What could possibly go wrong?</p>
+  <p>Ruby gems can seem magical. Usually, one (or more accurately: thirty) solution to a problem exists in the form of a gem. Using gems is easy and intuitive. Simply add a line in the project root’s <code class="language-plaintext highlighter-rouge">Gemfile</code> and run <code class="language-plaintext highlighter-rouge">bundle install</code>. Then, either <code class="language-plaintext highlighter-rouge">require</code> the name of the gem or, if using Ruby on Rails, start using the gem’s code immediately anywhere in the project. What could possibly go wrong?</p>
 
 <h2 id="gems-on-gems-on-gems">Gems on gems on gems</h2>
 
-<p>Unchecked and unmanaged, a project’s <code class="highlighter-rouge">Gemfile</code> might turn into something that looks like:</p>
+<p>Unchecked and unmanaged, a project’s <code class="language-plaintext highlighter-rouge">Gemfile</code> might turn into something that looks like:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="n">source</span> <span class="s1">'https://rubygems.org'</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">source</span> <span class="s1">'https://rubygems.org'</span>
 
 <span class="n">gem</span> <span class="s1">'linkbuilder'</span>
 <span class="n">gem</span> <span class="s1">'http_helper'</span>
@@ -130,10 +135,9 @@
 <span class="n">gem</span> <span class="s1">'you-get-the-idea'</span>
 <span class="n">gem</span> <span class="s1">'these-are-too-many-gems'</span>
 <span class="n">gem</span> <span class="s1">'really'</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
-<p>It is very possible that all these gems do not have any adverse side effects. They might not even have any horrible monkey patches to <code class="highlighter-rouge">String</code> or <code class="highlighter-rouge">Object</code>. <a href="https://www.nateberkopec.com/2015/07/22/secrets-to-speedy-ruby-apps-on-heroku.html">This post</a> has more information on <em>“Why do most Rails apps use so much memory per process?”</em>.</p>
+<p>It is very possible that all these gems do not have any adverse side effects. They might not even have any horrible monkey patches to <code class="language-plaintext highlighter-rouge">String</code> or <code class="language-plaintext highlighter-rouge">Object</code>. <a href="https://www.nateberkopec.com/2015/07/22/secrets-to-speedy-ruby-apps-on-heroku.html">This post</a> has more information on <em>“Why do most Rails apps use so much memory per process?”</em>.</p>
 
 <p>Without being able to see inside of them, intrusive gems might be mixed into this mass and we would have no idea. At a glance, it is not immediately obvious how to differentiate between benign and malignant gems. It becomes infinitely easier to understand how gems interact if we remember that gems are not magic.</p>
 
@@ -143,11 +147,11 @@
 
 <h2 id="opening-gems">Opening gems</h2>
 
-<p>Understanding gems is a great way to learn different design patterns and idiomatic Ruby conventions. Good gems have <a href="https://github.com/jnunemaker/httparty/blob/master/lib/httparty.rb#L29">in-line documentation</a>, great gems have <a href="https://github.com/apotonick/trailblazer#trailblazer">comprehensive Github documentation</a>. Github is the most common place to find the source code for gems and a large number of them have really great method and API documentation. This level of detail might be all that is required; however, for the more opaque gems, the <code class="highlighter-rouge">bundle open</code> command is extremely helpful.</p>
+<p>Understanding gems is a great way to learn different design patterns and idiomatic Ruby conventions. Good gems have <a href="https://github.com/jnunemaker/httparty/blob/master/lib/httparty.rb#L29">in-line documentation</a>, great gems have <a href="https://github.com/apotonick/trailblazer#trailblazer">comprehensive Github documentation</a>. Github is the most common place to find the source code for gems and a large number of them have really great method and API documentation. This level of detail might be all that is required; however, for the more opaque gems, the <code class="language-plaintext highlighter-rouge">bundle open</code> command is extremely helpful.</p>
 
-<p><code class="highlighter-rouge">bundle open &lt;gemname&gt;</code> will use the system default text editor to open the contents of a gem. Since all gems are installed locally on the system, they should be available to open from a project’s root. If a default editor is not set, or the default is not desired, one can be added to the beginning of the command: <code class="highlighter-rouge">EDITOR=vim bundle open &lt;gemname&gt;</code>.</p>
+<p><code class="language-plaintext highlighter-rouge">bundle open &lt;gemname&gt;</code> will use the system default text editor to open the contents of a gem. Since all gems are installed locally on the system, they should be available to open from a project’s root. If a default editor is not set, or the default is not desired, one can be added to the beginning of the command: <code class="language-plaintext highlighter-rouge">EDITOR=vim bundle open &lt;gemname&gt;</code>.</p>
 
-<p>A common starting place for a gem’s logic is in a file with the same name as the gem. Since most gems need to encapsulate their logic, a namespace or wrapper class is usually created with the same name as the gem. In this file it is equally common to find a list of required files or the entry point for the underlying logic. This file is usually in the root of the gem’s source or in a <code class="highlighter-rouge">lib</code> directory.</p>
+<p>A common starting place for a gem’s logic is in a file with the same name as the gem. Since most gems need to encapsulate their logic, a namespace or wrapper class is usually created with the same name as the gem. In this file it is equally common to find a list of required files or the entry point for the underlying logic. This file is usually in the root of the gem’s source or in a <code class="language-plaintext highlighter-rouge">lib</code> directory.</p>
 
 <p>In the <a href="https://jakeyesbeck.com/2015/05/10/validates-type/">validates_type</a> root file:</p>
 

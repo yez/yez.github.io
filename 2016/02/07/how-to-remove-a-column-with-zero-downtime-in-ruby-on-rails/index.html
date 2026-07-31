@@ -17,6 +17,8 @@
   
   
 
+  
+
   <!-- Enable responsiveness on mobile devices-->
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
 
@@ -37,6 +39,8 @@
 
   <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
   <script async src="https://use.fontawesome.com/b3103405a3.js"></script>
+
+  
 </head>
 
 
@@ -62,13 +66,14 @@
       </span>
       <a id='home' class="sidebar-nav-item" href="https://jakeyesbeck.com">Home</a>
       <a id='archives'class="sidebar-nav-item" href="/archives">Archives</a>
+      <a id='services'class="sidebar-nav-item" href="/services">Services</a>
       <a id='resume'class="sidebar-nav-item" href="https://jakeyesbeck.com/assets/files/resume.pdf">Resume</a>
       <a id='about'class="sidebar-nav-item" href="/about">About</a>
       <a id='github'class="sidebar-nav-item" href="https://github.com/yez">GitHub</a>
       <a id='rss'class="sidebar-nav-item" href="/atom.xml">Feed</a>
     </nav>
 
-    <p class='copyright'>&copy; Jake Yesbeck 2022. All rights reserved.</p>
+    <p class='copyright'>&copy; Jake Yesbeck 2026. All rights reserved.</p>
   </div>
 </div>
 
@@ -107,22 +112,21 @@
   </li>
 </ul>
 </span>
-  <p>For a production Ruby on Rails application, uptime is paramount. Altering the structure of an application’s persistence layer is an operation that competes directly with uptime. Specifically, removing a table column within a relational database causes issues with the <code class="highlighter-rouge">ActiveRecord</code> ORM (the default relational mapping within a Ruby on Rails application).</p>
+  <p>For a production Ruby on Rails application, uptime is paramount. Altering the structure of an application’s persistence layer is an operation that competes directly with uptime. Specifically, removing a table column within a relational database causes issues with the <code class="language-plaintext highlighter-rouge">ActiveRecord</code> ORM (the default relational mapping within a Ruby on Rails application).</p>
 
 <p>However, this particular pain point has been removed as of <strong>Ruby on Rails 4.0.0</strong>, saving developers a lot of headache and greatly reducing the need for structural change coordination.</p>
 
 <h2 id="old-and-busted">Old and Busted</h2>
 
-<p>To demonstrate the problem, a simple <strong>Ruby on Rails 3.2</strong> application is created with a <code class="highlighter-rouge">User</code> model:</p>
+<p>To demonstrate the problem, a simple <strong>Ruby on Rails 3.2</strong> application is created with a <code class="language-plaintext highlighter-rouge">User</code> model:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
 <span class="k">end</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
-<p>Supporting the <code class="highlighter-rouge">User</code> model is a PostgreSQL database table created with a migration:</p>
+<p>Supporting the <code class="language-plaintext highlighter-rouge">User</code> model is a PostgreSQL database table created with a migration:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">class</span> <span class="nc">CreateUsers</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Migration</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">CreateUsers</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Migration</span>
   <span class="k">def</span> <span class="nf">change</span>
     <span class="n">create_table</span> <span class="ss">:users</span> <span class="k">do</span> <span class="o">|</span><span class="n">t</span><span class="o">|</span>
       <span class="n">t</span><span class="p">.</span><span class="nf">string</span> <span class="ss">:first_name</span>
@@ -132,39 +136,35 @@
     <span class="k">end</span>
   <span class="k">end</span>
 <span class="k">end</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>To ensure this application has as close to 100% uptime as possible, it can be assumed that it is behind some kind of pre-loader. As in, when code is deployed, existing requests are given time to complete before new requests are shepherded over to the new version of the code.</p>
 
 <p>In a <strong>Ruby on Rails 3.2</strong> application, a problem will arise when a column is removed from the database and the ORM does not have time to restart. In this case, even the pre-loader will not save an application from throwing an error about the missing column.</p>
 
-<p>To emulate this problem, a rails console is run in the <code class="highlighter-rouge">production</code> environment and a <code class="highlighter-rouge">User</code> is created:</p>
+<p>To emulate this problem, a rails console is run in the <code class="language-plaintext highlighter-rouge">production</code> environment and a <code class="language-plaintext highlighter-rouge">User</code> is created:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="no">RACK_ENV</span><span class="o">=</span><span class="n">production</span> <span class="n">rails</span> <span class="n">console</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">RACK_ENV</span><span class="o">=</span><span class="n">production</span> <span class="n">rails</span> <span class="n">console</span>
 <span class="o">&gt;</span> <span class="no">User</span><span class="p">.</span><span class="nf">create</span><span class="p">(</span><span class="ss">first_name: </span><span class="s1">'test'</span><span class="p">,</span> <span class="ss">last_name: </span><span class="s1">'test'</span><span class="p">)</span>
 <span class="c1"># =&gt; #&lt;User id: 1, first_name: "test", last_name: "test", email nil, created_at: "2016-02-07 21:03:26", updated_at: "2016-02-07 21:03:26"&gt;</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
-<p>In parallel, the <code class="highlighter-rouge">psql</code> command line client is used to connect to the same <code class="highlighter-rouge">production</code> database used by this server, all still running <strong>locally</strong>.</p>
+<p>In parallel, the <code class="language-plaintext highlighter-rouge">psql</code> command line client is used to connect to the same <code class="language-plaintext highlighter-rouge">production</code> database used by this server, all still running <strong>locally</strong>.</p>
 
-<p>Within this <code class="highlighter-rouge">psql</code> prompt, the <code class="highlighter-rouge">email</code> column from the <code class="highlighter-rouge">users</code> table will be removed <em>while</em> the production console is still running:</p>
+<p>Within this <code class="language-plaintext highlighter-rouge">psql</code> prompt, the <code class="language-plaintext highlighter-rouge">email</code> column from the <code class="language-plaintext highlighter-rouge">users</code> table will be removed <em>while</em> the production console is still running:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="n">psql</span> <span class="n">app_production</span>
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">psql</span> <span class="n">app_production</span>
 <span class="n">psql</span><span class="o">=#</span> <span class="k">ALTER</span> <span class="k">TABLE</span> <span class="n">users</span> <span class="k">DROP</span> <span class="k">COLUMN</span> <span class="n">email</span><span class="p">;</span>
 <span class="k">ALTER</span> <span class="k">TABLE</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
-<p>Jumping back to the <code class="highlighter-rouge">RACK_ENV=production rails console</code>, another <code class="highlighter-rouge">User</code> creation attempt results in an error:</p>
+<p>Jumping back to the <code class="language-plaintext highlighter-rouge">RACK_ENV=production rails console</code>, another <code class="language-plaintext highlighter-rouge">User</code> creation attempt results in an error:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="o">&gt;</span> <span class="no">User</span><span class="p">.</span><span class="nf">create</span><span class="p">(</span><span class="ss">first_name: </span><span class="s1">'test2'</span><span class="p">,</span> <span class="ss">last_name: </span><span class="s1">'test2'</span><span class="p">)</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> <span class="no">User</span><span class="p">.</span><span class="nf">create</span><span class="p">(</span><span class="ss">first_name: </span><span class="s1">'test2'</span><span class="p">,</span> <span class="ss">last_name: </span><span class="s1">'test2'</span><span class="p">)</span>
 <span class="c1"># =&gt; PG::UndefinedColumn: ERROR:  column "email" of relation "users" does not exist</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
-<p>Kaboom! Rails attempts to save a new record to the <code class="highlighter-rouge">users</code> table and populate the <code class="highlighter-rouge">email</code> column even though it was never specified to do so.  Seeing as this is not new behaviour, surely someone has come up with a solution to this problem that does not require downtime.</p>
+<p>Kaboom! Rails attempts to save a new record to the <code class="language-plaintext highlighter-rouge">users</code> table and populate the <code class="language-plaintext highlighter-rouge">email</code> column even though it was never specified to do so.  Seeing as this is not new behaviour, surely someone has come up with a solution to this problem that does not require downtime.</p>
 
 <h2 id="yesterdays-jam">Yesterday’s Jam</h2>
 
@@ -172,14 +172,13 @@
 
 <p>The TL;DR of these posts is that a multiple phase solution is required under the given circumstances:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>1. Write code that `rejects` the column to remove
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>1. Write code that `rejects` the column to remove
 2. Deploy
 3. Write migration to remove the column
 4. Deploy + Migrate
 5. Write code to remove the column `rejection`
 6. Deploy
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>Phew! Three deploys and presumably three code reviews later, the column is finally removed. Assuming a system is built with continuous deployment guarded by a continuous integration suite, this whole process could take the better part of a work day in order to accomplish such a simple task.</p>
 
@@ -191,46 +190,42 @@
 
 <p>To prove this, a new <strong>Ruby on Rails 4.0.0</strong> application is made with the exact same structure as above.</p>
 
-<p>Then, the same production console is created along with a <code class="highlighter-rouge">User</code>:</p>
+<p>Then, the same production console is created along with a <code class="language-plaintext highlighter-rouge">User</code>:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="no">RACK_ENV</span><span class="o">=</span><span class="n">production</span> <span class="n">rails</span> <span class="n">console</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">RACK_ENV</span><span class="o">=</span><span class="n">production</span> <span class="n">rails</span> <span class="n">console</span>
 <span class="o">&gt;</span> <span class="no">User</span><span class="p">.</span><span class="nf">create</span><span class="p">(</span><span class="ss">first_name: </span><span class="s1">'test'</span><span class="p">,</span> <span class="ss">last_name: </span><span class="s1">'test'</span><span class="p">)</span>
 <span class="c1"># =&gt; #&lt;User id: 1, first_name: "test", last_name: "test", email nil, created_at: "2016-02-07 22:09:49", updated_at: "2016-02-07 22:09:49"&gt;</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
-<p>Again, in parallel, a <code class="highlighter-rouge">psql</code> client is initialized for the <code class="highlighter-rouge">production</code> environment database.</p>
+<p>Again, in parallel, a <code class="language-plaintext highlighter-rouge">psql</code> client is initialized for the <code class="language-plaintext highlighter-rouge">production</code> environment database.</p>
 
-<p>Within this prompt, the <code class="highlighter-rouge">email</code> column on the <code class="highlighter-rouge">users</code> table is removed:</p>
+<p>Within this prompt, the <code class="language-plaintext highlighter-rouge">email</code> column on the <code class="language-plaintext highlighter-rouge">users</code> table is removed:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="n">psql</span> <span class="n">app_production</span>
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">psql</span> <span class="n">app_production</span>
 <span class="n">psql</span><span class="o">=#</span> <span class="k">ALTER</span> <span class="k">TABLE</span> <span class="n">users</span> <span class="k">DROP</span> <span class="k">COLUMN</span> <span class="n">email</span><span class="p">;</span>
 <span class="k">ALTER</span> <span class="k">TABLE</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
-<p>And finally, a new user is created in the still running <code class="highlighter-rouge">RACK_ENV=production rails console</code>:</p>
+<p>And finally, a new user is created in the still running <code class="language-plaintext highlighter-rouge">RACK_ENV=production rails console</code>:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="o">&gt;</span> <span class="no">User</span><span class="p">.</span><span class="nf">create</span><span class="p">(</span><span class="ss">first_name: </span><span class="s1">'test2'</span><span class="p">,</span> <span class="ss">last_name: </span><span class="s1">'test2'</span><span class="p">)</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> <span class="no">User</span><span class="p">.</span><span class="nf">create</span><span class="p">(</span><span class="ss">first_name: </span><span class="s1">'test2'</span><span class="p">,</span> <span class="ss">last_name: </span><span class="s1">'test2'</span><span class="p">)</span>
 <span class="c1"># =&gt; #&lt;User id: 2, first_name: "test2", last_name: "test2", email nil, created_at: "2016-02-07 22:13:18", updated_at: "2016-02-07 22:13:18"&gt;</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
-<p>Unlike before, the second insertion into the <code class="highlighter-rouge">users</code> table worked wonderfully, despite the <code class="highlighter-rouge">email</code> column’s removal.</p>
+<p>Unlike before, the second insertion into the <code class="language-plaintext highlighter-rouge">users</code> table worked wonderfully, despite the <code class="language-plaintext highlighter-rouge">email</code> column’s removal.</p>
 
-<p>As shown, the in memory representation of the <code class="highlighter-rouge">User</code> class still has the <code class="highlighter-rouge">email</code> attribute. The <code class="highlighter-rouge">User</code> object’s representation has not been reloaded, it simply just does not care about the <code class="highlighter-rouge">email</code> column when writing to the database.</p>
+<p>As shown, the in memory representation of the <code class="language-plaintext highlighter-rouge">User</code> class still has the <code class="language-plaintext highlighter-rouge">email</code> attribute. The <code class="language-plaintext highlighter-rouge">User</code> object’s representation has not been reloaded, it simply just does not care about the <code class="language-plaintext highlighter-rouge">email</code> column when writing to the database.</p>
 
-<p>The fact that the ORM does not specifically reload when writing to a table points out an interesting detail. It means that for this solution to fully work, the <code class="highlighter-rouge">email</code> column must not be referenced at all.</p>
+<p>The fact that the ORM does not specifically reload when writing to a table points out an interesting detail. It means that for this solution to fully work, the <code class="language-plaintext highlighter-rouge">email</code> column must not be referenced at all.</p>
 
 <p>With this new found behaviour, the previous six step incantation comprised of three separate deployments can be reduced to three steps in total and just one deployment:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>1. Remove references to column and write migration
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>1. Remove references to column and write migration
 2. Deploy
 3. Once requests completely use new code, migrate
-</code></pre>
-</div>
+</code></pre></div></div>
 
-<p>Wunderbar! The <code class="highlighter-rouge">reject</code> and deploy pattern is no longer necessary. Further more, development teams suffering within weekly scheduled deploys can achieve their desired results within a single iteration.</p>
+<p>Wunderbar! The <code class="language-plaintext highlighter-rouge">reject</code> and deploy pattern is no longer necessary. Further more, development teams suffering within weekly scheduled deploys can achieve their desired results within a single iteration.</p>
 
 <h2 id="what-changed">What Changed?</h2>
 
@@ -240,9 +235,9 @@
 
 <p>The first step is to identify the offending code in 3.2. This way, the 4.0.0 version of the code can be analyzed, the discrepancy identified and the git revision responsible brought to light.</p>
 
-<p>After some <code class="highlighter-rouge">binding.pry</code> insertions and utilization of the <code class="highlighter-rouge">caller</code> array, the offending code was traced to <a href="https://github.com/rails/rails/blob/v3.2.18/activerecord/lib/active_record/attribute_methods.rb#L244">lib/active_record/attribute_methods.rb:244</a> (formatted for readability):</p>
+<p>After some <code class="language-plaintext highlighter-rouge">binding.pry</code> insertions and utilization of the <code class="language-plaintext highlighter-rouge">caller</code> array, the offending code was traced to <a href="https://github.com/rails/rails/blob/v3.2.18/activerecord/lib/active_record/attribute_methods.rb#L244">lib/active_record/attribute_methods.rb:244</a> (formatted for readability):</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">def</span> <span class="nf">arel_attributes_values</span><span class="p">(</span><span class="n">include_primary_key</span> <span class="o">=</span> <span class="kp">true</span><span class="p">,</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">arel_attributes_values</span><span class="p">(</span><span class="n">include_primary_key</span> <span class="o">=</span> <span class="kp">true</span><span class="p">,</span>
                            <span class="n">include_readonly_attributes</span> <span class="o">=</span> <span class="kp">true</span><span class="p">,</span>
                            <span class="n">attribute_names</span> <span class="o">=</span> <span class="vi">@attributes</span><span class="p">.</span><span class="nf">keys</span><span class="p">)</span>
   <span class="n">attrs</span>      <span class="o">=</span> <span class="p">{}</span>
@@ -272,18 +267,17 @@
 
   <span class="n">attrs</span>
 <span class="k">end</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
-<p>While a little lengthy, the most obvious thing to note about this method is that its signature is comprised of entirely optional variables. Most notably, the final optional parameter, <code class="highlighter-rouge">attribute_names</code>, defaults to <code class="highlighter-rouge">@attributes.keys</code> which is the list of attributes for the given model.</p>
+<p>While a little lengthy, the most obvious thing to note about this method is that its signature is comprised of entirely optional variables. Most notably, the final optional parameter, <code class="language-plaintext highlighter-rouge">attribute_names</code>, defaults to <code class="language-plaintext highlighter-rouge">@attributes.keys</code> which is the list of attributes for the given model.</p>
 
-<p>In this case, the result of <code class="highlighter-rouge">@attributes.keys</code> is the complete list of keys for a <code class="highlighter-rouge">User</code>: <code class="highlighter-rouge">['id', 'first_name', 'last_name', 'email', 'updated_at', 'created_at']</code>. Most notably, the <code class="highlighter-rouge">email</code> attribute is present, regardless of the fact that it was not given a value to insert. This means that by default, any <code class="highlighter-rouge">create</code> call will write to the <code class="highlighter-rouge">email</code> column without hesitation (just as previously observed).</p>
+<p>In this case, the result of <code class="language-plaintext highlighter-rouge">@attributes.keys</code> is the complete list of keys for a <code class="language-plaintext highlighter-rouge">User</code>: <code class="language-plaintext highlighter-rouge">['id', 'first_name', 'last_name', 'email', 'updated_at', 'created_at']</code>. Most notably, the <code class="language-plaintext highlighter-rouge">email</code> attribute is present, regardless of the fact that it was not given a value to insert. This means that by default, any <code class="language-plaintext highlighter-rouge">create</code> call will write to the <code class="language-plaintext highlighter-rouge">email</code> column without hesitation (just as previously observed).</p>
 
-<p>While default behaviour can emit a code smell, it is only dangerous if it is used unknowingly. Since the parameter to determine <code class="highlighter-rouge">attribute_names</code> is available, chances are the caller of this method does indeed specify them, right?</p>
+<p>While default behaviour can emit a code smell, it is only dangerous if it is used unknowingly. Since the parameter to determine <code class="language-plaintext highlighter-rouge">attribute_names</code> is available, chances are the caller of this method does indeed specify them, right?</p>
 
 <p>Unfortunately, no:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">def</span> <span class="nf">create</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">create</span>
   <span class="n">attributes_values</span> <span class="o">=</span> <span class="n">arel_attributes_values</span><span class="p">(</span><span class="o">!</span><span class="nb">id</span><span class="p">.</span><span class="nf">nil?</span><span class="p">)</span>
   <span class="n">new_id</span> <span class="o">=</span> <span class="nb">self</span><span class="p">.</span><span class="nf">class</span><span class="p">.</span><span class="nf">unscoped</span><span class="p">.</span><span class="nf">insert</span> <span class="n">attributes_values</span>
 
@@ -293,20 +287,19 @@
   <span class="vi">@new_record</span> <span class="o">=</span> <span class="kp">false</span>
   <span class="nb">id</span>
 <span class="k">end</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
-<p>Here, in <a href="https://github.com/rails/rails/blob/v3.2.18/activerecord/lib/active_record/persistence.rb#L364">lib/active_record/persistence.rb:364</a> lies the method responsible for calling <code class="highlighter-rouge">arel_attributes_values</code>. Since it does not specify the list of attributes, the default behaviour prevails and all known attributes are returned.</p>
+<p>Here, in <a href="https://github.com/rails/rails/blob/v3.2.18/activerecord/lib/active_record/persistence.rb#L364">lib/active_record/persistence.rb:364</a> lies the method responsible for calling <code class="language-plaintext highlighter-rouge">arel_attributes_values</code>. Since it does not specify the list of attributes, the default behaviour prevails and all known attributes are returned.</p>
 
 <h2 id="the-big-fix">The Big Fix</h2>
 
 <p>On a glorious Friday afternoon (probably) Jon Leighton made <a href="https://github.com/rails/rails/commit/144e8691">the commit</a> which changed how people thought about column removal in Ruby on Rails.</p>
 
-<p>The change enabled the concept of <code class="highlighter-rouge">partial_writes</code>. This pattern used the exiting <code class="highlighter-rouge">changed</code> hash present in every <code class="highlighter-rouge">ActiveRecord</code> model. The <code class="highlighter-rouge">changed</code> hash is manipulated as a model has attributes assigned to it.</p>
+<p>The change enabled the concept of <code class="language-plaintext highlighter-rouge">partial_writes</code>. This pattern used the exiting <code class="language-plaintext highlighter-rouge">changed</code> hash present in every <code class="language-plaintext highlighter-rouge">ActiveRecord</code> model. The <code class="language-plaintext highlighter-rouge">changed</code> hash is manipulated as a model has attributes assigned to it.</p>
 
-<p>In <a href="https://github.com/rails/rails/blob/v4.0.0/activerecord/lib/active_record/attribute_methods/dirty.rb#L77">lib/active_record/attribute_methods/dirty.rb:77</a>, <code class="highlighter-rouge">partial_writes</code> is used:</p>
+<p>In <a href="https://github.com/rails/rails/blob/v4.0.0/activerecord/lib/active_record/attribute_methods/dirty.rb#L77">lib/active_record/attribute_methods/dirty.rb:77</a>, <code class="language-plaintext highlighter-rouge">partial_writes</code> is used:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">def</span> <span class="nf">create_record</span><span class="p">(</span><span class="o">*</span><span class="p">)</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">create_record</span><span class="p">(</span><span class="o">*</span><span class="p">)</span>
   <span class="n">partial_writes?</span> <span class="p">?</span> <span class="k">super</span><span class="p">(</span><span class="n">keys_for_partial_write</span><span class="p">)</span> <span class="p">:</span> <span class="k">super</span>
 <span class="k">end</span>
 
@@ -315,10 +308,9 @@
 <span class="k">def</span> <span class="nf">keys_for_partial_write</span>
   <span class="n">changed</span> <span class="o">|</span> <span class="p">(</span><span class="n">attributes</span><span class="p">.</span><span class="nf">keys</span> <span class="o">&amp;</span> <span class="nb">self</span><span class="p">.</span><span class="nf">class</span><span class="p">.</span><span class="nf">serialized_attributes</span><span class="p">.</span><span class="nf">keys</span><span class="p">)</span>
 <span class="k">end</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
-<p>Before delegating to the same <code class="highlighter-rouge">persistence.rb#create</code> method, only the attributes present in the <code class="highlighter-rouge">changed</code> hash (along with any serialized attributes) will be used in subsequent insert queries.</p>
+<p>Before delegating to the same <code class="language-plaintext highlighter-rouge">persistence.rb#create</code> method, only the attributes present in the <code class="language-plaintext highlighter-rouge">changed</code> hash (along with any serialized attributes) will be used in subsequent insert queries.</p>
 
 <p>Included in the February 2013 beta release of <strong>Ruby on Rails 4.0.0</strong>, this code enables a much more pleasant experience than the older work around. In fact, the author even pointed out this behaviour in his commit:</p>
 
@@ -336,12 +328,11 @@
 
 <p>The deployment process for such a system may look more like:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>1. Remove references to column
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>1. Remove references to column
 2. Deploy
 3. Write migration to drop column
 4. Deploy and migrate
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>Databases that power web applications are powerful and oddly fragile beasts. Manipulating these beasts while maintaining superb end user experiences requires one to constantly be learning. Hopefully with this behaviour, one more thing can be crossed off the check list of “things to remember when manipulating the database” and we can all just get back to work.</p>
 

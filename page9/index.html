@@ -18,6 +18,8 @@
   
   
 
+  
+
   <!-- Enable responsiveness on mobile devices-->
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
 
@@ -38,6 +40,8 @@
 
   <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
   <script async src="https://use.fontawesome.com/b3103405a3.js"></script>
+
+  
 </head>
 
 
@@ -63,13 +67,14 @@
       </span>
       <a id='home' class="sidebar-nav-item" href="https://jakeyesbeck.com">Home</a>
       <a id='archives'class="sidebar-nav-item" href="/archives">Archives</a>
+      <a id='services'class="sidebar-nav-item" href="/services">Services</a>
       <a id='resume'class="sidebar-nav-item" href="https://jakeyesbeck.com/assets/files/resume.pdf">Resume</a>
       <a id='about'class="sidebar-nav-item" href="/about">About</a>
       <a id='github'class="sidebar-nav-item" href="https://github.com/yez">GitHub</a>
       <a id='rss'class="sidebar-nav-item" href="/atom.xml">Feed</a>
     </nav>
 
-    <p class='copyright'>&copy; Jake Yesbeck 2022. All rights reserved.</p>
+    <p class='copyright'>&copy; Jake Yesbeck 2026. All rights reserved.</p>
   </div>
 </div>
 
@@ -119,40 +124,38 @@
 
     <p><em>“Well the code is bad because we had to…”</em> is a phrase one might hear when discussing timezone offsets or daylight savings time considerations.</p>
 
-<p>Unless a developer is fortunate enough to work at a company whose userbase is entirely located in the UTC timezone, writing software aware of different timezones can be a daunting task. Luckily, Ruby on Rails’ <code class="highlighter-rouge">ActiveSupport</code> library has some very nice built in features that can prove invaluable when facing time related issues.</p>
+<p>Unless a developer is fortunate enough to work at a company whose userbase is entirely located in the UTC timezone, writing software aware of different timezones can be a daunting task. Luckily, Ruby on Rails’ <code class="language-plaintext highlighter-rouge">ActiveSupport</code> library has some very nice built in features that can prove invaluable when facing time related issues.</p>
 
 <h2 id="built-in-timezones">Built-in Timezones</h2>
 
-<p><code class="highlighter-rouge">ActiveSupport</code> in Ruby on Rails 4.0+ has a built in list of all supported timezones on the <code class="highlighter-rouge">TimeZone</code> class:</p>
+<p><code class="language-plaintext highlighter-rouge">ActiveSupport</code> in Ruby on Rails 4.0+ has a built in list of all supported timezones on the <code class="language-plaintext highlighter-rouge">TimeZone</code> class:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="no">ActiveSupport</span><span class="o">::</span><span class="no">TimeZone</span><span class="p">.</span><span class="nf">all</span><span class="p">.</span><span class="nf">map</span><span class="p">(</span><span class="o">&amp;</span><span class="ss">:name</span><span class="p">)</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">ActiveSupport</span><span class="o">::</span><span class="no">TimeZone</span><span class="p">.</span><span class="nf">all</span><span class="p">.</span><span class="nf">map</span><span class="p">(</span><span class="o">&amp;</span><span class="ss">:name</span><span class="p">)</span>
 <span class="c1">#=&gt; ["American Samoa", "International Date Line West", "Midway Island", "Hawaii", "Alaska", "Pacific Time (US &amp; Canada)", "Tijuana", "Arizona", "Chihuahua", "Mazatlan", "Mountain Time (US &amp; Canada)", "Central America", "Central Time (US &amp; Canada)", "Guadalajara", ...]</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
-<p>This list of timezones can be used when parsing strings into <code class="highlighter-rouge">Time</code> objects and converting an existing <code class="highlighter-rouge">Time</code> object from one timezone to another. For working with timezones in the United States, a handy <code class="highlighter-rouge">us_zones</code> method is also available on the same class.</p>
+<p>This list of timezones can be used when parsing strings into <code class="language-plaintext highlighter-rouge">Time</code> objects and converting an existing <code class="language-plaintext highlighter-rouge">Time</code> object from one timezone to another. For working with timezones in the United States, a handy <code class="language-plaintext highlighter-rouge">us_zones</code> method is also available on the same class.</p>
 
 <p>One interesting detail about this list of timezones is the lack of daylight savings time qualifiers. Keeping the timezones agnostic of daylight savings helps simplify their use. A developer does not need to worry about using one timezone object over another due to the time of the year.</p>
 
-<h2 id="timeusezone"><code class="highlighter-rouge">Time.use_zone</code></h2>
+<h2 id="timeuse_zone"><code class="language-plaintext highlighter-rouge">Time.use_zone</code></h2>
 
-<p>The <code class="highlighter-rouge">ActiveSupport</code> library adds some functionality to built in Ruby classes. One of those additions is the ability to set and retrieve the <code class="highlighter-rouge">zone</code> attribute on the <code class="highlighter-rouge">Time</code> class. After a <code class="highlighter-rouge">zone</code> is set, it can be used when parsing strings into <code class="highlighter-rouge">Time</code> objects:</p>
+<p>The <code class="language-plaintext highlighter-rouge">ActiveSupport</code> library adds some functionality to built in Ruby classes. One of those additions is the ability to set and retrieve the <code class="language-plaintext highlighter-rouge">zone</code> attribute on the <code class="language-plaintext highlighter-rouge">Time</code> class. After a <code class="language-plaintext highlighter-rouge">zone</code> is set, it can be used when parsing strings into <code class="language-plaintext highlighter-rouge">Time</code> objects:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="no">Time</span><span class="p">.</span><span class="nf">zone</span> <span class="o">=</span> <span class="s1">'Pacific Time (US &amp; Canada)'</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">Time</span><span class="p">.</span><span class="nf">zone</span> <span class="o">=</span> <span class="s1">'Pacific Time (US &amp; Canada)'</span>
 <span class="no">Time</span><span class="p">.</span><span class="nf">zone</span><span class="p">.</span><span class="nf">parse</span><span class="p">(</span><span class="s1">'2016-04-01 10:00:00'</span><span class="p">)</span>
 <span class="c1">#=&gt; Fri, 01 Apr 2016 10:00:00 PDT -07:00</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
-<p>This code takes a timestamp string without a timezone specified and uses the value of <code class="highlighter-rouge">Time.zone</code> to correctly represent the time in the Pacific timezone.</p>
+<p>This code takes a timestamp string without a timezone specified and uses the value of <code class="language-plaintext highlighter-rouge">Time.zone</code> to correctly represent the time in the Pacific timezone.</p>
 
-<p>However, an immediate red flag is present in this code. The <code class="highlighter-rouge">zone</code> attribute persists for the rest of the Ruby runtime, potentially causing unexpected behaviour at a later time.</p>
+<p>However, an immediate red flag is present in this code. The <code class="language-plaintext highlighter-rouge">zone</code> attribute persists for the rest of the Ruby runtime, potentially causing unexpected behaviour at a later time.</p>
 
-<p>Luckily, <code class="highlighter-rouge">ActiveSupport</code> solves this problem with the <code class="highlighter-rouge">use_zone</code> method. This method accepts the same set of strings as its single argument and expects a block.</p>
+<p>Luckily, <code class="language-plaintext highlighter-rouge">ActiveSupport</code> solves this problem with the <code class="language-plaintext highlighter-rouge">use_zone</code> method. This method accepts the same set of strings as its single argument and expects a block.</p>
 
-<p>Within the passed in block is the only place <code class="highlighter-rouge">Time.zone</code> is affected, eliminating the possibility of a <code class="highlighter-rouge">zone</code> sticking around longer than intended:</p>
+<p>Within the passed in block is the only place <code class="language-plaintext highlighter-rouge">Time.zone</code> is affected, eliminating the possibility of a <code class="language-plaintext highlighter-rouge">zone</code> sticking around longer than intended:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="no">Time</span><span class="p">.</span><span class="nf">zone</span><span class="p">.</span><span class="nf">name</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">Time</span><span class="p">.</span><span class="nf">zone</span><span class="p">.</span><span class="nf">name</span>
 <span class="c1">#=&gt; "UTC"</span>
 
 <span class="no">Time</span><span class="p">.</span><span class="nf">use_zone</span><span class="p">(</span><span class="s1">'Pacific Time (US &amp; Canada)'</span><span class="p">)</span> <span class="k">do</span>
@@ -164,63 +167,59 @@
 
 <span class="no">Time</span><span class="p">.</span><span class="nf">zone</span><span class="p">.</span><span class="nf">name</span>
 <span class="c1">#=&gt; "UTC"</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
-<p>This temporary <code class="highlighter-rouge">zone</code> setting can be very helpful if a set of users are processed, each with their own respective timezone.</p>
+<p>This temporary <code class="language-plaintext highlighter-rouge">zone</code> setting can be very helpful if a set of users are processed, each with their own respective timezone.</p>
 
-<h2 id="timewithzoneintimezone"><code class="highlighter-rouge">TimeWithZone.in_time_zone</code></h2>
+<h2 id="timewithzonein_time_zone"><code class="language-plaintext highlighter-rouge">TimeWithZone.in_time_zone</code></h2>
 
-<p>When dealing with <code class="highlighter-rouge">Time</code>, <code class="highlighter-rouge">Date</code> and <code class="highlighter-rouge">DateTime</code> objects, converting each from one timezone to another can be tedious. The <code class="highlighter-rouge">in_time_zone</code> method removes some complexity from those operations.</p>
+<p>When dealing with <code class="language-plaintext highlighter-rouge">Time</code>, <code class="language-plaintext highlighter-rouge">Date</code> and <code class="language-plaintext highlighter-rouge">DateTime</code> objects, converting each from one timezone to another can be tedious. The <code class="language-plaintext highlighter-rouge">in_time_zone</code> method removes some complexity from those operations.</p>
 
-<p>Used alone, the <code class="highlighter-rouge">in_time_zone</code> can transform an existing object into an instance of <code class="highlighter-rouge">TimeWithZone</code>:</p>
+<p>Used alone, the <code class="language-plaintext highlighter-rouge">in_time_zone</code> can transform an existing object into an instance of <code class="language-plaintext highlighter-rouge">TimeWithZone</code>:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="n">now</span> <span class="o">=</span> <span class="no">Time</span><span class="p">.</span><span class="nf">now</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">now</span> <span class="o">=</span> <span class="no">Time</span><span class="p">.</span><span class="nf">now</span>
 <span class="c1"># =&gt; 2016-04-04 03:55:24 +0000</span>
 <span class="n">now</span><span class="p">.</span><span class="nf">in_time_zone</span><span class="p">(</span><span class="s1">'Hawaii'</span><span class="p">)</span>
 <span class="c1"># =&gt; Sun, 03 Apr 2016 17:55:24 HST -10:00</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
-<p>In any sane system, timestamps in a database are always stored in UTC, aka Zulu, time. When exposing these timestamps to users, the <code class="highlighter-rouge">in_time_zone</code> method can quickly switch the timestamp to a user’s local time.</p>
+<p>In any sane system, timestamps in a database are always stored in UTC, aka Zulu, time. When exposing these timestamps to users, the <code class="language-plaintext highlighter-rouge">in_time_zone</code> method can quickly switch the timestamp to a user’s local time.</p>
 
-<p>To see a more creative use of <code class="highlighter-rouge">in_time_zone</code>, we can assume that an application must solve a scheduling problem. An example application wants to send its users an email at the exact same time relative to a user’s timezone. Regardless of where a user lives, they should receive an email at 10:30 AM local time.</p>
+<p>To see a more creative use of <code class="language-plaintext highlighter-rouge">in_time_zone</code>, we can assume that an application must solve a scheduling problem. An example application wants to send its users an email at the exact same time relative to a user’s timezone. Regardless of where a user lives, they should receive an email at 10:30 AM local time.</p>
 
 <p>A naive approach might not yield the intended result:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="n">user</span><span class="p">.</span><span class="nf">time_zone</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">user</span><span class="p">.</span><span class="nf">time_zone</span>
 <span class="c1"># =&gt; Hawaii</span>
 <span class="n">send_time</span> <span class="o">=</span> <span class="no">Time</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="mi">2016</span><span class="p">,</span> <span class="mo">04</span><span class="p">,</span> <span class="mo">01</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">30</span><span class="p">)</span>
 <span class="c1"># =&gt; 2016-04-01 10:30:00 +0000</span>
 <span class="n">send_time</span><span class="p">.</span><span class="nf">in_time_zone</span><span class="p">(</span><span class="n">user</span><span class="p">.</span><span class="nf">time_zone</span><span class="p">)</span>
 <span class="c1"># =&gt; Fri, 01 Apr 2016 00:30:00 HST -10:00</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
-<p>Whoops, that is not right at all. This code initialized a <code class="highlighter-rouge">Time</code> object for the “correct” send time but then <code class="highlighter-rouge">in_time_zone</code> not only moved the timezone of that object, it also modified the actual time. This would result in all users getting an email at the same exact moment but at an inconvenient time relative to where they live.</p>
+<p>Whoops, that is not right at all. This code initialized a <code class="language-plaintext highlighter-rouge">Time</code> object for the “correct” send time but then <code class="language-plaintext highlighter-rouge">in_time_zone</code> not only moved the timezone of that object, it also modified the actual time. This would result in all users getting an email at the same exact moment but at an inconvenient time relative to where they live.</p>
 
-<p>Potential solutions to this problem might include modifying the timezone part of an outputted string (the <code class="highlighter-rouge">"+0000"</code> at the end) and re-parsing it, but that solution can be prone to error and hard to understand.</p>
+<p>Potential solutions to this problem might include modifying the timezone part of an outputted string (the <code class="language-plaintext highlighter-rouge">"+0000"</code> at the end) and re-parsing it, but that solution can be prone to error and hard to understand.</p>
 
-<p>Since the <code class="highlighter-rouge">in_time_zone</code> method works on the <code class="highlighter-rouge">Date</code> class, the simplest approach would be to initialize a new <code class="highlighter-rouge">DateTime</code> object in a user’s timezone and add 10.5 hours to it:</p>
+<p>Since the <code class="language-plaintext highlighter-rouge">in_time_zone</code> method works on the <code class="language-plaintext highlighter-rouge">Date</code> class, the simplest approach would be to initialize a new <code class="language-plaintext highlighter-rouge">DateTime</code> object in a user’s timezone and add 10.5 hours to it:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="n">user</span><span class="p">.</span><span class="nf">time_zone</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">user</span><span class="p">.</span><span class="nf">time_zone</span>
 <span class="c1"># =&gt; Hawaii</span>
 <span class="n">beginning_of_day</span> <span class="o">=</span> <span class="no">Date</span><span class="p">.</span><span class="nf">today</span><span class="p">.</span><span class="nf">in_time_zone</span><span class="p">(</span><span class="n">user</span><span class="p">.</span><span class="nf">time_zone</span><span class="p">)</span>
 <span class="c1"># =&gt; Sun, 03 Apr 2016 00:00:00 HST -10:00</span>
-<span class="n">beginning_of_day</span> <span class="o">+=</span> <span class="p">(</span><span class="mi">10</span><span class="o">.</span><span class="mi">5</span><span class="p">).</span><span class="nf">hours</span>
+<span class="n">beginning_of_day</span> <span class="o">+=</span> <span class="p">(</span><span class="mf">10.5</span><span class="p">).</span><span class="nf">hours</span>
 <span class="c1"># =&gt; Sun, 03 Apr 2016 10:30:00 HST -10:00</span>
 <span class="n">sender</span> <span class="o">=</span> <span class="no">ImportantEmailSender</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
 <span class="n">sender</span><span class="p">.</span><span class="nf">send_at!</span><span class="p">(</span><span class="n">beginning_of_day</span><span class="p">)</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>Great! An email will be sent at 10:30 AM Hawaii time and we successfully avoided any time string munging or other strange object casting. A user in London can also receive an email at exactly 10:30 AM their local time and this code need not grow in complexity.</p>
 
 <h2 id="saving-time">Saving Time</h2>
 
-<p>Whether in code or everyday life, it seems that struggling with time is something we as humans are simply destined to do. Some good news is that <code class="highlighter-rouge">ActiveSupport</code> may not grant you any more wall clock time, but could save you some when wrangling different pieces of scheduling code together.</p>
+<p>Whether in code or everyday life, it seems that struggling with time is something we as humans are simply destined to do. Some good news is that <code class="language-plaintext highlighter-rouge">ActiveSupport</code> may not grant you any more wall clock time, but could save you some when wrangling different pieces of scheduling code together.</p>
 
-<p>As usual, the API of the <code class="highlighter-rouge">ActiveSupport::TimeZone</code> class is much larger than just the two methods illustrated here. For more information, the <a href="https://api.rubyonrails.org/classes/ActiveSupport/TimeZone.html">offical ActiveSupport documentation</a> is a great place to read further.</p>
+<p>As usual, the API of the <code class="language-plaintext highlighter-rouge">ActiveSupport::TimeZone</code> class is much larger than just the two methods illustrated here. For more information, the <a href="https://api.rubyonrails.org/classes/ActiveSupport/TimeZone.html">offical ActiveSupport documentation</a> is a great place to read further.</p>
 
   </div>
   

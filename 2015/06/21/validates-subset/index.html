@@ -17,6 +17,8 @@
   
   
 
+  
+
   <!-- Enable responsiveness on mobile devices-->
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
 
@@ -37,6 +39,8 @@
 
   <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
   <script async src="https://use.fontawesome.com/b3103405a3.js"></script>
+
+  
 </head>
 
 
@@ -62,13 +66,14 @@
       </span>
       <a id='home' class="sidebar-nav-item" href="https://jakeyesbeck.com">Home</a>
       <a id='archives'class="sidebar-nav-item" href="/archives">Archives</a>
+      <a id='services'class="sidebar-nav-item" href="/services">Services</a>
       <a id='resume'class="sidebar-nav-item" href="https://jakeyesbeck.com/assets/files/resume.pdf">Resume</a>
       <a id='about'class="sidebar-nav-item" href="/about">About</a>
       <a id='github'class="sidebar-nav-item" href="https://github.com/yez">GitHub</a>
       <a id='rss'class="sidebar-nav-item" href="/atom.xml">Feed</a>
     </nav>
 
-    <p class='copyright'>&copy; Jake Yesbeck 2022. All rights reserved.</p>
+    <p class='copyright'>&copy; Jake Yesbeck 2026. All rights reserved.</p>
   </div>
 </div>
 
@@ -109,91 +114,84 @@
 </span>
   <p>Do you suddenly wake up in a cold sweat, wondering if there is <strong>finally</strong> a way to validate that your data is a proper subset that you desire? I too have experienced this horror, and that is why I made a rails style <a href="https://github.com/yez/validates_subset">subset validator</a>.</p>
 
-<h2 id="validations-ber-alles">Validations über alles</h2>
+<h2 id="validations-über-alles">Validations über alles</h2>
 
-<p>Data validation is important. Having data you can depend on is the difference between a great application and one that might be classified as: <em>“amateur hour”</em>. Rails provides a nice amount of validators via <code class="highlighter-rouge">ActiveModel::Validations</code>, but not an exhaustive set (get it?). One of those missing pieces involves validating sets of data. Just in case you haven’t had your coffee yet, we define a <a href="https://en.wikipedia.org/wiki/Set_(abstract_data_type)">set</a> as an abstract data type that stores distinct values in no particular order.</p>
+<p>Data validation is important. Having data you can depend on is the difference between a great application and one that might be classified as: <em>“amateur hour”</em>. Rails provides a nice amount of validators via <code class="language-plaintext highlighter-rouge">ActiveModel::Validations</code>, but not an exhaustive set (get it?). One of those missing pieces involves validating sets of data. Just in case you haven’t had your coffee yet, we define a <a href="https://en.wikipedia.org/wiki/Set_(abstract_data_type)">set</a> as an abstract data type that stores distinct values in no particular order.</p>
 
-<p>Ruby does indeed have the <code class="highlighter-rouge">Set</code> class but most code I’ve come across simply uses the <code class="highlighter-rouge">Array</code> class. So, for simplicity’s sake, all examples will use <code class="highlighter-rouge">Array</code>.</p>
+<p>Ruby does indeed have the <code class="language-plaintext highlighter-rouge">Set</code> class but most code I’ve come across simply uses the <code class="language-plaintext highlighter-rouge">Array</code> class. So, for simplicity’s sake, all examples will use <code class="language-plaintext highlighter-rouge">Array</code>.</p>
 
 <p>Now that we have all been convinced that subset validation is the greatest thing since sliced bread, how about some examples?</p>
 
 <h2 id="example-usage">Example usage</h2>
 
-<p>To include <code class="highlighter-rouge">validates_subset</code>, simply add <code class="highlighter-rouge">gem 'validates_subset'</code> in your Gemfile of your projects. Or type <code class="highlighter-rouge">gem install validates_subset</code> in your terminal.</p>
+<p>To include <code class="language-plaintext highlighter-rouge">validates_subset</code>, simply add <code class="language-plaintext highlighter-rouge">gem 'validates_subset'</code> in your Gemfile of your projects. Or type <code class="language-plaintext highlighter-rouge">gem install validates_subset</code> in your terminal.</p>
 
-<p>For rails applications, the gem is automagically available to you. For other ruby frameworks, just add the line: <code class="highlighter-rouge">require 'validates_subset'</code> wherever you need the library. For this, we can assume that our application is using Rails 4.0 and we have a class that looks like:</p>
+<p>For rails applications, the gem is automagically available to you. For other ruby frameworks, just add the line: <code class="language-plaintext highlighter-rouge">require 'validates_subset'</code> wherever you need the library. For this, we can assume that our application is using Rails 4.0 and we have a class that looks like:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">class</span> <span class="nc">HasASubset</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
-  <span class="kp">attr_accessor</span> <span class="ss">:foo</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">HasASubset</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
+  <span class="nb">attr_accessor</span> <span class="ss">:foo</span>
 
   <span class="n">validates_subset</span> <span class="ss">:foo</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
 <span class="k">end</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <h2 id="using-our-handy-dandy-test-class-we-can-see-that">Using our handy dandy test class, we can see that:</h2>
 
 <h3 id="a-valid-subset-is-valid">A valid subset is valid:</h3>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="nb">test</span> <span class="o">=</span> <span class="no">HasASubset</span><span class="p">.</span><span class="nf">new</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">test</span> <span class="o">=</span> <span class="no">HasASubset</span><span class="p">.</span><span class="nf">new</span>
 <span class="nb">test</span><span class="p">.</span><span class="nf">foo</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">]</span>
 <span class="nb">test</span><span class="p">.</span><span class="nf">valid?</span>
 <span class="c1"># =&gt; true</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <h3 id="an-empty-set-is-also-very-valid">An empty set is also very valid:</h3>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="nb">test</span> <span class="o">=</span> <span class="no">HasASubset</span><span class="p">.</span><span class="nf">new</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">test</span> <span class="o">=</span> <span class="no">HasASubset</span><span class="p">.</span><span class="nf">new</span>
 <span class="nb">test</span><span class="p">.</span><span class="nf">foo</span> <span class="o">=</span> <span class="p">[]</span>
 <span class="nb">test</span><span class="p">.</span><span class="nf">valid?</span>
 <span class="c1"># =&gt; true</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <h3 id="an-invalid-set-is-invalid">An invalid set is… invalid:</h3>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="nb">test</span> <span class="o">=</span> <span class="no">HasASubset</span><span class="p">.</span><span class="nf">new</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">test</span> <span class="o">=</span> <span class="no">HasASubset</span><span class="p">.</span><span class="nf">new</span>
 <span class="nb">test</span><span class="p">.</span><span class="nf">foo</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'banana'</span><span class="p">]</span>
 <span class="nb">test</span><span class="p">.</span><span class="nf">valid?</span>
 <span class="c1"># =&gt; false</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <h3 id="and-a-non-set-is-invalid">And a non-set is invalid:</h3>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="nb">test</span> <span class="o">=</span> <span class="no">HasASubset</span><span class="p">.</span><span class="nf">new</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">test</span> <span class="o">=</span> <span class="no">HasASubset</span><span class="p">.</span><span class="nf">new</span>
 <span class="nb">test</span><span class="p">.</span><span class="nf">foo</span> <span class="o">=</span> <span class="mi">99_999</span>
 <span class="nb">test</span><span class="p">.</span><span class="nf">valid?</span>
 <span class="c1"># =&gt; false</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
-<p>Holy guacamole that is some sweet validation. But wait, there’s more! Since this validator is built on top of rock solid <code class="highlighter-rouge">ActiveModel::Validations</code> logic, all modifiers are supported.</p>
+<p>Holy guacamole that is some sweet validation. But wait, there’s more! Since this validator is built on top of rock solid <code class="language-plaintext highlighter-rouge">ActiveModel::Validations</code> logic, all modifiers are supported.</p>
 
 <h2 id="modification-nation">Modification nation</h2>
 
-<p>If your particular dataset needs something to be a subset or <code class="highlighter-rouge">nil</code>, it is a simple as:</p>
+<p>If your particular dataset needs something to be a subset or <code class="language-plaintext highlighter-rouge">nil</code>, it is a simple as:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">class</span> <span class="nc">HasASubset</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
-  <span class="kp">attr_accessor</span> <span class="ss">:foo</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">HasASubset</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
+  <span class="nb">attr_accessor</span> <span class="ss">:foo</span>
 
   <span class="n">validates_subset</span> <span class="ss">:foo</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="ss">allow_nil: </span><span class="kp">true</span>
 <span class="k">end</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
-<p>If you needed the data to <code class="highlighter-rouge">allow_nil</code> and only validate on <code class="highlighter-rouge">create</code>, you could easily define the validation as:</p>
+<p>If you needed the data to <code class="language-plaintext highlighter-rouge">allow_nil</code> and only validate on <code class="language-plaintext highlighter-rouge">create</code>, you could easily define the validation as:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">class</span> <span class="nc">HasASubset</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
-  <span class="kp">attr_accessor</span> <span class="ss">:foo</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">HasASubset</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
+  <span class="nb">attr_accessor</span> <span class="ss">:foo</span>
 
   <span class="n">validates_subset</span> <span class="ss">:foo</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="ss">allow_nil: </span><span class="kp">true</span><span class="p">,</span> <span class="ss">on: :create</span>
 <span class="k">end</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
-<p>Any combination of modifiers is supported by <code class="highlighter-rouge">validates_subset</code>. For a complete list of modifiers, have a look at the <a href="https://api.rubyonrails.org/classes/ActiveModel/Validations/ClassMethods.html#method-i-validate">rails documentationn</a>.</p>
+<p>Any combination of modifiers is supported by <code class="language-plaintext highlighter-rouge">validates_subset</code>. For a complete list of modifiers, have a look at the <a href="https://api.rubyonrails.org/classes/ActiveModel/Validations/ClassMethods.html#method-i-validate">rails documentationn</a>.</p>
 
 <p>As always, please contribute to and use this software for the low low price of free.</p>
 

@@ -18,6 +18,8 @@
   
   
 
+  
+
   <!-- Enable responsiveness on mobile devices-->
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
 
@@ -38,6 +40,8 @@
 
   <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
   <script async src="https://use.fontawesome.com/b3103405a3.js"></script>
+
+  
 </head>
 
 
@@ -63,13 +67,14 @@
       </span>
       <a id='home' class="sidebar-nav-item" href="https://jakeyesbeck.com">Home</a>
       <a id='archives'class="sidebar-nav-item" href="/archives">Archives</a>
+      <a id='services'class="sidebar-nav-item" href="/services">Services</a>
       <a id='resume'class="sidebar-nav-item" href="https://jakeyesbeck.com/assets/files/resume.pdf">Resume</a>
       <a id='about'class="sidebar-nav-item" href="/about">About</a>
       <a id='github'class="sidebar-nav-item" href="https://github.com/yez">GitHub</a>
       <a id='rss'class="sidebar-nav-item" href="/atom.xml">Feed</a>
     </nav>
 
-    <p class='copyright'>&copy; Jake Yesbeck 2022. All rights reserved.</p>
+    <p class='copyright'>&copy; Jake Yesbeck 2026. All rights reserved.</p>
   </div>
 </div>
 
@@ -131,9 +136,9 @@
 
 <h2 id="testing-database-models-is-slow">Testing Database Models is Slow</h2>
 
-<p>We can assume that there exists a very important class called <code class="highlighter-rouge">MyAwesomeClass</code>:</p>
+<p>We can assume that there exists a very important class called <code class="language-plaintext highlighter-rouge">MyAwesomeClass</code>:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">class</span> <span class="nc">MyAwesomeClass</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">MyAwesomeClass</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
   <span class="k">def</span> <span class="nf">assign_and_save!</span>
     <span class="n">saved_on_the_weekend</span> <span class="o">=</span> <span class="n">weekend?</span>
     <span class="nb">self</span><span class="p">.</span><span class="nf">save!</span>
@@ -143,12 +148,11 @@
     <span class="no">Time</span><span class="p">.</span><span class="nf">now</span><span class="p">.</span><span class="nf">saturday?</span> <span class="o">||</span> <span class="no">Time</span><span class="p">.</span><span class="nf">now</span><span class="p">.</span><span class="nf">sunday?</span>
   <span class="k">end</span>
 <span class="k">end</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
-<p>If we wanted to test that the <code class="highlighter-rouge">assign_and_save!</code> method works correctly, we might write a test like:</p>
+<p>If we wanted to test that the <code class="language-plaintext highlighter-rouge">assign_and_save!</code> method works correctly, we might write a test like:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="n">describe</span> <span class="s1">'#assign_and_save!'</span> <span class="k">do</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">describe</span> <span class="s1">'#assign_and_save!'</span> <span class="k">do</span>
   <span class="n">it</span> <span class="s1">'assigns and saves'</span> <span class="k">do</span>
     <span class="n">awesome_test</span> <span class="o">=</span> <span class="no">MyAwesomeClass</span><span class="p">.</span><span class="nf">new</span>
 
@@ -159,14 +163,13 @@
     <span class="n">expect</span><span class="p">(</span><span class="n">awesome_test</span><span class="p">.</span><span class="nf">saved_on_the_weekend</span><span class="p">).</span><span class="nf">to_not</span> <span class="n">be_nil</span>
   <span class="k">end</span>
 <span class="k">end</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
-<p>These tests make sure that the model is saved correctly to the database and a value is assigned to <code class="highlighter-rouge">saved_on_the_weekend</code>. However, the test code is overstepping the boundaries of the method it is testing. The <code class="highlighter-rouge">assign_and_save!</code> method’s job is to simply assign a value to an object and then save it. It does not care about how the actual saving works, that is the job of other validations on the model and <code class="highlighter-rouge">ActiveRecord</code>.</p>
+<p>These tests make sure that the model is saved correctly to the database and a value is assigned to <code class="language-plaintext highlighter-rouge">saved_on_the_weekend</code>. However, the test code is overstepping the boundaries of the method it is testing. The <code class="language-plaintext highlighter-rouge">assign_and_save!</code> method’s job is to simply assign a value to an object and then save it. It does not care about how the actual saving works, that is the job of other validations on the model and <code class="language-plaintext highlighter-rouge">ActiveRecord</code>.</p>
 
-<p>To avoid this, we can assert that the <code class="highlighter-rouge">save!</code> method is called, which will not actually write to our database:</p>
+<p>To avoid this, we can assert that the <code class="language-plaintext highlighter-rouge">save!</code> method is called, which will not actually write to our database:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="n">describe</span> <span class="s1">'#assign_and_save!'</span> <span class="k">do</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">describe</span> <span class="s1">'#assign_and_save!'</span> <span class="k">do</span>
   <span class="n">it</span> <span class="s1">'assigns and saves'</span> <span class="k">do</span>
     <span class="n">awesome_test</span> <span class="o">=</span> <span class="no">MyAwesomeClass</span><span class="p">.</span><span class="nf">new</span>
     <span class="n">expect</span><span class="p">(</span><span class="n">awesome_test</span><span class="p">).</span><span class="nf">to</span> <span class="n">receive</span><span class="p">(</span><span class="ss">:save!</span><span class="p">)</span>
@@ -174,16 +177,15 @@
     <span class="n">expect</span><span class="p">(</span><span class="n">awesome_test</span><span class="p">.</span><span class="nf">saved_on_the_weekend</span><span class="p">).</span><span class="nf">to_not</span> <span class="n">be_nil</span>
   <span class="k">end</span>
 <span class="k">end</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>Voila! We have made the same assertions about our code and did not do any slow input/output operations.</p>
 
-<p>Now I know what some of the more detail oriented Software Artisans reading this will initially think: <em>“What about validation concerns with the model?”</em> and <em>“If you stub out <code class="highlighter-rouge">save!</code> like that you can’t be sure it worked”</em>. While these are totally valid points, there exists a simple solution for dealing with the uncertainty of the save:</p>
+<p>Now I know what some of the more detail oriented Software Artisans reading this will initially think: <em>“What about validation concerns with the model?”</em> and <em>“If you stub out <code class="language-plaintext highlighter-rouge">save!</code> like that you can’t be sure it worked”</em>. While these are totally valid points, there exists a simple solution for dealing with the uncertainty of the save:</p>
 
-<h2 id="the-valid-method">The <code class="highlighter-rouge">valid?</code> method</h2>
+<h2 id="the-valid-method">The <code class="language-plaintext highlighter-rouge">valid?</code> method</h2>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="n">describe</span> <span class="s1">'#assign_and_save!'</span> <span class="k">do</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">describe</span> <span class="s1">'#assign_and_save!'</span> <span class="k">do</span>
   <span class="n">it</span> <span class="s1">'assigns and saves'</span> <span class="k">do</span>
     <span class="n">awesome_test</span> <span class="o">=</span> <span class="no">MyAwesomeClass</span><span class="p">.</span><span class="nf">new</span>
     <span class="n">expect</span><span class="p">(</span><span class="n">awesome_test</span><span class="p">).</span><span class="nf">to</span> <span class="n">receive</span><span class="p">(</span><span class="ss">:save!</span><span class="p">)</span>
@@ -199,22 +201,21 @@
     <span class="n">expect</span><span class="p">(</span><span class="n">awesome_test</span><span class="p">).</span><span class="nf">to</span> <span class="n">be_valid</span>
   <span class="k">end</span>
 <span class="k">end</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
-<p>With the new test assertion, we make sure that the model’s <code class="highlighter-rouge">valid?</code> method returns true, ensuring the model will be saved properly.</p>
+<p>With the new test assertion, we make sure that the model’s <code class="language-plaintext highlighter-rouge">valid?</code> method returns true, ensuring the model will be saved properly.</p>
 
-<p>The <code class="highlighter-rouge">valid?</code> method is what <code class="highlighter-rouge">ActiveRecord</code> uses before saving the model to the database. This method returns either <code class="highlighter-rouge">true</code> or <code class="highlighter-rouge">false</code> and writes the data to the database if <code class="highlighter-rouge">true</code> was returned. Now the code is tested and <code class="highlighter-rouge">ActiveRecord</code>’s’ validation errors are considered.</p>
+<p>The <code class="language-plaintext highlighter-rouge">valid?</code> method is what <code class="language-plaintext highlighter-rouge">ActiveRecord</code> uses before saving the model to the database. This method returns either <code class="language-plaintext highlighter-rouge">true</code> or <code class="language-plaintext highlighter-rouge">false</code> and writes the data to the database if <code class="language-plaintext highlighter-rouge">true</code> was returned. Now the code is tested and <code class="language-plaintext highlighter-rouge">ActiveRecord</code>’s’ validation errors are considered.</p>
 
 <h2 id="not-perfect-but-good-enough">Not Perfect, but Good Enough</h2>
 
-<p>However, there is one more thing that this test will not catch: database specific uniqueness constraints. If your application uses a database to enforce uniqueness and not in <code class="highlighter-rouge">ActiveRecord</code> validations, this testing method will fail. For that you will need a more robust integration tests which guard against duplicate data.</p>
+<p>However, there is one more thing that this test will not catch: database specific uniqueness constraints. If your application uses a database to enforce uniqueness and not in <code class="language-plaintext highlighter-rouge">ActiveRecord</code> validations, this testing method will fail. For that you will need a more robust integration tests which guard against duplicate data.</p>
 
 <p>All that aside, not actually saving data will be fine for the 90% case which is most codebases.</p>
 
 <h2 id="only-test-what-matters">Only Test What Matters</h2>
 
-<p>In this example, removing the testing of <code class="highlighter-rouge">save!</code> resulted in a speed increase. However, the idea of only testing the crucial parts of a method is not only about speed, <strong>it is about encapsulation</strong>. If a method’s only responsibility is to call helper methods, that is the only thing that should be tested. The test should simply assert that the helper methods are called, not the logic within them. Following this pattern will help keep test code small, concise, readable, and input/output operations to a minimum.</p>
+<p>In this example, removing the testing of <code class="language-plaintext highlighter-rouge">save!</code> resulted in a speed increase. However, the idea of only testing the crucial parts of a method is not only about speed, <strong>it is about encapsulation</strong>. If a method’s only responsibility is to call helper methods, that is the only thing that should be tested. The test should simply assert that the helper methods are called, not the logic within them. Following this pattern will help keep test code small, concise, readable, and input/output operations to a minimum.</p>
 
   </div>
   

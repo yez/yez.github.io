@@ -18,6 +18,8 @@
   
   
 
+  
+
   <!-- Enable responsiveness on mobile devices-->
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
 
@@ -38,6 +40,8 @@
 
   <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
   <script async src="https://use.fontawesome.com/b3103405a3.js"></script>
+
+  
 </head>
 
 
@@ -63,13 +67,14 @@
       </span>
       <a id='home' class="sidebar-nav-item" href="https://jakeyesbeck.com">Home</a>
       <a id='archives'class="sidebar-nav-item" href="/archives">Archives</a>
+      <a id='services'class="sidebar-nav-item" href="/services">Services</a>
       <a id='resume'class="sidebar-nav-item" href="https://jakeyesbeck.com/assets/files/resume.pdf">Resume</a>
       <a id='about'class="sidebar-nav-item" href="/about">About</a>
       <a id='github'class="sidebar-nav-item" href="https://github.com/yez">GitHub</a>
       <a id='rss'class="sidebar-nav-item" href="/atom.xml">Feed</a>
     </nav>
 
-    <p class='copyright'>&copy; Jake Yesbeck 2022. All rights reserved.</p>
+    <p class='copyright'>&copy; Jake Yesbeck 2026. All rights reserved.</p>
   </div>
 </div>
 
@@ -125,65 +130,59 @@
 
 <p>Active Support grants a myriad of methods for even the most impatient Software Artisan. For example, if one were to ask for this instant in time, a day ago, Active Support makes it possible.</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="mi">1</span><span class="p">.</span><span class="nf">day</span><span class="p">.</span><span class="nf">ago</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="mi">1</span><span class="p">.</span><span class="nf">day</span><span class="p">.</span><span class="nf">ago</span>
 <span class="c1"># =&gt; 2015-08-29 18:44:55 -0700</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>Likewise, basic date addition and subtraction is just as easy.</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="n">three_days_from_now</span> <span class="o">=</span> <span class="no">Time</span><span class="p">.</span><span class="nf">now</span> <span class="o">+</span> <span class="mi">3</span><span class="p">.</span><span class="nf">days</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">three_days_from_now</span> <span class="o">=</span> <span class="no">Time</span><span class="p">.</span><span class="nf">now</span> <span class="o">+</span> <span class="mi">3</span><span class="p">.</span><span class="nf">days</span>
 <span class="c1">#=&gt; 2015-09-01 18:46:34 -0700</span>
 
 <span class="n">three_days_from_now</span> <span class="o">+</span> <span class="mi">12</span><span class="p">.</span><span class="nf">hours</span>
 <span class="c1"># =&gt; 2015-09-03 06:48:28 -0700</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>Great! Very simple, seemingly arbitrary time calculation has never been easier. So what could be the catch? Obviously there isn’t one, if there were then this article would have to continue and I’m sure everyone has had quite enough.</p>
 
-<h2 id="toi-is-not-always-easy"><code class="highlighter-rouge">to_i</code> is not always easy</h2>
+<h2 id="to_i-is-not-always-easy"><code class="language-plaintext highlighter-rouge">to_i</code> is not always easy</h2>
 
-<p>Had enough? Too bad. The topic of <code class="highlighter-rouge">to_i</code> still has to be discussed with relation to the <code class="highlighter-rouge">Time</code> class. Ruby’s <code class="highlighter-rouge">Time</code> class exposes a method <code class="highlighter-rouge">to_i</code> which can be used to convert a <code class="highlighter-rouge">Time</code> to an <code class="highlighter-rouge">Integer</code>. This <code class="highlighter-rouge">Integer</code>is the sum of seconds passed since <a href="https://en.wikipedia.org/wiki/Unix_time">Epoch</a>. Using Epoch time can be useful for some systems that want to avoid doing timezone conversion. In fact, it might be so attractive an option that a developer’s first instinct might be to save and calculate everything in Epoch time. However, this might not always be the best idea.</p>
+<p>Had enough? Too bad. The topic of <code class="language-plaintext highlighter-rouge">to_i</code> still has to be discussed with relation to the <code class="language-plaintext highlighter-rouge">Time</code> class. Ruby’s <code class="language-plaintext highlighter-rouge">Time</code> class exposes a method <code class="language-plaintext highlighter-rouge">to_i</code> which can be used to convert a <code class="language-plaintext highlighter-rouge">Time</code> to an <code class="language-plaintext highlighter-rouge">Integer</code>. This <code class="language-plaintext highlighter-rouge">Integer</code>is the sum of seconds passed since <a href="https://en.wikipedia.org/wiki/Unix_time">Epoch</a>. Using Epoch time can be useful for some systems that want to avoid doing timezone conversion. In fact, it might be so attractive an option that a developer’s first instinct might be to save and calculate everything in Epoch time. However, this might not always be the best idea.</p>
 
-<p>Active Support follows suit with allowing <code class="highlighter-rouge">to_i</code> to be called on its convenience methods. For example, <code class="highlighter-rouge">1.day.to_i</code> calculates the number of seconds in the day.</p>
+<p>Active Support follows suit with allowing <code class="language-plaintext highlighter-rouge">to_i</code> to be called on its convenience methods. For example, <code class="language-plaintext highlighter-rouge">1.day.to_i</code> calculates the number of seconds in the day.</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="mi">1</span><span class="p">.</span><span class="nf">day</span><span class="p">.</span><span class="nf">to_i</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="mi">1</span><span class="p">.</span><span class="nf">day</span><span class="p">.</span><span class="nf">to_i</span>
 <span class="c1"># =&gt; 86400</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
-<p>And <code class="highlighter-rouge">1.week.to_i</code> calculates the number of seconds in a week.</p>
+<p>And <code class="language-plaintext highlighter-rouge">1.week.to_i</code> calculates the number of seconds in a week.</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="mi">1</span><span class="p">.</span><span class="nf">week</span><span class="p">.</span><span class="nf">to_i</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="mi">1</span><span class="p">.</span><span class="nf">week</span><span class="p">.</span><span class="nf">to_i</span>
 <span class="c1"># =&gt; 604800</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
-<p>Additionally, <code class="highlighter-rouge">1.month.to_i</code> calculates the number of seconds in a month.</p>
+<p>Additionally, <code class="language-plaintext highlighter-rouge">1.month.to_i</code> calculates the number of seconds in a month.</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="mi">1</span><span class="p">.</span><span class="nf">month</span><span class="p">.</span><span class="nf">to_i</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="mi">1</span><span class="p">.</span><span class="nf">month</span><span class="p">.</span><span class="nf">to_i</span>
 <span class="c1"># =&gt; 2592000</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>Wait a second, that only accounts for 30 days. If I learned anything in kindergarten, it was that the teacher really hates it when you teach yourself to whistle during nap-time. Also, I am pretty sure that not all months consist of exactly 30 days.</p>
 
 <h2 id="bad-times">Bad times</h2>
 
-<p>Introducing this inconsistency in time calculation can lead to unintended results. For example, note the difference between subtracting time objects and subtracting <code class="highlighter-rouge">to_i</code> calculated times:</p>
+<p>Introducing this inconsistency in time calculation can lead to unintended results. For example, note the difference between subtracting time objects and subtracting <code class="language-plaintext highlighter-rouge">to_i</code> calculated times:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="no">Time</span><span class="p">.</span><span class="nf">now</span> <span class="o">-</span> <span class="mi">3</span><span class="p">.</span><span class="nf">months</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">Time</span><span class="p">.</span><span class="nf">now</span> <span class="o">-</span> <span class="mi">3</span><span class="p">.</span><span class="nf">months</span>
 <span class="c1"># =&gt; 2015-05-30 19:07:44 -0700</span>
 
 <span class="no">Time</span><span class="p">.</span><span class="nf">now</span> <span class="o">-</span> <span class="mi">3</span><span class="p">.</span><span class="nf">months</span><span class="p">.</span><span class="nf">to_i</span>
 <span class="c1"># =&gt; 2015-06-01 19:07:59 -0700</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>So which is it Ruby? Was 3 months ago the 1st of June or the 30th of May? The problem persists even if everything is converted to integers first:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="n">epoch_now</span> <span class="o">=</span> <span class="no">Time</span><span class="p">.</span><span class="nf">now</span><span class="p">.</span><span class="nf">to_i</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">epoch_now</span> <span class="o">=</span> <span class="no">Time</span><span class="p">.</span><span class="nf">now</span><span class="p">.</span><span class="nf">to_i</span>
 <span class="c1"># =&gt; 1440986921</span>
 
 <span class="n">epoch_three_months_ago</span> <span class="o">=</span> <span class="n">epoc_now</span> <span class="o">-</span> <span class="mi">3</span><span class="p">.</span><span class="nf">months</span>
@@ -191,12 +190,11 @@
 
 <span class="no">Time</span><span class="p">.</span><span class="nf">at</span><span class="p">(</span><span class="n">epoch_three_months_ago</span><span class="p">)</span>
 <span class="c1"># =&gt; 2015-06-01 19:08:41 -0700</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <h2 id="ok-but-why">Ok, but why?</h2>
 
-<p>So why does this happen? Why does <code class="highlighter-rouge">1.month</code> return the same integer regardless of which month it is. Because, how could it know? A month is not meant to exist as an abstract concept, there is no canonical “month”, they are either 30 days, 31 days, 28 days, or 29 days long <em>(I didn’t forget about you, leap year!)</em>. This is just a small demonstration of why time calculation is never as simple as it may seem. There is no silver bullet to avoid it all. Even Epoch time conversions can lead to some real bad times.</p>
+<p>So why does this happen? Why does <code class="language-plaintext highlighter-rouge">1.month</code> return the same integer regardless of which month it is. Because, how could it know? A month is not meant to exist as an abstract concept, there is no canonical “month”, they are either 30 days, 31 days, 28 days, or 29 days long <em>(I didn’t forget about you, leap year!)</em>. This is just a small demonstration of why time calculation is never as simple as it may seem. There is no silver bullet to avoid it all. Even Epoch time conversions can lead to some real bad times.</p>
 
 
   </div>

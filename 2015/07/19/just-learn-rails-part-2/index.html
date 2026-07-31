@@ -17,6 +17,8 @@
   
   
 
+  
+
   <!-- Enable responsiveness on mobile devices-->
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
 
@@ -37,6 +39,8 @@
 
   <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
   <script async src="https://use.fontawesome.com/b3103405a3.js"></script>
+
+  
 </head>
 
 
@@ -62,13 +66,14 @@
       </span>
       <a id='home' class="sidebar-nav-item" href="https://jakeyesbeck.com">Home</a>
       <a id='archives'class="sidebar-nav-item" href="/archives">Archives</a>
+      <a id='services'class="sidebar-nav-item" href="/services">Services</a>
       <a id='resume'class="sidebar-nav-item" href="https://jakeyesbeck.com/assets/files/resume.pdf">Resume</a>
       <a id='about'class="sidebar-nav-item" href="/about">About</a>
       <a id='github'class="sidebar-nav-item" href="https://github.com/yez">GitHub</a>
       <a id='rss'class="sidebar-nav-item" href="/atom.xml">Feed</a>
     </nav>
 
-    <p class='copyright'>&copy; Jake Yesbeck 2022. All rights reserved.</p>
+    <p class='copyright'>&copy; Jake Yesbeck 2026. All rights reserved.</p>
   </div>
 </div>
 
@@ -115,13 +120,13 @@
 
 <h3 id="the-autoloader">The Autoloader</h3>
 
-<p>A keyword that most Ruby on Rails developers rarely see on a daily basis is <code class="highlighter-rouge">require</code>. A piece of Ruby on Rails magic called <a href="https://guides.rubyonrails.org/autoloading_and_reloading_constants.html">autoloading</a> greatly decreased the frequency of the <code class="highlighter-rouge">require</code> keyword in Ruby on Rails applications. This has many positive aspects for new and seasoned developers alike. But, it is not without drawbacks. One such drawback is that it makes <code class="highlighter-rouge">ActiveRecord</code> objects ubiquitous. Whenever a developer has the urge to reach into the database, regardless of the context, they are able to do so.</p>
+<p>A keyword that most Ruby on Rails developers rarely see on a daily basis is <code class="language-plaintext highlighter-rouge">require</code>. A piece of Ruby on Rails magic called <a href="https://guides.rubyonrails.org/autoloading_and_reloading_constants.html">autoloading</a> greatly decreased the frequency of the <code class="language-plaintext highlighter-rouge">require</code> keyword in Ruby on Rails applications. This has many positive aspects for new and seasoned developers alike. But, it is not without drawbacks. One such drawback is that it makes <code class="language-plaintext highlighter-rouge">ActiveRecord</code> objects ubiquitous. Whenever a developer has the urge to reach into the database, regardless of the context, they are able to do so.</p>
 
 <p><strong>This enables horrific code.</strong></p>
 
 <p>Imagine we have a view template that we want to display a user’s username and their pictures. Without any guidance, this following code could come into existence:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>#
+<div class="language-erb highlighter-rouge"><div class="highlight"><pre class="highlight"><code>#
 # Reminder, this is terrible code. Never do this.
 #
 
@@ -156,8 +161,7 @@
 #
 # Never replicate the above code or you will be very sad
 #
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>Notice how deep in the presentation layer (the view) we have direct database calls. This completely violates the encapsulations that an MVC framework should provide. Since all the models exist everywhere, nothing stops a programmer from writing it in this way. The code above should make every ruby programmer cringe.</p>
 
@@ -167,7 +171,7 @@
 
 <h3 id="add-a-dash-of-encapsulation">Add a dash of encapsulation</h3>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="c1"># The user class just needs to know about the database connection.</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># The user class just needs to know about the database connection.</span>
 <span class="c1"># ActiveRecord takes care of that detail for us, adding a scope</span>
 <span class="c1">#   is a supplementary addition to that logic.</span>
 <span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
@@ -204,12 +208,11 @@
     <span class="k">end</span>
   <span class="k">end</span>
 <span class="k">end</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>Finally, the view logic only knows about a presenter for each user. From the views perspective, the presenter object only has two methods: username and picture_urls. It does not need to know about database structure, schema, syntax or business logic. It has one job, to display data:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="nt">&lt;div&gt;</span>
+<div class="language-erb highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;div&gt;</span>
   <span class="cp">&lt;%</span> <span class="vi">@user_presenters</span><span class="p">.</span><span class="nf">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">presenter</span><span class="o">|</span> <span class="cp">%&gt;</span>
     <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">'username'</span><span class="nt">&gt;</span>
       <span class="cp">&lt;%=</span> <span class="n">presenter</span><span class="p">.</span><span class="nf">username</span> <span class="cp">%&gt;</span>
@@ -221,8 +224,7 @@
     <span class="nt">&lt;/div&gt;</span>
   <span class="cp">&lt;%</span> <span class="k">end</span> <span class="cp">%&gt;</span>
 <span class="nt">&lt;/div&gt;</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <h3 id="conclusion">Conclusion</h3>
 

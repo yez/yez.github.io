@@ -17,6 +17,8 @@
   
   
 
+  
+
   <!-- Enable responsiveness on mobile devices-->
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
 
@@ -37,6 +39,8 @@
 
   <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
   <script async src="https://use.fontawesome.com/b3103405a3.js"></script>
+
+  
 </head>
 
 
@@ -62,13 +66,14 @@
       </span>
       <a id='home' class="sidebar-nav-item" href="https://jakeyesbeck.com">Home</a>
       <a id='archives'class="sidebar-nav-item" href="/archives">Archives</a>
+      <a id='services'class="sidebar-nav-item" href="/services">Services</a>
       <a id='resume'class="sidebar-nav-item" href="https://jakeyesbeck.com/assets/files/resume.pdf">Resume</a>
       <a id='about'class="sidebar-nav-item" href="/about">About</a>
       <a id='github'class="sidebar-nav-item" href="https://github.com/yez">GitHub</a>
       <a id='rss'class="sidebar-nav-item" href="/atom.xml">Feed</a>
     </nav>
 
-    <p class='copyright'>&copy; Jake Yesbeck 2022. All rights reserved.</p>
+    <p class='copyright'>&copy; Jake Yesbeck 2026. All rights reserved.</p>
   </div>
 </div>
 
@@ -117,7 +122,7 @@
 
 <p>The example application has the following database structure and respective models:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="n">create_table</span> <span class="ss">:users</span> <span class="k">do</span> <span class="o">|</span><span class="n">t</span><span class="o">|</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">create_table</span> <span class="ss">:users</span> <span class="k">do</span> <span class="o">|</span><span class="n">t</span><span class="o">|</span>
   <span class="n">t</span><span class="p">.</span><span class="nf">string</span> <span class="ss">:email</span>
   <span class="n">t</span><span class="p">.</span><span class="nf">string</span> <span class="ss">:first_name</span>
   <span class="n">t</span><span class="p">.</span><span class="nf">string</span> <span class="ss">:last_name</span>
@@ -147,56 +152,51 @@
 
 <span class="k">class</span> <span class="nc">Theme</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
 <span class="k">end</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
-<p>An example controller, <code class="highlighter-rouge">home_controller.rb</code> has a single action:</p>
+<p>An example controller, <code class="language-plaintext highlighter-rouge">home_controller.rb</code> has a single action:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">class</span> <span class="nc">HomeController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">HomeController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
   <span class="k">def</span> <span class="nf">show</span>
     <span class="vi">@user</span> <span class="o">=</span> <span class="no">User</span><span class="p">.</span><span class="nf">find</span><span class="p">(</span><span class="n">params</span><span class="p">[</span><span class="ss">:user_id</span><span class="p">])</span>
   <span class="k">end</span>
 <span class="k">end</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
-<p>The above action renders a single simple view, <code class="highlighter-rouge">show.html.haml</code>:</p>
+<p>The above action renders a single simple view, <code class="language-plaintext highlighter-rouge">show.html.haml</code>:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="nt">%h3</span><span class="p">=</span> <span class="s2">"Posts from </span><span class="si">#{</span> <span class="vi">@user</span><span class="p">.</span><span class="nf">first_name</span> <span class="si">}</span><span class="s2"> </span><span class="si">#{</span> <span class="vi">@user</span><span class="p">.</span><span class="nf">last_name</span> <span class="si">}</span><span class="s2">"</span>
+<div class="language-haml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">%h3</span><span class="p">=</span> <span class="s2">"Posts from </span><span class="si">#{</span> <span class="vi">@user</span><span class="p">.</span><span class="nf">first_name</span> <span class="si">}</span><span class="s2"> </span><span class="si">#{</span> <span class="vi">@user</span><span class="p">.</span><span class="nf">last_name</span> <span class="si">}</span><span class="s2">"</span>
 
 <span class="p">-</span> <span class="vi">@user</span><span class="p">.</span><span class="nf">posts</span><span class="p">.</span><span class="nf">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">post</span><span class="o">|</span>
   <span class="nc">.theme</span><span class="p">=</span> <span class="s2">"Theme </span><span class="si">#{</span> <span class="n">post</span><span class="p">.</span><span class="nf">theme</span><span class="p">.</span><span class="nf">name</span> <span class="si">}</span><span class="s2">"</span>
   <span class="nc">.content</span><span class="p">=</span> <span class="n">post</span><span class="p">.</span><span class="nf">content</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
-<p>Additionally in the application’s <code class="highlighter-rouge">Gemfile</code>, the New Relic Ruby gem has been added:</p>
+<p>Additionally in the application’s <code class="language-plaintext highlighter-rouge">Gemfile</code>, the New Relic Ruby gem has been added:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="n">source</span> <span class="s1">'https://rubygems.org'</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">source</span> <span class="s1">'https://rubygems.org'</span>
 <span class="c1"># ...</span>
 <span class="n">gem</span> <span class="s1">'newrelic_rpm'</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
-<p>On a development machine under no contention, this action will quickly render a page consisting of a <code class="highlighter-rouge">User's</code> name information, a list of their <code class="highlighter-rouge">posts</code> and the <code class="highlighter-rouge">theme</code> each post belongs to.</p>
+<p>On a development machine under no contention, this action will quickly render a page consisting of a <code class="language-plaintext highlighter-rouge">User's</code> name information, a list of their <code class="language-plaintext highlighter-rouge">posts</code> and the <code class="language-plaintext highlighter-rouge">theme</code> each post belongs to.</p>
 
-<p>However, there is an <code class="highlighter-rouge">N + 1</code> query issue with this code. In a development environment, this issue might be overlooked or deemed satisfactory. It may not be until this code is released into the wild that a problem is seen.</p>
+<p>However, there is an <code class="language-plaintext highlighter-rouge">N + 1</code> query issue with this code. In a development environment, this issue might be overlooked or deemed satisfactory. It may not be until this code is released into the wild that a problem is seen.</p>
 
 <h2 id="the-n--1-problem">The N + 1 Problem</h2>
 
-<p>An <code class="highlighter-rouge">N + 1</code> query problem is responsible for an application’s execution of far more queries than needed. The <code class="highlighter-rouge">1</code> in <code class="highlighter-rouge">N + 1</code> refers to first query executed, in this case when loading: <code class="highlighter-rouge">@user.posts</code>. The <code class="highlighter-rouge">N</code> then refers to number of queries that must be executed when traversing over the list of elements, in this case each <code class="highlighter-rouge">post's</code> <code class="highlighter-rouge">theme</code>.</p>
+<p>An <code class="language-plaintext highlighter-rouge">N + 1</code> query problem is responsible for an application’s execution of far more queries than needed. The <code class="language-plaintext highlighter-rouge">1</code> in <code class="language-plaintext highlighter-rouge">N + 1</code> refers to first query executed, in this case when loading: <code class="language-plaintext highlighter-rouge">@user.posts</code>. The <code class="language-plaintext highlighter-rouge">N</code> then refers to number of queries that must be executed when traversing over the list of elements, in this case each <code class="language-plaintext highlighter-rouge">post's</code> <code class="language-plaintext highlighter-rouge">theme</code>.</p>
 
 <p>As with most problems, the first step to solving them involves validating their existence. This is the step in which New Relic is utilized.</p>
 
 <p>When using Heroku, after the New Relic add-on has been created for an application, it can be opened with:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>heroku addons:open newrelic --app my-application-name
-</code></pre>
-</div>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>heroku addons:open newrelic <span class="nt">--app</span> my-application-name
+</code></pre></div></div>
 
-<p>Otherwise, a user can simply Log-in at <code class="highlighter-rouge">rpm.newrelic.com</code> and navigate to their application after signing up and linking their application.</p>
+<p>Otherwise, a user can simply Log-in at <code class="language-plaintext highlighter-rouge">rpm.newrelic.com</code> and navigate to their application after signing up and linking their application.</p>
 
-<p>Once the desired application has been opened in New Relic, navigating to the the <code class="highlighter-rouge">transactions</code> tab and then the <code class="highlighter-rouge">HomeController#show</code> transaction will show our <code class="highlighter-rouge">N + 1</code> issue.</p>
+<p>Once the desired application has been opened in New Relic, navigating to the the <code class="language-plaintext highlighter-rouge">transactions</code> tab and then the <code class="language-plaintext highlighter-rouge">HomeController#show</code> transaction will show our <code class="language-plaintext highlighter-rouge">N + 1</code> issue.</p>
 
 <p>At first glance, the graph of this simple endpoint is telling a alarming story. A large amount of time is spent in the database, fetching records necessary to render the page:</p>
 
@@ -206,7 +206,7 @@
 
 <p><img src="https://jakeyesbeck.com/assets/images/call_count_table_before_fix.png" alt="New Relic Transaction Call Count Table for N + 1" /></p>
 
-<p>Immediately, we can see that the <code class="highlighter-rouge">Postgres Theme find</code> is called an average of <strong>20</strong> times per transaction. Compared to the single call count of the surrounding methods in this table, <strong>20</strong> seems excessive.</p>
+<p>Immediately, we can see that the <code class="language-plaintext highlighter-rouge">Postgres Theme find</code> is called an average of <strong>20</strong> times per transaction. Compared to the single call count of the surrounding methods in this table, <strong>20</strong> seems excessive.</p>
 
 <h2 id="investigation-station">Investigation Station</h2>
 
@@ -214,15 +214,13 @@
 
 <p>Here is the line that causes the issue:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="nc">.theme</span><span class="p">=</span> <span class="s2">"Theme </span><span class="si">#{</span> <span class="n">post</span><span class="p">.</span><span class="nf">theme</span><span class="p">.</span><span class="nf">name</span> <span class="si">}</span><span class="s2">"</span>
-</code></pre>
-</div>
+<div class="language-haml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nc">.theme</span><span class="p">=</span> <span class="s2">"Theme </span><span class="si">#{</span> <span class="n">post</span><span class="p">.</span><span class="nf">theme</span><span class="p">.</span><span class="nf">name</span> <span class="si">}</span><span class="s2">"</span>
+</code></pre></div></div>
 
-<p>Each time <code class="highlighter-rouge">post.theme.name</code> is called the following query is executed:</p>
+<p>Each time <code class="language-plaintext highlighter-rouge">post.theme.name</code> is called the following query is executed:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">SELECT</span>  <span class="nv">"themes"</span><span class="p">.</span><span class="o">*</span> <span class="k">FROM</span> <span class="nv">"themes"</span>  <span class="k">WHERE</span> <span class="nv">"themes"</span><span class="p">.</span><span class="nv">"id"</span> <span class="o">=</span> <span class="err">$</span><span class="mi">1</span> <span class="k">LIMIT</span> <span class="mi">1</span>  <span class="p">[[</span><span class="nv">"id"</span><span class="p">,</span> <span class="mi">3</span><span class="p">]]</span>
-</code></pre>
-</div>
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">SELECT</span>  <span class="nv">"themes"</span><span class="p">.</span><span class="o">*</span> <span class="k">FROM</span> <span class="nv">"themes"</span>  <span class="k">WHERE</span> <span class="nv">"themes"</span><span class="p">.</span><span class="nv">"id"</span> <span class="o">=</span> <span class="err">$</span><span class="mi">1</span> <span class="k">LIMIT</span> <span class="mi">1</span>  <span class="p">[[</span><span class="nv">"id"</span><span class="p">,</span> <span class="mi">3</span><span class="p">]]</span>
+</code></pre></div></div>
 
 <p>While things like query caching, primary key indexes and other performance aiding features exist within production relational databases, issuing the same query 20 times per page load is still wasteful.</p>
 
@@ -232,20 +230,19 @@
 
 <p>All that aside, what kind of effect does a solution to this problem have on our example application?</p>
 
-<p>To rid this system of its <code class="highlighter-rouge">N + 1</code> query, we can prepend some information to the simple <code class="highlighter-rouge">find</code> method, letting <code class="highlighter-rouge">ActiveRecord</code> do the work for us:</p>
+<p>To rid this system of its <code class="language-plaintext highlighter-rouge">N + 1</code> query, we can prepend some information to the simple <code class="language-plaintext highlighter-rouge">find</code> method, letting <code class="language-plaintext highlighter-rouge">ActiveRecord</code> do the work for us:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">class</span> <span class="nc">HomeController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">HomeController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
   <span class="k">def</span> <span class="nf">show</span>
     <span class="vi">@user</span> <span class="o">=</span> <span class="no">User</span><span class="p">.</span><span class="nf">eager_load</span><span class="p">(</span><span class="ss">posts: :theme</span><span class="p">)</span>
                 <span class="p">.</span><span class="nf">find</span><span class="p">(</span><span class="n">params</span><span class="p">[</span><span class="ss">:user_id</span><span class="p">])</span>
   <span class="k">end</span>
 <span class="k">end</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
-<p>Here the <code class="highlighter-rouge">eager_load</code> method will use the established foreign keys via the <code class="highlighter-rouge">belongs_to</code> relationships and pull in relevant <code class="highlighter-rouge">posts</code> and <code class="highlighter-rouge">themes</code>, resulting in two <code class="highlighter-rouge">JOIN</code> clauses in the query.</p>
+<p>Here the <code class="language-plaintext highlighter-rouge">eager_load</code> method will use the established foreign keys via the <code class="language-plaintext highlighter-rouge">belongs_to</code> relationships and pull in relevant <code class="language-plaintext highlighter-rouge">posts</code> and <code class="language-plaintext highlighter-rouge">themes</code>, resulting in two <code class="language-plaintext highlighter-rouge">JOIN</code> clauses in the query.</p>
 
-<p><em>Note: This is just one solution for this particular problem with its own downsides. Any memory concerns dealing with a <code class="highlighter-rouge">User</code> that has far too many <code class="highlighter-rouge">posts</code> or similar problems are not addressed.</em></p>
+<p><em>Note: This is just one solution for this particular problem with its own downsides. Any memory concerns dealing with a <code class="language-plaintext highlighter-rouge">User</code> that has far too many <code class="language-plaintext highlighter-rouge">posts</code> or similar problems are not addressed.</em></p>
 
 <p>Opening up New Relic shows the the improvement:</p>
 
@@ -259,7 +256,7 @@
 
 <h2 id="measure-twice-measure-again-just-keep-measuring">Measure Twice, Measure Again, Just Keep Measuring</h2>
 
-<p>Understanding slow parts of a production Ruby on Rails application can mean the difference between an “OK” user experience and a great one. When developing these applications, it can be hard to keep track of every inefficiency that could result in sub-optimal <code class="highlighter-rouge">N + 1</code> behaviour. Both new and seasoned Ruby on Rails applications can be vulnerable to these types of problems, knowing how to diagnose them is the first step towards their resolution.</p>
+<p>Understanding slow parts of a production Ruby on Rails application can mean the difference between an “OK” user experience and a great one. When developing these applications, it can be hard to keep track of every inefficiency that could result in sub-optimal <code class="language-plaintext highlighter-rouge">N + 1</code> behaviour. Both new and seasoned Ruby on Rails applications can be vulnerable to these types of problems, knowing how to diagnose them is the first step towards their resolution.</p>
 
 <p>New Relic was a crucial element in this example but it is not the only tool available. Many other analysis tools for Ruby on Rails applications exist and Rails itself gives developers insight into an application’s behaviour via its logs.</p>
 

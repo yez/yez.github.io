@@ -22,6 +22,8 @@
   
   
 
+  
+
   <!-- Enable responsiveness on mobile devices-->
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
 
@@ -42,6 +44,8 @@
 
   <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
   <script async src="https://use.fontawesome.com/b3103405a3.js"></script>
+
+  
 </head>
 
 
@@ -67,13 +71,14 @@
       </span>
       <a id='home' class="sidebar-nav-item" href="https://jakeyesbeck.com">Home</a>
       <a id='archives'class="sidebar-nav-item" href="/archives">Archives</a>
+      <a id='services'class="sidebar-nav-item" href="/services">Services</a>
       <a id='resume'class="sidebar-nav-item" href="https://jakeyesbeck.com/assets/files/resume.pdf">Resume</a>
       <a id='about'class="sidebar-nav-item" href="/about">About</a>
       <a id='github'class="sidebar-nav-item" href="https://github.com/yez">GitHub</a>
       <a id='rss'class="sidebar-nav-item" href="/atom.xml">Feed</a>
     </nav>
 
-    <p class='copyright'>&copy; Jake Yesbeck 2022. All rights reserved.</p>
+    <p class='copyright'>&copy; Jake Yesbeck 2026. All rights reserved.</p>
   </div>
 </div>
 
@@ -120,7 +125,7 @@
 
 <p>For a quick refresher, public and private instance methods look like this:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Dog</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Dog</span>
   <span class="k">def</span> <span class="nf">do_trick</span>
     <span class="n">bark</span>
   <span class="k">end</span>
@@ -131,49 +136,44 @@
     <span class="nb">puts</span> <span class="s1">'woof woof'</span>
   <span class="k">end</span>
 <span class="k">end</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>When the public method is called:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="o">&gt;</span> <span class="n">dog</span> <span class="o">=</span> <span class="no">Dog</span><span class="p">.</span><span class="nf">new</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> <span class="n">dog</span> <span class="o">=</span> <span class="no">Dog</span><span class="p">.</span><span class="nf">new</span>
 <span class="o">&gt;</span> <span class="n">dog</span><span class="p">.</span><span class="nf">do_trick</span>
 <span class="c1"># =&gt; woof woof</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>And the private method:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="o">&gt;</span> <span class="n">dog</span> <span class="o">=</span> <span class="no">Dog</span><span class="p">.</span><span class="nf">new</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> <span class="n">dog</span> <span class="o">=</span> <span class="no">Dog</span><span class="p">.</span><span class="nf">new</span>
 <span class="o">&gt;</span> <span class="n">dog</span><span class="p">.</span><span class="nf">bark</span>
 <span class="c1"># =&gt; NoMethodError: private method `bark' called for &lt;Dog&gt;</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>Private class methods might not be as common as private instance methods, but they still have their place. For instance, a class method may require internal helper methods to complete its function. Whatever the reason, defining private class methods has value but is not always intuitive.</p>
 
-<p>This example <code class="highlighter-rouge">Dog</code> class needs to maintain a list of <code class="highlighter-rouge">tricks</code> that will be used <strong>within</strong> the other public class methods. This list should not be accessible to any callers outside the <code class="highlighter-rouge">Dog</code> class.</p>
+<p>This example <code class="language-plaintext highlighter-rouge">Dog</code> class needs to maintain a list of <code class="language-plaintext highlighter-rouge">tricks</code> that will be used <strong>within</strong> the other public class methods. This list should not be accessible to any callers outside the <code class="language-plaintext highlighter-rouge">Dog</code> class.</p>
 
 <h2 id="the-wrong-way">The wrong way</h2>
 
-<p>A first pass at writing the private <code class="highlighter-rouge">tricks</code> method could look like:</p>
+<p>A first pass at writing the private <code class="language-plaintext highlighter-rouge">tricks</code> method could look like:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Dog</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Dog</span>
   <span class="kp">private</span>
 
   <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">tricks</span>
     <span class="p">[</span><span class="ss">:bark</span><span class="p">,</span> <span class="ss">:roll_over</span><span class="p">,</span> <span class="ss">:fetch</span><span class="p">]</span>
   <span class="k">end</span>
 <span class="k">end</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
-<p>However, when testing the visibility of the <code class="highlighter-rouge">tricks</code> method:</p>
+<p>However, when testing the visibility of the <code class="language-plaintext highlighter-rouge">tricks</code> method:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="o">&gt;</span> <span class="no">Dog</span><span class="p">.</span><span class="nf">tricks</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> <span class="no">Dog</span><span class="p">.</span><span class="nf">tricks</span>
 <span class="c1"># =&gt; [:bark, :roll_over, :fetch]</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>Uh oh, no error was thrown indicating a that a private method was called, this method is completely public.</p>
 
@@ -181,17 +181,17 @@
 
 <p>The reason that the above code did not produce a private method has to do with Ruby’s object hierarchy, interactions amongst  internal classes, instances of those classes, and eigenclasses. A detailed write up about how Ruby’s objects work with one another can be found in a <a href="https://jakeyesbeck.com/2015/08/23/ruby-objects/">previous post</a>.</p>
 
-<p>When defining methods in a class, the default context and the context introduced by the <code class="highlighter-rouge">self.</code> method declaration are distinct.</p>
+<p>When defining methods in a class, the default context and the context introduced by the <code class="language-plaintext highlighter-rouge">self.</code> method declaration are distinct.</p>
 
-<p>The private method scope can not be used in the above way as it does not handle the context change between methods defined on the <code class="highlighter-rouge">Dog</code> class and defined within <code class="highlighter-rouge">self</code> context.</p>
+<p>The private method scope can not be used in the above way as it does not handle the context change between methods defined on the <code class="language-plaintext highlighter-rouge">Dog</code> class and defined within <code class="language-plaintext highlighter-rouge">self</code> context.</p>
 
 <p>So what are the alternatives?</p>
 
-<h2 id="class--self">1. <code class="highlighter-rouge">class &lt;&lt; self</code></h2>
+<h2 id="1-class--self">1. <code class="language-plaintext highlighter-rouge">class &lt;&lt; self</code></h2>
 
-<p>One alternative way to define class methods on an object is to use the <code class="highlighter-rouge">class &lt;&lt; self</code> syntax. This syntax opens an eigenclass for the supplied argument. In this example, <code class="highlighter-rouge">self</code> within the <code class="highlighter-rouge">Dog</code> class will open the <code class="highlighter-rouge">Dog's</code> eigenclass.</p>
+<p>One alternative way to define class methods on an object is to use the <code class="language-plaintext highlighter-rouge">class &lt;&lt; self</code> syntax. This syntax opens an eigenclass for the supplied argument. In this example, <code class="language-plaintext highlighter-rouge">self</code> within the <code class="language-plaintext highlighter-rouge">Dog</code> class will open the <code class="language-plaintext highlighter-rouge">Dog's</code> eigenclass.</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Dog</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Dog</span>
   <span class="k">class</span> <span class="o">&lt;&lt;</span> <span class="nb">self</span>
     <span class="kp">private</span>
 
@@ -200,27 +200,25 @@
     <span class="k">end</span>
   <span class="k">end</span>
 <span class="k">end</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
-<p>One thing to note is that when defining methods like this, the declaration has changed from <code class="highlighter-rouge">def self.tricks</code> to simply <code class="highlighter-rouge">def tricks</code>.</p>
+<p>One thing to note is that when defining methods like this, the declaration has changed from <code class="language-plaintext highlighter-rouge">def self.tricks</code> to simply <code class="language-plaintext highlighter-rouge">def tricks</code>.</p>
 
 <p>Now, the private scope is preserved and expected behaviour is achieved:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="o">&gt;</span> <span class="no">Dog</span><span class="p">.</span><span class="nf">tricks</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span> <span class="no">Dog</span><span class="p">.</span><span class="nf">tricks</span>
 <span class="c1"># =&gt; NoMethodError: private method `tricks' called for Dog:Class</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
-<h2 id="modules">2. Modules</h2>
+<h2 id="2-modules">2. Modules</h2>
 
 <p>Modules in ruby are collections of methods and constants. These collections can be used as encapsulation tools or, in this case, alternatives to defining public and private class methods.</p>
 
-<p>When a class <code class="highlighter-rouge">extends</code> a module, all the methods within that module become class methods on the subject class*. This pattern can be used to define the <code class="highlighter-rouge">tricks</code> method on <code class="highlighter-rouge">Dog</code>.</p>
+<p>When a class <code class="language-plaintext highlighter-rouge">extends</code> a module, all the methods within that module become class methods on the subject class*. This pattern can be used to define the <code class="language-plaintext highlighter-rouge">tricks</code> method on <code class="language-plaintext highlighter-rouge">Dog</code>.</p>
 
-<p><em>*Note: This only pertains to methods defined in a “typical sense” any <code class="highlighter-rouge">def self.</code> or <code class="highlighter-rouge">def Dog.</code> method definitions in a module do not automatically become class methods in the same way when <code class="highlighter-rouge">extended</code>.</em></p>
+<p><em>*Note: This only pertains to methods defined in a “typical sense” any <code class="language-plaintext highlighter-rouge">def self.</code> or <code class="language-plaintext highlighter-rouge">def Dog.</code> method definitions in a module do not automatically become class methods in the same way when <code class="language-plaintext highlighter-rouge">extended</code>.</em></p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Dog</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Dog</span>
   <span class="k">module</span> <span class="nn">ClassMethods</span>
     <span class="kp">private</span>
 
@@ -234,20 +232,19 @@
 
 <span class="o">&gt;</span> <span class="no">Dog</span><span class="p">.</span><span class="nf">tricks</span>
 <span class="c1"># =&gt; NoMethodError: private method `tricks' called for Dog:Class</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
-<p>A benefit of this approach is readability. The module named <code class="highlighter-rouge">ClassMethods</code>, which is contained and thus encapsulated by the <code class="highlighter-rouge">Dog</code> class, is the clear home for all desired class methods.</p>
+<p>A benefit of this approach is readability. The module named <code class="language-plaintext highlighter-rouge">ClassMethods</code>, which is contained and thus encapsulated by the <code class="language-plaintext highlighter-rouge">Dog</code> class, is the clear home for all desired class methods.</p>
 
-<p>Visibility modifiers like <code class="highlighter-rouge">private</code> behave accordingly and a simple <code class="highlighter-rouge">extend</code> at the bottom of the module definition brings it all together.</p>
+<p>Visibility modifiers like <code class="language-plaintext highlighter-rouge">private</code> behave accordingly and a simple <code class="language-plaintext highlighter-rouge">extend</code> at the bottom of the module definition brings it all together.</p>
 
-<h2 id="privateclassmethod">3. <code class="highlighter-rouge">private_class_method</code></h2>
+<h2 id="3-private_class_method">3. <code class="language-plaintext highlighter-rouge">private_class_method</code></h2>
 
-<p>A third approach is to use the built in method <code class="highlighter-rouge">Module#private_class_method</code>. This method’s purpose is to change the visibility of <strong>existing</strong> class methods.</p>
+<p>A third approach is to use the built in method <code class="language-plaintext highlighter-rouge">Module#private_class_method</code>. This method’s purpose is to change the visibility of <strong>existing</strong> class methods.</p>
 
 <p>Unlike the other two solutions, this one does not require a different style of method definition from the incorrect solution:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Dog</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Dog</span>
   <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">tricks</span>
     <span class="p">[</span><span class="ss">:bark</span><span class="p">,</span> <span class="ss">:roll_over</span><span class="p">,</span> <span class="ss">:fetch</span><span class="p">]</span>
   <span class="k">end</span>
@@ -257,12 +254,11 @@
 
 <span class="o">&gt;</span> <span class="no">Dog</span><span class="p">.</span><span class="nf">tricks</span>
 <span class="c1"># =&gt; NoMethodError: private method `tricks' called for Dog:Class</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>This method can also be in-lined during the class’ method definition:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Dog</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Dog</span>
   <span class="nb">private_class_method</span> <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">tricks</span>
     <span class="p">[</span><span class="ss">:bark</span><span class="p">,</span> <span class="ss">:roll_over</span><span class="p">,</span> <span class="ss">:fetch</span><span class="p">]</span>
   <span class="k">end</span>
@@ -270,12 +266,11 @@
 
 <span class="o">&gt;</span> <span class="no">Dog</span><span class="p">.</span><span class="nf">tricks</span>
 <span class="c1"># =&gt; NoMethodError: private method `tricks' called for Dog:Class</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>If a single class method must be private and saving lines is very important, this style might be applicable; but, it certainly sacrifices a level of readability.</p>
 
-<p>A major strength of <code class="highlighter-rouge">private_class_method</code> is its explicitness. Unlike the other approaches, this one does not require a special module definition or method definition context switching.</p>
+<p>A major strength of <code class="language-plaintext highlighter-rouge">private_class_method</code> is its explicitness. Unlike the other approaches, this one does not require a special module definition or method definition context switching.</p>
 
 <h2 id="further-reading">Further Reading</h2>
 

@@ -18,6 +18,8 @@
   
   
 
+  
+
   <!-- Enable responsiveness on mobile devices-->
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
 
@@ -38,6 +40,8 @@
 
   <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
   <script async src="https://use.fontawesome.com/b3103405a3.js"></script>
+
+  
 </head>
 
 
@@ -63,13 +67,14 @@
       </span>
       <a id='home' class="sidebar-nav-item" href="https://jakeyesbeck.com">Home</a>
       <a id='archives'class="sidebar-nav-item" href="/archives">Archives</a>
+      <a id='services'class="sidebar-nav-item" href="/services">Services</a>
       <a id='resume'class="sidebar-nav-item" href="https://jakeyesbeck.com/assets/files/resume.pdf">Resume</a>
       <a id='about'class="sidebar-nav-item" href="/about">About</a>
       <a id='github'class="sidebar-nav-item" href="https://github.com/yez">GitHub</a>
       <a id='rss'class="sidebar-nav-item" href="/atom.xml">Feed</a>
     </nav>
 
-    <p class='copyright'>&copy; Jake Yesbeck 2022. All rights reserved.</p>
+    <p class='copyright'>&copy; Jake Yesbeck 2026. All rights reserved.</p>
   </div>
 </div>
 
@@ -119,9 +124,9 @@
 
     <p><img src="/assets/images/robust-rspec-tests.jpg" alt="Robust RSpec Tests" /></p>
 
-<p>RSpec is a popular framework for testing Ruby code. With an <code class="highlighter-rouge">expect</code>
+<p>RSpec is a popular framework for testing Ruby code. With an <code class="language-plaintext highlighter-rouge">expect</code>
 assertion, a developer can make sure their code calls the proper method or
-an acceptable result is returned. The <code class="highlighter-rouge">expect().to receive</code> matcher in a test
+an acceptable result is returned. The <code class="language-plaintext highlighter-rouge">expect().to receive</code> matcher in a test
 overrides the default implementation and can cause some unintended side
 effects.</p>
 
@@ -130,9 +135,9 @@ can update models.</p>
 
 <h2 id="testing-an-api-client">Testing an API Client</h2>
 
-<p>An example <code class="highlighter-rouge">api_client.rb</code> class defines a single <code class="highlighter-rouge">put</code> method that calls the underlying API with a <code class="highlighter-rouge">Faraday</code> connection.</p>
+<p>An example <code class="language-plaintext highlighter-rouge">api_client.rb</code> class defines a single <code class="language-plaintext highlighter-rouge">put</code> method that calls the underlying API with a <code class="language-plaintext highlighter-rouge">Faraday</code> connection.</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="c1"># api_client.rb</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># api_client.rb</span>
 
 <span class="k">class</span> <span class="nc">APIClient</span>
   <span class="k">def</span> <span class="nf">put</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">body</span><span class="p">)</span>
@@ -145,25 +150,23 @@ can update models.</p>
     <span class="no">Faraday</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="s1">'https://some-cool-api.com'</span><span class="p">)</span>
   <span class="k">end</span>
 <span class="k">end</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
-<p>Inheriting from <code class="highlighter-rouge">api_client.rb</code> is <code class="highlighter-rouge">my_model.rb</code> which defines an <code class="highlighter-rouge">update</code>
+<p>Inheriting from <code class="language-plaintext highlighter-rouge">api_client.rb</code> is <code class="language-plaintext highlighter-rouge">my_model.rb</code> which defines an <code class="language-plaintext highlighter-rouge">update</code>
 method.</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="c1"># my_model.rb</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># my_model.rb</span>
 
 <span class="k">class</span> <span class="nc">MyModel</span> <span class="o">&lt;</span> <span class="no">APIClient</span>
   <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="n">payload</span><span class="p">)</span>
     <span class="n">put</span><span class="p">(</span><span class="s1">'/my_models/1'</span><span class="p">,</span> <span class="n">payload</span><span class="p">)</span>
   <span class="k">end</span>
 <span class="k">end</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
-<p>A typical test for the <code class="highlighter-rouge">update</code> method on <code class="highlighter-rouge">MyModel</code> in RSpec might look like:</p>
+<p>A typical test for the <code class="language-plaintext highlighter-rouge">update</code> method on <code class="language-plaintext highlighter-rouge">MyModel</code> in RSpec might look like:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="c1"># my_model_spec.rb</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># my_model_spec.rb</span>
 
 <span class="n">describe</span> <span class="no">MyModel</span> <span class="k">do</span>
   <span class="n">describe</span> <span class="s1">'update'</span> <span class="k">do</span>
@@ -173,32 +176,30 @@ method.</p>
     <span class="k">end</span>
   <span class="k">end</span>
 <span class="k">end</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
-<p>The <code class="highlighter-rouge">subject</code> in the above test is <code class="highlighter-rouge">MyModel.new</code> and is expected to receive the
-method <code class="highlighter-rouge">put</code>. Since <code class="highlighter-rouge">MyModel#update</code> calls the <code class="highlighter-rouge">put</code> method, this seems like
+<p>The <code class="language-plaintext highlighter-rouge">subject</code> in the above test is <code class="language-plaintext highlighter-rouge">MyModel.new</code> and is expected to receive the
+method <code class="language-plaintext highlighter-rouge">put</code>. Since <code class="language-plaintext highlighter-rouge">MyModel#update</code> calls the <code class="language-plaintext highlighter-rouge">put</code> method, this seems like
 a reasonable test.</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="nv">$:</span> rspec my_model_spec.rb
-.
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$:</span> rspec my_model_spec.rb
+<span class="nb">.</span>
 
 Finished <span class="k">in </span>0.0054 seconds <span class="o">(</span>files took 0.07101 seconds to load<span class="o">)</span>
 1 example, 0 failures
-</code></pre>
-</div>
+</code></pre></div></div>
 
-<p>Running the test produces a passing result, the <code class="highlighter-rouge">MyModel</code> class calls
+<p>Running the test produces a passing result, the <code class="language-plaintext highlighter-rouge">MyModel</code> class calls
 its parent method correctly and all is well. Until something changes that the
 test is unable to detect.</p>
 
 <h2 id="breaking-the-contract">Breaking the Contract</h2>
 
-<p>If <code class="highlighter-rouge">MyModel</code>’s contract changes, the test should fail. If, for
-instance, the <code class="highlighter-rouge">put</code> method on the <code class="highlighter-rouge">APIClient</code> class is removed or commented
-out, the <code class="highlighter-rouge">update</code> method on <code class="highlighter-rouge">MyModel</code> would no longer work.</p>
+<p>If <code class="language-plaintext highlighter-rouge">MyModel</code>’s contract changes, the test should fail. If, for
+instance, the <code class="language-plaintext highlighter-rouge">put</code> method on the <code class="language-plaintext highlighter-rouge">APIClient</code> class is removed or commented
+out, the <code class="language-plaintext highlighter-rouge">update</code> method on <code class="language-plaintext highlighter-rouge">MyModel</code> would no longer work.</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="c1"># api_client.rb</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># api_client.rb</span>
 
 <span class="k">class</span> <span class="nc">APIClient</span>
   <span class="c1"># def put(url, body)</span>
@@ -211,80 +212,76 @@ out, the <code class="highlighter-rouge">update</code> method on <code class="hi
     <span class="no">Faraday</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="s1">'https://some-cool-api.com'</span><span class="p">)</span>
   <span class="k">end</span>
 <span class="k">end</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>However, the test still passes despite this method being removed.</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="nv">$:</span> rspec my_model_spec.rb
-.
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$:</span> rspec my_model_spec.rb
+<span class="nb">.</span>
 
 Finished <span class="k">in </span>0.00523 seconds <span class="o">(</span>files took 0.0699 seconds to load<span class="o">)</span>
 1 example, 0 failures
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>So what is going on here?</p>
 
-<p>The culprit is this line: <code class="highlighter-rouge">expect(subject).to receive(:put)</code>. The test happily
-accepts the call to <code class="highlighter-rouge">APIClient#put</code> despite it being removed. This is
+<p>The culprit is this line: <code class="language-plaintext highlighter-rouge">expect(subject).to receive(:put)</code>. The test happily
+accepts the call to <code class="language-plaintext highlighter-rouge">APIClient#put</code> despite it being removed. This is
 obviously problematic and, in a worst case scenario, could lead to an outage if
 a test suite is the only gateway to production code.</p>
 
-<p>Starting an <code class="highlighter-rouge">irb</code> repl and calling the problematic method reveals that the code
+<p>Starting an <code class="language-plaintext highlighter-rouge">irb</code> repl and calling the problematic method reveals that the code
 is no longer working despite the test’s result.</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="mi">2</span><span class="o">.</span><span class="mi">5</span><span class="o">.</span><span class="mi">5</span> <span class="p">:</span><span class="mo">001</span> <span class="o">&gt;</span> <span class="n">model</span> <span class="o">=</span> <span class="no">MyModel</span><span class="p">.</span><span class="nf">new</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="mf">2.5</span><span class="o">.</span><span class="mi">5</span> <span class="p">:</span><span class="mo">001</span> <span class="o">&gt;</span> <span class="n">model</span> <span class="o">=</span> <span class="no">MyModel</span><span class="p">.</span><span class="nf">new</span>
  <span class="o">=&gt;</span> <span class="c1">#&lt;MyModel:0x00005585f950ca10&gt;</span>
-<span class="mi">2</span><span class="o">.</span><span class="mi">5</span><span class="o">.</span><span class="mi">5</span> <span class="p">:</span><span class="mo">002</span> <span class="o">&gt;</span> <span class="n">model</span><span class="p">.</span><span class="nf">update</span><span class="p">(</span><span class="ss">foo: :bar</span><span class="p">)</span>
+<span class="mf">2.5</span><span class="o">.</span><span class="mi">5</span> <span class="p">:</span><span class="mo">002</span> <span class="o">&gt;</span> <span class="n">model</span><span class="p">.</span><span class="nf">update</span><span class="p">(</span><span class="ss">foo: :bar</span><span class="p">)</span>
 <span class="no">Traceback</span> <span class="p">(</span><span class="n">most</span> <span class="n">recent</span> <span class="n">call</span> <span class="n">last</span><span class="p">):</span>
-        <span class="mi">3</span><span class="p">:</span> <span class="n">from</span> <span class="sr">/home/</span><span class="n">yez</span><span class="o">/</span><span class="p">.</span><span class="nf">rvm</span><span class="o">/</span><span class="n">rubies</span><span class="o">/</span><span class="n">ruby</span><span class="o">-</span><span class="mi">2</span><span class="o">.</span><span class="mi">5</span><span class="o">.</span><span class="mi">5</span><span class="o">/</span><span class="n">bin</span><span class="o">/</span><span class="n">irb</span><span class="p">:</span><span class="mi">11</span><span class="ss">:in</span> <span class="sb">`&lt;main&gt;'
+        <span class="mi">3</span><span class="p">:</span> <span class="n">from</span> <span class="sr">/home/</span><span class="n">yez</span><span class="o">/</span><span class="p">.</span><span class="nf">rvm</span><span class="o">/</span><span class="n">rubies</span><span class="o">/</span><span class="n">ruby</span><span class="o">-</span><span class="mf">2.5</span><span class="o">.</span><span class="mi">5</span><span class="o">/</span><span class="n">bin</span><span class="o">/</span><span class="n">irb</span><span class="p">:</span><span class="mi">11</span><span class="ss">:in</span> <span class="sb">`&lt;main&gt;'
         2: from (irb):2
         1: from /tmp/foo.rb:8:in `</span><span class="n">update</span><span class="s1">'
 NoMethodError (undefined method `put'</span> <span class="k">for</span> <span class="c1">#&lt;MyModel:0x00005585f950ca10&gt;)</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
-<p>Since this code communicates to an API, validating that the underlying <code class="highlighter-rouge">put</code>
+<p>Since this code communicates to an API, validating that the underlying <code class="language-plaintext highlighter-rouge">put</code>
 request is done successfully can be tricky. Unlike tests in a Rails application,
-<code class="highlighter-rouge">MyModel#update</code> can not be validated in a local database.</p>
+<code class="language-plaintext highlighter-rouge">MyModel#update</code> can not be validated in a local database.</p>
 
 <p>With a passing test and broken code, it is clear that wrong thing has been tested.
 As is, the test only asserts that a method calls another method and happily ignores
-everything else. One possible solution could be to add <code class="highlighter-rouge">and_call_original</code> to
-the end of the <code class="highlighter-rouge">expect(). to receive</code> line. This would make sure the <code class="highlighter-rouge">put</code>
+everything else. One possible solution could be to add <code class="language-plaintext highlighter-rouge">and_call_original</code> to
+the end of the <code class="language-plaintext highlighter-rouge">expect(). to receive</code> line. This would make sure the <code class="language-plaintext highlighter-rouge">put</code>
 method is really there but would also make a real HTTP request in a test (which
 is generally bad practice).</p>
 
 <p>An easy way to make this test more robust without going overboard is to stub
-the response of the HTTP client. Instead of mocking the <code class="highlighter-rouge">put</code> method in <code class="highlighter-rouge">api_client.rb</code>,
-tools like <code class="highlighter-rouge">webmock</code> can be utilized to stub the <code class="highlighter-rouge">Faraday</code> response. This
+the response of the HTTP client. Instead of mocking the <code class="language-plaintext highlighter-rouge">put</code> method in <code class="language-plaintext highlighter-rouge">api_client.rb</code>,
+tools like <code class="language-plaintext highlighter-rouge">webmock</code> can be utilized to stub the <code class="language-plaintext highlighter-rouge">Faraday</code> response. This
 enables the code to fake an HTTP request instead of of calling out to
-<code class="highlighter-rouge">https://some-cool-api.com</code>.</p>
+<code class="language-plaintext highlighter-rouge">https://some-cool-api.com</code>.</p>
 
-<h2 id="testing-with-webmock">Testing with <code class="highlighter-rouge">Webmock</code></h2>
+<h2 id="testing-with-webmock">Testing with <code class="language-plaintext highlighter-rouge">Webmock</code></h2>
 
-<p>The <code class="highlighter-rouge">webmock</code> gem allows developers to define custom responses for specific HTTP
+<p>The <code class="language-plaintext highlighter-rouge">webmock</code> gem allows developers to define custom responses for specific HTTP
 requests.</p>
 
-<p>After installing the gem with <code class="highlighter-rouge">gem install webmock</code>, a stub can be written that
+<p>After installing the gem with <code class="language-plaintext highlighter-rouge">gem install webmock</code>, a stub can be written that
 matches the URL and request body to return a specific response.</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="no">WebMock</span><span class="p">.</span><span class="nf">stub_request</span><span class="p">(</span><span class="ss">:put</span><span class="p">,</span> <span class="s1">'https://some-cool-api.com/my_models/1'</span><span class="p">).</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">WebMock</span><span class="p">.</span><span class="nf">stub_request</span><span class="p">(</span><span class="ss">:put</span><span class="p">,</span> <span class="s1">'https://some-cool-api.com/my_models/1'</span><span class="p">).</span>
   <span class="nf">with</span><span class="p">(</span><span class="ss">body: </span><span class="sr">/foo.*bar$/</span><span class="p">).</span>
   <span class="nf">to_return</span><span class="p">(</span><span class="ss">body: </span><span class="s1">'{ "success": true }'</span><span class="p">)</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
-<p>In this case the stubbed response is <code class="highlighter-rouge"><span class="p">{</span><span class="w"> </span><span class="nt">"success"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w"> </span><span class="p">}</span></code> and will be returned
-for any <code class="highlighter-rouge">put</code> requests to <code class="highlighter-rouge">https://some-cool-api.com/my_models/1</code> with a request body
-matching <code class="highlighter-rouge">foo</code> followed by <code class="highlighter-rouge">bar</code>. This stub can be added in a shared file or
-at the beginning of <code class="highlighter-rouge">my_model_spec.rb</code>.</p>
+<p>In this case the stubbed response is <code class="language-plaintext highlighter-rouge">{ "success": true }</code> and will be returned
+for any <code class="language-plaintext highlighter-rouge">put</code> requests to <code class="language-plaintext highlighter-rouge">https://some-cool-api.com/my_models/1</code> with a request body
+matching <code class="language-plaintext highlighter-rouge">foo</code> followed by <code class="language-plaintext highlighter-rouge">bar</code>. This stub can be added in a shared file or
+at the beginning of <code class="language-plaintext highlighter-rouge">my_model_spec.rb</code>.</p>
 
-<p>With the stub added, <code class="highlighter-rouge">my_model_spec.rb</code> can be updated to remove the old
-<code class="highlighter-rouge">expect().to receive</code> line and instead validate the response.</p>
+<p>With the stub added, <code class="language-plaintext highlighter-rouge">my_model_spec.rb</code> can be updated to remove the old
+<code class="language-plaintext highlighter-rouge">expect().to receive</code> line and instead validate the response.</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="c1"># my_model_spec.rb</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># my_model_spec.rb</span>
 
 <span class="n">describe</span> <span class="no">MyModel</span> <span class="k">do</span>
   <span class="n">describe</span> <span class="s1">'update'</span> <span class="k">do</span>
@@ -294,24 +291,22 @@ at the beginning of <code class="highlighter-rouge">my_model_spec.rb</code>.</p>
     <span class="k">end</span>
   <span class="k">end</span>
 <span class="k">end</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
-<p>The stub works and running <code class="highlighter-rouge">my_model_spec.rb</code> shows the test passes.</p>
+<p>The stub works and running <code class="language-plaintext highlighter-rouge">my_model_spec.rb</code> shows the test passes.</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="nv">$:</span> rspec my_model_spec.rb
-.
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$:</span> rspec my_model_spec.rb
+<span class="nb">.</span>
 
 Finished <span class="k">in </span>0.00531 seconds <span class="o">(</span>files took 0.33028 seconds to load<span class="o">)</span>
 1 example, 0 failures
-</code></pre>
-</div>
+</code></pre></div></div>
 
-<p>Now, if <code class="highlighter-rouge">APIClient</code> is changed in the same way as before, the test will
-appropriately fail and alert the developer that the <code class="highlighter-rouge">put</code> method does not
+<p>Now, if <code class="language-plaintext highlighter-rouge">APIClient</code> is changed in the same way as before, the test will
+appropriately fail and alert the developer that the <code class="language-plaintext highlighter-rouge">put</code> method does not
 exist.</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="c1"># api_client.rb</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># api_client.rb</span>
 
 <span class="k">class</span> <span class="nc">APIClient</span>
   <span class="c1"># def put(url, body)</span>
@@ -324,10 +319,9 @@ exist.</p>
     <span class="no">Faraday</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="s1">'https://some-cool-api.com'</span><span class="p">)</span>
   <span class="k">end</span>
 <span class="k">end</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="nv">$:</span> rspec my_model_spec.rb
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$:</span> rspec my_model_spec.rb
 F
 
 Failures:
@@ -344,27 +338,25 @@ Failures:
 
 Finished <span class="k">in </span>0.00298 seconds <span class="o">(</span>files took 0.4606 seconds to load<span class="o">)</span>
 1 example, 1 failure
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <h2 id="stricter-settings">Stricter Settings</h2>
 
-<p><code class="highlighter-rouge">RSpec</code> allows developers to enable the flag <code class="highlighter-rouge">verify_partial_doubles</code> which
-will cause the original test to fail when the <code class="highlighter-rouge">put</code> method is removed.  This setting
+<p><code class="language-plaintext highlighter-rouge">RSpec</code> allows developers to enable the flag <code class="language-plaintext highlighter-rouge">verify_partial_doubles</code> which
+will cause the original test to fail when the <code class="language-plaintext highlighter-rouge">put</code> method is removed.  This setting
 is turned off by default.</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="no">RSpec</span><span class="p">.</span><span class="nf">configure</span> <span class="k">do</span> <span class="o">|</span><span class="n">config</span><span class="o">|</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">RSpec</span><span class="p">.</span><span class="nf">configure</span> <span class="k">do</span> <span class="o">|</span><span class="n">config</span><span class="o">|</span>
   <span class="n">config</span><span class="p">.</span><span class="nf">mock_with</span> <span class="ss">:rspec</span> <span class="k">do</span> <span class="o">|</span><span class="n">mocks</span><span class="o">|</span>
     <span class="n">mocks</span><span class="p">.</span><span class="nf">verify_partial_doubles</span> <span class="o">=</span> <span class="kp">true</span>
   <span class="k">end</span>
 <span class="k">end</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>With this setting in place, running the original code and test produces
 a failing result.</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="c1"># api_client.rb</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># api_client.rb</span>
 
 <span class="k">class</span> <span class="nc">APIClient</span>
   <span class="c1"># def put(url, body)</span>
@@ -388,10 +380,9 @@ a failing result.</p>
     <span class="k">end</span>
   <span class="k">end</span>
 <span class="k">end</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="nv">$:</span> rspec my_model_spec.rb
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$:</span> rspec my_model_spec.rb
 F
 
 Failures:
@@ -403,11 +394,10 @@ Failures:
 
 Finished <span class="k">in </span>0.00877 seconds <span class="o">(</span>files took 0.46471 seconds to load<span class="o">)</span>
 1 example, 1 failure
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>This alternative does not require the use of a new gem and will fail correctly
-if the underlying contract is removed. However, if the <code class="highlighter-rouge">put</code> method or any
+if the underlying contract is removed. However, if the <code class="language-plaintext highlighter-rouge">put</code> method or any
 layer between it and the API request changes, this test is not guaranteed to
 save a developer from that issue.</p>
 
@@ -425,8 +415,8 @@ towards more a more robust test suite.</p>
 
 <p>Stubbing the response for the underlying API in this example enables a much
 more robust test that can alert developers when they make breaking changes.
-However, if the API response from <code class="highlighter-rouge">https://some-cool-api.com</code> changes, the
-<code class="highlighter-rouge">webmock</code> stub must be updated.</p>
+However, if the API response from <code class="language-plaintext highlighter-rouge">https://some-cool-api.com</code> changes, the
+<code class="language-plaintext highlighter-rouge">webmock</code> stub must be updated.</p>
 
 <p>Stubbing and mocking tools should be used on a case by case basis. In the case
 of testing a third party API integration, providing canned responses in the test

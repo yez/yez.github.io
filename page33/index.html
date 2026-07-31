@@ -18,6 +18,8 @@
   
   
 
+  
+
   <!-- Enable responsiveness on mobile devices-->
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
 
@@ -38,6 +40,8 @@
 
   <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
   <script async src="https://use.fontawesome.com/b3103405a3.js"></script>
+
+  
 </head>
 
 
@@ -63,13 +67,14 @@
       </span>
       <a id='home' class="sidebar-nav-item" href="https://jakeyesbeck.com">Home</a>
       <a id='archives'class="sidebar-nav-item" href="/archives">Archives</a>
+      <a id='services'class="sidebar-nav-item" href="/services">Services</a>
       <a id='resume'class="sidebar-nav-item" href="https://jakeyesbeck.com/assets/files/resume.pdf">Resume</a>
       <a id='about'class="sidebar-nav-item" href="/about">About</a>
       <a id='github'class="sidebar-nav-item" href="https://github.com/yez">GitHub</a>
       <a id='rss'class="sidebar-nav-item" href="/atom.xml">Feed</a>
     </nav>
 
-    <p class='copyright'>&copy; Jake Yesbeck 2022. All rights reserved.</p>
+    <p class='copyright'>&copy; Jake Yesbeck 2026. All rights reserved.</p>
   </div>
 </div>
 
@@ -123,17 +128,16 @@
 
 <p>A reasonable feature for this simple server is the ability to serve files. When retrieving files, the server must remain secure, only serving files that should be readable by clients. Additionally, if a requested file does not exist, the server should make the client aware.</p>
 
-<p>Since a request can have multiple parts, the server will need to parse out the noise from the desired file. For instance, if the request looks like <code class="highlighter-rouge">/path/to/my_file.html?query=params&amp;are=cool</code>, the server should remove all query parameters and search for <code class="highlighter-rouge">my_file.html</code> nested within the <code class="highlighter-rouge">/path/to/</code> directory.</p>
+<p>Since a request can have multiple parts, the server will need to parse out the noise from the desired file. For instance, if the request looks like <code class="language-plaintext highlighter-rouge">/path/to/my_file.html?query=params&amp;are=cool</code>, the server should remove all query parameters and search for <code class="language-plaintext highlighter-rouge">my_file.html</code> nested within the <code class="language-plaintext highlighter-rouge">/path/to/</code> directory.</p>
 
 <p>With an incoming request:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>GET /path/to/my_file.html?query<span class="o">=</span>params&amp;are<span class="o">=</span>cool HTTP/1.1
-</code></pre>
-</div>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>GET /path/to/my_file.html?query<span class="o">=</span>params&amp;are<span class="o">=</span>cool HTTP/1.1
+</code></pre></div></div>
 
 <p>A simple file fetching method might look like:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="nb">require</span> <span class="s1">'uri'</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">require</span> <span class="s1">'uri'</span>
 
 <span class="no">SEVER_ROOT_DIR</span> <span class="o">=</span> <span class="s1">'/var/www'</span>
 
@@ -147,14 +151,13 @@
 
   <span class="no">File</span><span class="p">.</span><span class="nf">open</span><span class="p">(</span><span class="n">full_path</span><span class="p">)</span> <span class="k">if</span> <span class="no">File</span><span class="p">.</span><span class="nf">file?</span><span class="p">(</span><span class="n">full_path</span><span class="p">)</span>
 <span class="k">end</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
-<p>Given a request string input (from <code class="highlighter-rouge">request.gets</code> in the existing code), this method returns an instance of <code class="highlighter-rouge">File</code> if it can find the requested file or <code class="highlighter-rouge">nil</code> if it does not exist. The <code class="highlighter-rouge">SERVER_ROOT_DIR</code> is used to ensure the file lookup is centralized to where the server expects the files to be.</p>
+<p>Given a request string input (from <code class="language-plaintext highlighter-rouge">request.gets</code> in the existing code), this method returns an instance of <code class="language-plaintext highlighter-rouge">File</code> if it can find the requested file or <code class="language-plaintext highlighter-rouge">nil</code> if it does not exist. The <code class="language-plaintext highlighter-rouge">SERVER_ROOT_DIR</code> is used to ensure the file lookup is centralized to where the server expects the files to be.</p>
 
 <p>Putting it all together, the server can now fetch and return files that exist.</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="nb">require</span> <span class="s1">'socket'</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">require</span> <span class="s1">'socket'</span>
 <span class="nb">require</span> <span class="s1">'uri'</span>
 
 <span class="no">SERVER_ROOT_DIR</span> <span class="o">=</span> <span class="s1">'/var/www'</span>
@@ -192,27 +195,25 @@
     <span class="n">request</span><span class="p">.</span><span class="nf">close</span>
   <span class="k">end</span>
 <span class="k">end</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
-<p>Now, a curl request for an invalid file produces a <code class="highlighter-rouge">404</code>:</p>
+<p>Now, a curl request for an invalid file produces a <code class="language-plaintext highlighter-rouge">404</code>:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>curl localhost:8080/bad_file.html -I
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>curl localhost:8080/bad_file.html <span class="nt">-I</span>
 
 HTTP/1.1 404 Not Found
 Content-Type: text/plain
 Content-Length: 14
 Connection: close
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <h2 id="more-logic-more-problems">More Logic, More Problems</h2>
 
-<p>A few problems are immediately evident with this code. One is that any file that exists on the system can be requested. For instance, the file <code class="highlighter-rouge">/etc/passwd</code> is a common target for immature web servers to accidentally expose.</p>
+<p>A few problems are immediately evident with this code. One is that any file that exists on the system can be requested. For instance, the file <code class="language-plaintext highlighter-rouge">/etc/passwd</code> is a common target for immature web servers to accidentally expose.</p>
 
-<p>To combat this, the <code class="highlighter-rouge">fetch_file</code> method can throw out all directory movement inducing path parts:</p>
+<p>To combat this, the <code class="language-plaintext highlighter-rouge">fetch_file</code> method can throw out all directory movement inducing path parts:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">def</span> <span class="nf">fetch_file</span><span class="p">(</span><span class="n">request_string</span><span class="p">)</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">fetch_file</span><span class="p">(</span><span class="n">request_string</span><span class="p">)</span>
   <span class="n">request_parts</span> <span class="o">=</span> <span class="n">request_string</span><span class="p">.</span><span class="nf">split</span><span class="p">(</span><span class="s1">' '</span><span class="p">)</span>
   <span class="n">path</span> <span class="o">=</span> <span class="k">begin</span>
     <span class="n">insecure_path</span> <span class="o">=</span> <span class="no">URI</span><span class="p">(</span><span class="n">request_parts</span><span class="p">[</span><span class="mi">1</span><span class="p">]).</span><span class="nf">path</span>
@@ -228,34 +229,32 @@ Connection: close
 
   <span class="no">File</span><span class="p">.</span><span class="nf">open</span><span class="p">(</span><span class="n">full_path</span><span class="p">)</span> <span class="k">if</span> <span class="no">File</span><span class="p">.</span><span class="nf">file?</span><span class="p">(</span><span class="n">full_path</span><span class="p">)</span>
 <span class="k">end</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
-<p>This will change a path from <code class="highlighter-rouge">/../../../my/hidden/file</code> to <code class="highlighter-rouge">/my/hidden/file</code>, nullifying the attempt to expose private files.</p>
+<p>This will change a path from <code class="language-plaintext highlighter-rouge">/../../../my/hidden/file</code> to <code class="language-plaintext highlighter-rouge">/my/hidden/file</code>, nullifying the attempt to expose private files.</p>
 
 <h2 id="speaking-the-same-language">Speaking the Same Language</h2>
 
-<p>A second issue with our new and improved tiny web server is in the response type. Currently, all responses indicate that the type of the file returned is <code class="highlighter-rouge">text/plain</code>. Instead, the response type can be extracted from the file returned. To determine a file’s type, a good place to start is by examining the extension.</p>
+<p>A second issue with our new and improved tiny web server is in the response type. Currently, all responses indicate that the type of the file returned is <code class="language-plaintext highlighter-rouge">text/plain</code>. Instead, the response type can be extracted from the file returned. To determine a file’s type, a good place to start is by examining the extension.</p>
 
-<p>For the request <code class="highlighter-rouge">/path/to/my_file.html?query=params&amp;are=cool</code>, the server must be able to identify that the <code class="highlighter-rouge">.html</code> extension maps to the content type <code class="highlighter-rouge">text/html</code>.</p>
+<p>For the request <code class="language-plaintext highlighter-rouge">/path/to/my_file.html?query=params&amp;are=cool</code>, the server must be able to identify that the <code class="language-plaintext highlighter-rouge">.html</code> extension maps to the content type <code class="language-plaintext highlighter-rouge">text/html</code>.</p>
 
 <p>With the addition of a simple mapping method, the server can respond more intelligently:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">def</span> <span class="nf">content_type</span><span class="p">(</span><span class="n">file_extension</span><span class="p">)</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">content_type</span><span class="p">(</span><span class="n">file_extension</span><span class="p">)</span>
   <span class="p">{</span>
     <span class="ss">html: </span><span class="s1">'text/html'</span><span class="p">,</span>
     <span class="ss">txt: </span><span class="s1">'text/plain'</span><span class="p">,</span>
     <span class="ss">json: </span><span class="s1">'application/json'</span>
   <span class="p">}[</span><span class="n">file_extension</span><span class="p">]</span> <span class="o">||</span> <span class="s1">'text/plain'</span>
 <span class="k">end</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
-<p>This method accepts an extension (like <code class="highlighter-rouge">.html</code>) and maps it to a <code class="highlighter-rouge">Content-Type</code>. If no mapping can be found, it assumes that the file is in plain text.</p>
+<p>This method accepts an extension (like <code class="language-plaintext highlighter-rouge">.html</code>) and maps it to a <code class="language-plaintext highlighter-rouge">Content-Type</code>. If no mapping can be found, it assumes that the file is in plain text.</p>
 
-<p>Using some additional <code class="highlighter-rouge">File.extname</code> extraction, using this <code class="highlighter-rouge">content_type</code> method is simple:</p>
+<p>Using some additional <code class="language-plaintext highlighter-rouge">File.extname</code> extraction, using this <code class="language-plaintext highlighter-rouge">content_type</code> method is simple:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="nb">require</span> <span class="s1">'socket'</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">require</span> <span class="s1">'socket'</span>
 <span class="nb">require</span> <span class="s1">'uri'</span>
 
 <span class="no">SERVER_ROOT_DIR</span> <span class="o">=</span> <span class="s1">'/var/www'</span>
@@ -315,30 +314,27 @@ Connection: close
     <span class="n">request</span><span class="p">.</span><span class="nf">close</span>
   <span class="k">end</span>
 <span class="k">end</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>The important line is:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="n">extension</span> <span class="o">=</span> <span class="no">File</span><span class="p">.</span><span class="nf">extname</span><span class="p">(</span><span class="n">file_to_return</span><span class="p">.</span><span class="nf">to_path</span><span class="p">)</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">extension</span> <span class="o">=</span> <span class="no">File</span><span class="p">.</span><span class="nf">extname</span><span class="p">(</span><span class="n">file_to_return</span><span class="p">.</span><span class="nf">to_path</span><span class="p">)</span>
                 <span class="p">.</span><span class="nf">split</span><span class="p">(</span><span class="s1">'.'</span><span class="p">).</span><span class="nf">last</span><span class="p">.</span><span class="nf">to_sym</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
-<p>This code results in a symbol to pass to <code class="highlighter-rouge">content_type</code> that returns a meaningful content type for the client.</p>
+<p>This code results in a symbol to pass to <code class="language-plaintext highlighter-rouge">content_type</code> that returns a meaningful content type for the client.</p>
 
 <p>The results of a request using this new content type parsing are just as expected:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>curl localhost:8080/path/to/my_file.html -I
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>curl localhost:8080/path/to/my_file.html <span class="nt">-I</span>
 
 HTTP/1.1 200 OK
 Content-Type: text/html
 Content-Length: 79
 Connection: close
-</code></pre>
-</div>
+</code></pre></div></div>
 
-<p>There it is! The <code class="highlighter-rouge">text/html</code> content type returned correctly by the server when an html file was requested.</p>
+<p>There it is! The <code class="language-plaintext highlighter-rouge">text/html</code> content type returned correctly by the server when an html file was requested.</p>
 
 <h2 id="good-progress-but-far-from-perfect">Good Progress but Far from Perfect</h2>
 

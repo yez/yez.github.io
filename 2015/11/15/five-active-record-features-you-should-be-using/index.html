@@ -17,6 +17,8 @@
   
   
 
+  
+
   <!-- Enable responsiveness on mobile devices-->
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
 
@@ -37,6 +39,8 @@
 
   <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
   <script async src="https://use.fontawesome.com/b3103405a3.js"></script>
+
+  
 </head>
 
 
@@ -62,13 +66,14 @@
       </span>
       <a id='home' class="sidebar-nav-item" href="https://jakeyesbeck.com">Home</a>
       <a id='archives'class="sidebar-nav-item" href="/archives">Archives</a>
+      <a id='services'class="sidebar-nav-item" href="/services">Services</a>
       <a id='resume'class="sidebar-nav-item" href="https://jakeyesbeck.com/assets/files/resume.pdf">Resume</a>
       <a id='about'class="sidebar-nav-item" href="/about">About</a>
       <a id='github'class="sidebar-nav-item" href="https://github.com/yez">GitHub</a>
       <a id='rss'class="sidebar-nav-item" href="/atom.xml">Feed</a>
     </nav>
 
-    <p class='copyright'>&copy; Jake Yesbeck 2022. All rights reserved.</p>
+    <p class='copyright'>&copy; Jake Yesbeck 2026. All rights reserved.</p>
   </div>
 </div>
 
@@ -113,7 +118,7 @@
 
 <p>To help explain these concepts, we can assume a Ruby on Rails application <em>“booksandreviews.com”</em> exists with three models:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Book</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Book</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
   <span class="n">belongs_to</span> <span class="ss">:author</span>
   <span class="n">has_many</span> <span class="ss">:reviews</span>
 <span class="k">end</span>
@@ -125,12 +130,11 @@
 <span class="k">class</span> <span class="nc">Review</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
   <span class="n">belongs_to</span> <span class="ss">:book</span>
 <span class="k">end</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>The smart people over at <em>“booksandreviews.com”</em> need to know what the state of their data to build metrics and make sales. Metrics need data and Active Record will be used to fetch that data.</p>
 
-<h2 id="nested-queries">1. Nested Queries</h2>
+<h2 id="1-nested-queries">1. Nested Queries</h2>
 
 <p>When doing database queries, the fewer the better. Since Active Record is responsible of crafting these queries, it is important to make sure it has all the help it needs. For simple queries this is rarely an issue, but more complex requirements can lead to sub-optimal results.</p>
 
@@ -138,146 +142,135 @@
 
 <p>Without too much thought, this approach seems reasonable:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="n">book_ids</span> <span class="o">=</span> <span class="no">Book</span><span class="p">.</span><span class="nf">where</span><span class="p">(</span><span class="ss">publish_year: </span><span class="s1">'2015'</span><span class="p">).</span><span class="nf">map</span><span class="p">(</span><span class="o">&amp;</span><span class="ss">:id</span><span class="p">)</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">book_ids</span> <span class="o">=</span> <span class="no">Book</span><span class="p">.</span><span class="nf">where</span><span class="p">(</span><span class="ss">publish_year: </span><span class="s1">'2015'</span><span class="p">).</span><span class="nf">map</span><span class="p">(</span><span class="o">&amp;</span><span class="ss">:id</span><span class="p">)</span>
 <span class="c1"># =&gt; SELECT "books".* FROM "books" WHERE (publish_year = '2015')</span>
 
 <span class="n">reviews</span> <span class="o">=</span> <span class="no">Review</span><span class="p">.</span><span class="nf">where</span><span class="p">(</span><span class="ss">publish_date: </span><span class="s1">'2015-11-15'</span><span class="p">,</span>
                        <span class="ss">book_ids: </span><span class="n">book_ids</span><span class="p">).</span><span class="nf">to_a</span>
 <span class="c1"># =&gt; SELECT "reviews".* FROM "reviews" WHERE "reviews"."publish_date" = '2015-11-15' AND "reviews"."book_ids" IN (1, 2, 3)</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
-<p>This will load the desired books, extract their <code class="highlighter-rouge">id</code>’s, and pass that result to the <code class="highlighter-rouge">Review</code> query. Not only does this generate two queries, it also wastes memory by creating an array of <code class="highlighter-rouge">Book</code> objects to <code class="highlighter-rouge">map</code> over and then another array of <code class="highlighter-rouge">book_ids</code>. With a large enough list of books, this could cause some serious problems.</p>
+<p>This will load the desired books, extract their <code class="language-plaintext highlighter-rouge">id</code>’s, and pass that result to the <code class="language-plaintext highlighter-rouge">Review</code> query. Not only does this generate two queries, it also wastes memory by creating an array of <code class="language-plaintext highlighter-rouge">Book</code> objects to <code class="language-plaintext highlighter-rouge">map</code> over and then another array of <code class="language-plaintext highlighter-rouge">book_ids</code>. With a large enough list of books, this could cause some serious problems.</p>
 
-<p>Active Record’s <code class="highlighter-rouge">where</code> method returns an instance of <code class="highlighter-rouge">ActiveRecord::Relation</code>. These relations can be passed to other methods to aid in query construction. With the same request, we can save the <code class="highlighter-rouge">map</code> and array creation:</p>
+<p>Active Record’s <code class="language-plaintext highlighter-rouge">where</code> method returns an instance of <code class="language-plaintext highlighter-rouge">ActiveRecord::Relation</code>. These relations can be passed to other methods to aid in query construction. With the same request, we can save the <code class="language-plaintext highlighter-rouge">map</code> and array creation:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="n">books</span> <span class="o">=</span> <span class="no">Book</span><span class="p">.</span><span class="nf">where</span><span class="p">(</span><span class="ss">publish_year: </span><span class="s1">'2015'</span><span class="p">)</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">books</span> <span class="o">=</span> <span class="no">Book</span><span class="p">.</span><span class="nf">where</span><span class="p">(</span><span class="ss">publish_year: </span><span class="s1">'2015'</span><span class="p">)</span>
 <span class="c1"># =&gt; ActiveRecord::Relation</span>
 
 <span class="n">reviews</span> <span class="o">=</span> <span class="no">Review</span><span class="p">.</span><span class="nf">where</span><span class="p">(</span><span class="ss">publish_date: </span><span class="s1">'2015-11-15'</span><span class="p">,</span> <span class="ss">book: </span><span class="n">books</span><span class="p">).</span><span class="nf">to_a</span>
 <span class="c1"># SELECT "reviews".* FROM "reviews" WHERE "reviews"."publish_date" = '2015-11-15' AND "reviews"."book_id" IN (SELECT "books"."id" FROM "books" WHERE "books"."publish_year" = '2015')</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
-<p>This still executes two <code class="highlighter-rouge">SELECT</code> statements but it nests them to let the database take care of memory allocation and optimization. The <code class="highlighter-rouge">book_ids</code> array is replaced with the <code class="highlighter-rouge">books</code> relation and is passed to the <code class="highlighter-rouge">Review</code> query.</p>
+<p>This still executes two <code class="language-plaintext highlighter-rouge">SELECT</code> statements but it nests them to let the database take care of memory allocation and optimization. The <code class="language-plaintext highlighter-rouge">book_ids</code> array is replaced with the <code class="language-plaintext highlighter-rouge">books</code> relation and is passed to the <code class="language-plaintext highlighter-rouge">Review</code> query.</p>
 
-<p><strong>Note: This can reduced to a single query with <code class="highlighter-rouge">.joins</code>, but for now we can assume that a nested query is desired.</strong></p>
+<p><strong>Note: This can reduced to a single query with <code class="language-plaintext highlighter-rouge">.joins</code>, but for now we can assume that a nested query is desired.</strong></p>
 
-<h2 id="dry-scopes">2. DRY Scopes</h2>
+<h2 id="2-dry-scopes">2. DRY Scopes</h2>
 
-<p>Still fuming, Tim demands more information. Now he wants to know the list of all <code class="highlighter-rouge">Books</code> published in 2015 which have at least one approved <code class="highlighter-rouge">Review</code>. Since <code class="highlighter-rouge">Reviews</code> are subjective, they need to be approved in order to maintain the quality that <em>“booksandreviews.com”</em> is known for.</p>
+<p>Still fuming, Tim demands more information. Now he wants to know the list of all <code class="language-plaintext highlighter-rouge">Books</code> published in 2015 which have at least one approved <code class="language-plaintext highlighter-rouge">Review</code>. Since <code class="language-plaintext highlighter-rouge">Reviews</code> are subjective, they need to be approved in order to maintain the quality that <em>“booksandreviews.com”</em> is known for.</p>
 
-<p>Luckily, a scope has been written on the <code class="highlighter-rouge">Review</code> class to accomplish this.</p>
+<p>Luckily, a scope has been written on the <code class="language-plaintext highlighter-rouge">Review</code> class to accomplish this.</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Review</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Review</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
   <span class="n">belongs_to</span> <span class="ss">:book</span>
 
   <span class="n">scope</span> <span class="ss">:approved</span><span class="p">,</span> <span class="o">-&gt;</span><span class="p">{</span> <span class="n">where</span><span class="p">(</span><span class="ss">approved: </span><span class="kp">true</span><span class="p">)</span> <span class="p">}</span>
 <span class="k">end</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
-<p>However, it is <code class="highlighter-rouge">Books</code> that we need to return, not <code class="highlighter-rouge">Reviews</code>. Repeating the scope definition, a join query can be used for this analysis:</p>
+<p>However, it is <code class="language-plaintext highlighter-rouge">Books</code> that we need to return, not <code class="language-plaintext highlighter-rouge">Reviews</code>. Repeating the scope definition, a join query can be used for this analysis:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="n">books</span> <span class="o">=</span> <span class="no">Book</span><span class="p">.</span><span class="nf">where</span><span class="p">(</span><span class="ss">publish_year: </span><span class="s1">'2015'</span><span class="p">)</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">books</span> <span class="o">=</span> <span class="no">Book</span><span class="p">.</span><span class="nf">where</span><span class="p">(</span><span class="ss">publish_year: </span><span class="s1">'2015'</span><span class="p">)</span>
             <span class="p">.</span><span class="nf">includes</span><span class="p">(</span><span class="ss">:reviews</span><span class="p">)</span>
             <span class="p">.</span><span class="nf">references</span><span class="p">(</span><span class="ss">:reviews</span><span class="p">)</span>
             <span class="p">.</span><span class="nf">where</span><span class="p">(</span><span class="s1">'reviews.approved = ?'</span><span class="p">,</span> <span class="kp">true</span> <span class="p">)</span>
             <span class="p">.</span><span class="nf">to_a</span>
 <span class="c1"># =&gt; SELECT #long books and reviews column select# FROM "books" LEFT OUTER JOIN "reviews" ON "reviews"."book_id" = "books"."id" WHERE "books"."publish_year" = '2015' AND (reviews.approved = 't')</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
-<p><code class="highlighter-rouge">Books</code> are returned at the cost of duplicating the <code class="highlighter-rouge">approved</code> scope. That means that the scope in <code class="highlighter-rouge">Review</code> changes, this code will not benefit from that change. The <code class="highlighter-rouge">.includes</code> and <code class="highlighter-rouge">.references</code> methods are used to ensure that we only return one <code class="highlighter-rouge">Book</code> (in the case of many <code class="highlighter-rouge">Reviews</code> belonging to the same <code class="highlighter-rouge">Book</code>).</p>
+<p><code class="language-plaintext highlighter-rouge">Books</code> are returned at the cost of duplicating the <code class="language-plaintext highlighter-rouge">approved</code> scope. That means that the scope in <code class="language-plaintext highlighter-rouge">Review</code> changes, this code will not benefit from that change. The <code class="language-plaintext highlighter-rouge">.includes</code> and <code class="language-plaintext highlighter-rouge">.references</code> methods are used to ensure that we only return one <code class="language-plaintext highlighter-rouge">Book</code> (in the case of many <code class="language-plaintext highlighter-rouge">Reviews</code> belonging to the same <code class="language-plaintext highlighter-rouge">Book</code>).</p>
 
 <p>The <strong>D</strong>on’t <strong>R</strong>epeat <strong>Y</strong>ourself (DRY) principle was created for this exact reason. When identical code is not shared and instead repeated, changes to one version can have dangerous consequences on the other.</p>
 
-<p>The good news is that Active Record provides precisely the medicine for this ailment: <code class="highlighter-rouge">.merge</code>.</p>
+<p>The good news is that Active Record provides precisely the medicine for this ailment: <code class="language-plaintext highlighter-rouge">.merge</code>.</p>
 
-<p>With <code class="highlighter-rouge">.merge</code>, an existing scope can be used in another Active Record query.</p>
+<p>With <code class="language-plaintext highlighter-rouge">.merge</code>, an existing scope can be used in another Active Record query.</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="n">books</span> <span class="o">=</span> <span class="no">Book</span><span class="p">.</span><span class="nf">where</span><span class="p">(</span><span class="ss">publish_year: </span><span class="s1">'2015'</span><span class="p">)</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">books</span> <span class="o">=</span> <span class="no">Book</span><span class="p">.</span><span class="nf">where</span><span class="p">(</span><span class="ss">publish_year: </span><span class="s1">'2015'</span><span class="p">)</span>
             <span class="p">.</span><span class="nf">includes</span><span class="p">(</span><span class="ss">:reviews</span><span class="p">)</span>
             <span class="p">.</span><span class="nf">references</span><span class="p">(</span><span class="ss">:reviews</span><span class="p">)</span>
             <span class="p">.</span><span class="nf">merge</span><span class="p">(</span><span class="no">Review</span><span class="p">.</span><span class="nf">approved</span><span class="p">)</span>
             <span class="p">.</span><span class="nf">to_a</span>
 <span class="c1"># =&gt; SELECT #long books and reviews column select# FROM "books" LEFT OUTER JOIN "reviews" ON "reviews"."book_id" = "books"."id" WHERE "books"."publish_year" = '2015' AND (reviews.approved = 't')</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>Great! Now the results are the exact same and the code is DRY.</p>
 
-<h2 id="wherenot">3. <code class="highlighter-rouge">where.not</code></h2>
+<h2 id="3-wherenot">3. <code class="language-plaintext highlighter-rouge">where.not</code></h2>
 
 <p>Typical insatiable Tim is back with yet another request to add to the brand new “totally not vanity metrics dashboard”. Now, he wants to know all the books <strong>not</strong> published in 2012.</p>
 
 <p>Without even asking why such a silly request is necessary, some more code can be cranked out:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="n">books</span> <span class="o">=</span> <span class="no">Book</span><span class="p">.</span><span class="nf">where</span><span class="p">(</span><span class="s1">'publish_year != 2012'</span><span class="p">).</span><span class="nf">to_a</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">books</span> <span class="o">=</span> <span class="no">Book</span><span class="p">.</span><span class="nf">where</span><span class="p">(</span><span class="s1">'publish_year != 2012'</span><span class="p">).</span><span class="nf">to_a</span>
 <span class="c1"># =&gt; SELECT "books".* FROM "books" WHERE (publish_year != '2012')</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>Like before, this code works but could be better. There is some raw SQL in there that the next developer might not understand well enough to manipulate. Whatever the reason, it is best to rely on abstraction instead of explicit SQL.</p>
 
-<p>To help solve this dilemma, the <code class="highlighter-rouge">.not</code> modifier has been introduced in Active Record 4.0.</p>
+<p>To help solve this dilemma, the <code class="language-plaintext highlighter-rouge">.not</code> modifier has been introduced in Active Record 4.0.</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="n">books</span> <span class="o">=</span> <span class="no">Book</span><span class="p">.</span><span class="nf">where</span><span class="p">.</span><span class="nf">not</span><span class="p">(</span><span class="ss">publish_year: </span><span class="mi">2012</span><span class="p">).</span><span class="nf">to_a</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">books</span> <span class="o">=</span> <span class="no">Book</span><span class="p">.</span><span class="nf">where</span><span class="p">.</span><span class="nf">not</span><span class="p">(</span><span class="ss">publish_year: </span><span class="mi">2012</span><span class="p">).</span><span class="nf">to_a</span>
 <span class="c1"># =&gt; SELECT "books".* FROM "books" WHERE (publish_year != '2012')</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>The result is the same but look how much nicer that is. Not only is the raw SQL gone, the code is more positive too.</p>
 
-<h2 id="first-and-take">4. <code class="highlighter-rouge">first</code> and <code class="highlighter-rouge">take</code></h2>
+<h2 id="4-first-and-take">4. <code class="language-plaintext highlighter-rouge">first</code> and <code class="language-plaintext highlighter-rouge">take</code></h2>
 
-<p>Since <em>“booksandreviews.com”</em> has been around since 2012, chances are it upgraded from Ruby on Rails 3.0 to 4.0. One notable change from Active Record 3 to 4 is the behaviour of <code class="highlighter-rouge">.first</code>.</p>
+<p>Since <em>“booksandreviews.com”</em> has been around since 2012, chances are it upgraded from Ruby on Rails 3.0 to 4.0. One notable change from Active Record 3 to 4 is the behaviour of <code class="language-plaintext highlighter-rouge">.first</code>.</p>
 
-<p>In Ruby on Rails 4.0+, the <code class="highlighter-rouge">.first</code> method returns the first row after the table has been ordered by its <code class="highlighter-rouge">id</code>.</p>
+<p>In Ruby on Rails 4.0+, the <code class="language-plaintext highlighter-rouge">.first</code> method returns the first row after the table has been ordered by its <code class="language-plaintext highlighter-rouge">id</code>.</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="no">Author</span><span class="p">.</span><span class="nf">where</span><span class="p">(</span><span class="ss">first_name: </span><span class="s1">'Bill'</span><span class="p">).</span><span class="nf">first</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">Author</span><span class="p">.</span><span class="nf">where</span><span class="p">(</span><span class="ss">first_name: </span><span class="s1">'Bill'</span><span class="p">).</span><span class="nf">first</span>
 <span class="c1"># =&gt; SELECT  "authors".* FROM "authors" WHERE "authors"."first_name" = "Bill" ORDER BY "authors"."id" ASC LIMIT 1</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
-<p>This will work fine for every table that has an <code class="highlighter-rouge">id</code> column. However, if a table does not need an <code class="highlighter-rouge">id</code> column, this method causes a problem.</p>
+<p>This will work fine for every table that has an <code class="language-plaintext highlighter-rouge">id</code> column. However, if a table does not need an <code class="language-plaintext highlighter-rouge">id</code> column, this method causes a problem.</p>
 
-<p>Despite each <code class="highlighter-rouge">Author</code> having an id, complex joins might cause an issue with an implicit <code class="highlighter-rouge">ORDER BY</code> on queries.</p>
+<p>Despite each <code class="language-plaintext highlighter-rouge">Author</code> having an id, complex joins might cause an issue with an implicit <code class="language-plaintext highlighter-rouge">ORDER BY</code> on queries.</p>
 
-<p>To alleviate that problem, the <code class="highlighter-rouge">take</code> method can be used instead of <code class="highlighter-rouge">first</code>:</p>
+<p>To alleviate that problem, the <code class="language-plaintext highlighter-rouge">take</code> method can be used instead of <code class="language-plaintext highlighter-rouge">first</code>:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="no">Author</span><span class="p">.</span><span class="nf">where</span><span class="p">(</span><span class="ss">first_name: </span><span class="s1">'Bill'</span><span class="p">).</span><span class="nf">take</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">Author</span><span class="p">.</span><span class="nf">where</span><span class="p">(</span><span class="ss">first_name: </span><span class="s1">'Bill'</span><span class="p">).</span><span class="nf">take</span>
 <span class="c1"># =&gt; SELECT  "authors".* FROM "authors" WHERE "authors"."first_name" = "Bill" LIMIT 1</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>This behaves in a much more explicit way, returning the same information without a default ordering.</p>
 
-<h2 id="unscoped">5. <code class="highlighter-rouge">.unscoped</code></h2>
+<h2 id="5-unscoped">5. <code class="language-plaintext highlighter-rouge">.unscoped</code></h2>
 
-<p>During the development life of “<em>booksandreviews.com”</em>, countless modules have been built and gems included. Amidst this chaos, someone must have typed <code class="highlighter-rouge">gem install hairball</code> and horribly altered the <code class="highlighter-rouge">Author</code> class. This has led to the new guy Mike’s  complaint that: <em>“Authors are missing data”</em>.</p>
+<p>During the development life of “<em>booksandreviews.com”</em>, countless modules have been built and gems included. Amidst this chaos, someone must have typed <code class="language-plaintext highlighter-rouge">gem install hairball</code> and horribly altered the <code class="language-plaintext highlighter-rouge">Author</code> class. This has led to the new guy Mike’s  complaint that: <em>“Authors are missing data”</em>.</p>
 
-<p>Mike knows that authors have a <code class="highlighter-rouge">first_name</code> but for some reason it is not being returned:</p>
+<p>Mike knows that authors have a <code class="language-plaintext highlighter-rouge">first_name</code> but for some reason it is not being returned:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="n">authors</span> <span class="o">=</span> <span class="no">Author</span><span class="p">.</span><span class="nf">where</span><span class="p">(</span><span class="ss">last_name: </span><span class="s1">'Smith'</span><span class="p">).</span><span class="nf">take</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">authors</span> <span class="o">=</span> <span class="no">Author</span><span class="p">.</span><span class="nf">where</span><span class="p">(</span><span class="ss">last_name: </span><span class="s1">'Smith'</span><span class="p">).</span><span class="nf">take</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
 <span class="n">authors</span><span class="p">.</span><span class="nf">map</span><span class="p">(</span><span class="o">&amp;</span><span class="ss">:first_name</span><span class="p">)</span>
 <span class="c1"># =&gt; [nil, nil, nil, nil, nil]</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>What Mike does not know is that one of those hairball gems added a default scope to all Active Record objects that begin with the letter “A”. However impossible this bug is, it exists and it is ruining Mike’s day.</p>
 
-<p>What Mike needs is the <code class="highlighter-rouge">.unscoped</code> method. This method removes all existing scopes on an Active Record relation.</p>
+<p>What Mike needs is the <code class="language-plaintext highlighter-rouge">.unscoped</code> method. This method removes all existing scopes on an Active Record relation.</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="n">authors</span> <span class="o">=</span> <span class="no">Author</span><span class="p">.</span><span class="nf">unscoped</span><span class="p">.</span><span class="nf">where</span><span class="p">(</span><span class="ss">last_name: </span><span class="s1">'Smith'</span><span class="p">).</span><span class="nf">take</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">authors</span> <span class="o">=</span> <span class="no">Author</span><span class="p">.</span><span class="nf">unscoped</span><span class="p">.</span><span class="nf">where</span><span class="p">(</span><span class="ss">last_name: </span><span class="s1">'Smith'</span><span class="p">).</span><span class="nf">take</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
 <span class="n">authors</span><span class="p">.</span><span class="nf">map</span><span class="p">(</span><span class="o">&amp;</span><span class="ss">:first_name</span><span class="p">)</span>
 <span class="c1"># =&gt; ['Frank', 'Frank', 'Jim', 'Frank', 'Frank']</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p><em>(Is anyone else concerned that there are four Frank Smith authors?)</em></p>
 
-<p>With the <code class="highlighter-rouge">.unscoped</code> method, all harmful default scopes are removed and the Franks are free.</p>
+<p>With the <code class="language-plaintext highlighter-rouge">.unscoped</code> method, all harmful default scopes are removed and the Franks are free.</p>
 
 <h2 id="queries-on-queries">Queries on Queries</h2>
 

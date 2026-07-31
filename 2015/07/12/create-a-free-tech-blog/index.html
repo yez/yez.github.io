@@ -17,6 +17,8 @@
   
   
 
+  
+
   <!-- Enable responsiveness on mobile devices-->
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
 
@@ -37,6 +39,8 @@
 
   <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
   <script async src="https://use.fontawesome.com/b3103405a3.js"></script>
+
+  
 </head>
 
 
@@ -62,13 +66,14 @@
       </span>
       <a id='home' class="sidebar-nav-item" href="https://jakeyesbeck.com">Home</a>
       <a id='archives'class="sidebar-nav-item" href="/archives">Archives</a>
+      <a id='services'class="sidebar-nav-item" href="/services">Services</a>
       <a id='resume'class="sidebar-nav-item" href="https://jakeyesbeck.com/assets/files/resume.pdf">Resume</a>
       <a id='about'class="sidebar-nav-item" href="/about">About</a>
       <a id='github'class="sidebar-nav-item" href="https://github.com/yez">GitHub</a>
       <a id='rss'class="sidebar-nav-item" href="/atom.xml">Feed</a>
     </nav>
 
-    <p class='copyright'>&copy; Jake Yesbeck 2022. All rights reserved.</p>
+    <p class='copyright'>&copy; Jake Yesbeck 2026. All rights reserved.</p>
   </div>
 </div>
 
@@ -113,60 +118,56 @@
 
 <p><a href="https://jekyllrb.com/">Jekyll</a> is a free open source static site generator. The Jekyll documentation page has some great <a href="https://jekyllrb.com/docs/quickstart/">tutorials</a> that make getting started extremely painless. Jekyll is also a ruby tool. To contribute to Jekyll, check out their <a href="https://github.com/jekyll/jekyll">github page</a>.</p>
 
-<p>Jekyll makes it easy to start creating content without worrying about CSS, page templates, or link architecture. It even generates an RSS feed of your content. All pages can be written in Markdown and automatically converted to HTML upon building or serving the site. The <code class="highlighter-rouge">jekyll build</code> command is what this post will focus on, but <code class="highlighter-rouge">jekyll serve</code> is worth checking out too.</p>
+<p>Jekyll makes it easy to start creating content without worrying about CSS, page templates, or link architecture. It even generates an RSS feed of your content. All pages can be written in Markdown and automatically converted to HTML upon building or serving the site. The <code class="language-plaintext highlighter-rouge">jekyll build</code> command is what this post will focus on, but <code class="language-plaintext highlighter-rouge">jekyll serve</code> is worth checking out too.</p>
 
 <p>To get started with Jekyll:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>$: gem install jekyll
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$: gem install jekyll
 $: jekyll new mytechblog
 $: cd mytechblog/
 $: touch _posts/2015-07-12-my-first-post.markdown
-</code></pre>
-</div>
+</code></pre></div></div>
 
-<p>This will create a new directory with some default configuration files and subdirectories. Inside this new directory, the example created a <code class="highlighter-rouge">2015-07-12-my-first-post.markdown</code> file within the <code class="highlighter-rouge">_posts/</code> subdirectory. This file will contain the content for the first blog post.</p>
+<p>This will create a new directory with some default configuration files and subdirectories. Inside this new directory, the example created a <code class="language-plaintext highlighter-rouge">2015-07-12-my-first-post.markdown</code> file within the <code class="language-plaintext highlighter-rouge">_posts/</code> subdirectory. This file will contain the content for the first blog post.</p>
 
 <p>Jekyll Markdown pages require a specific format at the top of the file. This format is called <a href="https://jekyllrb.com/docs/frontmatter/">front matter</a>. It is imperative that all Jekyll posts have proper front matter in order to be converted to HTML.</p>
 
 <h2 id="step-2-use-github-pages">Step 2. Use Github Pages</h2>
 
-<p>Github has been a great tool for managing version controlled software for years. Now, Github has released an equally awesome tool called <a href="https://pages.github.com/">Github Pages</a>. To get started with Github Pages, simply create a <strong>public</strong> repository with the pattern: <code class="highlighter-rouge">&lt;yourusername&gt;.github.io</code> (Remember to replace the <code class="highlighter-rouge">&lt;yourusename&gt; </code> with your actual username). Now, every time a commit is pushed to this repository’s master branch, the blog will be automatically updated. Since this repository is required to be public, make sure that no sensitive information is accidentally committed within posts.</p>
+<p>Github has been a great tool for managing version controlled software for years. Now, Github has released an equally awesome tool called <a href="https://pages.github.com/">Github Pages</a>. To get started with Github Pages, simply create a <strong>public</strong> repository with the pattern: <code class="language-plaintext highlighter-rouge">&lt;yourusername&gt;.github.io</code> (Remember to replace the <code class="language-plaintext highlighter-rouge">&lt;yourusename&gt; </code> with your actual username). Now, every time a commit is pushed to this repository’s master branch, the blog will be automatically updated. Since this repository is required to be public, make sure that no sensitive information is accidentally committed within posts.</p>
 
 <p>To set up a directory and point it to the github.io repository:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="nv">$:</span> mkdir username.github.io
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$:</span> <span class="nb">mkdir </span>username.github.io
 <span class="nv">$:</span> <span class="nb">cd </span>username.github.io/
-<span class="nv">$:</span> git init .
+<span class="nv">$:</span> git init <span class="nb">.</span>
 <span class="nv">$:</span> git remote add origin git@github.com:username/username.github.io.git
-</code></pre>
-</div>
+</code></pre></div></div>
 
-<p>The files uploaded to the Github Pages repository should be static HTML. This is where <strong>Step 1</strong> comes in. Since this blog will use <code class="highlighter-rouge">jekyll build</code>, the <code class="highlighter-rouge">&lt;yourusername&gt;.github.io</code> repository should consist of HTML files generated by Jekyll.</p>
+<p>The files uploaded to the Github Pages repository should be static HTML. This is where <strong>Step 1</strong> comes in. Since this blog will use <code class="language-plaintext highlighter-rouge">jekyll build</code>, the <code class="language-plaintext highlighter-rouge">&lt;yourusername&gt;.github.io</code> repository should consist of HTML files generated by Jekyll.</p>
 
 <p>To generate the HTML files:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>$: cd mytechblog
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$: cd mytechblog
 $: jekyll build --destination=~/username.github.io
 $: cd ~/username.github.io
 $: git add .
 $: git commit -m "First blog post"
 $: git push origin HEAD
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>And there you have it! A successful blog created entirely for free. Now, the example blog is accessible at https://username.github.io.</p>
 
 <h2 id="optional-step-3-use-a-custom-url">(Optional) Step 3. Use a custom URL</h2>
 
-<p>To serve a blog at a custom URL, simply add a single file to the root of the <code class="highlighter-rouge">&lt;yourusername&gt;.github.io</code> repository. The filename must be <code class="highlighter-rouge">CNAME</code> and it should include a single line: the custom URL.</p>
+<p>To serve a blog at a custom URL, simply add a single file to the root of the <code class="language-plaintext highlighter-rouge">&lt;yourusername&gt;.github.io</code> repository. The filename must be <code class="language-plaintext highlighter-rouge">CNAME</code> and it should include a single line: the custom URL.</p>
 
-<p>An example <code class="highlighter-rouge">CNAME</code> file:</p>
+<p>An example <code class="language-plaintext highlighter-rouge">CNAME</code> file:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code>mytechblog.com
-</code></pre>
-</div>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mytechblog.com
+</code></pre></div></div>
 
-<p>Additionally, the DNS provider that <code class="highlighter-rouge">mytechblog.com</code>’s DNS is served from must include an <code class="highlighter-rouge">ALIAS</code>, <code class="highlighter-rouge">ANAME</code>, or <code class="highlighter-rouge">A</code> record to the Github IP. More information on setting a custom domain can be found at the <a href="https://help.github.com/articles/tips-for-configuring-an-a-record-with-your-dns-provider/">Github help page</a></p>
+<p>Additionally, the DNS provider that <code class="language-plaintext highlighter-rouge">mytechblog.com</code>’s DNS is served from must include an <code class="language-plaintext highlighter-rouge">ALIAS</code>, <code class="language-plaintext highlighter-rouge">ANAME</code>, or <code class="language-plaintext highlighter-rouge">A</code> record to the Github IP. More information on setting a custom domain can be found at the <a href="https://help.github.com/articles/tips-for-configuring-an-a-record-with-your-dns-provider/">Github help page</a></p>
 
 <h2 id="final-step-blog-for-free-about-cool-technology">Final Step: Blog for free about cool technology</h2>
 
@@ -204,9 +205,9 @@ $: git push origin HEAD
     
       <li>
         <h3>
-          <a href="/2019/06/18/ruby-processes-and-threads/">
-            Ruby Processes and Threads - Configuring a Web Server
-            <small>18 Jun 2019</small>
+          <a href="/2016/04/26/a-successful-year-of-commits/">
+            A Successful Year of Commits
+            <small>26 Apr 2016</small>
           </a>
         </h3>
       </li>

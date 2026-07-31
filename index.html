@@ -18,6 +18,8 @@
   
   
 
+  
+
   <!-- Enable responsiveness on mobile devices-->
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
 
@@ -38,6 +40,8 @@
 
   <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
   <script async src="https://use.fontawesome.com/b3103405a3.js"></script>
+
+  
 </head>
 
 
@@ -63,13 +67,14 @@
       </span>
       <a id='home' class="sidebar-nav-item" href="https://jakeyesbeck.com">Home</a>
       <a id='archives'class="sidebar-nav-item" href="/archives">Archives</a>
+      <a id='services'class="sidebar-nav-item" href="/services">Services</a>
       <a id='resume'class="sidebar-nav-item" href="https://jakeyesbeck.com/assets/files/resume.pdf">Resume</a>
       <a id='about'class="sidebar-nav-item" href="/about">About</a>
       <a id='github'class="sidebar-nav-item" href="https://github.com/yez">GitHub</a>
       <a id='rss'class="sidebar-nav-item" href="/atom.xml">Feed</a>
     </nav>
 
-    <p class='copyright'>&copy; Jake Yesbeck 2022. All rights reserved.</p>
+    <p class='copyright'>&copy; Jake Yesbeck 2026. All rights reserved.</p>
   </div>
 </div>
 
@@ -121,35 +126,34 @@
 
 <h2 id="humble-beginnings">Humble Beginnings</h2>
 
-<p>A simple Rails application exists with two models, <code class="highlighter-rouge">Books</code> and <code class="highlighter-rouge">Authors</code>.</p>
+<p>A simple Rails application exists with two models, <code class="language-plaintext highlighter-rouge">Books</code> and <code class="language-plaintext highlighter-rouge">Authors</code>.</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Book</span> <span class="o">&lt;</span> <span class="no">ApplicationRecord</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Book</span> <span class="o">&lt;</span> <span class="no">ApplicationRecord</span>
   <span class="n">belongs_to</span> <span class="ss">:author</span>
 <span class="k">end</span>
 
 <span class="k">class</span> <span class="nc">Author</span> <span class="o">&lt;</span> <span class="no">ApplicationRecord</span>
   <span class="n">has_many</span> <span class="ss">:books</span>
 <span class="k">end</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>After some domestic success, this simple Rails app goes international. A new column
-is required on the <code class="highlighter-rouge">books</code> table: <code class="highlighter-rouge">country</code> to denote which country published the
-<code class="highlighter-rouge">Book</code>.</p>
+is required on the <code class="language-plaintext highlighter-rouge">books</code> table: <code class="language-plaintext highlighter-rouge">country</code> to denote which country published the
+<code class="language-plaintext highlighter-rouge">Book</code>.</p>
 
 <h2 id="a-reasonable-migration">A Reasonable Migration</h2>
 
-<p>To preserve data integrity, the <code class="highlighter-rouge">country</code> column should not allow <code class="highlighter-rouge">null</code> since
-<code class="highlighter-rouge">null</code> isn’t a country. Existing <code class="highlighter-rouge">books</code> also need to have a <code class="highlighter-rouge">country</code> set.
+<p>To preserve data integrity, the <code class="language-plaintext highlighter-rouge">country</code> column should not allow <code class="language-plaintext highlighter-rouge">null</code> since
+<code class="language-plaintext highlighter-rouge">null</code> isn’t a country. Existing <code class="language-plaintext highlighter-rouge">books</code> also need to have a <code class="language-plaintext highlighter-rouge">country</code> set.
 This is all accomplished within a single migration in 3 steps:</p>
 
 <ol>
   <li>Add a column</li>
-  <li>Update column for existing <code class="highlighter-rouge">books</code> with a reasonable value</li>
-  <li>Add a constraint that the column can not be <code class="highlighter-rouge">null</code></li>
+  <li>Update column for existing <code class="language-plaintext highlighter-rouge">books</code> with a reasonable value</li>
+  <li>Add a constraint that the column can not be <code class="language-plaintext highlighter-rouge">null</code></li>
 </ol>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">class</span> <span class="nc">AddCountryToBooks</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Migration</span><span class="p">[</span><span class="mi">6</span><span class="o">.</span><span class="mi">1</span><span class="p">]</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">AddCountryToBooks</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Migration</span><span class="p">[</span><span class="mf">6.1</span><span class="p">]</span>
   <span class="k">def</span> <span class="nf">up</span>
     <span class="n">add_column</span> <span class="ss">:books</span><span class="p">,</span> <span class="ss">:country</span><span class="p">,</span> <span class="ss">:string</span><span class="p">,</span> <span class="ss">length: </span><span class="mi">2</span>
 
@@ -162,8 +166,7 @@ This is all accomplished within a single migration in 3 steps:</p>
     <span class="n">remove_column</span> <span class="ss">:books</span><span class="p">,</span> <span class="ss">:country</span>
   <span class="k">end</span>
 <span class="k">end</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>This migration does the job but has hidden implications. A developer working in
 isolation may never run into the trap lurking in this code, but a team could.</p>
@@ -171,7 +174,7 @@ isolation may never run into the trap lurking in this code, but a team could.</p
 <h2 id="working-with-others">Working with Others</h2>
 
 <p>Two developers work on this application, divvying up the wild world of
-<code class="highlighter-rouge">books</code> and <code class="highlighter-rouge">authors</code> but maintaining healthy work life balances. One developer
+<code class="language-plaintext highlighter-rouge">books</code> and <code class="language-plaintext highlighter-rouge">authors</code> but maintaining healthy work life balances. One developer
 goes on vacation and has a surprise waiting for them when they return.</p>
 
 <table>
@@ -215,20 +218,19 @@ goes on vacation and has a surprise waiting for them when they return.</p>
 updated existing data and then a new feature request was completed: A model
 rename.</p>
 
-<p>Developer 1 returns, updates their local environment, and runs <code class="highlighter-rouge">rake db:migrate</code>:</p>
+<p>Developer 1 returns, updates their local environment, and runs <code class="language-plaintext highlighter-rouge">rake db:migrate</code>:</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="o">==</span> 20210407191819 AddCountryToBooks: migrating <span class="o">===================</span>
--- add_column<span class="o">(</span>:books, :country, :string, <span class="o">{</span>:length<span class="o">=</span>&gt;2<span class="o">})</span>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">==</span> 20210407191819 AddCountryToBooks: migrating <span class="o">===================</span>
+<span class="nt">--</span> add_column<span class="o">(</span>:books, :country, :string, <span class="o">{</span>:length<span class="o">=&gt;</span>2<span class="o">})</span>
    -&gt; 0.0015s
 rake aborted!
 StandardError: An error has occurred, this and all later migrations
 canceled:
 
 uninitialized constant AddCountryToBooks::Book
-</code></pre>
-</div>
+</code></pre></div></div>
 
-<p><code class="highlighter-rouge">Book</code> was renamed to <code class="highlighter-rouge">Novel</code> breaking the previous migration.</p>
+<p><code class="language-plaintext highlighter-rouge">Book</code> was renamed to <code class="language-plaintext highlighter-rouge">Novel</code> breaking the previous migration.</p>
 
 <h2 id="avoiding-models">Avoiding Models</h2>
 
@@ -236,17 +238,17 @@ uninitialized constant AddCountryToBooks::Book
 
 <p>When used correctly, Rails migrations can count on the database being in an expected
 state. The application code moves from commit to commit but database structure
-(should) only change with migrations. Therefore, even if the <code class="highlighter-rouge">Book</code> class is now
-<code class="highlighter-rouge">Novel</code>, the database table <code class="highlighter-rouge">books</code> still exists at the time of the
-<code class="highlighter-rouge">AddCountryToBooks</code> migration.</p>
+(should) only change with migrations. Therefore, even if the <code class="language-plaintext highlighter-rouge">Book</code> class is now
+<code class="language-plaintext highlighter-rouge">Novel</code>, the database table <code class="language-plaintext highlighter-rouge">books</code> still exists at the time of the
+<code class="language-plaintext highlighter-rouge">AddCountryToBooks</code> migration.</p>
 
-<p>Instead of <code class="highlighter-rouge">Book.update_all</code>, writing an update query in SQL and using the base
-<code class="highlighter-rouge">ActiveRecord</code> connection ensures this migration survives model changes like
+<p>Instead of <code class="language-plaintext highlighter-rouge">Book.update_all</code>, writing an update query in SQL and using the base
+<code class="language-plaintext highlighter-rouge">ActiveRecord</code> connection ensures this migration survives model changes like
 a rename. Because we can count on the state of the database structure,
-referring to the <code class="highlighter-rouge">books</code> table is safe while referring to the <code class="highlighter-rouge">Book</code> model may
+referring to the <code class="language-plaintext highlighter-rouge">books</code> table is safe while referring to the <code class="language-plaintext highlighter-rouge">Book</code> model may
 not be.</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">class</span> <span class="nc">AddCountryToBooks</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Migration</span><span class="p">[</span><span class="mi">6</span><span class="o">.</span><span class="mi">1</span><span class="p">]</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">AddCountryToBooks</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Migration</span><span class="p">[</span><span class="mf">6.1</span><span class="p">]</span>
   <span class="k">def</span> <span class="nf">up</span>
     <span class="n">add_column</span> <span class="ss">:books</span><span class="p">,</span> <span class="ss">:country</span><span class="p">,</span> <span class="ss">:string</span><span class="p">,</span> <span class="ss">length: </span><span class="mi">2</span>
 
@@ -261,17 +263,16 @@ not be.</p>
     <span class="n">remove_column</span> <span class="ss">:books</span><span class="p">,</span> <span class="ss">:country</span>
   <span class="k">end</span>
 <span class="k">end</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <h3 id="using-temporary-models">Using Temporary Models</h3>
 
 <p>If writing SQL isn’t ideal, a temporary model can be used within the migration.
-Here, a new <code class="highlighter-rouge">Book</code> model is defined to manipulate the <code class="highlighter-rouge">books</code> table. Even if
-<code class="highlighter-rouge">app/models/book.rb</code> has been changed to <code class="highlighter-rouge">app/models/novel.rb</code>, this definition
-of <code class="highlighter-rouge">Book</code> will be valid within the scope of this migration.</p>
+Here, a new <code class="language-plaintext highlighter-rouge">Book</code> model is defined to manipulate the <code class="language-plaintext highlighter-rouge">books</code> table. Even if
+<code class="language-plaintext highlighter-rouge">app/models/book.rb</code> has been changed to <code class="language-plaintext highlighter-rouge">app/models/novel.rb</code>, this definition
+of <code class="language-plaintext highlighter-rouge">Book</code> will be valid within the scope of this migration.</p>
 
-<div class="highlighter-rouge"><pre class="highlight"><code><span class="k">class</span> <span class="nc">AddCountryToBooks</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Migration</span><span class="p">[</span><span class="mi">6</span><span class="o">.</span><span class="mi">1</span><span class="p">]</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">AddCountryToBooks</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Migration</span><span class="p">[</span><span class="mf">6.1</span><span class="p">]</span>
 
   <span class="k">class</span> <span class="nc">Book</span> <span class="o">&lt;</span> <span class="no">ApplicationRecord</span><span class="p">;</span> <span class="k">end</span>
 
@@ -287,8 +288,7 @@ of <code class="highlighter-rouge">Book</code> will be valid within the scope of
     <span class="n">remove_column</span> <span class="ss">:books</span><span class="p">,</span> <span class="ss">:country</span>
   <span class="k">end</span>
 <span class="k">end</span>
-</code></pre>
-</div>
+</code></pre></div></div>
 
 <p>Either of these migration will run correctly for Developer 1 no matter how many model
 renames happened while they were on vacation.</p>
