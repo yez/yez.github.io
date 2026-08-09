@@ -184,6 +184,9 @@
 }
 </script>
 
+<link href="https://assets.calendly.com/assets/external/widget.css" rel="stylesheet" />
+<script src="https://assets.calendly.com/assets/external/widget.js" type="text/javascript" async></script>
+
 <style>
   .services-lede {
     font-size: 1.2rem;
@@ -243,11 +246,6 @@
     padding: 1.25rem;
     border: 1px solid #e5e5e5;
     border-radius: 6px;
-  }
-
-  .services-booking .calendly-inline-widget {
-    width: 100%;
-    min-height: 660px;
   }
 
   .services-cta {
@@ -395,16 +393,20 @@
   <h2>Book a call</h2>
 
   <p>
-    Twenty minutes, no charge. Tell me what your business does and how customers
+    Thirty minutes, no charge. Tell me what your business does and how customers
     reach you now, and I will tell you plainly whether a new site is worth it or
     whether you would be better served by fixing what you already have.
   </p>
 
-  <div class="services-booking" data-booking-slot data-booking-url="">
+  <div class="services-booking">
     <p>
-      <a class="services-cta" href="mailto:yesbeckjs@gmail.com?subject=Website%20and%20booking%20inquiry">
-        Email me to set up a call
+      <!-- Calendly link widget begin -->
+      <a class="services-cta"
+         href="https://calendly.com/jakeyesbeck/30-min-chat"
+         onclick="Calendly.initPopupWidget({url: 'https://calendly.com/jakeyesbeck/30-min-chat?hide_gdpr_banner=1'}); return false;">
+        Book a call
       </a>
+      <!-- Calendly link widget end -->
     </p>
     <p style="margin-bottom: 0; font-size: .9rem; color: #515151;">
       Or write directly to <a href="mailto:yesbeckjs@gmail.com">yesbeckjs@gmail.com</a>.
@@ -460,28 +462,6 @@
     </dd>
   </dl>
 </div>
-
-<script>
-  (function () {
-    var slot = document.querySelector("[data-booking-slot]");
-    if (!slot) return;
-
-    var bookingUrl = slot.getAttribute("data-booking-url") || window.BOOKING_URL || "";
-    if (!bookingUrl) return;
-
-    var widget = document.createElement("div");
-    widget.className = "calendly-inline-widget";
-    widget.setAttribute("data-url", bookingUrl);
-    widget.setAttribute("data-resize", "true");
-    slot.innerHTML = "";
-    slot.appendChild(widget);
-
-    var script = document.createElement("script");
-    script.src = "https://assets.calendly.com/assets/external/widget.js";
-    script.async = true;
-    document.body.appendChild(script);
-  })();
-</script>
 
     </div>
     <script>
