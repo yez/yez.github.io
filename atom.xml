@@ -4,13 +4,159 @@
  <title>A Year of Commits</title>
  <link href="https://jakeyesbeck.com/atom.xml" rel="self"/>
  <link href="https://jakeyesbeck.com/"/>
- <updated>2026-07-31T15:37:56-04:00</updated>
+ <updated>2026-10-03T16:20:41-04:00</updated>
  <id>https://jakeyesbeck.com/</id>
  <author>
    <name>Jake Yesbeck</name>
    <email>yesbeckjs@gmail.com</email>
  </author>
 
+ 
+ <entry>
+   <title>The Way and Remainder</title>
+   <link href="https://jakeyesbeck.com/2026/10/03/the-way-and-remainder/"/>
+   <updated>2026-10-03T08:00:00-04:00</updated>
+   <id>https://jakeyesbeck.com/2026/10/03/the-way-and-remainder</id>
+   <content type="html">&lt;p&gt;&lt;img src=&quot;/assets/images/before-times.jpeg&quot; alt=&quot;Stack of old Programming Books&quot; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;1970---2024-bcc-era-before-claude-code&quot;&gt;1970 - 2024: BCC Era (Before Claude Code)&lt;/h2&gt;
+
+&lt;p&gt;Writing software in the “before times” was an iterative process, evolving from
+punching holes in paper all the way to clacking away on custom, clicky
+mechanical keyboards.&lt;/p&gt;
+
+&lt;p&gt;Through variations of this process, the steps were mostly the same:&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;Understand the problem&lt;/li&gt;
+  &lt;li&gt;Come up with a solution&lt;/li&gt;
+  &lt;li&gt;Break the solution into parts&lt;/li&gt;
+  &lt;li&gt;Write code that solves each part&lt;/li&gt;
+  &lt;li&gt;Test that new things work&lt;/li&gt;
+  &lt;li&gt;Test that old things still work&lt;/li&gt;
+  &lt;li&gt;Repeat as needed&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;As time went on, patterns emerged. Then those patterns were overused and new
+patterns took their place. Programming dogma went from “everything can be
+functional programming” to “nothing can be functional programming” and
+so on and so forth.&lt;/p&gt;
+
+&lt;p&gt;Programmers held their strong opinions loosely and their irrelevant opinions
+tightly.&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;Tabs vs Spaces&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;Trailing commas vs leading&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;JavaScript or ???&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;It was messy, chaotic, frustrating, and extremely rewarding.&lt;/p&gt;
+
+&lt;h2 id=&quot;the-journey&quot;&gt;The Journey&lt;/h2&gt;
+
+&lt;p&gt;The rewarding part was solving the problem, getting an answer and seeing it
+work. Reaching the destination at the end of the journey &lt;strong&gt;made the process rewarding&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;p&gt;A project spanning multiple development cycles saw patterns emerge.
+Technical discussions for each code change bred tribal knowledge used to guide future developers.
+Bespoke or unique solutions were adorned with comments explaining why they “looked weird”.&lt;/p&gt;
+
+&lt;p&gt;Along the way, solutions created the tectonic plates of a codebase and
+developers working on multiple projects borrowed solutions from one to another.&lt;/p&gt;
+
+&lt;p&gt;The journey taught developers where solutions could fit and where they might
+not. Where a pattern could technically “work” but did not belong.&lt;/p&gt;
+
+&lt;p&gt;Concurrently, developers were all on this journey. They started at different
+stages, progressed at their own pace and left trail markers for others to help find their way.&lt;/p&gt;
+
+&lt;h2 id=&quot;the-way&quot;&gt;The Way&lt;/h2&gt;
+
+&lt;p&gt;Over time, the journey paved the road and collectively developers decided “this
+is the way things are done”.&lt;/p&gt;
+
+&lt;p&gt;Each community within software developed their own “way” but at the root,
+things were more similar than they were different. When it was time to find others (interviewing),
+developers reached for tests to determine “do you know how to find the way?”.&lt;/p&gt;
+
+&lt;p&gt;Then, as always, people took it too far. Reductive, regurgitative tests
+(leetcode) became common gates of entry. However, even these monotonous
+assessments still held true to the core principle of:&lt;/p&gt;
+&lt;ol&gt;
+  &lt;li&gt;Identify the problem&lt;/li&gt;
+  &lt;li&gt;Find the solution&lt;/li&gt;
+  &lt;li&gt;Write the code&lt;/li&gt;
+  &lt;li&gt;Test it all&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;Then the world changed.&lt;/p&gt;
+
+&lt;h2 id=&quot;2025---present-aa-era-after-ai&quot;&gt;2025 - Present: AA Era (After A.I.)&lt;/h2&gt;
+
+&lt;p&gt;Anthropic released Claude Code on May 22, 2025, ushering in a new age of
+software development. To be part of this all you
+needed was an internet connection and $20.&lt;/p&gt;
+
+&lt;p&gt;And for $20, developers had access to code generation and problem solving
+unlike any other. Project exploration, solution identification, implementation,
+and testing were just a few prompts away. Productivity soared.&lt;/p&gt;
+
+&lt;p&gt;Full applications could be written with comprehensive test suites. New
+functionality in existing projects created in hours instead of weeks.
+If someone could dream it and describe it, agentic coding could write it.&lt;/p&gt;
+
+&lt;p&gt;A.I. identified problems, came up with solutions, shipped mostly correct code and
+wrote tests to prove it. All without any developer showing A.I. “the
+way”.&lt;/p&gt;
+
+&lt;h2 id=&quot;the-remainder&quot;&gt;The Remainder&lt;/h2&gt;
+
+&lt;p&gt;With A.I. tools and agents responsible for the lion’s share of software
+development, humans became the remainder. The mixture of responsibilities in
+this remainder is shifting over time. Prompt creation, manual code review,
+click-testing, and other tasks fluctuate from team to team, project to project.&lt;/p&gt;
+
+&lt;p&gt;For organizations looking to hire developers, the picture of
+a good fit has been blurred.&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;For a given feature, what was done by the developer and what was done by the tool?&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;Without the journey to impart knowledge, what keeps the story in a codebase consistent?  Does it need to be?&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;How is a developer’s “remainder” judged for fit?&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Perhaps these questions become irrelevant as the tools get even more
+proficient. It could be that the “way” just will not matter as systems and
+organizations’ priorities change.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Or perhaps not&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;p&gt;Maybe the increase in demand for software engineers &lt;em&gt;while&lt;/em&gt; A.I. tools are
+improving is a signal of times to come. In this new world of unlimited
+productivity, the “remainder” human tasks could be the differentiator.&lt;/p&gt;
+
+&lt;p&gt;As long as there are problems to solve and software to build, developers will have a seat at the table.
+Their impact will be directly correlated with how much they can navigate to the right destinations, the right solutions, the things that “fit”.&lt;/p&gt;
+
+&lt;p&gt;Choosing who sits in that seat will be harder over time. Building the skills
+necessary to sit there will be harder still.&lt;/p&gt;
+
+&lt;p&gt;At least we can stop fighting over tabs and spaces.&lt;/p&gt;
+</content>
+ </entry>
  
  <entry>
    <title>Why You Should Avoid Models in Rails Migrations</title>

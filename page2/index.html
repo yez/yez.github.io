@@ -84,344 +84,225 @@
   
   <div class="post">
     <h1 class="post-title">
-      <a href="/2020/07/19/making-rspec-tests-more-robust/">
-        Making RSpec Tests More Robust
+      <a href="/2021/04/10/avoid-models-in-migrations/">
+        Why You Should Avoid Models in Rails Migrations
       </a>
     </h1>
 
     
 
-    <span class="post-date">19 Jul 2020</span>
+    <span class="post-date">10 Apr 2021</span>
     <span class='share-container'><ul class="share-buttons">
   <li>
-    <a href="https://www.facebook.com/sharer/sharer.php?u=https://jakeyesbeck.com/2020/07/19/making-rspec-tests-more-robust/&t=Making RSpec Tests More Robust" title="Share on Facebook" target="_blank">
+    <a href="https://www.facebook.com/sharer/sharer.php?u=https://jakeyesbeck.com/2021/04/10/avoid-models-in-migrations/&t=Why You Should Avoid Models in Rails Migrations" title="Share on Facebook" target="_blank">
       <img src="https://jakeyesbeck.com/assets/images/facebook.svg">
     </a>
   </li>
   <li>
-    <a href="https://twitter.com/intent/tweet?source=http%3A%2F%2Fjakeyesbeck.com&text=Making RSpec Tests More Robust%20https://jakeyesbeck.com/2020/07/19/making-rspec-tests-more-robust/&via=jakeyesbeck" target="_blank" title="Tweet">
+    <a href="https://twitter.com/intent/tweet?source=http%3A%2F%2Fjakeyesbeck.com&text=Why You Should Avoid Models in Rails Migrations%20https://jakeyesbeck.com/2021/04/10/avoid-models-in-migrations/&via=jakeyesbeck" target="_blank" title="Tweet">
       <img src="https://jakeyesbeck.com/assets/images/twitter.svg">
     </a>
   </li>
   <li>
-    <a href="https://news.ycombinator.com/submitlink?u=https://jakeyesbeck.com/2020/07/19/making-rspec-tests-more-robust/&t=Making RSpec Tests More Robust" target="_blank" title="Share on Hacker News">
+    <a href="https://news.ycombinator.com/submitlink?u=https://jakeyesbeck.com/2021/04/10/avoid-models-in-migrations/&t=Why You Should Avoid Models in Rails Migrations" target="_blank" title="Share on Hacker News">
       <img src="https://jakeyesbeck.com/assets/images/ycomb.svg">
     </a>
   </li>
 
   <li>
-    <a href="https://getpocket.com/save?url=https://jakeyesbeck.com/2020/07/19/making-rspec-tests-more-robust/&title=Making RSpec Tests More Robust" target="_blank" title="Add to Pocket">
+    <a href="https://getpocket.com/save?url=https://jakeyesbeck.com/2021/04/10/avoid-models-in-migrations/&title=Why You Should Avoid Models in Rails Migrations" target="_blank" title="Add to Pocket">
       <img src="https://jakeyesbeck.com/assets/images/pocket.svg">
     </a>
   </li>
   <li>
-    <a href="https://www.reddit.com/submit?url=https://jakeyesbeck.com/2020/07/19/making-rspec-tests-more-robust/&title=Making RSpec Tests More Robust" target="_blank" title="Submit to Reddit">
+    <a href="https://www.reddit.com/submit?url=https://jakeyesbeck.com/2021/04/10/avoid-models-in-migrations/&title=Why You Should Avoid Models in Rails Migrations" target="_blank" title="Submit to Reddit">
       <img src="https://jakeyesbeck.com/assets/images/reddit.svg">
     </a>
   </li>
 </ul>
 </span>
 
-    <p><img src="/assets/images/robust-rspec-tests.jpg" alt="Robust RSpec Tests" /></p>
+    <p><img src="/assets/images/avoid-models-in-rails-migrations.jpg" alt="Avoid Models in Rails Migrations" /></p>
 
-<p>RSpec is a popular framework for testing Ruby code. With an <code class="language-plaintext highlighter-rouge">expect</code>
-assertion, a developer can make sure their code calls the proper method or
-an acceptable result is returned. The <code class="language-plaintext highlighter-rouge">expect().to receive</code> matcher in a test
-overrides the default implementation and can cause some unintended side
-effects.</p>
+<h2 id="humble-beginnings">Humble Beginnings</h2>
 
-<p>To demonstrate this potential problem, assume a very simple API client exists that
-can update models.</p>
+<p>A simple Rails application exists with two models, <code class="language-plaintext highlighter-rouge">Books</code> and <code class="language-plaintext highlighter-rouge">Authors</code>.</p>
 
-<h2 id="testing-an-api-client">Testing an API Client</h2>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Book</span> <span class="o">&lt;</span> <span class="no">ApplicationRecord</span>
+  <span class="n">belongs_to</span> <span class="ss">:author</span>
+<span class="k">end</span>
 
-<p>An example <code class="language-plaintext highlighter-rouge">api_client.rb</code> class defines a single <code class="language-plaintext highlighter-rouge">put</code> method that calls the underlying API with a <code class="language-plaintext highlighter-rouge">Faraday</code> connection.</p>
+<span class="k">class</span> <span class="nc">Author</span> <span class="o">&lt;</span> <span class="no">ApplicationRecord</span>
+  <span class="n">has_many</span> <span class="ss">:books</span>
+<span class="k">end</span>
+</code></pre></div></div>
 
-<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># api_client.rb</span>
+<p>After some domestic success, this simple Rails app goes international. A new column
+is required on the <code class="language-plaintext highlighter-rouge">books</code> table: <code class="language-plaintext highlighter-rouge">country</code> to denote which country published the
+<code class="language-plaintext highlighter-rouge">Book</code>.</p>
 
-<span class="k">class</span> <span class="nc">APIClient</span>
-  <span class="k">def</span> <span class="nf">put</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">body</span><span class="p">)</span>
-    <span class="n">client</span><span class="p">.</span><span class="nf">put</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">body</span><span class="p">)</span>
+<h2 id="a-reasonable-migration">A Reasonable Migration</h2>
+
+<p>To preserve data integrity, the <code class="language-plaintext highlighter-rouge">country</code> column should not allow <code class="language-plaintext highlighter-rouge">null</code> since
+<code class="language-plaintext highlighter-rouge">null</code> isn’t a country. Existing <code class="language-plaintext highlighter-rouge">books</code> also need to have a <code class="language-plaintext highlighter-rouge">country</code> set.
+This is all accomplished within a single migration in 3 steps:</p>
+
+<ol>
+  <li>Add a column</li>
+  <li>Update column for existing <code class="language-plaintext highlighter-rouge">books</code> with a reasonable value</li>
+  <li>Add a constraint that the column can not be <code class="language-plaintext highlighter-rouge">null</code></li>
+</ol>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">AddCountryToBooks</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Migration</span><span class="p">[</span><span class="mf">6.1</span><span class="p">]</span>
+  <span class="k">def</span> <span class="nf">up</span>
+    <span class="n">add_column</span> <span class="ss">:books</span><span class="p">,</span> <span class="ss">:country</span><span class="p">,</span> <span class="ss">:string</span><span class="p">,</span> <span class="ss">length: </span><span class="mi">2</span>
+
+    <span class="no">Book</span><span class="p">.</span><span class="nf">update_all</span><span class="p">(</span><span class="ss">country: </span><span class="s1">'US'</span><span class="p">)</span>
+
+    <span class="n">change_column_null</span> <span class="ss">:books</span><span class="p">,</span> <span class="ss">:country</span><span class="p">,</span> <span class="kp">false</span>
   <span class="k">end</span>
 
-  <span class="kp">private</span>
-
-  <span class="k">def</span> <span class="nf">client</span>
-    <span class="no">Faraday</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="s1">'https://some-cool-api.com'</span><span class="p">)</span>
+  <span class="k">def</span> <span class="nf">down</span>
+    <span class="n">remove_column</span> <span class="ss">:books</span><span class="p">,</span> <span class="ss">:country</span>
   <span class="k">end</span>
 <span class="k">end</span>
 </code></pre></div></div>
 
-<p>Inheriting from <code class="language-plaintext highlighter-rouge">api_client.rb</code> is <code class="language-plaintext highlighter-rouge">my_model.rb</code> which defines an <code class="language-plaintext highlighter-rouge">update</code>
-method.</p>
+<p>This migration does the job but has hidden implications. A developer working in
+isolation may never run into the trap lurking in this code, but a team could.</p>
 
-<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># my_model.rb</span>
+<h2 id="working-with-others">Working with Others</h2>
 
-<span class="k">class</span> <span class="nc">MyModel</span> <span class="o">&lt;</span> <span class="no">APIClient</span>
-  <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="n">payload</span><span class="p">)</span>
-    <span class="n">put</span><span class="p">(</span><span class="s1">'/my_models/1'</span><span class="p">,</span> <span class="n">payload</span><span class="p">)</span>
+<p>Two developers work on this application, divvying up the wild world of
+<code class="language-plaintext highlighter-rouge">books</code> and <code class="language-plaintext highlighter-rouge">authors</code> but maintaining healthy work life balances. One developer
+goes on vacation and has a surprise waiting for them when they return.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th> </th>
+      <th>Developer 1 👩‍💻</th>
+      <th>Developer 2 👨‍💻</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Day 1</td>
+      <td>Write Code</td>
+      <td>Write Code</td>
+    </tr>
+    <tr>
+      <td>Day 2</td>
+      <td>😎️ Time Off</td>
+      <td>🏗️ Create Migration</td>
+    </tr>
+    <tr>
+      <td>Day 3</td>
+      <td>😎️ Time Off</td>
+      <td>📛️ Rename Class</td>
+    </tr>
+    <tr>
+      <td>Day 4</td>
+      <td>😎️ Time Off</td>
+      <td>Write Code</td>
+    </tr>
+    <tr>
+      <td>Day 5</td>
+      <td>Run Migrations -&gt; 🔥️ Error</td>
+      <td>Write Code</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>While Developer 1 was away, the Developer 2 was busy. They wrote the above migration,
+updated existing data and then a new feature request was completed: A model
+rename.</p>
+
+<p>Developer 1 returns, updates their local environment, and runs <code class="language-plaintext highlighter-rouge">rake db:migrate</code>:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">==</span> 20210407191819 AddCountryToBooks: migrating <span class="o">===================</span>
+<span class="nt">--</span> add_column<span class="o">(</span>:books, :country, :string, <span class="o">{</span>:length<span class="o">=&gt;</span>2<span class="o">})</span>
+   -&gt; 0.0015s
+rake aborted!
+StandardError: An error has occurred, this and all later migrations
+canceled:
+
+uninitialized constant AddCountryToBooks::Book
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">Book</code> was renamed to <code class="language-plaintext highlighter-rouge">Novel</code> breaking the previous migration.</p>
+
+<h2 id="avoiding-models">Avoiding Models</h2>
+
+<h3 id="using-sql">Using SQL</h3>
+
+<p>When used correctly, Rails migrations can count on the database being in an expected
+state. The application code moves from commit to commit but database structure
+(should) only change with migrations. Therefore, even if the <code class="language-plaintext highlighter-rouge">Book</code> class is now
+<code class="language-plaintext highlighter-rouge">Novel</code>, the database table <code class="language-plaintext highlighter-rouge">books</code> still exists at the time of the
+<code class="language-plaintext highlighter-rouge">AddCountryToBooks</code> migration.</p>
+
+<p>Instead of <code class="language-plaintext highlighter-rouge">Book.update_all</code>, writing an update query in SQL and using the base
+<code class="language-plaintext highlighter-rouge">ActiveRecord</code> connection ensures this migration survives model changes like
+a rename. Because we can count on the state of the database structure,
+referring to the <code class="language-plaintext highlighter-rouge">books</code> table is safe while referring to the <code class="language-plaintext highlighter-rouge">Book</code> model may
+not be.</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">AddCountryToBooks</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Migration</span><span class="p">[</span><span class="mf">6.1</span><span class="p">]</span>
+  <span class="k">def</span> <span class="nf">up</span>
+    <span class="n">add_column</span> <span class="ss">:books</span><span class="p">,</span> <span class="ss">:country</span><span class="p">,</span> <span class="ss">:string</span><span class="p">,</span> <span class="ss">length: </span><span class="mi">2</span>
+
+    <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span><span class="p">.</span><span class="nf">connection</span><span class="p">.</span><span class="nf">execute</span><span class="p">(</span>
+      <span class="s2">"UPDATE books SET country = 'US'"</span>
+    <span class="p">)</span>
+
+    <span class="n">change_column_null</span> <span class="ss">:books</span><span class="p">,</span> <span class="ss">:country</span><span class="p">,</span> <span class="kp">false</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">down</span>
+    <span class="n">remove_column</span> <span class="ss">:books</span><span class="p">,</span> <span class="ss">:country</span>
   <span class="k">end</span>
 <span class="k">end</span>
 </code></pre></div></div>
 
-<p>A typical test for the <code class="language-plaintext highlighter-rouge">update</code> method on <code class="language-plaintext highlighter-rouge">MyModel</code> in RSpec might look like:</p>
+<h3 id="using-temporary-models">Using Temporary Models</h3>
 
-<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># my_model_spec.rb</span>
+<p>If writing SQL isn’t ideal, a temporary model can be used within the migration.
+Here, a new <code class="language-plaintext highlighter-rouge">Book</code> model is defined to manipulate the <code class="language-plaintext highlighter-rouge">books</code> table. Even if
+<code class="language-plaintext highlighter-rouge">app/models/book.rb</code> has been changed to <code class="language-plaintext highlighter-rouge">app/models/novel.rb</code>, this definition
+of <code class="language-plaintext highlighter-rouge">Book</code> will be valid within the scope of this migration.</p>
 
-<span class="n">describe</span> <span class="no">MyModel</span> <span class="k">do</span>
-  <span class="n">describe</span> <span class="s1">'update'</span> <span class="k">do</span>
-    <span class="n">it</span> <span class="s1">'updates the model'</span> <span class="k">do</span>
-      <span class="n">expect</span><span class="p">(</span><span class="n">subject</span><span class="p">).</span><span class="nf">to</span> <span class="n">receive</span><span class="p">(</span><span class="ss">:put</span><span class="p">)</span>
-      <span class="n">subject</span><span class="p">.</span><span class="nf">update</span><span class="p">({</span> <span class="ss">foo: :bar</span> <span class="p">})</span>
-    <span class="k">end</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">AddCountryToBooks</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Migration</span><span class="p">[</span><span class="mf">6.1</span><span class="p">]</span>
+
+  <span class="k">class</span> <span class="nc">Book</span> <span class="o">&lt;</span> <span class="no">ApplicationRecord</span><span class="p">;</span> <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">up</span>
+    <span class="n">add_column</span> <span class="ss">:books</span><span class="p">,</span> <span class="ss">:country</span><span class="p">,</span> <span class="ss">:string</span><span class="p">,</span> <span class="ss">length: </span><span class="mi">2</span>
+
+    <span class="no">Book</span><span class="p">.</span><span class="nf">update_all</span><span class="p">(</span><span class="ss">country: </span><span class="s1">'US'</span><span class="p">)</span>
+
+    <span class="n">change_column_null</span> <span class="ss">:books</span><span class="p">,</span> <span class="ss">:country</span><span class="p">,</span> <span class="kp">false</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">down</span>
+    <span class="n">remove_column</span> <span class="ss">:books</span><span class="p">,</span> <span class="ss">:country</span>
   <span class="k">end</span>
 <span class="k">end</span>
 </code></pre></div></div>
 
-<p>The <code class="language-plaintext highlighter-rouge">subject</code> in the above test is <code class="language-plaintext highlighter-rouge">MyModel.new</code> and is expected to receive the
-method <code class="language-plaintext highlighter-rouge">put</code>. Since <code class="language-plaintext highlighter-rouge">MyModel#update</code> calls the <code class="language-plaintext highlighter-rouge">put</code> method, this seems like
-a reasonable test.</p>
+<p>Either of these migration will run correctly for Developer 1 no matter how many model
+renames happened while they were on vacation.</p>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$:</span> rspec my_model_spec.rb
-<span class="nb">.</span>
+<h2 id="problem-at-scale">Problem at Scale</h2>
 
-Finished <span class="k">in </span>0.0054 seconds <span class="o">(</span>files took 0.07101 seconds to load<span class="o">)</span>
-1 example, 0 failures
-</code></pre></div></div>
+<p>It might not seem like that big of a deal to have a single broken migration.
+But, within a larger team or with more complex migrations, this can easily
+become a painful hurdle a team needs to navigate.</p>
 
-<p>Running the test produces a passing result, the <code class="language-plaintext highlighter-rouge">MyModel</code> class calls
-its parent method correctly and all is well. Until something changes that the
-test is unable to detect.</p>
-
-<h2 id="breaking-the-contract">Breaking the Contract</h2>
-
-<p>If <code class="language-plaintext highlighter-rouge">MyModel</code>’s contract changes, the test should fail. If, for
-instance, the <code class="language-plaintext highlighter-rouge">put</code> method on the <code class="language-plaintext highlighter-rouge">APIClient</code> class is removed or commented
-out, the <code class="language-plaintext highlighter-rouge">update</code> method on <code class="language-plaintext highlighter-rouge">MyModel</code> would no longer work.</p>
-
-<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># api_client.rb</span>
-
-<span class="k">class</span> <span class="nc">APIClient</span>
-  <span class="c1"># def put(url, body)</span>
-  <span class="c1">#   client.put(url, body)</span>
-  <span class="c1"># end</span>
-
-  <span class="kp">private</span>
-
-  <span class="k">def</span> <span class="nf">client</span>
-    <span class="no">Faraday</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="s1">'https://some-cool-api.com'</span><span class="p">)</span>
-  <span class="k">end</span>
-<span class="k">end</span>
-</code></pre></div></div>
-
-<p>However, the test still passes despite this method being removed.</p>
-
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$:</span> rspec my_model_spec.rb
-<span class="nb">.</span>
-
-Finished <span class="k">in </span>0.00523 seconds <span class="o">(</span>files took 0.0699 seconds to load<span class="o">)</span>
-1 example, 0 failures
-</code></pre></div></div>
-
-<p>So what is going on here?</p>
-
-<p>The culprit is this line: <code class="language-plaintext highlighter-rouge">expect(subject).to receive(:put)</code>. The test happily
-accepts the call to <code class="language-plaintext highlighter-rouge">APIClient#put</code> despite it being removed. This is
-obviously problematic and, in a worst case scenario, could lead to an outage if
-a test suite is the only gateway to production code.</p>
-
-<p>Starting an <code class="language-plaintext highlighter-rouge">irb</code> repl and calling the problematic method reveals that the code
-is no longer working despite the test’s result.</p>
-
-<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="mf">2.5</span><span class="o">.</span><span class="mi">5</span> <span class="p">:</span><span class="mo">001</span> <span class="o">&gt;</span> <span class="n">model</span> <span class="o">=</span> <span class="no">MyModel</span><span class="p">.</span><span class="nf">new</span>
- <span class="o">=&gt;</span> <span class="c1">#&lt;MyModel:0x00005585f950ca10&gt;</span>
-<span class="mf">2.5</span><span class="o">.</span><span class="mi">5</span> <span class="p">:</span><span class="mo">002</span> <span class="o">&gt;</span> <span class="n">model</span><span class="p">.</span><span class="nf">update</span><span class="p">(</span><span class="ss">foo: :bar</span><span class="p">)</span>
-<span class="no">Traceback</span> <span class="p">(</span><span class="n">most</span> <span class="n">recent</span> <span class="n">call</span> <span class="n">last</span><span class="p">):</span>
-        <span class="mi">3</span><span class="p">:</span> <span class="n">from</span> <span class="sr">/home/</span><span class="n">yez</span><span class="o">/</span><span class="p">.</span><span class="nf">rvm</span><span class="o">/</span><span class="n">rubies</span><span class="o">/</span><span class="n">ruby</span><span class="o">-</span><span class="mf">2.5</span><span class="o">.</span><span class="mi">5</span><span class="o">/</span><span class="n">bin</span><span class="o">/</span><span class="n">irb</span><span class="p">:</span><span class="mi">11</span><span class="ss">:in</span> <span class="sb">`&lt;main&gt;'
-        2: from (irb):2
-        1: from /tmp/foo.rb:8:in `</span><span class="n">update</span><span class="s1">'
-NoMethodError (undefined method `put'</span> <span class="k">for</span> <span class="c1">#&lt;MyModel:0x00005585f950ca10&gt;)</span>
-</code></pre></div></div>
-
-<p>Since this code communicates to an API, validating that the underlying <code class="language-plaintext highlighter-rouge">put</code>
-request is done successfully can be tricky. Unlike tests in a Rails application,
-<code class="language-plaintext highlighter-rouge">MyModel#update</code> can not be validated in a local database.</p>
-
-<p>With a passing test and broken code, it is clear that wrong thing has been tested.
-As is, the test only asserts that a method calls another method and happily ignores
-everything else. One possible solution could be to add <code class="language-plaintext highlighter-rouge">and_call_original</code> to
-the end of the <code class="language-plaintext highlighter-rouge">expect(). to receive</code> line. This would make sure the <code class="language-plaintext highlighter-rouge">put</code>
-method is really there but would also make a real HTTP request in a test (which
-is generally bad practice).</p>
-
-<p>An easy way to make this test more robust without going overboard is to stub
-the response of the HTTP client. Instead of mocking the <code class="language-plaintext highlighter-rouge">put</code> method in <code class="language-plaintext highlighter-rouge">api_client.rb</code>,
-tools like <code class="language-plaintext highlighter-rouge">webmock</code> can be utilized to stub the <code class="language-plaintext highlighter-rouge">Faraday</code> response. This
-enables the code to fake an HTTP request instead of of calling out to
-<code class="language-plaintext highlighter-rouge">https://some-cool-api.com</code>.</p>
-
-<h2 id="testing-with-webmock">Testing with <code class="language-plaintext highlighter-rouge">Webmock</code></h2>
-
-<p>The <code class="language-plaintext highlighter-rouge">webmock</code> gem allows developers to define custom responses for specific HTTP
-requests.</p>
-
-<p>After installing the gem with <code class="language-plaintext highlighter-rouge">gem install webmock</code>, a stub can be written that
-matches the URL and request body to return a specific response.</p>
-
-<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">WebMock</span><span class="p">.</span><span class="nf">stub_request</span><span class="p">(</span><span class="ss">:put</span><span class="p">,</span> <span class="s1">'https://some-cool-api.com/my_models/1'</span><span class="p">).</span>
-  <span class="nf">with</span><span class="p">(</span><span class="ss">body: </span><span class="sr">/foo.*bar$/</span><span class="p">).</span>
-  <span class="nf">to_return</span><span class="p">(</span><span class="ss">body: </span><span class="s1">'{ "success": true }'</span><span class="p">)</span>
-</code></pre></div></div>
-
-<p>In this case the stubbed response is <code class="language-plaintext highlighter-rouge">{ "success": true }</code> and will be returned
-for any <code class="language-plaintext highlighter-rouge">put</code> requests to <code class="language-plaintext highlighter-rouge">https://some-cool-api.com/my_models/1</code> with a request body
-matching <code class="language-plaintext highlighter-rouge">foo</code> followed by <code class="language-plaintext highlighter-rouge">bar</code>. This stub can be added in a shared file or
-at the beginning of <code class="language-plaintext highlighter-rouge">my_model_spec.rb</code>.</p>
-
-<p>With the stub added, <code class="language-plaintext highlighter-rouge">my_model_spec.rb</code> can be updated to remove the old
-<code class="language-plaintext highlighter-rouge">expect().to receive</code> line and instead validate the response.</p>
-
-<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># my_model_spec.rb</span>
-
-<span class="n">describe</span> <span class="no">MyModel</span> <span class="k">do</span>
-  <span class="n">describe</span> <span class="s1">'update'</span> <span class="k">do</span>
-    <span class="n">it</span> <span class="s1">'updates the model'</span> <span class="k">do</span>
-      <span class="n">response</span> <span class="o">=</span> <span class="n">subject</span><span class="p">.</span><span class="nf">update</span><span class="p">({</span> <span class="ss">foo: :bar</span> <span class="p">})</span>
-      <span class="n">expect</span><span class="p">(</span><span class="no">JSON</span><span class="p">.</span><span class="nf">parse</span><span class="p">(</span><span class="n">response</span><span class="p">.</span><span class="nf">body</span><span class="p">)[</span><span class="s1">'success'</span><span class="p">]).</span><span class="nf">to</span> <span class="n">eq</span><span class="p">(</span><span class="kp">true</span><span class="p">)</span>
-    <span class="k">end</span>
-  <span class="k">end</span>
-<span class="k">end</span>
-</code></pre></div></div>
-
-<p>The stub works and running <code class="language-plaintext highlighter-rouge">my_model_spec.rb</code> shows the test passes.</p>
-
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$:</span> rspec my_model_spec.rb
-<span class="nb">.</span>
-
-Finished <span class="k">in </span>0.00531 seconds <span class="o">(</span>files took 0.33028 seconds to load<span class="o">)</span>
-1 example, 0 failures
-</code></pre></div></div>
-
-<p>Now, if <code class="language-plaintext highlighter-rouge">APIClient</code> is changed in the same way as before, the test will
-appropriately fail and alert the developer that the <code class="language-plaintext highlighter-rouge">put</code> method does not
-exist.</p>
-
-<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># api_client.rb</span>
-
-<span class="k">class</span> <span class="nc">APIClient</span>
-  <span class="c1"># def put(url, body)</span>
-  <span class="c1">#   client.put(url, body)</span>
-  <span class="c1"># end</span>
-
-  <span class="kp">private</span>
-
-  <span class="k">def</span> <span class="nf">client</span>
-    <span class="no">Faraday</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="s1">'https://some-cool-api.com'</span><span class="p">)</span>
-  <span class="k">end</span>
-<span class="k">end</span>
-</code></pre></div></div>
-
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$:</span> rspec my_model_spec.rb
-F
-
-Failures:
-
-  1<span class="o">)</span> MyModel update updates the model
-     Failure/Error: put<span class="o">(</span><span class="s1">'/my_models/1'</span>, body<span class="o">)</span>
-
-     NoMethodError:
-       undefined method <span class="sb">`</span>put<span class="s1">' for #&lt;MyModel:0x000055f148a80018&gt;
-       Did you mean?  puts
-                      putc
-     # ./my_model_spec.rb:17:in `update'</span>
-     <span class="c"># ./my_model_spec.rb:30:in `block (3 levels) in &lt;top (required)&gt;'</span>
-
-Finished <span class="k">in </span>0.00298 seconds <span class="o">(</span>files took 0.4606 seconds to load<span class="o">)</span>
-1 example, 1 failure
-</code></pre></div></div>
-
-<h2 id="stricter-settings">Stricter Settings</h2>
-
-<p><code class="language-plaintext highlighter-rouge">RSpec</code> allows developers to enable the flag <code class="language-plaintext highlighter-rouge">verify_partial_doubles</code> which
-will cause the original test to fail when the <code class="language-plaintext highlighter-rouge">put</code> method is removed.  This setting
-is turned off by default.</p>
-
-<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="no">RSpec</span><span class="p">.</span><span class="nf">configure</span> <span class="k">do</span> <span class="o">|</span><span class="n">config</span><span class="o">|</span>
-  <span class="n">config</span><span class="p">.</span><span class="nf">mock_with</span> <span class="ss">:rspec</span> <span class="k">do</span> <span class="o">|</span><span class="n">mocks</span><span class="o">|</span>
-    <span class="n">mocks</span><span class="p">.</span><span class="nf">verify_partial_doubles</span> <span class="o">=</span> <span class="kp">true</span>
-  <span class="k">end</span>
-<span class="k">end</span>
-</code></pre></div></div>
-
-<p>With this setting in place, running the original code and test produces
-a failing result.</p>
-
-<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># api_client.rb</span>
-
-<span class="k">class</span> <span class="nc">APIClient</span>
-  <span class="c1"># def put(url, body)</span>
-  <span class="c1">#   client.put(url, body)</span>
-  <span class="c1"># end</span>
-
-  <span class="kp">private</span>
-
-  <span class="k">def</span> <span class="nf">client</span>
-    <span class="no">Faraday</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="s1">'https://some-cool-api.com'</span><span class="p">)</span>
-  <span class="k">end</span>
-<span class="k">end</span>
-
-<span class="c1"># my_model_spec.rb</span>
-
-<span class="n">describe</span> <span class="no">MyModel</span> <span class="k">do</span>
-  <span class="n">describe</span> <span class="s1">'update'</span> <span class="k">do</span>
-    <span class="n">it</span> <span class="s1">'updates the model'</span> <span class="k">do</span>
-      <span class="n">expect</span><span class="p">(</span><span class="n">subject</span><span class="p">).</span><span class="nf">to</span> <span class="n">receive</span><span class="p">(</span><span class="ss">:put</span><span class="p">)</span>
-      <span class="n">subject</span><span class="p">.</span><span class="nf">update</span><span class="p">({</span> <span class="ss">foo: :bar</span> <span class="p">})</span>
-    <span class="k">end</span>
-  <span class="k">end</span>
-<span class="k">end</span>
-</code></pre></div></div>
-
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$:</span> rspec my_model_spec.rb
-F
-
-Failures:
-
-  1<span class="o">)</span> MyModel update updates the model
-     Failure/Error: expect<span class="o">(</span>subject<span class="o">)</span>.to receive<span class="o">(</span>:put<span class="o">)</span>
-       <span class="c">#&lt;MyModel:0x000055d4a4f740a8&gt; does not implement: put</span>
-     <span class="c"># ./my_model_spec.rb:35:in `block (3 levels) in &lt;top (required)&gt;'</span>
-
-Finished <span class="k">in </span>0.00877 seconds <span class="o">(</span>files took 0.46471 seconds to load<span class="o">)</span>
-1 example, 1 failure
-</code></pre></div></div>
-
-<p>This alternative does not require the use of a new gem and will fail correctly
-if the underlying contract is removed. However, if the <code class="language-plaintext highlighter-rouge">put</code> method or any
-layer between it and the API request changes, this test is not guaranteed to
-save a developer from that issue.</p>
-
-<p>Determining what layer to mock and what to explicitly test is a very case by case
-basis.</p>
-
-<h2 id="keep-tests-robust">Keep Tests Robust</h2>
-
-<p>Mocks and stubs in RSpec allow developers to make important assertions about
-their code. Unfortunately, mocking can also cause false positives when
-modifying real code.</p>
-
-<p>Validating that the proper settings are in an application is a great first step
-towards more a more robust test suite.</p>
-
-<p>Stubbing the response for the underlying API in this example enables a much
-more robust test that can alert developers when they make breaking changes.
-However, if the API response from <code class="language-plaintext highlighter-rouge">https://some-cool-api.com</code> changes, the
-<code class="language-plaintext highlighter-rouge">webmock</code> stub must be updated.</p>
-
-<p>Stubbing and mocking tools should be used on a case by case basis. In the case
-of testing a third party API integration, providing canned responses in the test
-suite makes sense. In other “normal” Ruby or Rails tests, <a href="https://jakeyesbeck.com/2017/07/12/a-few-rspec-helpful-hints/#verifying-doubles">verifying doubles</a>
-or other built in RSpec matchers could be all that’s needed.</p>
+<p>Allowing migrations to rely on only the database as a source of truth enables
+all developers on the team to run migrations without issue. That is until
+the database or team inevitably get too large and people do database restores
+instead of running migrations, then this issue is far less common.</p>
 
 
   </div>
